@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="gov.va.med.iss.mdebugger"
+   name="MDebugger Plug-in"
+   version="1.0.7.5"
+   provider-name="Dept. Veteran Affairs"
+   class="gov.va.med.iss.mdebugger.MDebuggerPlugin">
+
+   <runtime>
+      <library name="mdebugger.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+	
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="gov.va.med.iss.connection"/>
+	  <import plugin="gov.va.med.iss.meditor"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.console"/>
+   </requires>
+
+	
+   <extension
+      point="org.eclipse.ui.bindings">
+<!--
+     <key
+         sequence="F8"
+         commandId="gov.va.med.iss.mdebugger.run.resume"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+-->
+      <key
+         sequence="F8"
+         commandId="gov.va.med.iss.mdebugger.run.resume"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+<!--  trying categoryID instead of commandID
+      <key
+         sequence="F6"
+         commandId="gov.va.med.iss.mdebugger.run.stepover"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+-->
+      <key
+         sequence="F6"
+         commandId="gov.va.med.iss.mdebugger.run.stepover"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+<!--
+      <key
+         sequence="F4"
+         commandId="gov.va.med.iss.mdebugger.run.stepline"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+      <key
+         sequence="F5"
+         commandId="gov.va.med.iss.mdebugger.run.stepinto"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+      <key
+         sequence="F7"
+         commandId="gov.va.med.iss.mdebugger.run.stepout"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+-->
+<!--
+      <key
+         sequence="F11"
+         commandId="gov.va.med.iss.mdebugger.debug.last"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+-->
+   </extension>
+   <extension
+       point="org.eclipse.ui.commands">
+       <category
+            name="%m-debugger.commands.category.name"
+            description="%m-debugger.commands.category.desc"
+            id="gov.va.med.iss.mdebugger.commands.category">
+       </category>
+<!--       
+       <command
+       		name="%command.debugger.resume"
+		    description="%command.save.description"
+		    categoryId="gov.va.med.iss.mdebugger.run"
+            category="gov.va.med.iss.mdebugger.run"
+		    id="gov.va.med.iss.mdebugger.run.resume">
+       </command>
+ 
+        <command
+       		name="%command.debugger.resume"
+		    description="%command.save.description"
+            category="gov.va.med.iss.mdebugger.run"
+		    id="gov.va.med.iss.mdebugger.run.resume">
+       </command>
+-->
+        <command
+       		name="%command.debugger.resume"
+		    description="%command.save.description"
+		    categoryId="gov.va.med.iss.mdebugger.commands.category"
+		    id="gov.va.med.iss.mdebugger.run.resume">
+       </command>
+
+<!--
+        <command
+       		name="%command.debugger.stepover"
+		    description="%command.save.description"
+		    categoryId="gov.va.med.iss.mdebugger.run"
+		    id="gov.va.med.iss.mdebugger.run.stepover">
+       </command>
+
+        <command
+       		name="%command.debugger.stepover"
+		    description="%command.save.description"
+		    category="gov.va.med.iss.mdebugger.run"
+		    id="gov.va.med.iss.mdebugger.run.stepover">
+       </command>
+-->
+        <command
+       		name="%command.debugger.stepover"
+		    description="%command.save.description"
+		    id="gov.va.med.iss.mdebugger.run.stepover">
+       </command>
+
+<!--
+       <command
+       		name="%command.debugger.stepinto"
+		    description="%command.save.description"
+		    category="gov.va.med.iss.mdebugger.run"
+		    id="gov.va.med.iss.mdebugger.run.stepinto">
+       </command>
+       <command
+       		name="%command.debugger.stepline"
+		    description="%command.save.description"
+		    category="gov.va.med.iss.mdebugger.run"
+		    id="gov.va.med.iss.mdebugger.run.stepline">
+       </command>
+       <command
+       		name="%command.debugger.stepout"
+		    description="%command.save.description"
+		    category="gov.va.med.iss.mdebugger.run"
+		    id="gov.va.med.iss.mdebugger.run.stepout">
+       </command>
+       <command
+       		name="%command.debugger.terminate"
+		    description="%command.save.description"
+		    category="gov.va.med.iss.mdebugger.run"
+		    id="gov.va.med.iss.mdebugger.run.terminate">
+       </command>
+-->
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="M-Debugger Actions"
+            visible="true"
+            id="gov.va.med.iss.mdebugger.actionSet">
+         <menu
+               label="&amp;VistA"
+               id="vistaMenu">
+            <separator
+                  name="debugGroup">
+            </separator>
+         </menu>
+         <action
+               label="&amp;M-Debugger"
+               icon="icons/mdebug.gif"
+               class="gov.va.med.iss.mdebugger.actions.MDebuggerAction"
+               tooltip="M-Debugger"
+               menubarPath="vistaMenu/debugGroup"
+               toolbarPath="vistaGroup"
+               id="gov.va.med.iss.mdebugger.actions.MDebuggerAction">
+         </action>
+       </actionSet>
+       <actionSet
+            label="M-Debugger Run Menu Items"
+            description=" "
+            visible="true"
+            id="gov.va.med.iss.mdebugger.actions.MDebuggerAction">
+         <menu
+               label="&amp;Run"
+               id="org.eclipse.ui.run">
+            <separator
+                  name="M-Debugger">
+            </separator>
+         </menu>
+         <action
+               label = "Resu&amp;me"
+               icon="icons/resume_co.gif"
+               class="gov.va.med.iss.mdebugger.actions.MDebuggerRunCommand"
+               tooltip="Run until finished or next breakpoint, etc."
+               menubarPath="org.eclipse.ui.run/stepGroup"
+               id="gov.va.med.iss.mdebugger.actions.MDebuggerRunCommand"
+               definitionId="gov.va.med.iss.mdebugger.run.resume">
+         </action>
+         <action
+               label = "Step &amp;Over"
+               icon="icons/stepover_co.gif"
+               class="gov.va.med.iss.mdebugger.actions.MDebuggerStepOverCommand"
+               tooltip="Step to next command"
+               menubarPath="org.eclipse.ui.run/stepGroup"
+               id="gov.va.med.iss.mdebugger.actions.MDebuggerStepOverCommand"
+               definitionId="gov.va.med.iss.mdebugger.run.stepover">
+   <!--
+               <enablement>
+                   <and>
+                       <objectClass name="gov.va.med.iss.medebugger.utils.StepResults" />
+                       <objectState name="doneFlag" value="false" />
+                   </and>
+               </enablement>
+   -->
+         </action>
+<!--
+        <action
+               label = "Step &amp;Into"
+               icon="icons/stepinto_co.gif"
+               class="gov.va.med.iss.mdebugger.actions.MDebuggerStepIntoCommand"
+               tooltip="Step into DO or $SELECT"
+               menubarPath="org.eclipse.ui.run/stepGroup"
+               id="gov.va.med.iss.mdebugger.actions.MDebuggerStepIntoCommand"
+               definitionId="gov.va.med.iss.mdebugger.run.stepinto">
+         </action>
+        <action
+               label = "Step &amp;Out (return)"
+               icon="icons/stepout_co.gif"
+               class="gov.va.med.iss.mdebugger.actions.MDebuggerStepOutCommand"
+               tooltip="Run until finished or next breakpoint, etc."
+               menubarPath="org.eclipse.ui.run/stepGroup"
+               id="gov.va.med.iss.mdebugger.actions.MDebuggerStepOutCommand"
+               definitionId="gov.va.med.iss.mdebugger.run.stepout">
+         </action>
+        <action
+               label = "Step to Next &amp;Line"
+               icon="icons/stepline_co.gif"
+               class="gov.va.med.iss.mdebugger.actions.MDebuggerStepLineCommand"
+               tooltip="Step to next line"
+               menubarPath="org.eclipse.ui.run/stepGroup"
+               id="gov.va.med.iss.mdebugger.actions.MDebuggerStepLineCommand"
+               definitionId="gov.va.med.iss.mdebugger.run.stepline">
+        </action>
+        <action
+               label = "&amp;Terminate"
+               icon="icons/terminate_co.gif"
+               class="gov.va.med.iss.mdebugger.actions.MDebuggerTerminateCommand"
+               tooltip="Immediately terminate processing"
+               menubarPath="org.eclipse.ui.run/terminateGroup"
+               id="gov.va.med.iss.mdebugger.actions.MDebuggerTerminateCommand"
+               definitionId="gov.va.med.iss.mdebugger.run.terminate">
+        </action>
+-->
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml">
+      </toc>
+      <toc
+            file="testToc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="plugin.xml"
+            id="gov.va.med.iss.mdebugger.contribution1">
+         <menu
+               label="New Submenu"
+               path="additions"
+               id="gov.va.med.iss.mdebugger.menu1">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               label="New Action"
+               class="gov.va.med.iss.mdebugger.popup.actions.NewAction"
+               menubarPath="gov.va.med.iss.mdebugger.menu1/group1"
+               enablesFor="1"
+               id="gov.va.med.iss.mdebugger.newAction">
+         </action>
+      </objectContribution>
+   </extension>
+<!--
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Sample Preferences"
+            class="gov.va.med.iss.mdebugger.preferences.SamplePreferencePage"
+            id="gov.va.med.iss.mdebugger.preferences.SamplePreferencePage">
+      </page>
+   </extension>
+-->
+<!--
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="gov.va.med.iss.mdebugger.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+-->
+<!--
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            objectClass="org.eclipse.core.resources.IFile"
+            name="Sample Page"
+            nameFilter="*.m"
+            class="gov.va.med.iss.mdebugger.properties.SamplePropertyPage"
+            id="gov.va.med.iss.mdebugger.properties.samplePropertyPage">
+      </page>
+   </extension>
+-->
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="M-Debugger Category"
+            id="gov.va.med.iss.mdebugger">
+      </category>
+      <view
+            name="Breakpoints"
+            icon="icons/sample.gif"
+            category="gov.va.med.iss.mdebugger"
+            class="gov.va.med.iss.mdebugger.views.BreakpointView"
+            id="gov.va.med.iss.mdebugger.views.BreakpointView">
+      </view>
+      <view
+            name="Watch Values"
+            icon="icons/sample.gif"
+            category="gov.va.med.iss.mdebugger"
+            class="gov.va.med.iss.mdebugger.views.WatchValuesView"
+            id="gov.va.med.iss.mdebugger.views.WatchValuesView">
+      </view>
+      <view
+            name="Current Stack"
+            icon="icons/sample.gif"
+            category="gov.va.med.iss.mdebugger"
+            class="gov.va.med.iss.mdebugger.views.CurrentStackView"
+            id="gov.va.med.iss.mdebugger.views.CurrentStackView">
+      </view>
+      <view
+            name="Initialization Values"
+            icon="icons/sample.gif"
+            category="gov.va.med.iss.mdebugger"
+            class="gov.va.med.iss.mdebugger.views.InitializationValuesView"
+            id="gov.va.med.iss.mdebugger.views.InitializationValuesView">
+      </view>
+       <view
+            name="Watch Variables"
+            icon="icons/sample.gif"
+            category="gov.va.med.iss.mdebugger"
+            class="gov.va.med.iss.mdebugger.views.WatchVariablesView"
+            id="gov.va.med.iss.mdebugger.views.WatchVariablesView">
+      </view>
+       <view
+            name="All Variable Values"
+            icon="icons/sample.gif"
+            category="gov.va.med.iss.mdebugger"
+            class="gov.va.med.iss.mdebugger.views.AllValuesView"
+            id="gov.va.med.iss.mdebugger.views.AllValuesView">
+      </view>
+      <view
+            name="MDebugger Console Display"
+            icon="icons/sample.gif"
+            category="gov.va.med.iss.mdebugger"
+            class="gov.va.med.iss.mdebugger.views.MDebuggerConsoleDisplay"
+            id="gov.va.med.iss.mdebugger.views.MDebuggerConsoleDisplay">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="gov.va.med.iss.mdebugger.views.SampleView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="gov.va.med.iss.mdebugger.MPerspectiveFactory"
+            id="gov.va.med.iss.mdebugger.perspective"
+            name="M-Debugger"
+            icon="icons\mdebug.gif" />
+   </extension>
+
+</plugin>

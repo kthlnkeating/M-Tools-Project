@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="gov.va.med.iss.connection"
+   name="VL Connection Plug-in"
+   version="1.0.9.24"
+   provider-name="Dept. Veteran Affairs"
+   class="gov.va.med.iss.connection.VLConnectionPlugin">
+
+   <runtime>
+      <library name="vlconnection.jar">
+         <export name="*"/>
+      </library>
+      <library name="jaxen-full.jar">
+         <export name="*"/>
+      </library>
+      <library name="j2ee.jar">
+         <export name="*"/>
+      </library>
+      <library name="saxpath.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="org.apache.log4j" export="true"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+   </requires>
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="VL Connection"
+            visible="true"
+            id="gov.va.med.iss.connection.actionSet">
+         <menu
+               label="&amp;VistA"
+               id="vistaMenu">
+            <separator
+                  name="connectionGroup">
+            </separator>
+         </menu>
+         <action
+               label="&amp;Connect to VistA"
+               icon="icons/vistaconnect.gif"
+               class="gov.va.med.iss.connection.actions.VistaConnection"
+               tooltip="Connect to VistA Server"
+               menubarPath="vistaMenu/connectionGroup"
+               id="gov.va.med.iss.connection.actions.VistaConnection">
+         </action>
+      </actionSet>
+     <actionSet
+            label="VL Disconnect"
+            visible="true"
+            id="gov.va.med.iss.connection.actionSet1">
+         <menu
+               label="&amp;VistA"
+               id="vistaMenu">
+            <separator
+                  name="connectionGroup">
+            </separator>
+         </menu>
+         <action
+               label="&amp;Disconnect from VistA"
+               icon="icons/vistadisconnect.gif"
+               class="gov.va.med.iss.connection.actions.VistaDisconnect"
+               tooltip="Disconnect from VistA Server"
+               menubarPath="vistaMenu/connectionGroup"
+                id="gov.va.med.iss.connection.actions.VistaDisconnect">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Connection"
+            category="gov.va.med.iss.connection.preferences.VistaPreferencePage"
+            class="gov.va.med.iss.connection.preferences.ConnectionPreferencePage"
+            id="gov.va.med.iss.connection.preferences.ConnectionPreferencePage">
+      </page>
+      <page
+            class="gov.va.med.iss.connection.preferences.VistaPreferencePage"
+            name="VistA"
+            id="gov.va.med.iss.connection.preferences.VistaPreferencePage"/>
+    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Sample Category"
+            id="gov.va.med.iss.connection">
+      </category>
+      <view
+            name="LaunchPoint"
+            icon="icons/sample.gif"
+            category="gov.va.med.iss.connection"
+            class="gov.va.med.iss.connection.actions.LaunchPoint"
+            id="gov.va.med.iss.connection.actions.LaunchPoint">
+      </view>
+   </extension>
+</plugin>

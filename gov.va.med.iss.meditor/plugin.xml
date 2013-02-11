@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="gov.va.med.iss.meditor"
+   name="MEditor Plug-in"
+   version="1.0.13.13"
+   provider-name="Dept. Veteran Affairs"
+   class="gov.va.med.iss.meditor.MEditorPlugin">
+
+   <runtime>
+      <library name="meditor.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="gov.va.med.iss.connection"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.console"/>
+   </requires>
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Sample Action Set"
+            visible="true"
+            id="gov.va.med.iss.meditor.actionSet">
+         <menu
+               label="&amp;VistA"
+               id="vistaMenu">
+            <separator
+                  name="editGroup">
+            </separator>
+         </menu>
+         <action
+               label="&amp;Load M routine"
+               icon="icons/meditor.gif"
+               class="gov.va.med.iss.meditor.actions.RoutineEditAction"
+               tooltip="Load M routine"
+               menubarPath="vistaMenu/editGroup"
+               toolbarPath="vistaGroup"
+               id="gov.va.med.iss.meditor.actions.RoutineEditAction">
+         </action>
+      </actionSet>
+      <actionSet
+            label="Global Directory"
+            visible="true"
+            id="gov.va.med.iss.meditor.globalDirectory">
+         <menu
+               label="&amp;VistA"
+               id="vistaMenu">
+            <separator
+                  name="toolsGroup">
+            </separator>
+         </menu>
+         <action
+               label="Global &amp;Directory"
+               icon="icons/meditor.gif"
+               class="gov.va.med.iss.meditor.actions.GlobalDirectoryAction"
+               tooltip="List of Global Names"
+               menubarPath="vistaMenu/toolGroup"
+               id="gov.va.med.iss.meditor.actions.GlobalDirectoryAction">
+         </action>
+      </actionSet>
+      <actionSet
+            label="Global Listing"
+            visible="true"
+            id="gov.va.med.iss.meditor.globalListing">
+         <menu
+               label="&amp;VistA"
+               id="vistaMenu">
+            <separator
+                  name="toolsGroup">
+            </separator>
+         </menu>
+         <action
+               label="&amp;Global Listing"
+               icon="icons/meditor.gif"
+               class="gov.va.med.iss.meditor.actions.GlobalListingAction"
+               tooltip="List of Global Contents"
+               menubarPath="vistaMenu/toolGroup"
+               id="gov.va.med.iss.meditor.actions.GlobalListingAction">
+         </action>
+      </actionSet>
+      <actionSet
+            label="Routine Directory"
+            visible="true"
+            id="gov.va.med.iss.meditor.routineDirectory">
+         <menu
+               label="VistA"
+               id="vistaMenu">
+            <separator
+                  name="toolsGroup">
+            </separator>
+         </menu>
+         <action
+               label="&amp;Routine Directory"
+               icon="icons/meditor.gif"
+               class="gov.va.med.iss.meditor.actions.RoutineDirectoryAction"
+               tooltip="List of Routine Names"
+               menubarPath="vistaMenu/toolGroup"
+               id="gov.va.med.iss.meditor.actions.RoutineDirectoryAction">
+         </action>
+      </actionSet>
+       <actionSet
+            label="Multiple Routine Load From Server"
+            visible="true"
+            id="gov.va.med.iss.meditor.multipleRoutineLoad">
+         <menu
+               label="VistA"
+               id="vistaMenu">
+            <separator
+                  name="toolsGroup">
+            </separator>
+         </menu>
+         <action
+               label="&amp;Multiple Routine Load From Server"
+               icon="icons/meditor.gif"
+               class="gov.va.med.iss.meditor.actions.MultRoutineLoadAction"
+               tooltip="Loads and Saves Multiple Routines FROM Server"
+               menubarPath="vistaMenu/toolGroup"
+               id="gov.va.med.iss.meditor.actions.MultRoutineLoadAction">
+         </action>
+      </actionSet>
+       <actionSet
+            label="Multiple Routine Save To Server"
+            visible="true"
+            id="gov.va.med.iss.meditor.multipleRoutineSave">
+         <menu
+               label="VistA"
+               id="vistaMenu">
+            <separator
+                  name="toolsGroup">
+            </separator>
+         </menu>
+         <action
+               label="Multiple Routine &amp;Save To Server"
+               icon="icons/meditor.gif"
+               class="gov.va.med.iss.meditor.actions.MultRoutineSaveAction"
+               tooltip="Saves Multiple Routines to Server from specified directory"
+               menubarPath="vistaMenu/toolGroup"
+               id="gov.va.med.iss.meditor.actions.MultRoutineSaveAction">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         id="gov.va.med.iss.meditor.meditor"
+         name="gov.va.med.iss.meditor.meditor"
+         point="org.eclipse.ui.editors">
+      <editor
+            class="gov.va.med.iss.meditor.editors.MEditor"
+            icon="icons/mfile.gif"
+            contributorClass="gov.va.med.iss.meditor.editors.MEditorContributor"
+            name="MEditor"
+            id="gov.va.med.iss.meditor.editors.MEditor"
+            extensions="m"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="M-Editor"
+            category="gov.va.med.iss.connection.preferences.VistaPreferencePage"
+            class="gov.va.med.iss.meditor.preferences.MEditorPreferencesPage"
+            id="gov.va.med.iss.meditor.preferences.MEditorPreferencesPage">
+      </page>
+    </extension>
+   <extension
+         id="gov.va.med.iss.meditor.preferences.meditorPropertyPage1"
+         name="M-Editor"
+         point="org.eclipse.ui.propertyPages">
+      <page
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="false"
+            class="gov.va.med.iss.meditor.preferences.MEditorPropertyPage1"
+            icon="meditor.gif"
+            nameFilter="*.m"
+            name="M-Editor"
+            id="gov.va.med.iss.meditor.page1"/>
+   </extension>
+
+</plugin>

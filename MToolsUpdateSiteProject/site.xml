@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/MToolsFeature_1.0.13.13.jar" id="MToolsFeature" version="1.0.13.13"/>
+</site>
