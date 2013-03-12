@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.0"?>
-<plugin
+<?eclipse version="3.4"?>
+<!--plugin
    id="gov.va.med.iss.meditor"
    name="MEditor Plug-in"
    version="1.0.13.13"
    provider-name="Dept. Veteran Affairs"
-   class="gov.va.med.iss.meditor.MEditorPlugin">
+   class="gov.va.med.iss.meditor.MEditorPlugin"-->
+<plugin>
 
-   <runtime>
+   <!--runtime>
       <library name="meditor.jar">
          <export name="*"/>
       </library>
@@ -24,7 +25,7 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui.console"/>
-   </requires>
+   </requires-->
 
    <extension
          point="org.eclipse.ui.actionSets">
@@ -184,5 +185,4 @@
             name="M-Editor"
             id="gov.va.med.iss.meditor.page1"/>
    </extension>
-
 </plugin>

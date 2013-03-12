@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MEditor Plug-in
+Bundle-SymbolicName: gov.va.med.iss.meditor;singleton:=true
+Bundle-Version: 0.1.001
+Bundle-Activator: gov.va.med.iss.meditor.MEditorPlugin
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Dept. Veteran Affairs
+Bundle-ClassPath: .
+Require-Bundle: org.eclipse.ui;bundle-version="3.7.0",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ gov.va.med.iss.connection;bundle-version="1.0.9",
+ org.eclipse.jface.text;bundle-version="3.7.2",
+ org.eclipse.ui.editors;bundle-version="3.7.0",
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.ui.ide;bundle-version="3.7.0",
+ org.eclipse.ui.views;bundle-version="3.6.0",
+ org.eclipse.ui.console;bundle-version="3.5.100"

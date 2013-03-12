@@ -241,6 +241,12 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 	 * @param monitor the progress monitor
 	 */
 	public void doSave(IProgressMonitor monitor) {
+		
+		if (Boolean.valueOf(MEditorPrefs.getPrefs(MEditorPlugin.OFFLINE_MODE))) {
+			super.doSave(monitor);
+			return;
+		}
+		
 		// JLI 110127 Make sure a server is defined first
 		//if (VistaConnection.getPrimaryServer().compareTo(";;;") == 0) {
 		if (! VistaConnection.getPrimaryServer()) { // 110821

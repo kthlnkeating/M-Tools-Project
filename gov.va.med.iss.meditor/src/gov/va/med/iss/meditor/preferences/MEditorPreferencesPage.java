@@ -55,12 +55,11 @@ public class MEditorPreferencesPage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 	public static final String P_PATH = "pathPreference";
-	public static final String P_DEFAULT_UPDATE = "defaultUpdatePreference";
 	public static final String P_CHOICE = "choicePreference";
 	public static final String P_STRING = "stringPreference";
 	
 	public MEditorPreferencesPage() {
-		this( null);
+		this(null);
 	}
 
 	public MEditorPreferencesPage(MEditor meditor) {
@@ -75,6 +74,7 @@ public class MEditorPreferencesPage
  */
 	private void initializeDefaults() {
 		IPreferenceStore store = getPreferenceStore();
+		store.setDefault(MEditorPlugin.OFFLINE_MODE, false);
 		store.setDefault(MEditorPlugin.P_DEFAULT_UPDATE, true);
 		store.setDefault(MEditorPlugin.P_WRAP_LINES, false);
 		store.setDefault(MEditorPlugin.P_PROJECT_NAME,"mcode");
@@ -153,9 +153,10 @@ public class MEditorPreferencesPage
  */
 
 	public void createFieldEditors() {
+		addField(new BooleanFieldEditor(MEditorPlugin.OFFLINE_MODE, "Offline Mode", getFieldEditorParent()));
 		addField(
 			new BooleanFieldEditor(
-				P_DEFAULT_UPDATE,
+					MEditorPlugin.P_DEFAULT_UPDATE,
 				"&set default to update Routine File on Routine Save",
 				getFieldEditorParent()));
 		addField( new BooleanFieldEditor(MEditorPlugin.P_WRAP_LINES,"&wrap lines",getFieldEditorParent()));
