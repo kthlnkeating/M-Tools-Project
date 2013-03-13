@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MEditor Plug-in
+Bundle-SymbolicName: gov.va.med.iss.connection;singleton:=true
+Bundle-Version: 0.1.001
+Bundle-Activator: gov.va.med.iss.connection.VLConnectionPlugin
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Dept. Veteran Affairs
+Bundle-ClassPath: .,
+ lib/j2ee.jar,
+ lib/jaxen-full.jar,
+ lib/saxpath.jar
+Require-Bundle: org.apache.log4j;bundle-version="1.2.8",
+ org.eclipse.ui;bundle-version="3.7.0",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.eclipse.jface.text;bundle-version="3.7.2",
+ org.eclipse.ui.editors;bundle-version="3.7.0",
+ org.eclipse.ui.workbench.texteditor;bundle-version="3.7.0",
+ org.eclipse.help;bundle-version="3.5.100",
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.ui.ide;bundle-version="3.7.0"
+Export-Package: gov.va.med.foundations.adapter.cci,
+ gov.va.med.foundations.rpc,
+ gov.va.med.iss.connection.actions,
+ gov.va.med.iss.connection.dialogs,
+ gov.va.med.iss.connection.preferences,
+ gov.va.med.iss.connection.utilities
