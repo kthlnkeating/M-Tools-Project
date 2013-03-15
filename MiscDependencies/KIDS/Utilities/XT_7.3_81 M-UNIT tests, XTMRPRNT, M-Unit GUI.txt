@@ -1,0 +1,381 @@
+
+****** XTMUNIT - A unit tester for M code.
+
+A Unit Test framework permits small tests to be written to verify that the
+code you are testing is doing what you expect it to do.  Generally the tests
+are performed on the smaller blocks of the application, and not necessarily
+a test of all of the functionality within the application.  As changes are
+subsequently made in the code, these tests can be run frequently to validate
+that nothing has changed.  The concept of Unit testing was introduced by Kent 
+Beck (also the creator of eXtreme Programming methodology).  The common
+JUnit framework for Java, which other frameworks are based upon, was written 
+by Kent Beck and Erich Gamma.  The phrase 'Test-Driven Development' is 
+frequently used to indicate the strong use of unit testing during development,
+although some think of it as equivalent to the 'Test First Development' in
+which the tests for code are written prior to writing the code.  In the Test
+First Development, the test should initially fail (since nothing has been
+written) and then pass after the code has been written.
+
+For client side languages, JUnit (for Java), DUnit (for Delphi), NUnit and 
+HarnessIt (for dotNet) all provide Unit Test frameworks.  The routine XTMUNIT
+included in this patch provides the same capabilities for unit testing M code.
+Initially the client side tests were console based (i.e., not windows but just
+text), and that is what XTMUNIT provides.  There is also, for those who like
+pretty windows, a GUI front end available as well (MUnit.exe) but this is 
+optional.
+
+If you are going to modify sections of your code, or refactor (cleaning up the
+code without changing the behavior of the code - which is frequently done prior
+to changing the behavior - See Martin Fowler's book "Refactoring: Improving the
+Design of Existing Code"), it is best to create a unit test for those areas 
+that you want to work with.  Then as changes are made the unit tests can be run
+to insure that nothing unexpected has changed.  For modifications, the unit 
+tests can then be written to reflect the new expected behavior and used to
+insure that it is what is expected.  One of the major benefits of unit testing
+is finding those changes that weren't expected in other parts of your code due
+to the changes that are being made.
+
+
+The following is a very simple sample routine, however, it covers everything 
+necessary for generating a basic unit test, and examples of the various
+calls available.
+
+---------------------------------------------------------------------------
+
+XXXX	;jli/fo-oak - demo code for a unit test routine ;9/25/03  15:44
+	;;
+	; makes it easy to run tests simply by running this routine and
+	; insures that XTMUNIT will be run only where it is present
+	I $T(EN^XTMUNIT)'="" D EN^XTMUNIT("XXXX")
+	Q
+	;
+STARTUP	; optional entry point
+	; if present executed before any other entry point any variables
+	; or other work that needs to be done for any or all tests in the
+	; routine.  This is run only once at the beginning.
+	Q
+	;
+SHUTDOWN	; optional entry point
+	; if present executed after all other processing is complete to remove
+	; any variables, or undo work done in STARTUP.
+	Q
+	;
+SETUP	; optional entry point
+	; if present it will be executed before each test entry to set up 
+	; variables, etc.
+	Q
+	;
+TEARDOWN	; optional entry point
+	; if present it will be exceuted after each test entry to clean up
+	; variables, etc.
+	Q
+	;
+ENTRY1	; Example for use of CHKEQ call to check two values
+	;
+	; code to generate a test, e.g. to check the sum of 1 and 1
+	S X=1,Y=1
+	D CHKEQ^XTMUNIT(2,X+Y,"1+1 didn't yield 2") ;
+	;
+	; usage of CHKEQ^XTMUNIT
+	;   first argument is the expected value
+	;   second argument is the actual value
+	;   third argument is text to be displayed if the first argument
+	;     and second argument are not equal.
+	;
+	;   Multiple calls to CHKEQ^XTMUNIT may be made within one entry
+	;   point.  Each of these is counted as a test.
+	;
+	;   Output for a failure shows the expected and actual values
+	Q
+	;
+ENTRY2	; Use of CHKTF call to check value for True or False
+	;
+	S ERRMSG="Current user is not an active user on this system"
+	D CHKTF^XTMUNIT($$ACTIVE^XUSER(DUZ)>0,ERRMSG)
+	;
+	; usage of CHKTF^XTMUNIT 
+	;    first argument is an expression evaluating to true or false value,
+	;    second argument is text to be displayed if the first argument
+	;      evaluates to false.
+	;
+	;    Multiple calls to CHKTF^XTMUNIT may be made within one entry 
+	;    point.  Each of these is counted as a test.
+	Q
+	;
+ENTRY3	; Use of CHKTF call to check values that should NOT be equal
+	;
+	; if you want to test something that should fail, use a NOT
+	S X=1,Y=3
+	D CHKTF^XTMUNIT(X'=Y,"indicated 1 and 3 are equal")
+	Q
+	;
+ENTRY4	; Use of the FAIL call to generate a failure message
+	;
+	S X=1+2 I X'=3 D FAIL^XTMUNIT("System is doing bad addition on 1+2") Q
+	; 
+	; usage of FAIL^XTMUNIT
+	;    the argument is text indicating why the failure was identified
+	Q
+	;
+	; Other routine names to be included in testing are listed one per line
+	; with the name as the third semi-colon piece on the line and an
+	; optional description of what the routine tests as the fourth semi-
+	; colon piece, if desired this permits a suite of test routines to be
+	; run by simply starting one of the routine the names may be repeated
+	; in multiple routines, but will only be included once. The first line
+	; without a third piece terminates the search for routine names (which
+	; is why this is above the XTROU tag).
+XTROU	;
+	;;XXXY;description of what the routine tests
+	;;XXXZ;
+	;;XXXA
+	;
+	; Entry points for tests are specified as the third semi-colon piece,
+	; a description of what it tests is optional as the fourth semi-colon
+	; piece on a line. The first line without a third piece terminates the
+	; search for TAGs to be used as entry points
+XTENT	;
+	;;ENTRY1;tests addition of 1 and 1
+	;;ENTRY2;checks active user status
+	;;ENTRY3;
+	;;ENTRY4;example of FAIL^XTMUNIT call
+	Q
+
+-----------------------------------------------------------------------------
+
+Running XXXX as written above, results in the following
+
+>D ^XXXX
+Referenced routine XXXY not found.
+Referenced routine XXXZ not found.
+Referenced routine XXXA not found.
+...
+
+Ran 1 Routine, 4 Entry Tags
+Checked 3 tests, with 0 failures and encountered 0 errors.
+>
+
+Normally, you won't see routines referenced that aren't there since you 
+wouldn't include them.  Passed tests are shown only with a dot, and the
+results are summarized at the bottom.
+
+
+Changing the code on line ENTRY+3 from (X'=Y)  to  (X=Y)  and running 
+XXXX shows that the test now fails.  The location of the tag and the 
+comment for failure are shown in the order of the tests.
+
+
+>D XXXX
+Referenced routine XXXY not found.
+Referenced routine XXXZ not found.
+Referenced routine XXXA not found.
+..
+ENTRY3^XXXX - indicated 1 and 3 are equal
+
+
+Ran 1 Routine, 4 Entry Tags
+Checked 3 tests, with 1 failure and encountered 0 errors.
+>
+
+
+
+Now changing the code on line ENTRY1+3 so that S X=1,Y=1 
+becomes  X=1,Y=1 (removing S<space> and running shows the
+error that is generated due to our typing, as well as continuing
+on to show the failure we introduced at ENTRY3.  The test at ENTRY2
+still runs without a problem as indicated by the lone dot.
+
+
+>D XXXX
+Referenced routine XXXY not found.
+Referenced routine XXXZ not found.
+Referenced routine XXXA not found.
+
+ENTRY1^XXXX - tests addition of 1 and 1 - Error: ENTRY1+3^XXXX:1, %DSM-E-COMAND,
+ bad command detected
+.
+ENTRY3^XXXX - indicated 1 and 3 are equal
+
+
+Ran 1 Routine, 4 Entry Tags
+Checked 3 tests, with 1 failure and encountered 1 error.
+>
+
+
+If the code at ENTRY4+2 is now modified to S X=1+1 and running it
+causes the FAIL call to be used.
+
+>D XXXX
+Referenced routine XXXY not found.
+Referenced routine XXXZ not found.
+Referenced routine XXXA not found.
+
+ENTRY1^XXXX - tests addition of 1 and 1 - Error: ENTRY1+3^XXXX:1, %DSM-E-COMAND,
+ bad command detected
+.
+ENTRY3^XXXX - indicated 1 and 3 are equal
+
+ENTRY4^XXXX - example of FAIL^XTMUNIT call - System is doing bad addition on 1+2
+
+
+Ran 1 Routine, 4 Entry Tags
+Checked 4 tests, with 2 failures and encountered 1 error.
+>
+
+
+
+
+Restoring S<space> on line ENTRY1+3, and changing X=1 to X=2 and running
+it shows the output of the CHKEQ call.
+
+>d XXXX
+Referenced routine XXXY not found.
+Referenced routine XXXZ not found.
+Referenced routine XXXA not found.
+
+ENTRY1^XXXX - tests addition of 1 and 1 - <2> vs <3> - 1+1 didn't yield 2
+.
+ENTRY3^XXXX - indicated 1 and 3 are equal
+
+ENTRY4^XXXX - example of FAIL^XTMUNIT call - System is doing bad addition on 1+2
+
+
+Ran 1 Routine, 4 Entry Tags
+Checked 4 tests, with 3 failures and encountered 0 errors.
+>
+
+
+
+That covers the basics of generating a unit test routine to use with XTMUNIT.
+For sections of code which perform calculations, etc., this is all that will
+be required.  For other cases dependent upon database interactions, or of
+input and output via something like the RPCBroker, other approaches to 
+creating usable tests are required.  The use of 'objects' which can be used
+for consistency in such units tests are generally referred to as 'Mock 
+Objects'.
+
+You do not want to include any code which requires user input.  You want the
+tests to be able to run completely without any user intervention other than
+starting them.  By referencing other related unit test routines within the
+one that is started, you can build suites of tests that can be used to cover
+the full range of your code.
+
+Supported References in XTMUNIT are EN, RUNSET, CHKTF, CHKEQ, and FAIL. 
+
+The  entry point EN^XTMUNIT(ROUNAME) starts the unit testing process.  The
+argument is the name of the routine where the testing should be started.  
+That routine must have at least one TAG or entry point and entry points 
+are specified in the line following the tag XTENT as the third semi-colon 
+piece on the line.  
+
+The test is performed on a conditional value by calling the entry point 
+CHKTF^XTMUNIT(testval,messag) with the first argument the conditional test 
+value (true or false) and the second argument a message that should be 
+displayed indicating what failed in the test.
+
+The test is performed by checking two values for equivalence using the entry
+point CHKEQ^XTMUNIT(expected,actual,messag) with the first argument the 
+expected value, the second argument the actual value, and the third argument 
+the message for display on failure.
+
+The entry point FAIL^XTMUNIT(messag) is used to simply generate a failure 
+with the argument as the message to be displayed for the failure.
+
+For those who have problems keeping track of routine names for unit testing 
+and which application they are associated with, we have created a new file 
+(MUNIT TEST GROUP, #8992.8) which can be used to maintain groups of unit 
+test routines with the edit option "XTMUNIT GROUP EDIT" (MUnit Test Group 
+Edit).  These may be run from an option ("XTMUNIT GROUP RUN", Run MUnit Tests
+from Test Groups), from the a Supported Reference [D RUNSET^XTMUNIT(setname)],
+or from the GUI client described below (click the 'Select Group' button).
+
+
+
+
+****** XTMRPRNT -- a routine lister for capturing and copying routines
+
+XTMRPRNT is a small utility routine for generating listings of routines that 
+can usually be captured, loaded into a text editor, edited if necessary and 
+subsequently copied and pasted into another account or back into the original
+account.  A ZREMOVE command precedes each routine, and a ZSAVE command with 
+the routine name follows each routine.  On some system and terminal emulator
+combinations, the initial tab line-start character may be captured as a space
+and this then requires additional work to use the routine for rapid copying.
+
+
+usage
+
+D ^XTMRPRNT
+
+routine(s) ?   >   XTM*
+searching directory ...
+routine(s) ?   >
+
+ENTER RETURN TO START:
+ZR
+XTMLOG	;JLI/FO-OAK - M LOGGING UTILITY ;9/25/03  7:48
+....
+<listing of routines ommitted>
+....
+ZS XTMUNIT
+
+>
+
+At the prompt for routines enter the routine set that you want to capture.
+At the prompt to ENTER RETURN TO START start the capture process then enter
+RETURN to start the listing.  At the programmer prompt following the listing
+terminate the capture process.  In a text editor you may want to remove the
+trailing '>' character, although it doesn't normally cause much problem.
+
+
+******  MUnit.exe
+
+
+
+The GUI interface for XTMUNIT is available as a zip file (XT_7_3_81.zip) from 
+the anonymous directories (see belww).  It should be saved and the file 
+unzipped into any desired directory.  If desired a shortcut can be set up to 
+start MUnit.exe and this shortcut may contain specifications for a server and
+port (e.g, munit.exe s=server.med.va.gov p=9200).
+
+Start the application either by double clicking on it or the shortcut.  
+
+Select or Change the server/port specifications if necessary, and click on 
+the 'Connect' button.
+
+Enter the name (case sensitive) of the primary routine to be used for unit 
+testing, or click on the 'Select Group' button to select an entry in the 
+MUnit Test Group file (#8992.8).
+
+Click on the 'List' button and the routines and entry points for testing will
+be listed (this happens automatically if an entry in the MUnit Test Group file
+was selected).
+
+Click on the 'Run' button and the tests will be run.
+
+A colored band will appear - Green if all of the tests run without problem, 
+and Red if any test fails or any errors are encountered.
+
+The results are summarized below the Run button: 'Tags' shows the number 
+of entry points called; 'Tests' shows the number of tests that were actually 
+performed (there may be more than one test per entry point); 'Errors' shows 
+the number of errors (non-expected code errors) encountered; 'Failed' shows 
+the number of failed tests encountered; and 'Elapsed' indicates the time it 
+took to perform all of the tests.
+
+After the tests, the first page (labeled 'Test Hierarchy') listing the 
+routines and entry points will show Red (failed), Red-Brown (errors) or Green 
+(no problem) by each entry point or tag.  Routines will show Red (failed or 
+errors) and Green (no problem).
+
+If any errors or failures are encountered, the second page 'Failures/Errors' 
+will list the entrypoint tag^routine, whether it was an error or failure, and 
+either the failure message entered in the call for the test that failed, or 
+the error message for an error.
+
+After changes to the routines being tested, the 'Run' button can be clicked 
+again, or, if additional test entry points are added, the 'List' and 'Run' 
+buttons clicked to update the results.  If 'Select Groups' button was used 
+to identify the unit tests to be run, the button caption will have changed 
+to 'Clear Groups.'  This should be pressed to select a new group, or to enter
+a unit test routine name.

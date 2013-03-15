@@ -1,0 +1,89 @@
+Subject: Eclipse M-Debugger
+
+Category: 
+  - Routine
+
+Description:
+============
+
+ Patch XT*7.3*107 (Eclipse M-Debugger)
+  
+ This patch contains nine routines (XTDEBUG,XTDEBUG1,...XTDEBUG8), eight 
+ REMOTE PROCEDURE file (#8994) entries, and does not have a context 
+ option, since only individuals who hold the XUPROGMODE key would be 
+ expected to use the Eclipse M-Debugger.
+  
+ The routines provide the server side capability for a visual debugger for 
+ the M language in the Eclipse IDE.
+  
+ List of preceding patches: 
+   None 
+  
+  
+ Blood Bank Team Coordination: 
+ =============================
+ Clearance - 
+  
+  
+  
+ Installation Instructions: 
+  
+      1.   Users ARE allowed to be on the system during the 
+      installation.  
+  
+      2.   Use the 'INSTALL/CHECK MESSAGE' option on the PackMan menu.  
+      This option will load the KIDS (Kernel Installation and Distribution 
+      System) package onto your system.  
+  
+      3.   You DO NOT need to stop TaskMan or the background filers.  
+  
+      4.   The patch has now been loaded into a transport global on your 
+      system.  On the KIDS menu, select the 'Installation' menu and use 
+      the following options: 
+            Verify Checksums in Transport Global 
+            Print Transport Global 
+            Compare Transport Global to Current System 
+            Backup a Transport Global 
+  
+            Return to Programmers Prompt and use "D ^XPDKRN": 
+            Select KIDS OPTION: Install 
+                                =======
+             Install Package(s) 
+             Select INSTALL NAME: XT*7.3*107 
+                                  ==========
+  
+         Want KIDS to Rebuild Menu Trees Upon Completion of Install? YES// 
+         NO 
+         ==
+         Want KIDS to INHIBIT LOGONs during the install? YES// NO 
+                                                               ==
+         Want to DISABLE Scheduled Options, Menu Options, and Protocols? 
+         YES// NO 
+               ==
+
+Routine Information:
+====================
+The second line of each of these routines now looks like:
+ ;;7.3;TOOLKIT;**[Patch List]**;Apr 25, 1995;Build 12
+
+The checksums below are new checksums, and
+ can be checked with CHECK1^XTSUMBLD.
+
+Routine Name: XTDEBUG
+    Before:       n/a   After: B95877949  **107**
+Routine Name: XTDEBUG1
+    Before:       n/a   After:B163320636  **107**
+Routine Name: XTDEBUG2
+    Before:       n/a   After:B142107187  **107**
+Routine Name: XTDEBUG3
+    Before:       n/a   After:B107405976  **107**
+Routine Name: XTDEBUG4
+    Before:       n/a   After: B58225395  **107**
+Routine Name: XTDEBUG5
+    Before:       n/a   After: B34260042  **107**
+Routine Name: XTDEBUG6
+    Before:       n/a   After:  B8391987  **107**
+Routine Name: XTDEBUG7
+    Before:       n/a   After: B90741354  **107**
+Routine Name: XTDEBUG8
+    Before:       n/a   After:  B7068042  **107**

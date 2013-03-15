@@ -1,0 +1,127 @@
+
+   The XTMLOG* routines provide a Log4M capability similar to Log4J.  The 
+logging commands can be embedded in the code and activated by initializing 
+logging in one of several different ways.  Otherwise, the logging commands 
+are checked and then ignored.
+
+   Logging can lead to massive amounts of data, especially if the process 
+being logged is used by a number of users.  To reduce this, LOG4M for a given
+task can be limited to specific users if desired by setting up the USER 
+FILTER.  Also, while the process which logging is being performed on may have
+logging in a number of routines, but using the ROUTINE filter, a set of
+specific routines may be specified for which logging will be performed.
+
+XTMLOG can be used to output a simple message: 
+
+   D INFO^XTMLOG("ENTERED CHKWATCH")
+   
+will result in an output similar to
+
+   20080207.145617 INFO CHKWATCH+3 XTDEBUG5 - ENTERED CHKWATCH
+   
+   
+XTMLOG can be used to output a message along with values for one or more
+comma separated variables
+
+   D DEBUG^XTMLOG("DATA1","VALUE1,VALUE2")
+   
+   20080207.145617 DEBUG COMMANDS+11 XTDEBUG1 - DATA1 - VALUE1: 0
+   20080207.145617 DEBUG COMMANDS+11 XTDEBUG1 - DATA1 - VALUE2: XVAL=XTDEBV(1)
+
+   
+XTMLOG can be used to output a message and values for variables including
+array values for the variables if they exist.
+
+   D DEBUG^XTMLOG("DATA2","VALUE1,VALUE2,VALUE3,^TMP($J,""DATA"")",1)
+
+   20080207.145617 DEBUG COMMANDS+22 XTDEBUG1 - DATA2 - VALUE1: 3
+   20080207.145617 DEBUG COMMANDS+22 XTDEBUG1 - DATA2 - VALUE2: XVAL=XTDEBV(1)
+   20080207.145617 DEBUG COMMANDS+22 XTDEBUG1 - DATA2 - VALUE2("NEW"): 15
+   20080207.145617 DEBUG COMMANDS+22 XTDEBUG1 - DATA2 - VALUE2("OLD",1): 
+   20080207.145617 DEBUG COMMANDS+22 XTDEBUG1 - DATA2 - VALUE3: <UNDEFINED>
+   20080207.145617 DEBUG COMMANDS+22 XTDEBUG1 - DATA2 - ^TMP($J,"DATA",1): LAST,FIRST M
+   20080207.145617 DEBUG COMMANDS+22 XTDEBUG1 - DATA2 - ^TMP($J,"DATA",2): 04/01/2001
+   
+
+   The best way to control logging is through an entry in the LOG4M CONFIG 
+file (#8992.7).  
+
+The NAME field (#.01) for an entry is used to control logging.  The NAME of 
+an entry (e.g., XTEXAMPLE) can be referenced in the initialization process 
+and if the file entry does not exist, the logging is not activated.  If the   
+If the entry exists and the ACTIVE field (#.02) is set to NO, logging will not 
+be activated.  Otherwise logging as instructed by the settings for this entry 
+will be activated for the current job, until logging for the entry is 
+terminated.  
+
+  An XTMEXAMPLE entry could be created in the LOG4M CONFIG file.  It would 
+then be activated in the code, processing performed, and the logging turned
+off as in the example below.
+  
+  S X=$$FILEINIT^XTMLOG("XTMEXAMPLE")
+  D PROCESSING
+  D ENDLOG^XTMLOG("XTMEXAMPLE")
+
+  If the XTMEXAMPLE entry does not exist in the LOG4M CONFIG file, logging will
+not be turned on.  If the XTMEXAMPLE entry does exist, the value of the 
+ACTIVE field (#.02) is checked, and if it is not specified or NO, logging 
+will not be turned on.
+
+  If the ACTIVE field of the XTMEXAMPLE entry is E for YES, EASY CONFIG, 
+logging will be activated based on the values in the EASY ENTRY (#.03) and 
+EASY LEVEL (#.04) fields. [The alternative to the E or YES, EASY CONFIG for
+active logging is D or YES, DETAILED CONFIG which permits the user to specify
+a text based configuration, similar to that used for Log4J and Java, in a
+word processing field (DETAILED CONFIG field (#1)).  This alternative was 
+originally based on the use of config files for Log4J, but it is recommended 
+that the EASY CONFIG be used instead.]
+
+  The EASY ENTRY field (#.03) can be used to easily specify the type(s) of 
+logging desired.  The value is a text string with semi-colon separated 
+specifiers for logging modes.
+
+   C - indicates logging to the user's console.  Logging messages are sent 
+       to the console as they are generated. 
+   G - indicates logging to a global location and is followed by a comma 
+       and an identifer for the global location under ^XTMP("XTMLOG", [e.g., 
+       G,TEST4 would result in data being stored under the global location
+       ^XTMP("TEST4",DUZ,yymmdd.hhmmss,$J, where DUZ is the internal entry
+       number for the user in the NEW PERSON file (#200), and yymmdd.hhmmss is
+       the date and time the logging was initialized, and $J is the job number
+       of the user's process].  When logging is initialized for a subscript,
+       such as TEST4, the lifetime for the ^XTMP("TEST4" global is set or 
+       updated to a week from the current date.
+       
+  The EASY LEVEL field (#.04) can be used to specify the level of logging 
+desired.  The highest level (with respect to usual urgency) is FATAL.  
+The lowest level (again with respect to usual urgency) is DEBUG.  
+Between these two extremes are (in decreasing order of usual urgency) ERROR, 
+WARN, and INFO.  Choosing a specific level (e.g., INFO) will include all 
+higher levels as well (e.g., for INFO, any logging calls with a level of 
+FATAL, ERROR, WARN or INFO would be output).
+
+
+The ROUTINE FILTER field (#.05) may be used to control the routines which 
+logging is active in.  These controls permit the amount of 
+data logged to the system to be maintained at a reasonable amount, even if 
+a large number of users are actively using the code which is being logged.
+
+If data has been entered in the USER FILTER field (#.06), logging will only 
+be activated for users whose internal entry number in file 200 are included 
+in the USER FILTER field.  
+
+Specialized fields, which would not normally be required, bur are available, 
+are 
+
+^DD(8992.7,.01,0)=NAME^RF^^0;1^K:$L(X)>30!(X?.N)!($L(X)<3)!'(X'?1P.E) X
+^DD(8992.7,.02,0)=ACTIVE^RS^N:NO;E:YES, EASY CONFIG;D:YES, DETAILED CONFIG;^0;2^
+Q
+^DD(8992.7,.03,0)=EZ ENTRY^F^^0;3^K:$L(X)>40!($L(X)<1) X
+^DD(8992.7,.04,0)=EZ LEVEL^S^FATAL:FATAL;ERROR:ERROR;WARN:WARN;INFO:INFO;DEBUG:D
+EBUG;^0;4^Q
+^DD(8992.7,.05,0)=ROUTINE FILTER^F^^0;5^K:$L(X)>80!($L(X)<3) X
+^DD(8992.7,.06,0)=USER FILTER^F^^0;6^K:$L(X)>60!($L(X)<1) X
+^DD(8992.7,.07,0)=OUTPUT ON CLOSE^S^N:NONE;P:PRINTER;M:MAIL MESSAGE;^0;7^Q
+^DD(8992.7,.08,0)=OUTPUT SPECS^F^^0;8^K:$L(X)>25!($L(X)<1) X
+^DD(8992.7,1,0)=DETAILED CONFIG^8992.71^^1;0
+^DD(8992.7,2.01,0)=PRINT LAYOUT^F^^2;1^K:$L(X)>40!($L(X)<5) X

@@ -1,0 +1,123 @@
+Subject: Developer Utilities - M Unit
+
+Category: 
+  - Routine
+  - Data Dictionary
+  - Other
+
+Description:
+============
+
+ This patch contains utility routines for programmers.
+   
+ XTMUNIT  - a unit tester for M code, with command line and GUI front 
+ ends.  
+   
+ XTMRPRNT - a routine lister that makes it easy to copy and paste 
+ routines.  
+   
+ XTMLOG,XTMLOG1,XTMLOPAR,XTMLOSKT - routines for event logging 
+ with the possibility of external control of the logging, similar to 
+ Log4J with Java.
+   
+ The patch also installs one Client/Server option (XTMUNIT, M Unit 
+ Tester) and two RPCs (XTMUNIT-TEST LOAD and XTMUNIT-TEST NEXT).
+   
+   
+ Test Sites: 
+   
+   
+   
+   
+ Blood Bank Team Coordination: 
+ =============================
+ Clearance - 
+   
+   
+   
+ The client-side software distribution includes: 
+   
+     Date      Time   Attrib    Bytes     CRC-32  Filename 
+  ---------- -------- ------ ----------- -------- --------
+  04/18/2006 11:19:20 A-----     405,694 F0A8CB7C XT_7_3_81.zip 
+   
+ SOFTWARE RETRIEVAL: 
+   
+ The software for this package is available for retrieval via FTP.  All VA
+ Medical Centers are encouraged to use the TCPIP FTP functionality to 
+ obtain the software from one of the following OI Field Office
+ ANONYMOUS.SOFTWARE directories:
+   
+        IRM Field Office          FTP Address 
+        ================          ===========
+        Albany                    ftp.fo-albany.med.va.gov 
+        Hines                     ftp.fo-hines.med.va.gov 
+        Salt Lake City            ftp.fo-slc.med.va.gov 
+        VistA Download Site       download.vista.med.va.gov 
+   
+   
+ Client Side: 
+ ============
+   
+ The following lists the files installed by unzipping XT_7_3_81.ZIP. 
+   
+     Date      Time   Attrib    Bytes     CRC-32  Filename 
+  ---------- -------- ------ ----------- -------- --------
+  04/18/2006 11:12:24 A-----     872,448 1E4B87B5 MUnit.exe 
+   
+   
+   
+ Installation Instructions: 
+   
+ 1.   Users ARE allowed to be on the system during the installation.
+   
+ 2.   Use the 'INSTALL/CHECK MESSAGE' option on the PackMan menu.  
+      This option will load the KIDS (Kernel Installation and Distribution
+      System) package onto your system.  
+   
+ 3.   You DO NOT need to stop TaskMan or the background filers.  
+   
+ 4.   The patch has now been loaded into a transport global on your 
+      system.  On the KIDS menu, select the 'Installation' menu and use 
+      the following options: 
+             Verify Checksums in Transport Global 
+             Print Transport Global 
+             Compare Transport Global to Current System 
+             Backup a Transport Global 
+   
+             Return to Programmers Prompt and use "D ^XPDKRN": 
+             Select KIDS OPTION: Install 
+                                 =======
+             Install Package(s) 
+             Select INSTALL NAME: XT*7.3*81 
+                                   ==========
+   
+ Want KIDS to Rebuild Menu Trees Upon Completion of Install? YES// NO
+                                                                   ==
+ Want KIDS to INHIBIT LOGONs during the install? YES// NO 
+                                                       ==
+ Want to DISABLE Scheduled Options, Menu Options, and Protocols? YES// NO
+                                                                       ==
+
+Routine Information:
+====================
+The second line of each of these routines now looks like:
+ ;;7.3;TOOLKIT;**[Patch List]**;Apr 25, 1995;Build 17
+
+The checksums below are new checksums, and
+ can be checked with CHECK1^XTSUMBLD.
+
+Routine Name: XTMLOG
+    Before:       n/a   After:B133645760  **81,101**
+Routine Name: XTMLOG1
+    Before:       n/a   After: B46831784  **81**
+Routine Name: XTMLOG2
+    Before:       n/a   After:    Delete  
+Routine Name: XTMLOPAR
+    Before:       n/a   After: B19404303  **81**
+Routine Name: XTMLOSKT
+    Before:       n/a   After: B36861478  **81**
+Routine Name: XTMRPRNT
+    Before:       n/a   After:  B1220842  **101**
+Routine Name: XTMUNIT
+    Before:       n/a   After:B208648286  **81**
