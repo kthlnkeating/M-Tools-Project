@@ -50,6 +50,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.resources.IProject;
+import org.mumps.pathstructure.vista.RoutinePathResolver;
 
 /**
  * @author vhaisfiveyj
@@ -378,9 +379,14 @@ public class RoutineLoad {
 		return getFullFileLocation("", routineName);
 	}
 	
+	
 	public static String getFullFileLocation(String project, String routineName) throws Exception {
 		String location;
-		if ((project.compareTo("") == 0) || (project.compareTo("mcode") == 0)) {
+		RoutinePathResolver routinePathResolver;
+		
+		//TODO: inject routinepath resolver here?
+		
+		if ((project.compareTo("") == 0) || (project.compareTo("mcode") == 0)) { //TODO: still has references to 'mcode'
 			currentServer = VistaConnection.getCurrentServer();
 			String server = MPiece.getPiece(currentServer,";",1);
 			project = MPiece.getPiece(currentServer,";",4);

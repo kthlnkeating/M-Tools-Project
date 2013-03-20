@@ -256,14 +256,14 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 // JLI 100813
 		int number = 0;
 		String str = " ";
-		String toolTipText = input.getToolTipText();
+		String toolTipText = input.getToolTipText(); //happens to be "[projectName]/[filename]"
 		while (str.compareTo("") != 0) {
 			str = MPiece.getPiece(toolTipText,"/",++number);
 		}
 		String originalToolTipPath = MPiece.getPiece(toolTipText,"/",1,number-2);
 		String originalTopName = MPiece.getPiece(input.getToolTipText(),"/");
 		String defaultProjectName = MEditorPrefs.getPrefs(MEditorPlugin.P_PROJECT_NAME);
-		if (originalTopName.compareTo(defaultProjectName) == 0) {
+		if (originalTopName.compareTo(defaultProjectName) == 0) { //if current project == default 'mcode' project
 			if (VistaConnection.getCurrentConnection() == null) {
 				VistaConnection.getPrimaryServer();
 			}
