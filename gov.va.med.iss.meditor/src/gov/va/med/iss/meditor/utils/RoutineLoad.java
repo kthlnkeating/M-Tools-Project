@@ -10,47 +10,39 @@ import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
-import gov.va.med.iss.meditor.MEditorPlugin;
-import gov.va.med.iss.meditor.editors.MEditor;
-import gov.va.med.iss.meditor.preferences.MEditorPrefs;
-import gov.va.med.iss.meditor.preferences.MEditorPropertyPage1;
-import gov.va.med.iss.meditor.preferences.MEditorPreferencesPage;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.MPiece;
+import gov.va.med.iss.meditor.MEditorPlugin;
+import gov.va.med.iss.meditor.editors.MEditor;
+import gov.va.med.iss.meditor.preferences.MEditorPreferencesPage;
+import gov.va.med.iss.meditor.preferences.MEditorPrefs;
+import gov.va.med.iss.meditor.preferences.MEditorPropertyPage1;
+
 import java.io.File;
 import java.io.FileWriter;
-//import java.io.FileReader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Vector;
 import java.util.GregorianCalendar;
-import java.net.URI;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-//import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-//import org.eclipse.core.resources.IWorkspace;
-//import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.part.FileEditorInput;
-//import org.eclipse.ui.texteditor.AbstractTextEditor;
-//import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.resources.IProject;
-import org.mumps.pathstructure.vista.RoutinePathResolver;
+import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * @author vhaisfiveyj
@@ -77,7 +69,6 @@ public class RoutineLoad {
 //				resource = MEditorUtilities.getProject(MEditorPrefs.getPrefs(MEditorPlugin.P_PROJECT_NAME)); //"mcode");
 				resource = MEditorUtilities.getProject(MEditorPreferencesPage.getProjectName()); //"mcode");
 			} catch (Exception e) {
-				resource = null;
 			}
 		}
 //		int value = 0;
@@ -116,6 +107,7 @@ public class RoutineLoad {
 					}
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 					MessageDialog.openInformation(
 							getWindow().getShell(),
 							"Meditor Plug-in",
@@ -235,11 +227,12 @@ public class RoutineLoad {
         if (!(VistaConnection.getCurrentProject().compareTo("") == 0)) {
         	try {
         		IResource resource = MEditorUtilities.getProject(MEditorPrefs.getPrefs(MEditorPlugin.P_PROJECT_NAME)); //"mcode");
-        		location = resource.getLocation().makeAbsolute().toString();
+        		//location = resource.getLocation().makeAbsolute().toString();
+        		location = resource.getLocation().toString(); //makeAbsolute() is forcing it into the workspace, which is wrong because a project location's source files may exist outside of a workspace
         	} catch (Exception e) {
         		
         	}
-            location = MEditorPreferencesPage.getDirectoryPreference(MPiece.getPiece(VistaConnection.getCurrentServer(),";"), routineName);
+            location = MEditorPreferencesPage.getDirectoryPreference("mcode", MPiece.getPiece(VistaConnection.getCurrentServer(),";"), routineName);
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat(dateString);
         Date date = new Date();
@@ -260,7 +253,7 @@ public class RoutineLoad {
         	} catch (Exception e) {
         		
         	}
-            location = MEditorPreferencesPage.getDirectoryPreference(MPiece.getPiece(VistaConnection.getCurrentServer(),";"), routineName);
+            location = MEditorPreferencesPage.getDirectoryPreference("mcode", MPiece.getPiece(VistaConnection.getCurrentServer(),";"), routineName);
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat(dateString);
         Date date = new Date();
@@ -315,7 +308,7 @@ public class RoutineLoad {
 
 	public static String getBackupDir(String routineName, String location) {
         if (!(VistaConnection.getCurrentProject().compareTo("") == 0)) {
-            location = MEditorPreferencesPage.getDirectoryPreference(MPiece.getPiece(VistaConnection.getCurrentServer(),";"),routineName);
+            location = MEditorPreferencesPage.getDirectoryPreference("mcode", MPiece.getPiece(VistaConnection.getCurrentServer(),";"),routineName);
         }
         if (! (new File(location+"/backup").exists())) {
             new File(location+"/backup").mkdirs();
@@ -382,20 +375,19 @@ public class RoutineLoad {
 	
 	public static String getFullFileLocation(String project, String routineName) throws Exception {
 		String location;
-		RoutinePathResolver routinePathResolver;
-		
-		//TODO: inject routinepath resolver here?
-		
+
 		if ((project.compareTo("") == 0) || (project.compareTo("mcode") == 0)) { //TODO: still has references to 'mcode'
 			currentServer = VistaConnection.getCurrentServer();
 			String server = MPiece.getPiece(currentServer,";",1);
 			project = MPiece.getPiece(currentServer,";",4);
-	        if (project.compareTo("") == 0) {
-	            location = MEditorPreferencesPage.getDirectoryPreference(server, routineName);
-	        }
-	        else {
-	            location = MEditorUtilities.getProject(MPiece.getPiece(currentServer,";",4)).getLocation().toString();
-	        }
+	        //if (project.compareTo("") == 0) { //if this is a VC project, it should always get the location from here, which will in turn be VC location with correct path adjusted
+			location = MEditorPreferencesPage.getDirectoryPreference(project, server, routineName);
+//			if (project.equals("")) {
+//	            location = MEditorPreferencesPage.getDirectoryPreference("", server, routineName);
+//	        }
+//	        else {
+//	            //location = MEditorUtilities.getProject(MPiece.getPiece(currentServer,";",4)).getLocation().toString(); //wrong, should not return the VC root. may need to return the VistaFOIA package path
+//	        }
 		}
 		else {
 			location = MEditorUtilities.getProject(project).getLocation().toString();
@@ -408,7 +400,7 @@ public class RoutineLoad {
 	
 	public static String getPrimaryFileLocation(String routineName) {
 		String server = MPiece.getPiece(VistaConnection.getPrimaryServerID(),";",1);
-		String location = MEditorPreferencesPage.getDirectoryPreference(server, routineName);
+		String location = MEditorPreferencesPage.getDirectoryPreference("", server, routineName);
 		if (! (new File(location).exists())) {
 			new File(location).mkdirs();
 		}
@@ -422,31 +414,31 @@ public class RoutineLoad {
 	public static String getRelativeFileLocation(String routineName) {
 		String projDirectory = "";
         String location = "";
-        boolean specialProject = true;
         projDirectory = VistaConnection.getCurrentProject();
-        if (! (projDirectory.compareTo("") == 0)) {
-        	return projDirectory+"/";
-        }
-        else {
-            if (MEditorPrefs.isPrefsActive()) {
-                projDirectory = MEditorPrefs.getPrefs(MEditorPlugin.P_PROJECT_NAME);
-            }
+        if (projDirectory.equals(""))
+        	return "/";
+//        if (! (projDirectory.compareTo("") == 0)) { //this is wrong, if the current project directory is a VC directory... return the correct VistAFoia path or the root path....
+//        	return projDirectory+"/";
+//        }
+//        else {
+//            if (MEditorPrefs.isPrefsActive()) { //previous code was "making sure" this is set to 'mcode'
+//                projDirectory = MEditorPrefs.getPrefs(MEditorPlugin.P_PROJECT_NAME);
+//            }
             String server = MPiece.getPiece(VistaConnection.getCurrentServer(),";",1);
-            location = MEditorPreferencesPage.getDirectoryPreference(server, routineName);
-            specialProject = false;
-        }
-		if (! (projDirectory.compareTo("") == 0) ) {
+            location = MEditorPreferencesPage.getDirectoryPreference("", server, routineName);
+//        }
+//		if (! (projDirectory.compareTo("") == 0) ) {
 			int loc = location.indexOf(projDirectory);
 			while (loc > -1) {
 				if ((loc+projDirectory.length()) < location.length()) {
-					location = location.substring(loc+projDirectory.length()+1);
+					location = location.substring(loc+projDirectory.length()+1); //prev: C:/Users/Jspivey/DEV/Github/VistA-FOIA/Packages/Problem List/Routines
 				}
 				else {
 					location = "";
 				}
 				loc = -1;
 			}
-		}
+//		}
 		return location;
 	}
 	
@@ -455,7 +447,6 @@ public class RoutineLoad {
 		return wb.getActiveWorkbenchWindow();
 	}
 	
-   private static String rouName = "";
    private static boolean updateBU = false;
 
         //Make sure the project is refreshed
@@ -472,11 +463,10 @@ public class RoutineLoad {
             container.refreshLocal(
                     IResource.DEPTH_INFINITE, null);
 
-            String str = MPiece.getPiece(VistaConnection.getCurrentServer(),"^",1);
+            VistaConnection.getCurrentServer();
             routineName = getRelativeFileName(routineName);
             final IFile iFile = container.getFile(
             new Path(routineName));
-            rouName = routineName;
             updateBU = updateBackup;
         
             IWorkbenchWindow win = MEditorUtilities.getIWorkbenchWindow();
@@ -507,7 +497,7 @@ public class RoutineLoad {
                                 }
                             else {
                                     FileEditorInput fileEditorInput = new FileEditorInput(iFile);
-                                    IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(fileEditorInput,"gov.va.med.iss.meditor.editors.MEditor", false);
+                                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(fileEditorInput,"gov.va.med.iss.meditor.editors.MEditor", false);
                             }
                             page1 = PlatformUI.getWorkbench().
                             getActiveWorkbenchWindow().
@@ -540,16 +530,12 @@ public class RoutineLoad {
             container.refreshLocal(
                     IResource.DEPTH_INFINITE, null);
 
-            String str = MPiece.getPiece(VistaConnection.getCurrentServer(),"^",1);
+            VistaConnection.getCurrentServer();
             routineName = getRelativeFileName(routineName);
-            IPath path;
 
-            path = Path.fromOSString(routineName);
-            final IFile iFile = container.getFile(path);
             IPath location = new Path(routineName);
-            final IFile file = project.getFile(location.lastSegment());
-            String fileloc = iFile.getFullPath().toOSString();
-            rouName = routineName;
+            final IFile file = project.getFile(location); //wrong, because a loaded directory may come from location outside of the project root.
+            //final IFile file = project.getFile(location.lastSegment());
         
             IWorkbenchWindow win = MEditorUtilities.getIWorkbenchWindow();
             win.getShell().getDisplay().asyncExec(
@@ -569,8 +555,7 @@ public class RoutineLoad {
                                     page1,
                                     file, // iFile,
                                     true);
-                            String tooltip = activeEditor.getTitleToolTip();
-                            String title = activeEditor.getTitle();
+
                             /*
                             MessageDialog.openInformation(
                                     getWindow().getShell(),

@@ -49,9 +49,10 @@ public class MEditorUtilities {
 
 	public static IResource getProject(String name) throws Exception {
 		if (name.compareTo("") == 0) {
-			name = MEditorPrefs.getPrefs(MEditorPlugin.P_PROJECT_NAME);
 			VistaConnection.getDefaultPrefs();
 			name = VistaConnection.getCurrentProject();
+			if (name == null || name.equals(""))
+				name = MEditorPrefs.getPrefs(MEditorPlugin.P_PROJECT_NAME);
 		}
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
@@ -59,12 +60,12 @@ public class MEditorUtilities {
 		try {
 			project.create(null);
 		} catch (Exception e) {
-			
+			//e.printStackTrace();
 		}
 		try {
 			project.open(null);
 		} catch (Exception e) {
-			
+			//e.printStackTrace();
 		}
 		IResource resource = root.findMember(new Path(name));
 		if (!resource.exists() || !(resource instanceof IContainer)) {

@@ -524,7 +524,6 @@ public class RoutineSave {
 		boolean value = false;
 		// modified next line, since it was ending up giving bad directories
 //		routineName = RoutineLoad.getRelativeFileName(routineName);
-		String relRoutineName = RoutineLoad.getRelativeFileName(routineName);
 
 		try {
 			IContainer container = getContainer();
@@ -550,7 +549,6 @@ public class RoutineSave {
 			IContainer container = getContainer();
 			if (! (container == null)) {
 				IFile iFile = null;
-				Path path = new Path(relRoutineName);
 				iFile = container.getFile(new Path(relRoutineName));
 				MEditorPropertyPage1 mepp = getMEditorPropertyPage1(routineName, container, iFile);
 				unitTestName = mepp.getUnitTestNamePropertyValue((IResource) iFile);

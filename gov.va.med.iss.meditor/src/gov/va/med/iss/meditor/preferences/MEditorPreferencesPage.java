@@ -35,6 +35,8 @@ import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.MPiece;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.mumps.pathstructure.vista.RoutinePathResolver;
+import org.mumps.pathstructure.vista.RoutinePathResolverFactory;
 
 /**
  * This class represents a preference page that
@@ -81,7 +83,7 @@ public class MEditorPreferencesPage
 		store.setDefault(MEditorPlugin.P_SAVE_BY_SERVER,true);
 		store.setDefault(MEditorPlugin.P_SAVE_BY_NAMESPACE,"0");
 		store.setDefault(MEditorPlugin.P_SAVE_DIR_EXAMPLE,
-				MEditorPreferencesPage.getDirectoryPreference("Server","ROUTINE"));
+				MEditorPreferencesPage.getDirectoryPreference("", "Server","ROUTINE"));
 
 		store.setDefault(MEditorPlugin.P_MULTI_LINE_COMMENT_COLOR, "64,128,128");
 		store.setDefault(MEditorPlugin.P_COMMENT_COLOR, "128,128,0");
@@ -99,7 +101,7 @@ public class MEditorPreferencesPage
 		store.setDefault(MEditorPlugin.P_CONDITIONS_COLOR,"0,0,0");
 	}
 	
-	public static String getDirectoryPreference(String serverName, String routineName) {
+	public static String getDirectoryPreference(String projectName, String serverName, String routineName) {
 		if (serverName.compareTo("") == 0) {
 			String currServer = VistaConnection.getCurrentServer();
 			if (currServer.compareTo(";;;") == 0) {
@@ -112,31 +114,41 @@ public class MEditorPreferencesPage
 		IResource resource = null;
 		if (MEditorPrefs.isPrefsActive()) {
 			try {
-				resource = MEditorUtilities.getProject(MEditorPrefs.getPrefs(MEditorPlugin.P_PROJECT_NAME)); //"mcode");
-//				resource = MEditorUtilities.getProject(MEditorPreferencesPage.getProjectName());
+				resource = MEditorUtilities.getProject(projectName); //force it to auto discover the correct projectName or use the passed in projectName
 			} catch (Exception e) {
-				
+				e.printStackTrace();
 			}
 		}
 		String str = "";
-		if (!(resource == null)) {
+		if (!(resource == null)) { //why does it return malformed locations? Before the project pref is active, it returns a relative path, but afterwards it returns a complete path
 			str = resource.getLocation().toString();
 		}
 		IPreferenceStore store = MEditorPlugin.getDefault().getPreferenceStore();
+		//VistaConnection.getPrimaryServer(); //must force the properties to load...
+		boolean vcPorject = !MPiece.getPiece(VistaConnection.getCurrentServer(), ";", 4).equals("");	
 		boolean saveByServer = store.getBoolean(MEditorPlugin.P_SAVE_BY_SERVER);
+		String val = store.getString(MEditorPlugin.P_SAVE_BY_NAMESPACE);
+		int saveByNamespaceCnt = val != null && ! val.equals("") ? Integer.parseInt(val) : 0;
+		
+		if (vcPorject) {
+			if (str.equals("") || !str.contains("/"))
+				try {
+					str = MEditorUtilities.getProject(MPiece.getPiece(VistaConnection.getCurrentServer(), ";", 4)).getLocation().toString();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			
+			File projectPath = new File(str);
+			RoutinePathResolver routinePathResolver = RoutinePathResolverFactory.getInstance().getRoutinePathResolver(projectPath);
+			return str +"/"+routinePathResolver.getRelativePath(routineName);
+		}
+		
 		if (saveByServer) {
-			str = str+"/"+serverName;
+			str += "/"+serverName;
 		}
-		String str1 = store.getString(MEditorPlugin.P_SAVE_BY_NAMESPACE);
-		if (str1.compareTo("1") == 0) {
-			str = str+"/"+routineName.substring(0,1);
-		}
-		else if (str1.compareTo("2") == 0) {
-			str = str+"/"+routineName.substring(0,2);
-		}
-		else if (str1.compareTo("3") == 0) {
-			str = str+"/"+routineName.substring(0,3);
-		}
+		str += str +"/"+ routineName.substring(0, saveByNamespaceCnt);
+
+		
 		if (! ((serverName.compareTo("Server") == 0) && (routineName.compareTo("ROUTINE") == 0) )) {
 			if (! (new File(str).exists())) {
 				new File(str).mkdirs();

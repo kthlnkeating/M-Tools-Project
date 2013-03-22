@@ -82,12 +82,8 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 	 * The constructor.
 	 */
 	
-	private static final Logger logger = Logger.getLogger(VistaConnection.class);
-	private JFrame topFrame;
-	private JPanel mainPanel;
-	private LoginContext loginContext;
+
 	private static EclipseConnection eclipseConnection = null;
-	private static EclipseConnection primaryEclipseConnection = null;
 	private static VistaKernelPrincipalImpl userPrincipal = null;
 	private static VistaKernelPrincipalImpl primaryPrincipal = null;
 	private static ArrayList connectionList = new ArrayList(20);
@@ -294,7 +290,6 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 				primaryServerName = serverName;
 				primaryServerAddress = serverAddress;
 				primaryPort = currPort;
-				primaryEclipseConnection = eclipseConnection;
                 primaryProject = serverProject;
 			}
 		}
@@ -399,7 +394,6 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 		}
 		if ((primaryPort.compareTo(connData.getServerPort()) == 0) &&
 				(primaryServerAddress.compareToIgnoreCase(connData.getServerAddress()) == 0)){
-			primaryEclipseConnection = null;
 			primaryPrincipal = null;
 			primaryConnection = null;
 			primaryServerName = "";
@@ -535,7 +529,6 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 	}
 	
 	static public boolean getPrimaryServer() {
-		VistaLinkConnection myConnection;
 		setBadConnection(false);
         String str = primaryServerName + ";" + primaryServerAddress + ";" + primaryPort + ";" + primaryProject; // JLI 090908 added for Source Code Version Control;
         try {
@@ -571,7 +564,7 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
             eclipseConnection = null;
             primaryServerID = defaultStr;
             if (! isBadConnection()) {
-            	myConnection = VistaConnection.getConnection();
+            	VistaConnection.getConnection();
             }
             //return defaultStr;  //  110817
 			return !isBadConnection();
@@ -600,7 +593,6 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 	
 	static public void setPrimaryServer(ConnectionData connData) {
 		primaryConnection = connData.getConnection();
-		primaryEclipseConnection = connData.getEclipseConnection();
 		primaryPrincipal = connData.getPrincipal();
 		primaryServerAddress = connData.getServerAddress();
 		primaryPort = connData.getServerPort();
@@ -614,7 +606,6 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 		primaryServerName = currServerName;
 		primaryPort = currPort;
         primaryProject = currServerProject; // JLI 090908 added for Source Code Version Control
-		primaryEclipseConnection = eclipseConnection;
 		//ConnectionData connData = getMatchingConnection(currServerName,currServerAddress,currPort); 
 //        ConnectionData connData = getMatchingConnection(currServerName,currServerAddress,currPort,currServerProject); // JLI 090908 added for Source Code Version Control); 
         ConnectionData connData = getMatchingConnection(currPort, currServerAddress); // JLI 100226 changed for change in method, since connection depends only on port and url 
@@ -644,7 +635,6 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 			primaryServerAddress = "";
 			primaryConnection = null;
 			primaryPrincipal = null;
-			primaryEclipseConnection = null;
 			primaryProject = "";
 			if (defaultName.compareTo("") != 0) {
 				primaryServerName = defaultName;
