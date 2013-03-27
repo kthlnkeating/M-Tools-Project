@@ -126,13 +126,7 @@ public class MDebuggerContentProvider implements IStructuredContentProvider {
     	return arrayFilter;
     }
     
-    private String[] minusArray(String input) {
-    	int length = filterLength(input,true);
-    	String[] arrayFilter = new String[length];
-    	for (int i=0; i<length; i++) {
-    	}
-    	return arrayFilter;
-    }
+
    
 	String alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	String alphanum = alpha + "0123456789";

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+<!--
+   id="org.eclipse.debug.examples.core"
+   name="org.eclipse.debug.examples.core"
+   version="1.0.0"
+   class="org.eclipse.debug.examples.core.MDebugCorePlugin">
+
+   <runtime>
+      <library name="core.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
+   </requires>
+-->
+
+
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            sourceLocatorId="org.eclipse.debug.examples.core.sourceLookupDirector.pda"
+            name="Push Down Automata"
+            sourcePathComputerId="org.eclipse.debug.examples.core.sourcePathComputer.pda"
+            delegate="org.eclipse.debug.examples.core.pda.launching.PDALaunchDelegate"
+            modes="run, debug"
+            id="org.eclipse.debug.examples.core.launchConfigurationType.pda">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            name="PDA Source Lookup Director"
+            class="org.eclipse.debug.examples.core.pda.launching.PDASourceLookupDirector"
+            id="org.eclipse.debug.examples.core.sourceLookupDirector.pda">
+      </sourceLocator>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+            class="org.eclipse.debug.examples.core.pda.launching.PDASourcePathComputerDelegate"
+            id="org.eclipse.debug.examples.core.sourcePathComputer.pda">
+      </sourcePathComputer>
+   </extension>
+   <extension
+         point="org.eclipse.core.variables.valueVariables">
+      <variable
+            initialValue="C:\strawberry\perl\bin\perl.exe"
+            name="perlExecutable"
+            description="Path to Perl executable in the local file system">
+      </variable>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            markerType="org.eclipse.debug.examples.core.pda.lineBreakpoint.marker"
+            class="org.eclipse.debug.examples.core.pda.model.PDALineBreakpoint"
+            id="org.eclipse.debug.examples.core.pda.lineBreakpoint">
+      </breakpoint>
+   </extension>
+   <extension
+         id="pda.lineBreakpoint.marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.debug.core.lineBreakpointMarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+
+</plugin>

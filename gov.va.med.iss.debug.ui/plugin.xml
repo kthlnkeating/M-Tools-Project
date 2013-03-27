@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+<!--
+   id="org.eclipse.debug.examples.ui"
+   name="org.eclipse.debug.examples.ui"
+   version="1.0.0"
+
+   <runtime>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.examples.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
+   </requires>
+-->
+
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.eclipse.debug.examples.core.launchConfigurationType.pda"
+            description="Run or debug a Push Down Automata program"
+            class="org.eclipse.debug.examples.ui.pda.launching.PDATabGroup"
+            id="org.eclipse.debug.examples.ui.launchConfigurationTabGroup.pda">
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.debugModelPresentations">
+      <debugModelPresentation
+            class="org.eclipse.debug.examples.ui.pda.model.PDAModelPresentation"
+            id="org.eclipse.debug.examples.pda">
+      </debugModelPresentation>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            class="org.eclipse.debug.examples.ui.pda.model.PDABreakpointAdapterFactory"
+            adaptableType="org.eclipse.ui.texteditor.ITextEditor">
+         <adapter
+               type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Data Stack"
+            icon="icons/full/cview16/datastack_view.gif"
+            class="org.eclipse.debug.examples.ui.pda.views.DataStackView"
+            id="org.eclipse.debug.examples.ui.pda.DataStackView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.debug.ui.DebugPerspective">
+         <view
+               relative="org.eclipse.debug.ui.VariableView"
+               visible="false"
+               relationship="stack"
+               id="org.eclipse.debug.examples.ui.pda.DataStackView">
+         </view>
+         <viewShortcut
+               id="org.eclipse.debug.examples.ui.pda.DataStackView">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            name="Debugging PDA"
+            description="Debugging PDA"
+            id="org.eclipse.debug.examples.ui.pda.debugging"
+            parentId="org.eclipse.debug.ui.debugging">
+      </context>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.debugModelContextBindings">
+      <modelContextBinding
+            debugModelId="org.eclipse.debug.examples.pda"
+            contextId="org.eclipse.debug.examples.ui.pda.debugging">
+      </modelContextBinding>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.contextViewBindings">
+      <contextViewBinding
+            viewId="org.eclipse.debug.examples.ui.pda.DataStackView"
+            contextId="org.eclipse.debug.examples.ui.pda.debugging"
+            autoClose="true"
+            autoOpen="true">
+      </contextViewBinding>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            icon="icons/full/cview16/pda.gif"
+            configTypeID="org.eclipse.debug.examples.core.launchConfigurationType.pda"
+            id="org.eclipse.debug.examples.ui.pda.launchConfigurationTypeImage">
+      </launchConfigurationTypeImage>
+   </extension>
+
+</plugin>
