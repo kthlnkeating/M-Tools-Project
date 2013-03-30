@@ -22,16 +22,16 @@
    </requires>
 -->
 
-
+<!-- this can support run, but it will need a more cleaner way of just running the code without breaking -->
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            sourceLocatorId="org.eclipse.debug.examples.core.sourceLookupDirector.pda"
-            name="Push Down Automata"
-            sourcePathComputerId="org.eclipse.debug.examples.core.sourcePathComputer.pda"
-            delegate="org.eclipse.debug.examples.core.pda.launching.PDALaunchDelegate"
+            sourceLocatorId="org.eclipse.debug.examples.core.sourceLookupDirector.m"
+            name="MUMPS Launch Configuration"
+            sourcePathComputerId="org.eclipse.debug.examples.core.sourcePathComputer.m"
+            delegate="gov.va.mumps.debug.core.launching.MLaunchDelegate"
             modes="run, debug"
-            id="org.eclipse.debug.examples.core.launchConfigurationType.pda">
+            id="gov.va.mumps.debug.core.launchConfigurationType.m">
       </launchConfigurationType>
    </extension>
    <extension
@@ -39,24 +39,25 @@
       <sourceLocator
             name="PDA Source Lookup Director"
             class="org.eclipse.debug.examples.core.pda.launching.PDASourceLookupDirector"
-            id="org.eclipse.debug.examples.core.sourceLookupDirector.pda">
+            id="org.eclipse.debug.examples.core.sourceLookupDirector.m">
       </sourceLocator>
    </extension>
+   
    <extension
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
             class="org.eclipse.debug.examples.core.pda.launching.PDASourcePathComputerDelegate"
-            id="org.eclipse.debug.examples.core.sourcePathComputer.pda">
+            id="org.eclipse.debug.examples.core.sourcePathComputer.m">
       </sourcePathComputer>
    </extension>
-   <extension
+   <!--extension
          point="org.eclipse.core.variables.valueVariables">
       <variable
             initialValue="C:\strawberry\perl\bin\perl.exe"
             name="perlExecutable"
             description="Path to Perl executable in the local file system">
       </variable>
-   </extension>
+   </extension-->
    <extension
          point="org.eclipse.debug.core.breakpoints">
       <breakpoint

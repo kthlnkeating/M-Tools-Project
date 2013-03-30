@@ -8,11 +8,7 @@ public class StepResults {
 	private static boolean isTypeAhead;
 	private static boolean isReadCommand;
 	private static boolean isWriteCommand;
-	public static boolean doneFlag=true; //jspivey-- because this is logic for when to step/stop, I probably won't need this when moving to the eclipse framework.
-	
-	public static boolean doneFlag() {
-		return doneFlag;
-	}
+	public static boolean doneFlag=true;
 
 	public static void ProcessInput(String input) {
 		isReadCommand = false;

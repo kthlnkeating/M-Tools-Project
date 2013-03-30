@@ -14,44 +14,50 @@ public class MDebuggerSteps {
 	private static boolean repeatLastDebug = false;
 	private static String lastCommand = "";
 
-	static public void doDebug(String dbCommand) {
+	static public String doDebug(String dbCommand) {
 		lastCommand = dbCommand;
 		myConnection = VistaConnection.getConnection();
-		String str = "";
-		if (! (myConnection == null)) {
-			try {
-				RpcRequest vReq = RpcRequestFactory.getRpcRequest("",rpcName);
+		
+		if (myConnection == null)
+			return null; //TODO: prefer to throw exception
+
+		try {
+			RpcRequest vReq = RpcRequestFactory.getRpcRequest("",rpcName);
 //				if (this.xmlRadioButton.isSelected()) {
-					vReq.setUseProprietaryMessageFormat(false);
+				vReq.setUseProprietaryMessageFormat(false);
 //				} else {
 //					vReq.setUseProprietaryMessageFormat(true);
 //				}
-				vReq.getParams().setParam(1, "string", dbCommand);  // RD  RL  GD  GL  RS
-				RpcResponse vResp = myConnection.executeRPC(vReq);
-				str = vResp.getResults();
-				if (updatePages) {
-					repeatLastDebug = false;
-					StepResults.ProcessInput(str);
-				}
-			} catch (Exception e) {
-				if (rpcName.equals("XTDEBUG NEXT")) { //prior to this String == String always returns false --jspivey
-					if (e.getMessage() == "") {
-						repeatLastDebug = false;
-					}
-					else {
-						e.printStackTrace();
-//						MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-//								"M Debugger",
-//								"Error with RPC '" + rpcName + "': "+e.getMessage());
-					}
-				}
-				else {
-					e.printStackTrace();
-//					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-//						"M Debugger",
-//						"Error with RPC '" + rpcName + "': "+e.getMessage());
-				}
+			vReq.getParams().setParam(1, "string", dbCommand);  // RD  RL  GD  GL  RS
+			RpcResponse vResp = myConnection.executeRPC(vReq);
+			System.out.println("RESPONSE VALUE:");
+			System.out.println(vResp.getResults());
+			if (updatePages) {
+				repeatLastDebug = false;
+				StepResults.ProcessInput(vResp.getResults()); //comment out, no longer pass resulting to this, but isntead returning them--jspivey
 			}
+			return vResp.getResults();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+//			if (rpcName.equals("XTDEBUG NEXT")) { //prior to this String == String always returns false --jspivey
+//				if (e.getMessage() == "") {
+//					repeatLastDebug = false;
+//				}
+//				else {
+//					e.printStackTrace();
+////						MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+////								"M Debugger",
+////								"Error with RPC '" + rpcName + "': "+e.getMessage());
+//				}
+//			}
+//			else {
+//				e.printStackTrace();
+////					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+////						"M Debugger",
+////						"Error with RPC '" + rpcName + "': "+e.getMessage());
+//			}
 		}
 	}
 	
@@ -73,25 +79,25 @@ public class MDebuggerSteps {
 	 *    "STEPIN" the processing is traced into the next higher
 	 *             stack level
 	 */
-	public static void stepDebug(String dbCommand) {
+	public static String stepDebug(String dbCommand) {
 		rpcName = "XTDEBUG NEXT";
 		updatePages = true;
-		doDebug(dbCommand);
-		while (repeatLastDebug) {
-			doDebug(dbCommand);
-		}
+		return doDebug(dbCommand);
+//		while (repeatLastDebug) { // commented out because repeatLastDebug has no chance to become true--jspivey
+//			doDebug(dbCommand);
+//		}
 	}
 	
 	/**
 	 * method to start a debugging session
 	 * @param dbCommand - contains the line of code to be executed.
 	 */
-	public static void startDebug(String dbCommand) {
+	public static String startDebug(String dbCommand) {
 		rpcName = "XTDEBUG START";
 		updatePages = true;
 		//MDebuggerConsoleDisplay.clearConsole();
 		StepResults.clearDoneFlag();
-		doDebug(dbCommand);
+		return doDebug(dbCommand);
 	}
 	
 	public static void setRepeatLastDebug() {
@@ -116,28 +122,28 @@ public class MDebuggerSteps {
 		return repeatLastDebug;
 	}
 		
-	public static void addWatchpoint(String watchPoint) {
+	public static String addWatchpoint(String watchPoint) {
 		rpcName = "XTDEBUG ADD WATCH";
 		updatePages = false;
-		doDebug(watchPoint);
+		return doDebug(watchPoint);
 	}
 	
-	public static void removeWatchpoint(String watchPoint) {
+	public static String removeWatchpoint(String watchPoint) {
 		rpcName = "XTDEBUG DELETE WATCH";
 		updatePages = false;
-		doDebug(watchPoint);
+		return doDebug(watchPoint);
 	}
 	
-	public static void addBreakpoint(String breakPoint) {
+	public static String addBreakpoint(String breakPoint) {
 		rpcName = "XTDEBUG ADD BREAKPOINT";
 		updatePages = false;
-		doDebug(breakPoint);
+		return doDebug(breakPoint);
 	}
 	
-	public static void removeBreakpoint(String breakPoint) {
+	public static String removeBreakpoint(String breakPoint) {
 		rpcName = "XTDEBUG DELETE BREAKPOINT";
 		updatePages = false;
-		doDebug(breakPoint);
+		return doDebug(breakPoint);
 	}
 	
 	

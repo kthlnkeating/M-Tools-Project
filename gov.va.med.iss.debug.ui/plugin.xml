@@ -23,13 +23,49 @@
    </requires>
 -->
 
+	<extension point="org.eclipse.debug.ui.launchShortcuts">
+	  <shortcut
+	    label="MUMPS"
+	    icon="$nl$/icons/full/cview16/pda.gif"
+	    modes="run, debug"
+	    class="gov.va.mumps.debug.ui.launching.MLaunchShortcut"
+	    description="Launch a remote MUMPS routine"
+	    id="gov.va.mumps.debug.ui.remoteMShortcut">
+	    <description
+	     description="Runs a remote MUMPS Routine"
+	     mode="run">
+	    </description>
+	    <description
+	     description="Debugs a remote MUMPS Routine"
+	     mode="debug">
+	    </description>
+	  <contextualLaunch>
+         <enablement >
+           <with variable="selection">
+           <count value="1"/>
+          <iterate>
+            <adapt type="org.eclipse.core.resources.IResource">
+                <and>
+                <test property="org.eclipse.core.resources.name" value="*.m"/>
+            </and>
+        </adapt>
+          </iterate>
+           </with>
+       </enablement>
+	  </contextualLaunch>
+	  <configurationType
+	    id="gov.va.mumps.debug.core.launchConfigurationType.m">
+	  </configurationType>
+	  </shortcut>
+	</extension>
+
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            type="org.eclipse.debug.examples.core.launchConfigurationType.pda"
-            description="Run or debug a Push Down Automata program"
-            class="org.eclipse.debug.examples.ui.pda.launching.PDATabGroup"
-            id="org.eclipse.debug.examples.ui.launchConfigurationTabGroup.pda">
+            type="gov.va.mumps.debug.core.launchConfigurationType.m"
+            description="Run or debug a remote MUMPS Routine"
+            class="gov.va.mumps.debug.ui.launching.MTabGroup"
+            id="gov.va.mumps.debug.ui.launchConfigurationTabGroup.m">
       </launchConfigurationTabGroup>
    </extension>
    <extension

@@ -1,0 +1,605 @@
+package gov.va.med.iss.mdebugger;
+
+public class MDebugger {
+	
+	private String debugEntryTag;
+	
+	public MDebugger(String debugEntryTag) {
+		this.debugEntryTag = debugEntryTag;
+		
+		//TODO: best for this to done be in constructor? alternative could be to have call an init() prior to any of the commands.
+		String results = MDebuggerSteps.startDebug(debugEntryTag);
+		//System.out.println(results);
+	}
+	
+	//rpcName "XTDEBUG NEXT"
+	public void resume() {
+		String results = MDebuggerSteps.stepDebug("RUN");
+		//System.out.println(results);
+	}
+	
+	public void stepOver() {
+		String results = MDebuggerSteps.stepDebug("STEP");
+		//System.out.println(results);		
+	}
+	
+	public void stepIn() {
+		String results = MDebuggerSteps.stepDebug("STEPINTO");
+		//System.out.println(results);
+	}
+	
+	public void stepOut() {
+		String results = MDebuggerSteps.stepDebug("STEPOUT");
+		//System.out.println(results);
+	}
+	
+	public void terminate() {
+		String results = MDebuggerSteps.stepDebug("TERMINATE");
+		//System.out.println(results);
+	}
+	
+	//rpcName "XTDEBUG ADD/DELETE BREAKPOINT/WATCH"
+	public void addBreakpoint(String breakPoint) {
+		String results = MDebuggerSteps.addBreakpoint(breakPoint);
+		//System.out.println(results);
+	}
+	
+	public void deleteBreakpoint(String breakPoint) {
+		String results = MDebuggerSteps.removeBreakpoint(breakPoint);
+		//System.out.println(results);
+	}
+	
+	public void addWatchPoint(String watchPoint) {
+		String results = MDebuggerSteps.addWatchpoint(watchPoint);
+		//System.out.println(results);
+	}
+	
+	public void deleteWatchPoint(String watchPoint) {
+		String results = MDebuggerSteps.removeWatchpoint(watchPoint);
+		//System.out.println(results);
+	}
+	
+	
+	private int start;
+	/*
+
+SECTION=REASON
+START:  D ^TSTBLAH2 Q
+SECTION=LOCATION
+ROUTINE: TSTBLAH2
+LINE: 0
+SECTION=VALUES
+VALUES
+%DT
+T
+DILOCKTM
+3
+DIQUIET
+1
+DISYS
+18
+DT
+3130329
+DTIME
+300
+DUZ
+12
+DUZ(0)
+
+DUZ(1)
+
+DUZ(2)
+1
+DUZ("AG")
+V
+DUZ("AUTO")
+0
+DUZ("BUF")
+1
+DUZ("LANG")
+
+I
+0
+IO
+//./nul
+IO(0)
+//./nul
+IO(1,"//./nul")
+
+IO(1,"|TCP|8001|1624")
+
+IO("CLNM")
+
+IO("ERROR")
+
+IO("HOME")
+8^//./nul
+IO("ZIO")
+
+IOBS
+$C(8)
+IOF
+#
+IOHG
+
+IOM
+132
+ION
+
+IOPAR
+
+IOS
+0
+IOSL
+64
+IOST
+P-DEC
+IOST(0)
+12
+IOT
+TRM
+IOUPAR
+
+IOXY
+
+J
+
+METHSIG
+START^XTDEBUG(.XOBR,.XOBP1)
+POP
+0
+ROU
+XTDEBUG
+RPC0
+XTDEBUG START^START^XTDEBUG^4^^^^1
+RPCIEN
+2937
+RPCNAME
+XTDEBUG START
+TAG
+START
+U
+^
+XOBCMREF
+^XTMP("XOB VISTA INFO VISTA:TRYCACHE 1624")
+XOBDATA("MODE")
+singleton
+XOBDATA("VL VERSION")
+1.0
+XOBDATA("XOB RPC","PARAMS")
+,.XOBP1
+XOBDATA("XOB RPC","PARAMS",1)
+XOBP1
+XOBDATA("XOB RPC","RPC CONTEXT")
+1.
+XOBDATA("XOB RPC","RPC HANDLER VERSION")
+1.0
+XOBDATA("XOB RPC","RPC NAME")
+XTDEBUG START
+XOBDATA("XOB RPC","SECURITY","DIV")
+
+XOBDATA("XOB RPC","SECURITY","STATE")
+authenticated
+XOBDATA("XOB RPC","SECURITY","TYPE")
+j2se
+XOBDATA("XOB RPC","START")
+62910,81923
+XOBDATA("XOB RPC","TIMED OUT")
+0
+XOBDATA("XOB RPC","TIMEOUT")
+600
+XOBDATA("XOB RPC","VERSION")
+0
+XOBEC
+0
+XOBERR
+0
+XOBFIRST
+0
+XOBHDLR
+1
+XOBHDLR(1)
+1
+XOBHDLR(1,"AUTHENTICATE")
+1
+XOBHDLR(1,"CB","CHR")
+DO CHR^XOBVRPCI(.TXT)
+XOBHDLR(1,"CB","ELEND")
+DO ELEND^XOBVRPCI(.ELE)
+XOBHDLR(1,"CB","ELEST")
+DO ELEST^XOBVRPCI(.ELE,.ATR)
+XOBHDLR(1,"READER")
+DO READER^XOBVRPCI(.XOBX,.XOBDATA)
+XOBHDLR(1,"REQHDLR")
+DO REQHDLR^XOBVRPCI(.XOBDATA)
+XOBHDLR(2)
+1
+XOBHDLR(2,"AUTHENTICATE")
+0
+XOBHDLR(2,"CB","CHR")
+DO CHR^XOBSCAV2(.TXT)
+XOBHDLR(2,"CB","ELEND")
+DO ELEND^XOBSCAV2(.ELE)
+XOBHDLR(2,"CB","ELEST")
+DO ELEST^XOBSCAV2(.ELE,.ATR)
+XOBHDLR(2,"READER")
+DO READER^XOBSCI(.XOBX,.XOBDATA)
+XOBHDLR(2,"REQHDLR")
+DO REQHDLR^XOBSCI(.XOBDATA)
+XOBHDLR(3)
+1
+XOBHDLR(3,"AUTHENTICATE")
+0
+XOBHDLR(3,"CB","CHR")
+QUIT
+XOBHDLR(3,"CB","ELEND")
+QUIT
+XOBHDLR(3,"CB","ELEST")
+DO ELEST^XOBVSYSI(.ELE,.ATR)
+XOBHDLR(3,"READER")
+DO READER^XOBVSYSI(.XOBX,.XOBDATA)
+XOBHDLR(3,"REQHDLR")
+DO REQHDLR^XOBVSYSI(.XOBDATA)
+XOBHDLR("D","XOB RPC",1)
+
+XOBHDLR("MSGTYPE","gov.va.med.foundations.rpc.request",1)
+
+XOBHDLR("MSGTYPE","gov.va.med.foundations.security.request",2)
+
+XOBHDLR("MSGTYPE","gov.va.med.foundations.vistalink.system.request",3)
+
+XOBHDLR("NAME","XOBS REQUEST",2)
+
+XOBHDLR("NAME","XOBV RPC REQUEST",1)
+
+XOBHDLR("NAME","XOBV SYSTEM REQUEST",3)
+
+XOBLASTR
+3130329.224523
+XOBNULL
+//./nul
+XOBOK
+12
+XOBOPT
+
+XOBOS
+OpenM
+XOBP1
+D ^TSTBLAH2
+XOBPORT
+|TCP|8001|1624
+XOBPTYPE
+4
+XOBREAD
+200
+XOBROOT
+^TMP("XOBVLL",1624)
+XOBSEC
+1
+XOBSTOP
+0
+XOBSYS("ENV")
+j2se
+XOBSYS("RPC REAUTH")
+0
+XOBTO
+1
+XOBVER
+0
+XOBWRAP
+1
+XQVOL
+VISTA
+XQXFLG
+0^0
+XQXFLG("LLOG")
+3130329.223159
+XUCI
+VISTA
+XUDEV
+0
+XUENV
+VISTA^VISTA^Windsor-LT^VISTA:TRYCACHE
+XUF
+0
+XUF(.3)
+12
+XUFAC
+0
+XUIOP
+
+XUNOW
+3130329.224401
+XUVOL
+VISTA^^500^^^n
+XWBAPVER
+0
+XWBOS
+OpenM
+XWBPTYPE
+4
+XWBTIME
+36000
+XWBTIME(1)
+5
+XWBTIP
+
+XWBWRAP
+1
+Y
+D ^ENTIRN
+SECTION=STACK
+
+	 */
+	
+	private int terminate;
+/*
+SECTION=REASON
+START:  TERMINATE Q
+SECTION=LOCATION
+ROUTINE: @
+LINE: 
+SECTION=VALUES
+VALUES
+%DT
+T
+DILOCKTM
+3
+DIQUIET
+1
+DISYS
+18
+DT
+3130329
+DTIME
+300
+DUZ
+12
+DUZ(0)
+
+DUZ(1)
+
+DUZ(2)
+1
+DUZ("AG")
+V
+DUZ("AUTO")
+0
+DUZ("BUF")
+1
+DUZ("LANG")
+
+I
+0
+IO
+//./nul
+IO(0)
+//./nul
+IO(1,"//./nul")
+
+IO(1,"|TCP|8001|1624")
+
+IO("CLNM")
+
+IO("ERROR")
+
+IO("HOME")
+8^//./nul
+IO("ZIO")
+
+IOBS
+$C(8)
+IOF
+#
+IOHG
+
+IOM
+132
+ION
+
+IOPAR
+
+IOS
+0
+IOSL
+64
+IOST
+P-DEC
+IOST(0)
+12
+IOT
+TRM
+IOUPAR
+
+IOXY
+
+J
+
+METHSIG
+START^XTDEBUG(.XOBR,.XOBP1)
+POP
+0
+ROU
+XTDEBUG
+RPC0
+XTDEBUG START^START^XTDEBUG^4^^^^1
+RPCIEN
+2937
+RPCNAME
+XTDEBUG START
+TAG
+START
+U
+^
+XOBCMREF
+^XTMP("XOB VISTA INFO VISTA:TRYCACHE 1624")
+XOBDATA("MODE")
+singleton
+XOBDATA("VL VERSION")
+1.0
+XOBDATA("XOB RPC","PARAMS")
+,.XOBP1
+XOBDATA("XOB RPC","PARAMS",1)
+XOBP1
+XOBDATA("XOB RPC","RPC CONTEXT")
+$1
+XOBDATA("XOB RPC","RPC HANDLER VERSION")
+1.0
+XOBDATA("XOB RPC","RPC NAME")
+XTDEBUG START
+XOBDATA("XOB RPC","SECURITY","DIV")
+
+XOBDATA("XOB RPC","SECURITY","STATE")
+authenticated
+XOBDATA("XOB RPC","SECURITY","TYPE")
+j2se
+XOBDATA("XOB RPC","START")
+62910,82060
+XOBDATA("XOB RPC","TIMED OUT")
+0
+XOBDATA("XOB RPC","TIMEOUT")
+600
+XOBDATA("XOB RPC","VERSION")
+0
+XOBEC
+0
+XOBERR
+0
+XOBFIRST
+0
+XOBHDLR
+1
+XOBHDLR(1)
+1
+XOBHDLR(1,"AUTHENTICATE")
+1
+XOBHDLR(1,"CB","CHR")
+DO CHR^XOBVRPCI(.TXT)
+XOBHDLR(1,"CB","ELEND")
+DO ELEND^XOBVRPCI(.ELE)
+XOBHDLR(1,"CB","ELEST")
+DO ELEST^XOBVRPCI(.ELE,.ATR)
+XOBHDLR(1,"READER")
+DO READER^XOBVRPCI(.XOBX,.XOBDATA)
+XOBHDLR(1,"REQHDLR")
+DO REQHDLR^XOBVRPCI(.XOBDATA)
+XOBHDLR(2)
+1
+XOBHDLR(2,"AUTHENTICATE")
+0
+XOBHDLR(2,"CB","CHR")
+DO CHR^XOBSCAV2(.TXT)
+XOBHDLR(2,"CB","ELEND")
+DO ELEND^XOBSCAV2(.ELE)
+XOBHDLR(2,"CB","ELEST")
+DO ELEST^XOBSCAV2(.ELE,.ATR)
+XOBHDLR(2,"READER")
+DO READER^XOBSCI(.XOBX,.XOBDATA)
+XOBHDLR(2,"REQHDLR")
+DO REQHDLR^XOBSCI(.XOBDATA)
+XOBHDLR(3)
+1
+XOBHDLR(3,"AUTHENTICATE")
+0
+XOBHDLR(3,"CB","CHR")
+QUIT
+XOBHDLR(3,"CB","ELEND")
+QUIT
+XOBHDLR(3,"CB","ELEST")
+DO ELEST^XOBVSYSI(.ELE,.ATR)
+XOBHDLR(3,"READER")
+DO READER^XOBVSYSI(.XOBX,.XOBDATA)
+XOBHDLR(3,"REQHDLR")
+DO REQHDLR^XOBVSYSI(.XOBDATA)
+XOBHDLR("D","XOB RPC",1)
+
+XOBHDLR("MSGTYPE","gov.va.med.foundations.rpc.request",1)
+
+XOBHDLR("MSGTYPE","gov.va.med.foundations.security.request",2)
+
+XOBHDLR("MSGTYPE","gov.va.med.foundations.vistalink.system.request",3)
+
+XOBHDLR("NAME","XOBS REQUEST",2)
+
+XOBHDLR("NAME","XOBV RPC REQUEST",1)
+
+XOBHDLR("NAME","XOBV SYSTEM REQUEST",3)
+
+XOBLASTR
+3130329.22474
+XOBNULL
+//./nul
+XOBOK
+12
+XOBOPT
+
+XOBOS
+OpenM
+XOBP1
+TERMINATE
+XOBPORT
+|TCP|8001|1624
+XOBPTYPE
+4
+XOBREAD
+200
+XOBROOT
+^TMP("XOBVLL",1624)
+XOBSEC
+1
+XOBSTOP
+0
+XOBSYS("ENV")
+j2se
+XOBSYS("RPC REAUTH")
+0
+XOBTO
+1
+XOBVER
+0
+XOBWRAP
+1
+XQVOL
+VISTA
+XQXFLG
+0^0
+XQXFLG("LLOG")
+3130329.223159
+XUCI
+VISTA
+XUDEV
+0
+XUENV
+VISTA^VISTA^Windsor-LT^VISTA:TRYCACHE
+XUF
+0
+XUF(.3)
+12
+XUFAC
+0
+XUIOP
+
+XUNOW
+3130329.224401
+XUVOL
+VISTA^^500^^^n
+XWBAPVER
+0
+XWBOS
+OpenM
+XWBPTYPE
+4
+XWBTIME
+36000
+XWBTIME(1)
+5
+XWBTIP
+
+XWBWRAP
+1
+Y
+D ^ENTIRN
+SECTION=STACK
+ */
+	
+}
