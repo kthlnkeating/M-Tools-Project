@@ -23,7 +23,7 @@ public class MDebugger {
 		//System.out.println(results);		
 	}
 	
-	public void stepIn() {
+	public void stepInto() {
 		String results = MDebuggerSteps.stepDebug("STEPINTO");
 		//System.out.println(results);
 	}
