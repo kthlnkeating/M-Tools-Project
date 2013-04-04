@@ -135,25 +135,26 @@ public class MThread extends MDebugElement implements IThread {
 
 	@Override
 	public IStackFrame[] getStackFrames() throws DebugException {
-//		if (isSuspended()) {
-//			return ((MDebugTarget)getDebugTarget()).getStackFrames();
-//		} else {
-//			return new IStackFrame[0];
-//		}
-		
-		return null; //TODO: stack frames are returned in every response. need to store/sync them
+		if (isSuspended()) {
+			return ((MDebugTarget)getDebugTarget()).getStackFrames();
+		} else {
+			System.out.println("returning dummy stackframes");
+			return new IStackFrame[0];
+		}
 	}
 
 	@Override
 	public IStackFrame getTopStackFrame() throws DebugException {
-		// TODO Auto-generated method stub
+		IStackFrame[] frames = getStackFrames();
+		if (frames.length > 0) {
+			return frames[0];
+		}
 		return null;
 	}
 
 	@Override
 	public boolean hasStackFrames() throws DebugException {
-		// TODO Auto-generated method stub
-		return false;
+		return isSuspended();
 	}
 
 }

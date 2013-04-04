@@ -176,7 +176,6 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 
 	void setTerminated(boolean terminated) {
 		this.terminated = terminated;
-		
 	}
 	
 }

@@ -79,7 +79,7 @@ public class MDebugger {
 						!results.isComplete() && 
 						results.getLineLocation() == -1 &&
 						results.getNextCommnd() == null) {
-					doDebug(dbCommand); //TODO: this could potentially endless loop, maybe do a for command with a limit
+					return doDebug(dbCommand); //TODO: this could potentially endless loop, maybe do a for command with a limit
 				}
 			}
 

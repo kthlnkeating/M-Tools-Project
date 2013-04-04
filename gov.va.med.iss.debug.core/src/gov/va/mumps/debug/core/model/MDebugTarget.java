@@ -1,7 +1,13 @@
 package gov.va.mumps.debug.core.model;
 
+import gov.va.med.iss.mdebugger.vo.StackVO;
 import gov.va.med.iss.mdebugger.vo.StepResultsVO;
 import gov.va.mumps.debug.core.MDebugConstants;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
@@ -23,6 +29,9 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 	private MThread debugThread;
 	private String name;
 	
+	//process stack
+	private MStackFrame[] stack;
+	
 	public MDebugTarget(ILaunch launch, MDebugRpcProcess rpcProcess) {
 		super(null);
 		setDebugTarget(this);
@@ -32,8 +41,12 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		debugThread = new MThread(this);		
 		suspended = true; //false in tutorial, because it waits for the event to come back on the socket saying suspended
 		
+//		stack = new Stack<MStackFrame>(15); //the server can't handle more than 15 anyway.
+		
 //		eventDispatch = new EventDispatchJob();
 //		eventDispatch.schedule();
+		
+		stack = new MStackFrame[0];
 		
 		handleResponse(rpcProcess.getResponseResults());
 		
@@ -71,20 +84,20 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 
 	@Override
 	public boolean canResume() {
-		System.out.println("canResume()");
+		//System.out.println("canResume()");
 		return !isTerminated() && isSuspended();
 	}
 
 	@Override
 	public boolean canSuspend() {
-		System.out.println("canSuspend()");
+		//System.out.println("canSuspend()");
 		return !isTerminated() && !isSuspended(); //maybe always return false since the suspend button doesn't do anything?
 	}
 
 	@Override
 	public boolean isSuspended() {
 		//TODO: what is this for? when and why is it called?
-		System.out.println("isSuspended()");
+		//System.out.println("isSuspended()");
 		return suspended;
 	}
 
@@ -166,7 +179,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 
 	@Override
 	public IThread[] getThreads() throws DebugException {
-		return new IThread[] {debugThread}; //return debugThreads;
+		return new IThread[] {debugThread};
 	}
 
 	@Override
@@ -191,6 +204,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 	public void stepInto() {
 		rpcDebugProcess.stepInto();
 		handleResponse(rpcDebugProcess.getResponseResults());
+		//TODO: fire event
 	}
 
 	public void stepOut() {
@@ -198,14 +212,39 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		handleResponse(rpcDebugProcess.getResponseResults());
 	}
 	
+	public MStackFrame[] getStackFrames() {
+		//System.out.println("getStackFrame()");
+		return stack;
+	}
+	
 	private void handleResponse(StepResultsVO vo) {
-		
-		//TODO: update cached stack, add, remove, update top stack
 		
 		//invoke terminate event if DONE found + fireevents/setflags
 		if (vo.isComplete()) {
 			terminated();
+			return;
 		}
+		
+		//update cached stack
+		Iterator<StackVO> stackItr = vo.getStack();
+		List<StackVO> svoList = new LinkedList<StackVO>();
+		while (stackItr.hasNext()) {
+			 svoList.add(stackItr.next());
+		}
+		stack = new MStackFrame[svoList.size()];
+		
+		for (int i = 0; i < svoList.size(); i++) {
+			StackVO svo = svoList.get(i);
+			
+			//TODO: actually, (1) use locationAsTag and (2) for stacks bellow the top stack, subsitute the callerName from the parent stack.
+			System.out.println("adding: "+ svo.getStackName());
+			if (i == svoList.size() - 1)
+				stack[i] = new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(), vo.getRoutineName(), vo.getLineLocation(), vo.getNextCommnd());
+			else
+				stack[i] = new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(), null, -1, null);
+		}
+		
+		
 
 	}
 	
