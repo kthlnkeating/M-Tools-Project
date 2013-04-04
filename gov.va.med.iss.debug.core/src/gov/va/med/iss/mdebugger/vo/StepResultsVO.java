@@ -14,13 +14,14 @@ public class StepResultsVO {
 	private int lineLocation;
 	private String locationAsTag;
 	private String nextCommand;
+	private String lastCommand;
 	//stack
 	private LinkedList<StackVO> stack;
 	
 	public StepResultsVO(boolean complete,
 			LinkedHashSet<VariableVO> variables, String routineName,
 			int lineLocation, String locationAsTag, String nextCommand,
-			LinkedList<StackVO> stack) {
+			String lastCommand, LinkedList<StackVO> stack) {
 		super();
 		this.complete = complete;
 		this.variables = variables;
@@ -28,6 +29,7 @@ public class StepResultsVO {
 		this.lineLocation = lineLocation;
 		this.locationAsTag = locationAsTag;
 		this.nextCommand = nextCommand;
+		this.lastCommand = lastCommand;
 		this.stack = stack;
 	}
 
@@ -53,6 +55,10 @@ public class StepResultsVO {
 	
 	public String getNextCommnd() {
 		return nextCommand;
+	}
+	
+	public String getLastCommand() {
+		return lastCommand;
 	}
 
 	public Iterator<StackVO> getStack() {

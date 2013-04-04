@@ -1,66 +1,123 @@
 package gov.va.med.iss.mdebugger;
 
+import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
+import gov.va.med.foundations.adapter.record.VistaLinkFaultException;
 import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
+import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
+import gov.va.med.iss.mdebugger.vo.StackVO;
+import gov.va.med.iss.mdebugger.vo.StepResultsVO;
 
-public class MDebuggerSteps {
+import java.util.Iterator;
+
+public class MDebugger {
 	
-	private static VistaLinkConnection myConnection;
-	private static String rpcName = "";
-	private static boolean updatePages = true;
-	private static boolean repeatLastDebug = false;
-	private static String lastCommand = "";
+	private VistaLinkConnection myConnection;
+	private String rpcName = "";
+	private boolean handleResults = true;
+	//private boolean repeatLastDebug = false; //this is always null, perhaps earlier in dev it was being set --jspivey
+	private String lastCommand = "";
 
-	static public String doDebug(String dbCommand) {
+	public StepResultsVO doDebug(String dbCommand) {
 		lastCommand = dbCommand;
 		myConnection = VistaConnection.getConnection();
 		
-		if (myConnection == null)
-			return null; //TODO: prefer to throw exception
-
-		try {
-			RpcRequest vReq = RpcRequestFactory.getRpcRequest("",rpcName);
-//				if (this.xmlRadioButton.isSelected()) {
-				vReq.setUseProprietaryMessageFormat(false);
-//				} else {
-//					vReq.setUseProprietaryMessageFormat(true);
-//				}
-			vReq.getParams().setParam(1, "string", dbCommand);  // RD  RL  GD  GL  RS
-			RpcResponse vResp = myConnection.executeRPC(vReq);
-			System.out.println("RESPONSE VALUE:");
-			System.out.println(vResp.getResults());
-			if (updatePages) {
-				repeatLastDebug = false;
-				StepResults.ProcessInput(vResp.getResults()); //comment out, no longer pass resulting to this, but isntead returning them--jspivey
-			}
-			return vResp.getResults();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-//			if (rpcName.equals("XTDEBUG NEXT")) { //prior to this String == String always returns false --jspivey
-//				if (e.getMessage() == "") {
-//					repeatLastDebug = false;
-//				}
-//				else {
-//					e.printStackTrace();
-////						MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-////								"M Debugger",
-////								"Error with RPC '" + rpcName + "': "+e.getMessage());
-//				}
-//			}
-//			else {
-//				e.printStackTrace();
-////					MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-////						"M Debugger",
-////						"Error with RPC '" + rpcName + "': "+e.getMessage());
-//			}
+		if (myConnection == null) {
+			throw new RuntimeException("Not connected to VistaServer"); //TODO: throw core exception? I think throw a not connected exception so that it can retry connecting.
 		}
+
+		String strResults = "";
+		try {
+			strResults = callRPC(dbCommand);
+			
+			//this helps it to skip over line labels, which appear to return an empty string from the server
+			for (int i = 1; strResults.trim().equals("") && i <= 4; i++) {
+				System.out.println("Response was empty, sending "+ dbCommand +" again: "+ i);
+				strResults = callRPC(dbCommand);
+			}
+		} catch (VistaLinkFaultException e) {
+			e.printStackTrace(); //TODO: throw core exception
+		} catch (FoundationsException e) {
+			e.printStackTrace();
+		}
+		
+		if (strResults.trim().equals(""))
+			throw new RuntimeException("Unable to fetch any results from Debugger after 5 requests"); //TODO: this should definetly be a a custom exception to indicate to the caller to terminate the IProcess
+		
+		StepResultsVO results = null;		
+		if (handleResults) {
+			System.out.println("RESPONSE for: " +dbCommand);
+			//StepResults.ProcessInput(vResp.getResults()); //comment out, no longer pass resulting to this, but isntead returning them--jspivey
+			results = new StepResultsParser().parse(strResults);
+
+			System.out.println("complete: "+ results.isComplete());
+			System.out.println("nextCommand: "+ results.getNextCommnd());
+			System.out.println("lastCommand: "+ results.getLastCommand());
+			System.out.println("LineLocation: "+ results.getLineLocation());
+			System.out.println("TagLocation: "+ results.getLocationAsTag());
+			System.out.println("Routine:" + results.getRoutineName());
+			System.out.println("Has variables: "+ results.getVariables().hasNext());
+			System.out.println("STACK:");
+			Iterator<StackVO> stackItr = results.getStack();
+			while (stackItr.hasNext()) {
+				StackVO stack = stackItr.next();
+				System.out.println(stack.getStackName() +" called by: "+ stack.getCaller());
+			}
+			
+			/*
+			 * XTDEBUG API fix for suspending on linelabels:
+			 * Whenever a linelabel is hit by the server side debugger it will
+			 * suspend, and furthermore it returns only the stack and 
+			 * variables, while leaving location and next command null. If
+			 * this situation is encountered, the client side fix is to resend
+			 * the request again.
+			 */
+			if (dbCommand.equals("RUN")) {
+				if (
+						!results.isComplete() && 
+						results.getLineLocation() == -1 &&
+						results.getNextCommnd() == null) {
+					doDebug(dbCommand); //TODO: this could potentially endless loop, maybe do a for command with a limit
+				}
+			}
+
+		}
+		
+		return results;
+	}
+
+	private String callRPC(String dbCommand) throws FoundationsException,
+			VistaLinkFaultException {
+		RpcRequest vReq = RpcRequestFactory.getRpcRequest("",rpcName);
+		vReq.setUseProprietaryMessageFormat(false);
+		vReq.getParams().setParam(1, "string", dbCommand);  // RD  RL  GD  GL  RS
+		RpcResponse vResp = myConnection.executeRPC(vReq);
+		return vResp.getResults();
 	}
 	
+	public StepResultsVO resume() {
+		return stepDebug("RUN");
+	}
+	
+	public StepResultsVO stepOver() {
+		return stepDebug("STEP");
+	}
+	
+	public StepResultsVO stepInto() {
+		return stepDebug("STEPINTO");
+	}
+	
+	public StepResultsVO stepOut() {
+		return stepDebug("STEPOUT");
+	}
+	
+	//not supported
+//	public StepResultsVO terminate() {
+//		return stepDebug("TERMINATE");
+//	}
+
 	/**
 	 * method used to indicate to the server to process more
 	 * of the code.  The range of code to be covered is
@@ -76,12 +133,12 @@ public class MDebuggerSteps {
 	 *    "STEPOUT" commands are processed until the processing
 	 *             exits the current stack level for an earlier
 	 *             one
-	 *    "STEPIN" the processing is traced into the next higher
+	 *    "STEPINTO" the processing is traced into the next higher
 	 *             stack level
 	 */
-	public static String stepDebug(String dbCommand) {
+	public StepResultsVO stepDebug(String dbCommand) {
 		rpcName = "XTDEBUG NEXT";
-		updatePages = true;
+		handleResults = true;
 		return doDebug(dbCommand);
 //		while (repeatLastDebug) { // commented out because repeatLastDebug has no chance to become true--jspivey
 //			doDebug(dbCommand);
@@ -92,62 +149,46 @@ public class MDebuggerSteps {
 	 * method to start a debugging session
 	 * @param dbCommand - contains the line of code to be executed.
 	 */
-	public static String startDebug(String dbCommand) {
+	public StepResultsVO startDebug(String dbCommand) {
 		rpcName = "XTDEBUG START";
-		updatePages = true;
+		handleResults = true;
 		//MDebuggerConsoleDisplay.clearConsole();
-		StepResults.clearDoneFlag();
 		return doDebug(dbCommand);
 	}
 	
-	public static void setRepeatLastDebug() {
-		repeatLastDebug = true;
-	}
-	
-	public static void clearRepeatLastDebug() {
-		repeatLastDebug = false;
-	}
-	
-	public static void doLastCommand() {
+	public void doLastCommand() {
 		stepDebug(lastCommand);
 	}
 	
-	public static String getLastCommand() {
+	public String getLastCommand() {
 		return lastCommand;
 	}
-	
-	
-	
-	public static boolean getRepeatLastDebug() {
-		return repeatLastDebug;
-	}
 		
-	public static String addWatchpoint(String watchPoint) {
+	public void addWatchpoint(String watchPoint) {
 		rpcName = "XTDEBUG ADD WATCH";
-		updatePages = false;
-		return doDebug(watchPoint);
+		handleResults = false;
+		doDebug(watchPoint);
 	}
 	
-	public static String removeWatchpoint(String watchPoint) {
+	public void removeWatchpoint(String watchPoint) {
 		rpcName = "XTDEBUG DELETE WATCH";
-		updatePages = false;
-		return doDebug(watchPoint);
+		handleResults = false;
+		doDebug(watchPoint);
 	}
 	
-	public static String addBreakpoint(String breakPoint) {
+	public void addBreakpoint(String breakPoint) {
 		rpcName = "XTDEBUG ADD BREAKPOINT";
-		updatePages = false;
-		return doDebug(breakPoint);
+		handleResults = false;
+		doDebug(breakPoint);
 	}
 	
-	public static String removeBreakpoint(String breakPoint) {
+	public void removeBreakpoint(String breakPoint) {
 		rpcName = "XTDEBUG DELETE BREAKPOINT";
-		updatePages = false;
-		return doDebug(breakPoint);
+		handleResults = false;
+		doDebug(breakPoint);
 	}
 	
-	
-	public static void setTimer() {
+	public void setTimer() {
 		   new Thread(new Runnable() {
 			      public void run() {
 			            try { Thread.sleep(50); } catch (Exception e) { }

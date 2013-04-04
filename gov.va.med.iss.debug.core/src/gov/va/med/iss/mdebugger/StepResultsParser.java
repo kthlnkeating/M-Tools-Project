@@ -20,26 +20,22 @@ public class StepResultsParser {
 		String routineName = null;
 		boolean complete = false;
 		LinkedList<StackVO> stack = new LinkedList<StackVO>();
-		int lineLocation = 0;
+		int lineLocation = -1;
 		String locationAsTag = null;
 		String nextCommand = null;
+		String lastCommand = null;
 		LinkedHashSet<VariableVO> variables = new LinkedHashSet<VariableVO>(70);
 		
 		//scanning logic
 		SectionType section = null;
 		Scanner scanner = new Scanner(data);
-		scanner = scanner.useDelimiter("\r\n");
+		scanner = scanner.useDelimiter("\n");
 		String line;
 
 		while (scanner.hasNext()) {
 			line = scanner.next();
 			try {
-//				System.out.println("line:");
-//				System.out.println(line);
-//				System.out.flush();
 				String str = line.substring(8);
-//				System.out.println("str:");
-//				System.out.println(str);
 				section = SectionType.valueOf(str);
 				
 				if (section == SectionType.VALUES) {
@@ -58,12 +54,13 @@ public class StepResultsParser {
 				if (line.equals("DONE -- PROCESSING FINISHED"))
 					complete = true;
 				else if (line.startsWith("STEP MODE: ")) {
-					//System.out.println(line);
 					Matcher m = captureStepMode.matcher(line);
 					m.find();
 					locationAsTag = m.group(1);
 				} else if (line.startsWith("   NEXT COMMAND: ")) {
 					nextCommand = line.substring(17);
+				} else if (line.startsWith("   LAST COMMAND: ")) {
+					lastCommand = line.substring(17);
 				}
 				break;
 			case LOCATION:
@@ -92,19 +89,19 @@ public class StepResultsParser {
 				variables.add(new VariableVO(line, scanner.next()));
 				break;
 			case WHATCH:
-				
+				System.out.println(line);
 				break;
 			case READ:
-				
+				System.out.println(line);
 				break;
 			case WRITE:
-				
+				System.out.println(line);
 			}
 
 		}
 		
 		return new StepResultsVO(complete, variables, routineName, lineLocation, 
-				locationAsTag, nextCommand, stack);
+				locationAsTag, nextCommand, lastCommand, stack);
 	}
 
 	private enum SectionType {
