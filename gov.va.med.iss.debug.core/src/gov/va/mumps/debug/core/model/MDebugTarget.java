@@ -53,7 +53,13 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		//TODO: temp just for testing
 		rpcProcess.addBreakPoint("STACK5+2^TSTBLAH2");
 		
-		fireCreationEvent(); //to register that the rpcProcess has been started, since it was started in the constructor
+		fireCreationEvent(); //to register that the DebugTarget has been started.
+		try {
+			resume();
+		} catch (DebugException e) {
+			e.printStackTrace();
+		}
+		
 		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this); //TODO: should this listener be removed if terminated?
 	}
 
@@ -105,11 +111,10 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 	public void resume() throws DebugException {
 		rpcDebugProcess.resume();
 		suspended = false;
-//		debugThread.fireResumeEvent(DebugEvent.RESUME); //TODO: what is clientRequest for?
 		StepResultsVO results = rpcDebugProcess.getResponseResults();
 		suspended = true;
 		handleResponse(results);
-		debugThread.fireResumeEvent(DebugEvent.RESUME);
+		debugThread.fireResumeEvent(DebugEvent.CLIENT_REQUEST); //CLIENT_REQUEST - user/guiclient requested
 	}
 
 	@Override
@@ -194,22 +199,27 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 	}
 
 	public void stepOver() {
+		suspended = true; //note that handleResponse can set this to false if it the debug is completed
 		fireResumeEvent(DebugEvent.STEP_OVER);
 		rpcDebugProcess.stepOver();
-		fireSuspendEvent(DebugEvent.STEP_OVER);
-		suspended = true; //note that handleResponse can set this to false if it the debug is completed
 		handleResponse(rpcDebugProcess.getResponseResults());
+		fireSuspendEvent(DebugEvent.STEP_OVER);
 	}
 
 	public void stepInto() {
+		suspended = true;
+		fireResumeEvent(DebugEvent.STEP_INTO);
 		rpcDebugProcess.stepInto();
 		handleResponse(rpcDebugProcess.getResponseResults());
-		//TODO: fire event
+		fireResumeEvent(DebugEvent.STEP_INTO);
 	}
 
 	public void stepOut() {
+		suspended = true;
+		fireResumeEvent(DebugEvent.STEP_RETURN);
 		rpcDebugProcess.stepOut();
 		handleResponse(rpcDebugProcess.getResponseResults());
+		fireResumeEvent(DebugEvent.STEP_RETURN);
 	}
 	
 	public MStackFrame[] getStackFrames() {
@@ -244,6 +254,10 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 				stack[i] = new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(), null, -1, null);
 		}
 		
+		if (vo.getNextCommnd() != null) {
+			fireResumeEvent(DebugEvent.STEP_END); //TODO: does the API tell me whether it stops on a breakpoint or just a normal step ending? maybe I have to compare the next command value with current breakpoints set?
+		}
+		
 		
 
 	}
@@ -252,7 +266,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		rpcDebugProcess.terminate();
 		suspended = false;
 		DebugPlugin.getDefault().getBreakpointManager().removeBreakpointListener(this);
-		fireTerminateEvent();
+		fireTerminateEvent(); //this fires the event to indicate that the debugtarget has terminated.
 	}
 
 }

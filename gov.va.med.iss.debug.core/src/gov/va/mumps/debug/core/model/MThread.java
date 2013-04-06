@@ -3,6 +3,7 @@ package gov.va.mumps.debug.core.model;
 import gov.va.mumps.debug.core.MDebugConstants;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
@@ -17,6 +18,7 @@ public class MThread extends MDebugElement implements IThread {
 	
 	public MThread(MDebugTarget target) {
 		super(target);
+		fireCreationEvent();
 	}
 
 	@Override
@@ -37,6 +39,7 @@ public class MThread extends MDebugElement implements IThread {
 	@Override
 	public void resume() throws DebugException {
 		getDebugTarget().resume();
+		fireResumeEvent(DebugEvent.CLIENT_REQUEST);
 	}
 
 	@Override
@@ -46,12 +49,12 @@ public class MThread extends MDebugElement implements IThread {
 
 	@Override
 	public boolean canStepInto() {
-		return true; //TODO: this will take some lexical analysis of the nextCommand
+		return true; //TODO: this will take some lexical analysis of the nextCommand to see if it is a fanout
 	}
 
 	@Override
 	public boolean canStepOver() {
-		return true; //I think any command can be stepped over
+		return true; //I think any command can be stepped over, but if nextCommand is null perhaps that is a validcheck
 	}
 
 	@Override
@@ -67,19 +70,23 @@ public class MThread extends MDebugElement implements IThread {
 
 	@Override
 	public void stepInto() throws DebugException {
+		fireResumeEvent(DebugEvent.CLIENT_REQUEST);
 		((MDebugTarget)getDebugTarget()).stepInto();
+		fireSuspendEvent(DebugEvent.STEP_INTO);
 	}
 
 	@Override
 	public void stepOver() throws DebugException {
+		fireResumeEvent(DebugEvent.CLIENT_REQUEST);
 		((MDebugTarget)getDebugTarget()).stepOver();
-
+		fireSuspendEvent(DebugEvent.STEP_OVER);
 	}
 
 	@Override
 	public void stepReturn() throws DebugException {
+		fireResumeEvent(DebugEvent.CLIENT_REQUEST);
 		((MDebugTarget)getDebugTarget()).stepOut();
-
+		fireSuspendEvent(DebugEvent.STEP_RETURN);
 	}
 
 	@Override
@@ -95,6 +102,7 @@ public class MThread extends MDebugElement implements IThread {
 	@Override
 	public void terminate() throws DebugException {
 		getDebugTarget().terminate();
+		fireTerminateEvent();
 	}
 
 	@Override

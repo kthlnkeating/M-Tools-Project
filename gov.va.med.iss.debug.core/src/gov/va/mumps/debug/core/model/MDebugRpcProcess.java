@@ -1,11 +1,14 @@
 package gov.va.mumps.debug.core.model;
 
+import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.connection.utilities.MPiece;
 import gov.va.med.iss.mdebugger.MDebugger;
 import gov.va.med.iss.mdebugger.vo.StepResultsVO;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.debug.core.DebugEvent;
@@ -32,11 +35,23 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	private boolean captureOutput = true;
 	private StepResultsVO responseResults;
 	
-	public MDebugRpcProcess(String debugEntryTag, Map<String, String> attributes) {
+	//optimization
+	private static final Pattern semiPat = Pattern.compile(";");
+	
+	public MDebugRpcProcess(ILaunch launch, String debugEntryTag, Map<String, String> attributes) {
 		initializeAttributes(attributes);
 		mDebugger = new MDebugger();
 		responseResults = mDebugger.startDebug(debugEntryTag);
-		name = debugEntryTag;
+		//name = debugEntryTag;
+		if (VistaConnection.getCurrentServer() != null && !VistaConnection.getCurrentServer().isEmpty()) { //dislike globals like this, want to refactor this to OOP using factories and explicit dependencies in contructors
+			String connStr = VistaConnection.getCurrentServer();
+			String[] pieces = semiPat.split(connStr);
+			name = "VistA Connection: " +pieces[0]+ ", " +pieces[1]+ ":" +pieces[2];
+		} else
+			name = "Error: Not connected to VistA";
+		this.launch = launch;
+		launch.addProcess(this);
+		fireCreationEvent();
 	}
 	
 	private void initializeAttributes(Map<String,String> attributes) {
@@ -49,6 +64,7 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter.equals(IProcess.class)) {
@@ -85,9 +101,13 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	}
 
 	@Override
-	public void terminate() {
+	public void terminate() { //terminating is rather simple, just stop calling the API
 		//responseResults = mDebugger.terminate();
+		if (isTerminated())
+			return;
+		
 		terminated = true;
+		fireTerminateEvent();
 	}
 
 	@Override
@@ -135,15 +155,23 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 		return streamsProxy;
 	}
 
-	protected void fireChangeEvent() {
+	private void fireChangeEvent() {
 		fireEvent(new DebugEvent(this, DebugEvent.CHANGE));
 	}
 	
-	protected void fireEvent(DebugEvent event) {
+	private void fireEvent(DebugEvent event) {
 		DebugPlugin manager= DebugPlugin.getDefault();
 		if (manager != null) {
 			manager.fireDebugEventSet(new DebugEvent[]{event});
 		}
+	}
+	
+	private void fireCreationEvent() {
+		fireEvent(new DebugEvent(this, DebugEvent.CREATE));
+	}
+
+	private void fireTerminateEvent() {
+		fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
 	}
 
 	public void resume() {
@@ -172,10 +200,6 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 
 	public StepResultsVO getResponseResults() {
 		return responseResults;
-	}
-
-	void setTerminated(boolean terminated) {
-		this.terminated = terminated;
 	}
 	
 }

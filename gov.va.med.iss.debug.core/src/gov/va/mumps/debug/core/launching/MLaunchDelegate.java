@@ -26,7 +26,7 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 			abort("M Entry tag not specified in launch configuration.", null);
 		}
 		
-		MDebugRpcProcess rpcProcess = new MDebugRpcProcess(debugEntryTag, null);
+		MDebugRpcProcess rpcProcess = new MDebugRpcProcess(launch, debugEntryTag, null);
 		
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			IDebugTarget target = new MDebugTarget(launch, rpcProcess);

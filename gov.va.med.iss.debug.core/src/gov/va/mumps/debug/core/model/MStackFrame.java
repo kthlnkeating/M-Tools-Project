@@ -201,6 +201,11 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 	public IRegisterGroup[] getRegisterGroups() throws DebugException {
 		return null;
 	}
+	
+	@Override
+	public boolean hasRegisterGroups() throws DebugException {
+		return false;
+	}
 
 	@Override
 	public IThread getThread() {
@@ -211,12 +216,6 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 	public IVariable[] getVariables() throws DebugException {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public boolean hasRegisterGroups() throws DebugException {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
