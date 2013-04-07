@@ -243,23 +243,36 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		}
 		stack = new MStackFrame[svoList.size()];
 		
-		for (int i = 0; i < svoList.size(); i++) {
+		//String prevStackCaller = null;
+		for (int i = svoList.size() - 1; i >= 0; i--) {
 			StackVO svo = svoList.get(i);
 			
-			//TODO: actually, (1) use locationAsTag and (2) for stacks bellow the top stack, subsitute the callerName from the parent stack.
-			System.out.println("adding: "+ svo.getStackName());
+			/*
+			 * (1) use locationAsTag and (2) for stacks bellow the top stack,
+			 * subsitute the callerName from the parent stack. Then convert the
+			 * locationAsATag to a lineNumber and routine name.
+			 */
+			
+			// update: no, location as a tag will not work so well because it will
+			// require opening the entire file and lightly parsing it. way to
+			// much work to occur here in this model thread. will have to either
+			// index these somehow, or at least make this asycnrhonus/event
+			// based by putting the rpc call in a new thread.
 			if (i == svoList.size() - 1)
-				stack[i] = new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(), vo.getRoutineName(), vo.getLineLocation(), vo.getNextCommnd());
+				stack[0] = 
+				new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(),
+						vo.getRoutineName(), vo.getLineLocation(), vo.getNextCommnd());
 			else
-				stack[i] = new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(), null, -1, null);
+				stack[svoList.size() - 1 - i] = 
+				new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(),
+						null, -1, null);
+			
+			//prevStackCaller = svo.getCaller();
 		}
 		
 		if (vo.getNextCommnd() != null) {
 			fireResumeEvent(DebugEvent.STEP_END); //TODO: does the API tell me whether it stops on a breakpoint or just a normal step ending? maybe I have to compare the next command value with current breakpoints set?
 		}
-		
-		
-
 	}
 	
 	private void terminated() {

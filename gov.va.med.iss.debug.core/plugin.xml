@@ -37,8 +37,8 @@
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
-            name="PDA Source Lookup Director"
-            class="org.eclipse.debug.examples.core.pda.launching.PDASourceLookupDirector"
+            name="MUMPS Source Lookup Director"
+            class="gov.va.mumps.debug.core.launching.MSourceLookupDirector"
             id="org.eclipse.debug.examples.core.sourceLookupDirector.m">
       </sourceLocator>
    </extension>
@@ -46,7 +46,7 @@
    <extension
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
-            class="org.eclipse.debug.examples.core.pda.launching.PDASourcePathComputerDelegate"
+            class="gov.va.mumps.debug.core.launching.MSourcePathComputerDelegate"
             id="org.eclipse.debug.examples.core.sourcePathComputer.m">
       </sourcePathComputer>
    </extension>

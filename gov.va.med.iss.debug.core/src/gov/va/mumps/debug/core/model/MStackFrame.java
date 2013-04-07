@@ -6,6 +6,8 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 
+import com.sun.org.apache.bcel.internal.classfile.LineNumber;
+
 //This class is mutable for variables to be synced, since they can be scoped back to multiple parent stacks.
 //However for everything else, a stack is created whenever a debug result comes back from the server and
 //it is not updated.
@@ -188,8 +190,8 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 
 	@Override
 	public int getLineNumber() throws DebugException {
-		//TODO: should be easy to get theline number from the vo object. where does this getter concern belong?
-		return -1;
+		//return (int)(25 * Math.random());
+		return lineLocation;
 	}
 
 	@Override
@@ -222,6 +224,10 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 	public boolean hasVariables() throws DebugException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public String getRoutineName() {
+		return routineName;
 	}
 
 }

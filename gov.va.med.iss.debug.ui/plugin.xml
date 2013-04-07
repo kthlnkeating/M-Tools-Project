@@ -71,8 +71,8 @@
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations">
       <debugModelPresentation
-            class="org.eclipse.debug.examples.ui.pda.model.PDAModelPresentation"
-            id="org.eclipse.debug.examples.pda">
+            class="gov.va.mumps.debug.ui.model.MDebugModelPresentation"
+            id="gov.va.mumps.debug">
       </debugModelPresentation>
    </extension>
    <extension
@@ -112,24 +112,24 @@
    <extension
          point="org.eclipse.ui.contexts">
       <context
-            name="Debugging PDA"
-            description="Debugging PDA"
-            id="org.eclipse.debug.examples.ui.pda.debugging"
+            name="Debugging MUMPS"
+            description="Debugging MUMPS"
+            id="gov.va.mumps.debug.ui.debugging"
             parentId="org.eclipse.debug.ui.debugging">
       </context>
    </extension>
    <extension
          point="org.eclipse.debug.ui.debugModelContextBindings">
       <modelContextBinding
-            debugModelId="org.eclipse.debug.examples.pda"
-            contextId="org.eclipse.debug.examples.ui.pda.debugging">
+            debugModelId="gov.va.mumps.debug"
+            contextId="gov.va.mumps.debug.ui.debugging">
       </modelContextBinding>
    </extension>
    <extension
          point="org.eclipse.debug.ui.contextViewBindings">
       <contextViewBinding
             viewId="org.eclipse.debug.examples.ui.pda.DataStackView"
-            contextId="org.eclipse.debug.examples.ui.pda.debugging"
+            contextId="gov.va.mumps.debug.ui.debugging"
             autoClose="true"
             autoOpen="true">
       </contextViewBinding>
