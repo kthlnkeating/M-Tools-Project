@@ -1,6 +1,6 @@
 package gov.va.med.iss.mdebugger.vo;
 
-public class VariableVO {
+public class VariableVO implements Comparable<VariableVO> {
 
 	private String name;
 	private String value;
@@ -39,6 +39,22 @@ public class VariableVO {
 	}
 	public String getValue() {
 		return value;
+	}
+	
+	@Override
+	public int compareTo(VariableVO obj) {
+		if (obj == null)
+			return -1;
+		
+		if (this == obj || this.equals(obj))
+			return 0;
+		
+		if (this.getName() == null) //note: equals already compares the case where both are not null.
+			return 1;
+		if (obj.getName() == null)
+			return -1;
+		
+		return this.getName().compareTo(obj.getName());
 	}
 
 }

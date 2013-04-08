@@ -216,14 +216,12 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 
 	@Override
 	public IVariable[] getVariables() throws DebugException {
-		// TODO Auto-generated method stub
-		return null;
+		return ((MDebugTarget)debugThread.getDebugTarget()).getVariables();
 	}
 
 	@Override
 	public boolean hasVariables() throws DebugException {
-		// TODO Auto-generated method stub
-		return false;
+		return ((MDebugTarget)debugThread.getDebugTarget()).getVariables().length != 0;
 	}
 
 	public String getRoutineName() {

@@ -1,7 +1,5 @@
 package gov.va.mumps.debug.core.launching;
 
-import java.net.URI;
-
 import gov.va.med.iss.connection.actions.VistaConnection;
 
 import org.eclipse.core.resources.IContainer;
@@ -14,7 +12,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
-import org.eclipse.debug.core.sourcelookup.containers.FolderSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer;
 

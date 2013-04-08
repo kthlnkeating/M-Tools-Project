@@ -199,6 +199,5 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 
 	public StepResultsVO getResponseResults() {
 		return responseResults;
-	}
-	
+	}	
 }

@@ -2,12 +2,16 @@ package gov.va.mumps.debug.core.model;
 
 import gov.va.med.iss.mdebugger.vo.StackVO;
 import gov.va.med.iss.mdebugger.vo.StepResultsVO;
+import gov.va.med.iss.mdebugger.vo.VariableVO;
 import gov.va.mumps.debug.core.MDebugConstants;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
@@ -28,6 +32,12 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 	private boolean suspended;
 	private MThread debugThread;
 	private String name;
+	
+	//variables
+	//variables already defined
+	private SortedSet<VariableVO> initialVars;
+	//variables available at the current suspend point
+	private MVariable[] variables;
 	
 	//process stack
 	private MStackFrame[] stack;
@@ -202,7 +212,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		suspended = true; //note that handleResponse can set this to false if it the debug is completed
 		fireResumeEvent(DebugEvent.STEP_OVER);
 		rpcDebugProcess.stepOver();
-		handleResponse(rpcDebugProcess.getResponseResults());
+		handleResponse(rpcDebugProcess.getResponseResults()); //TODO: move this to a new thread if yo want asychon. also move the suspend events to the async thread
 		fireSuspendEvent(DebugEvent.STEP_OVER);
 	}
 
@@ -227,6 +237,10 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		return stack;
 	}
 	
+	public MVariable[] getVariables() {
+		return variables;
+	}
+	
 	private void handleResponse(StepResultsVO vo) {
 		
 		//invoke terminate event if DONE found + fireevents/setflags
@@ -235,7 +249,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 			return;
 		}
 		
-		//update cached stack
+		//create stack objects from incoming RPC results
 		Iterator<StackVO> stackItr = vo.getStack();
 		List<StackVO> svoList = new LinkedList<StackVO>();
 		while (stackItr.hasNext()) {
@@ -268,6 +282,30 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 						null, -1, null);
 			
 			//prevStackCaller = svo.getCaller();
+		}
+		
+		//handle variables
+		Iterator<VariableVO> varItr = vo.getVariables();
+		if (initialVars == null) { //set all the initial variables
+			initialVars = new TreeSet<VariableVO>();
+			while (varItr.hasNext())
+				initialVars.add(varItr.next());
+		} else {
+			List<VariableVO> currVars = new LinkedList<VariableVO>(); 
+			while (varItr.hasNext()) {
+				VariableVO varVO = varItr.next();
+				if (!initialVars.contains(varVO))
+					currVars.add(varVO);
+			}
+			
+			variables = new MVariable[currVars.size()];
+			for (int s = 0; s < stack.length; s++)
+				for (int i = 0; i < currVars.size(); i++) {
+					variables[i] = new MVariable(
+							stack[s], 
+							currVars.get(i).getName());
+					variables[i].setValue(new MValue(variables[i], currVars.get(i).getValue()));
+				}
 		}
 		
 		if (vo.getNextCommnd() != null) {
