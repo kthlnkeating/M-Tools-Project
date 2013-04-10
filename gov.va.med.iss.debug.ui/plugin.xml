@@ -78,7 +78,7 @@
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
-            class="org.eclipse.debug.examples.ui.pda.model.PDABreakpointAdapterFactory"
+            class="gov.va.mumps.debug.ui.model.MBreakpointAdapterFactory"
             adaptableType="org.eclipse.ui.texteditor.ITextEditor">
          <adapter
                type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">

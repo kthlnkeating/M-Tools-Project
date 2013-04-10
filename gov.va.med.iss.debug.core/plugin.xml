@@ -26,12 +26,12 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            sourceLocatorId="org.eclipse.debug.examples.core.sourceLookupDirector.m"
+            sourceLocatorId="gov.va.mumps.debug.core.sourceLookupDirector"
             name="MUMPS Launch Configuration"
-            sourcePathComputerId="org.eclipse.debug.examples.core.sourcePathComputer.m"
+            sourcePathComputerId="gov.va.mumps.debug.core.sourcePathComputer"
             delegate="gov.va.mumps.debug.core.launching.MLaunchDelegate"
             modes="run, debug"
-            id="gov.va.mumps.debug.core.launchConfigurationType.m">
+            id="gov.va.mumps.debug.core.launchConfigurationType">
       </launchConfigurationType>
    </extension>
    <extension
@@ -39,7 +39,7 @@
       <sourceLocator
             name="MUMPS Source Lookup Director"
             class="gov.va.mumps.debug.core.launching.MSourceLookupDirector"
-            id="org.eclipse.debug.examples.core.sourceLookupDirector.m">
+            id="gov.va.mumps.debug.core.sourceLookupDirector">
       </sourceLocator>
    </extension>
    
@@ -47,27 +47,20 @@
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
             class="gov.va.mumps.debug.core.launching.MSourcePathComputerDelegate"
-            id="org.eclipse.debug.examples.core.sourcePathComputer.m">
+            id="gov.va.mumps.debug.core.sourcePathComputer">
       </sourcePathComputer>
    </extension>
-   <!--extension
-         point="org.eclipse.core.variables.valueVariables">
-      <variable
-            initialValue="C:\strawberry\perl\bin\perl.exe"
-            name="perlExecutable"
-            description="Path to Perl executable in the local file system">
-      </variable>
-   </extension-->
    <extension
          point="org.eclipse.debug.core.breakpoints">
       <breakpoint
-            markerType="org.eclipse.debug.examples.core.pda.lineBreakpoint.marker"
-            class="org.eclipse.debug.examples.core.pda.model.PDALineBreakpoint"
-            id="org.eclipse.debug.examples.core.pda.lineBreakpoint">
+            markerType="gov.va.mumps.debug.core.lineBreakpoint.marker"
+            class="gov.va.mumps.debug.core.model.MLineBreakpoint"
+            id="gov.va.mumps.debug.core.lineBreakpoint">
       </breakpoint>
    </extension>
+   <!-- the id for this is prefixed with the plugin id -->
    <extension
-         id="pda.lineBreakpoint.marker"
+         id="lineBreakpoint.marker" 
          point="org.eclipse.core.resources.markers">
       <super
             type="org.eclipse.debug.core.lineBreakpointMarker">

@@ -16,5 +16,7 @@ Require-Bundle:
  org.eclipse.ui.workbench.texteditor;bundle-version="3.7.0",
  org.eclipse.jface.text;bundle-version="3.7.2",
  gov.va.med.iss.debug.core;bundle-version="0.1.2",
- org.eclipse.ui
+ org.eclipse.ui,
+ gov.va.med.iss.meditor;bundle-version="0.1.2",
+ org.eclipse.ui.editors;bundle-version="3.7.0"
 
