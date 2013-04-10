@@ -6,11 +6,8 @@ import gov.va.mumps.debug.core.model.MDebugTarget;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.core.model.IDebugElement;
-import org.eclipse.debug.ui.AbstractDebugView;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -18,59 +15,65 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.part.ViewPart;
 
-public class VariablesView extends AbstractDebugView implements ISelectionListener {
+public class VariablesView extends ViewPart implements ISelectionListener {
 
 	private TableViewer viewer;
+	private VariableNameFilter viewFilter;
 
-	@Override
-	protected void configureToolBar(IToolBarManager arg0) {
-	}
+	// Composite container;
 
-	@Override
-	protected void createActions() {
-	}
-	
-	//Composite container;
-	
 	@Override
 	public void createPartControl(Composite parent) {
 		
 		//container = new Composite(parent, SWT.NO_BACKGROUND | SWT.NO_SCROLL);
+		viewFilter = new VariableNameFilter();
 		
-//		GridLayout layout = new GridLayout(1, false);
-//		parent.setLayout(layout);
-//		GridData gridData = new GridData();
-//		gridData.horizontalAlignment = GridData.FILL;
-//		gridData.verticalAlignment = GridData.FILL;
-//		gridData.grabExcessHorizontalSpace = true;
-//		gridData.grabExcessVerticalSpace = true;
-//		parent.setLayoutData(gridData);
+		GridLayout layout = new GridLayout(1, false);
+		layout.horizontalSpacing = 2;
+		layout.verticalSpacing = 2;
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		parent.setLayout(layout);
+		GridData gridData = new GridData();
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.verticalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.grabExcessVerticalSpace = true;
+		parent.setLayoutData(gridData);
 		
 //	    Label searchLabel = new Label(parent, SWT.NONE);
 //	    searchLabel.setText("Search: ");
-//	    final Text searchText = new Text(parent, SWT.BORDER | SWT.SEARCH);
-//	    searchText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-//	        | GridData.HORIZONTAL_ALIGN_FILL));
-	    
-		super.createPartControl(parent);
+		final Text searchText = new Text(parent, SWT.BORDER | SWT.SEARCH);
+		searchText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+				| GridData.HORIZONTAL_ALIGN_FILL));
+		searchText.addKeyListener(new KeyAdapter() {
+			@Override
+		      public void keyReleased(KeyEvent ke) {
+		          viewFilter.setPattern(searchText.getText());
+		          viewer.refresh();
+		        }
+		});
+
+	    createViewer(parent); 
 	}
 
-	@Override
-	protected Viewer createViewer(Composite parent) {
+	private Viewer createViewer(Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-		        | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-	    createColumns(parent);
-		
+				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		createColumns(parent);
+
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -78,7 +81,7 @@ public class VariablesView extends AbstractDebugView implements ISelectionListen
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
 		// Get the content for the viewer, setInput will call getElements in the
 		// contentProvider
-		//viewer.setInput(ModelProvider.INSTANCE.getPersons());
+		// viewer.setInput(ModelProvider.INSTANCE.getPersons());
 		// Make the selection available to other views
 		getSite().setSelectionProvider(viewer);
 		// Set the sorter for the table
@@ -86,14 +89,16 @@ public class VariablesView extends AbstractDebugView implements ISelectionListen
 		// Layout the viewer
 		GridData gridData = new GridData();
 		gridData.verticalAlignment = GridData.FILL;
-//		gridData.horizontalSpan = 2;
+		// gridData.horizontalSpan = 2;
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = GridData.FILL;
 		viewer.getControl().setLayoutData(gridData);
 
-		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
-		
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addSelectionListener(this);
+
+		viewer.addFilter(viewFilter);
 		return viewer;
 	}
 
@@ -121,7 +126,7 @@ public class VariablesView extends AbstractDebugView implements ISelectionListen
 			}
 		});
 	}
-	
+
 	private TableViewerColumn createTableViewerColumn(String title, int bound,
 			int colNumber) {
 		TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.NONE);
@@ -134,22 +139,14 @@ public class VariablesView extends AbstractDebugView implements ISelectionListen
 	}
 
 	@Override
-	protected void fillContextMenu(IMenuManager arg0) {
-	}
-
-	@Override
-	protected String getHelpContextId() {
-		return null;
-	}
-	
-	@Override
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
-	
+
 	@Override
 	public void dispose() {
-		getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(IDebugUIConstants.ID_DEBUG_VIEW, this);
+		getSite().getWorkbenchWindow().getSelectionService()
+				.removeSelectionListener(IDebugUIConstants.ID_DEBUG_VIEW, this);
 		super.dispose();
 	}
 
@@ -158,16 +155,20 @@ public class VariablesView extends AbstractDebugView implements ISelectionListen
 		IAdaptable adaptable = DebugUITools.getDebugContext();
 		Object input = null;
 		if (adaptable != null) {
-			IDebugElement element = (IDebugElement) adaptable.getAdapter(IDebugElement.class);
+			IDebugElement element = (IDebugElement) adaptable
+					.getAdapter(IDebugElement.class);
 			if (element != null) {
-				if (element.getModelIdentifier().equals(MDebugConstants.M_DEBUG_MODEL)) {
+				if (element.getModelIdentifier().equals(
+						MDebugConstants.M_DEBUG_MODEL)) {
 					if (element.getDebugTarget() instanceof MDebugTarget) {
-						input = ((MDebugTarget)element.getDebugTarget()).getAllVariables();;
+						input = ((MDebugTarget) element.getDebugTarget())
+								.getAllVariables();
+						;
 					}
 				}
 			}
-		} 
-		getViewer().setInput(input);
+		}
+		viewer.setInput(input);
 	}
 
 }
