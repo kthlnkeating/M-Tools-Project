@@ -34,9 +34,11 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 	private String name;
 	
 	//variables
-	//variables already defined
+	//variables already defined at debug start
 	private SortedSet<VariableVO> initialVars;
-	//variables available at the current suspend point
+	//All the currently defined variables
+	private List<VariableVO> allVariables;
+	//Only variables created during the debug process
 	private MVariable[] variables;
 	
 	//process stack
@@ -241,6 +243,10 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		return variables;
 	}
 	
+	public List<VariableVO> getAllVariables() {
+		return allVariables;
+	}
+	
 	private void handleResponse(StepResultsVO vo) {
 		
 		//invoke terminate event if DONE found + fireevents/setflags
@@ -285,13 +291,17 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		}
 		
 		//handle variables
+		allVariables = new LinkedList<VariableVO>();
 		Iterator<VariableVO> varItr = vo.getVariables();
+		while (varItr.hasNext())
+			allVariables.add(varItr.next());
+		//TODO: fire selectionChanged event.
+		
 		if (initialVars == null) { //set all the initial variables
-			initialVars = new TreeSet<VariableVO>();
-			while (varItr.hasNext())
-				initialVars.add(varItr.next());
+			initialVars = new TreeSet<VariableVO>(allVariables);
 		} else {
-			List<VariableVO> currVars = new LinkedList<VariableVO>(); 
+			List<VariableVO> currVars = new LinkedList<VariableVO>();
+			varItr = vo.getVariables();
 			while (varItr.hasNext()) {
 				VariableVO varVO = varItr.next();
 				if (!initialVars.contains(varVO))

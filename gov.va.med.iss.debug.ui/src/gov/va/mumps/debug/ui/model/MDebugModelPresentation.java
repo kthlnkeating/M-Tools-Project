@@ -50,13 +50,10 @@ public class MDebugModelPresentation extends LabelProvider implements
 		} catch (DebugException e) {
 		}
 		listener.detailComputed(value, detail);
-
 	}
 
 	@Override
 	public void setAttribute(String arg0, Object arg1) {
-		// TODO Auto-generated method stub
-
 	}
 
 }
