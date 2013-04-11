@@ -53,7 +53,7 @@
    <extension
          point="org.eclipse.debug.core.breakpoints">
       <breakpoint
-            markerType="gov.va.mumps.debug.core.lineBreakpoint.marker"
+            markerType="gov.va.med.iss.debug.core.lineBreakpoint.marker"
             class="gov.va.mumps.debug.core.model.MLineBreakpoint"
             id="gov.va.mumps.debug.core.lineBreakpoint">
       </breakpoint>
@@ -66,7 +66,7 @@
             type="org.eclipse.debug.core.lineBreakpointMarker">
       </super>
       <persistent
-            value="false"> <!-- can change to true when we know how to fix the persitence issue -->
+            value="true"> <!-- can change to true when we know how to fix the persitence issue -->
       </persistent>
    </extension>
 
