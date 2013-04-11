@@ -54,7 +54,7 @@
        </enablement>
 	  </contextualLaunch>
 	  <configurationType
-	    id="gov.va.mumps.debug.core.launchConfigurationType.m">
+	    id="gov.va.mumps.debug.core.launchConfigurationType">
 	  </configurationType>
 	  </shortcut>
 	</extension>
@@ -62,10 +62,10 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            type="gov.va.mumps.debug.core.launchConfigurationType.m"
+            type="gov.va.mumps.debug.core.launchConfigurationType"
             description="Run or debug a remote MUMPS Routine"
             class="gov.va.mumps.debug.ui.launching.MTabGroup"
-            id="gov.va.mumps.debug.ui.launchConfigurationTabGroup.m">
+            id="gov.va.mumps.debug.ui.launchConfigurationTabGroup">
       </launchConfigurationTabGroup>
    </extension>
    <extension

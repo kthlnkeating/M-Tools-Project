@@ -13,7 +13,6 @@ public class MBreakpointAdapterFactory implements IAdapterFactory {
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if (adaptableObject instanceof MEditor) {
-			System.out.println("Is an MEditor");
 			return new MLineBreakpointAdapter();
 //			ITextEditor editorPart = (ITextEditor) adaptableObject;
 //			IResource resource = (IResource) editorPart.getEditorInput().getAdapter(IResource.class);

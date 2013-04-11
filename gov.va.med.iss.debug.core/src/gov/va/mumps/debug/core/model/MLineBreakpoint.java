@@ -1,18 +1,17 @@
 package gov.va.mumps.debug.core.model;
 
-import gov.va.mumps.debug.core.MDebugConstants;
-import gov.va.mumps.debug.core.MDebugCorePlugin;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.eclipse.debug.core.model.LineBreakpoint;
+import org.eclipse.debug.core.model.ILineBreakpoint;
 
-public class MLineBreakpoint extends LineBreakpoint {
+public class MLineBreakpoint extends AbstractMBreakpoint implements ILineBreakpoint {
 
+	private String breakpointAsTag;
+	
 	/**
 	 * Default constructor is required for the breakpoint manager
 	 * to re-create persisted breakpoints. After instantiating a breakpoint,
@@ -54,8 +53,65 @@ public class MLineBreakpoint extends LineBreakpoint {
 	}
 	
 	@Override
-	public String getModelIdentifier() {
-		return MDebugConstants.M_DEBUG_MODEL;
+	public int getLineNumber() throws CoreException {
+		IMarker m = getMarker();
+		if (m != null) {
+			return m.getAttribute(IMarker.LINE_NUMBER, -1);
+		}
+		return -1;
+	}
+
+	@Override
+	public int getCharStart() throws CoreException {
+		IMarker m = getMarker();
+		if (m != null) {
+			return m.getAttribute(IMarker.CHAR_START, -1);
+		}
+		return -1;
+	}
+
+	@Override
+	public int getCharEnd() throws CoreException {
+		IMarker m = getMarker();
+		if (m != null) {
+			return m.getAttribute(IMarker.CHAR_END, -1);
+		}
+		return -1;
+	}
+
+	/*
+	 * This just takes the routineName and transforms it into a very simple tag.
+	 * This is more performant than opening the file and parsing for the most
+	 * suitable tag location name given a line number. For example,
+	 * file: MYROU.m and line 25 will be translated to this tag
+	 * MYROU+24^MYROU
+	 * 	
+	 *  
+	 */
+	@Override
+	public String getBreakpointAsTag() {
+		
+		if (breakpointAsTag != null)
+			return breakpointAsTag;
+
+		try {
+			IMarker m = getMarker();
+			if (m != null) {
+				String fileName = m.getResource().getName();
+				int lineLoc = getLineNumber();
+				String rouName = fileName.substring(0, fileName.indexOf('.'));
+				breakpointAsTag = rouName+ "+" +(lineLoc-1)+ "^" +rouName;
+			}
+		} catch (CoreException e) {
+		}
+		
+		return breakpointAsTag;
+		
+		//return "STACK5+3^TSTBLAH2"; //TODO just testing here
+//		IMarker m = getMarker();
+//		if (m != null) {
+//			m.getResource().getFullPath() //... need a util that takes a path and determines the line number from the tag. need another util that finds a routine inside a project.
+//		}
 	}
 
 }

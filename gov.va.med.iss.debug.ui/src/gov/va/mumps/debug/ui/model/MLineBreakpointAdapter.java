@@ -2,6 +2,7 @@ package gov.va.mumps.debug.ui.model;
 
 import gov.va.med.iss.meditor.editors.MEditor;
 import gov.va.mumps.debug.core.MDebugConstants;
+import gov.va.mumps.debug.core.model.MLineBreakpoint;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -36,7 +37,7 @@ public class MLineBreakpointAdapter implements IToggleBreakpointsTarget {
 				}
 			}
 			// create line breakpoint (doc line numbers start at 0)
-			PDALineBreakpoint lineBreakpoint = new PDALineBreakpoint(resource, lineNumber + 1);
+			MLineBreakpoint lineBreakpoint = new MLineBreakpoint(resource, lineNumber + 1);
 			DebugPlugin.getDefault().getBreakpointManager().addBreakpoint(lineBreakpoint);
 		}
 	}

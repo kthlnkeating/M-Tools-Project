@@ -5,8 +5,6 @@ import gov.va.med.iss.mdebugger.vo.StepResultsVO;
 import gov.va.med.iss.mdebugger.vo.VariableVO;
 import gov.va.mumps.debug.core.MDebugConstants;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,17 +60,33 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		
 		handleResponse(rpcProcess.getResponseResults());
 		
-		//TODO: temp just for testing
-		rpcProcess.addBreakPoint("STACK5+2^TSTBLAH2");
+		// temp just for testing
+//		if (Math.random() > .8) {
+//			for (int i = 0; i < 30; i++)
+//				System.out.println("test breakpoint added!");
+//			rpcProcess.addBreakPoint("STACK5+3^TSTBLAH2");
+//		}
 		
 		fireCreationEvent(); //to register that the DebugTarget has been started.
+		installDeferredBreakpoints();
 		try {
 			resume();
 		} catch (DebugException e) {
 			e.printStackTrace();
 		}
 		
-		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this); //TODO: should this listener be removed if terminated?
+		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
+	}
+	
+	/**
+	 * Install breakpoints that are already registered with the breakpoint
+	 * manager.
+	 */
+	private void installDeferredBreakpoints() {
+		IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(MDebugConstants.M_DEBUG_MODEL);
+		for (int i = 0; i < breakpoints.length; i++) {
+			breakpointAdded(breakpoints[i]);
+		}
 	}
 
 	@Override
@@ -136,19 +150,37 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 	}
 
 	@Override
-	public void breakpointAdded(IBreakpoint arg0) {
-		//TODO: call rpcProccess to add breakpoint
-
+	public void breakpointAdded(IBreakpoint breakpoint) {
+		if (supportsBreakpoint(breakpoint) && !isTerminated()) {
+			try {
+				if (breakpoint.isEnabled()) {
+					rpcDebugProcess.addBreakPoint(((AbstractMBreakpoint)breakpoint).getBreakpointAsTag());
+				}
+			} catch (CoreException e) {
+			}
+		}
 	}
 
 	@Override
-	public void breakpointChanged(IBreakpoint arg0, IMarkerDelta arg1) {
-		//TODO: copy what PDADebugTarget does
+	public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta marker) {
+		if (supportsBreakpoint(breakpoint) && !isTerminated()) { //TODO: does the rpc api let me re-add the breakpoint?
+			try {
+				if (breakpoint.isEnabled()) {
+					breakpointAdded(breakpoint);
+				} else {
+					breakpointRemoved(breakpoint, null);
+				}
+			} catch (CoreException e) {
+			}
+		}
 	}
 
 	@Override
-	public void breakpointRemoved(IBreakpoint arg0, IMarkerDelta arg1) {
-		//TODO: call rpcProccess to remove breakpoint
+	public void breakpointRemoved(IBreakpoint breakpoint, IMarkerDelta marker) {
+		if (!supportsBreakpoint(breakpoint) && !isTerminated())
+			return;
+		
+		rpcDebugProcess.removeBreakPoint(((AbstractMBreakpoint)breakpoint).getBreakpointAsTag());
 	}
 
 	@Override
@@ -205,8 +237,26 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 	}
 
 	@Override
-	public boolean supportsBreakpoint(IBreakpoint arg0) {
-		// TODO Auto-generated method stub
+	public boolean supportsBreakpoint(IBreakpoint breakpoint) {
+		if (breakpoint.getModelIdentifier().equals(MDebugConstants.M_DEBUG_MODEL) &&
+				breakpoint instanceof AbstractMBreakpoint) {
+			return true;
+			//the previous example only supports breakpoints on a per file basis.
+			//many languages, if not all common languages, will allow you to jump
+			//from one code file to another. this debug target should support all
+			//M_DEBUG_MODEL breakpoints in the workspace.
+//			try {
+//				String program = getLaunch().getLaunchConfiguration().getAttribute(MDebugConstants.ATTR_PDA_PROGRAM, (String)null);
+//				if (program != null) {
+//					IMarker marker = breakpoint.getMarker();
+//					if (marker != null) {
+//						IPath p = new Path(program);
+//						return marker.getResource().getFullPath().equals(p);
+//					}
+//				}
+//			} catch (CoreException e) {
+//			}			
+		}
 		return false;
 	}
 
