@@ -50,6 +50,10 @@
             id="gov.va.mumps.debug.core.sourcePathComputer">
       </sourcePathComputer>
    </extension>
+   
+   
+   <!-- Breakpoints -->
+   <!-- Line Breakpoint -->
    <extension
          point="org.eclipse.debug.core.breakpoints">
       <breakpoint
@@ -58,7 +62,8 @@
             id="gov.va.mumps.debug.core.lineBreakpoint">
       </breakpoint>
    </extension>
-   <!-- the id for this is prefixed with the plugin id -->
+   <!-- note: the ids for extension ids are prefixed with the plugin id, 
+   		hence why gov.va.etc... is not here-->
    <extension
          id="lineBreakpoint.marker" 
          point="org.eclipse.core.resources.markers">
@@ -66,8 +71,30 @@
             type="org.eclipse.debug.core.lineBreakpointMarker">
       </super>
       <persistent
-            value="true"> <!-- can change to true when we know how to fix the persitence issue -->
+            value="true">
       </persistent>
    </extension>
+   
+   <!-- Tag Breakpoint -->
+   <extension
+         point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            markerType="gov.va.med.iss.debug.core.tagBreakpoint.marker"
+            class="gov.va.mumps.debug.core.model.MTagBreakpoint"
+            id="gov.va.mumps.debug.core.tagBreakpoint">
+      </breakpoint>
+   </extension>
+   <!-- note: the ids for extension ids are prefixed with the plugin id, 
+   		hence why gov.va.etc... is not here-->
+   <extension
+         id="tagBreakpoint.marker" 
+         point="org.eclipse.core.resources.markers">
+      <super 
+			type="org.eclipse.debug.core.breakpointMarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>   
 
 </plugin>

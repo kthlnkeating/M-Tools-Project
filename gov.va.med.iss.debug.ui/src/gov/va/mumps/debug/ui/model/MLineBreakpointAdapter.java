@@ -28,7 +28,8 @@ public class MLineBreakpointAdapter implements IToggleBreakpointsTarget {
 			IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(MDebugConstants.M_DEBUG_MODEL);
 			for (int i = 0; i < breakpoints.length; i++) {
 				IBreakpoint breakpoint = breakpoints[i];
-				if (resource.equals(breakpoint.getMarker().getResource())) {
+				if (resource.equals(breakpoint.getMarker().getResource()) &&
+						breakpoint instanceof ILineBreakpoint) {
 					if (((ILineBreakpoint)breakpoint).getLineNumber() == (lineNumber + 1)) {
 						// remove
 						breakpoint.delete();

@@ -152,4 +152,20 @@
       </launchConfigurationTypeImage>
    </extension>
 
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            targetID="org.eclipse.debug.ui.BreakpointView"
+            id="gov.va.mumps.debug.ui.breakpointsview.toolbar">
+         <action
+               id="gov.va.mumps.debug.ui.toolbar.addMumpsBreakpoint"
+               toolbarPath="mumpsGroup"
+               class="gov.va.mumps.debug.ui.breakpoint.AddTagBreakpointActionDelegate"
+               icon="$nl$/icons/full/cview16/pda.gif"
+               label="Add Mumps TagBreakpoint"
+               tooltip="Add a Tag as a Breakpoint">
+         </action>
+      </viewContribution>
+   </extension>
+
 </plugin>

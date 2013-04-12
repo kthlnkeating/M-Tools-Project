@@ -13,7 +13,7 @@ public abstract class AbstractMBreakpoint extends Breakpoint {
 		return MDebugConstants.M_DEBUG_MODEL;
 	}
 	
-	abstract String getBreakpointAsTag();
+	public abstract String getBreakpointAsTag();
 	
 //	public String getBreakpointAsTag() {
 //		//if null, auto discover its value. this breakpoint could have been restored from a previous session

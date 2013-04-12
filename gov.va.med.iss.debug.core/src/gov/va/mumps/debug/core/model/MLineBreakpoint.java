@@ -35,10 +35,6 @@ public class MLineBreakpoint extends AbstractMBreakpoint implements ILineBreakpo
 			throws CoreException {
 		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
-				//TODO: test that this is the correct ID. I suspect that the tutorial is wrong/bugged.
-				//The api doc says it a needs the id of a an extension that is a resource marker.
-				//the id for that one, strangely enough, is the plugin id (not model id) + its actual
-				//extension id
 				IMarker marker = resource
 						.createMarker("gov.va.med.iss.debug.core.lineBreakpoint.marker");
 				setMarker(marker);
@@ -46,7 +42,7 @@ public class MLineBreakpoint extends AbstractMBreakpoint implements ILineBreakpo
 				marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
 				marker.setAttribute(IBreakpoint.ID, getModelIdentifier());
 				marker.setAttribute(IMarker.MESSAGE, "Line Breakpoint: "
-						+ resource.getName() + " [line: " + lineNumber + "]");
+						+ resource.getName() + " [line: " + lineNumber + "]"); //this name shows up in the marker view, not in the breakpoint view
 			}
 		};
 		run(getMarkerRule(resource), runnable);
@@ -106,12 +102,6 @@ public class MLineBreakpoint extends AbstractMBreakpoint implements ILineBreakpo
 		}
 		
 		return breakpointAsTag;
-		
-		//return "STACK5+3^TSTBLAH2"; //TODO just testing here
-//		IMarker m = getMarker();
-//		if (m != null) {
-//			m.getResource().getFullPath() //... need a util that takes a path and determines the line number from the tag. need another util that finds a routine inside a project.
-//		}
 	}
 
 }
