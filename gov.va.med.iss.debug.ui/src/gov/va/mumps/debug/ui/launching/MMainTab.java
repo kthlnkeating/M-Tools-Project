@@ -19,11 +19,8 @@ import org.eclipse.swt.widgets.Text;
 public class MMainTab extends AbstractLaunchConfigurationTab {
 
 	private Text fProgramText;
-	//private Button fProgramButton;
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	public void createControl(Composite parent) {
 		Font font = parent.getFont();
 		
@@ -38,7 +35,7 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 		createVerticalSpacer(comp, 3);
 		
 		Label programLabel = new Label(comp, SWT.NONE);
-		programLabel.setText("&Routine:");
+		programLabel.setText("&M Code:");
 		GridData gd = new GridData(GridData.BEGINNING);
 		programLabel.setLayoutData(gd);
 		programLabel.setFont(font);
@@ -47,43 +44,19 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		fProgramText.setLayoutData(gd);
 		fProgramText.setFont(font);
+		fProgramText.setToolTipText("Ex: D TAG^ROUTINE");
 		fProgramText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				updateLaunchConfigurationDialog();
 			}
 		});
-		
-//		fProgramButton = createPushButton(comp, "&Browse...", null); //$NON-NLS-1$
-//		fProgramButton.addSelectionListener(new SelectionAdapter() {
-//			public void widgetSelected(SelectionEvent e) {
-//				browsePDAFiles();
-//			}
-//		});
 	}
-	
-//	/**
-//	 * Open a resource chooser to select a PDA program 
-//	 */
-//	protected void browsePDAFiles() {
-//		ResourceListSelectionDialog dialog = new ResourceListSelectionDialog(getShell(), ResourcesPlugin.getWorkspace().getRoot(), IResource.FILE);
-//		dialog.setTitle("M Routine");
-//		dialog.setMessage("Select M Routine");
-//		// TODO: single select
-//		if (dialog.open() == Window.OK) {
-//			Object[] files = dialog.getResult();
-//			IFile file = (IFile) files[0];
-//			fProgramText.setText(file.getFullPath().toString());
-//		}
-//		
-//	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
-	 */
+
+	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(org.eclipse.debug.core.ILaunchConfiguration)
-	 */
+	
+	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
 			String program = configuration.getAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, (String)null);
@@ -94,9 +67,8 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 			setErrorMessage(e.getMessage());
 		}
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
-	 */
+	
+	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		String program = fProgramText.getText().trim();
 		if (program.length() == 0) {
@@ -104,15 +76,13 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 		}
 		configuration.setAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, program);
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getName()
-	 */
+	
+	@Override
 	public String getName() {
 		return "Main";
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#isValid(org.eclipse.debug.core.ILaunchConfiguration)
-	 */
+	
+	@Override
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 		//TODO: could validate this based on an RPC call to check if the routine is present?
 //		String text = fProgramText.getText();

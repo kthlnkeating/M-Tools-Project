@@ -75,6 +75,9 @@ import gov.va.med.iss.connection.utilities.MPiece;
  *  
  */
 public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor { //AbstractTextEditor {
+	
+	public static final String M_EDITOR_ID = "gov.va.med.iss.meditor.editors.MEditor";
+	
 	private static MCodeScanner fMCodeScanner;
 	private MContentOutlinePage outlinePage = null;
 	private static String routineName = "";

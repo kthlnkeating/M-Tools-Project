@@ -64,7 +64,7 @@ public class MTagDialog extends Dialog {
 
 	@Override
 	protected Point getInitialSize() {
-		return new Point(350, 100);
+		return new Point(350, 105);
 	}
 
 	@Override
