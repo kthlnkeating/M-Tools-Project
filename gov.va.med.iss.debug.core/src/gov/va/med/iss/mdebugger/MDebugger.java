@@ -186,7 +186,7 @@ public class MDebugger {
 	}
 	
 	public void removeBreakpoint(String breakPoint) {
-		rpcName = "XTDEBUG DELETE BREAKPOINT"; //TODO: for some reason this an invalid RPC call and fails.
+		rpcName = "XTDEBUG DELETE BREAK";
 		handleResults = false;
 		doDebug(breakPoint);
 	}
