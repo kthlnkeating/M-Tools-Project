@@ -131,19 +131,19 @@
          <action
                id="gov.va.mumps.debug.ui.toolbar.addMumpsBreakpoint"
                toolbarPath="mumpsGroup"
-               class="gov.va.mumps.debug.ui.breakpoint.AddWatchpointActionDelegate"
-               icon="$nl$/icons/full/cview16/pda.gif"
-               label="Add Mumps Watchpoint"
-               tooltip="Add a variable to break on when changed">
+               class="gov.va.mumps.debug.ui.breakpoint.AddTagBreakpointActionDelegate"
+               icon="$nl$/icons/full/cview16/blue_tag.png"
+               label="Add Mumps TagBreakpoint"
+               tooltip="Add a Tag as a Breakpoint">
          </action>
          <!-- Add custom action "Add Watchpoint" to Debug Breakpoints view -->
          <action
-               id="gov.va.mumps.debug.ui.toolbar.addMumpsBreakpoint"
+               id="gov.va.mumps.debug.ui.toolbar.addMumpsWatchpoint"
                toolbarPath="mumpsGroup"
-               class="gov.va.mumps.debug.ui.breakpoint.AddTagBreakpointActionDelegate"
-               icon="$nl$/icons/full/cview16/pda.gif"
-               label="Add Mumps TagBreakpoint"
-               tooltip="Add a Tag as a Breakpoint">
+               class="gov.va.mumps.debug.ui.breakpoint.AddWatchpointActionDelegate"
+               icon="$nl$/icons/full/cview16/pencil.png"
+               label="Add Mumps Watchpoint"
+               tooltip="Add a variable to break on when changed">
          </action>
       </viewContribution>
    </extension>
