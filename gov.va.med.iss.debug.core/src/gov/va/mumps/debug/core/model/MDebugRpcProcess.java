@@ -178,7 +178,7 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	}
 
 	public void stepOver() {
-		responseResults = mDebugger.stepOver();
+		//responseResults = mDebugger.stepOver();
 	}
 
 	public void stepInto() {
@@ -186,7 +186,7 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	}
 
 	public void stepOut() {
-		responseResults = mDebugger.stepOut();
+		//responseResults = mDebugger.stepOut();
 	}
 	
 	public void addBreakPoint(String breakPoint) {

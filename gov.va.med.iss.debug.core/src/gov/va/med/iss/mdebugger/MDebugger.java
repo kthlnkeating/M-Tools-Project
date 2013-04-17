@@ -77,7 +77,7 @@ public class MDebugger {
 			 * this situation is encountered, the client side fix is to resend
 			 * the request again.
 			 */
-			if (dbCommand.equals("RUN")) {
+			if (dbCommand.equals("RUN") || dbCommand.equals("STEPOUT")) {
 				if (
 						!results.isComplete() && 
 						results.getLineLocation() == -1 &&
@@ -104,19 +104,21 @@ public class MDebugger {
 		return stepDebug("RUN");
 	}
 	
-	public StepResultsVO stepOver() {
-		return stepDebug("STEP");
-	}
+	//does not step over, acts more like step in
+//	public StepResultsVO stepOver() {
+//		return stepDebug("STEP"); 
+//	}
 	
 	public StepResultsVO stepInto() {
-		return stepDebug("STEPINTO");
+		return stepDebug("STEP"); //currently STEP behaves like stepinto
 	}
 	
-	public StepResultsVO stepOut() {
-		return stepDebug("STEPOUT");
-	}
+	//not implemented
+//	public StepResultsVO stepOut() {
+//		return stepDebug("STEPOUT");
+//	}
 	
-	//not supported
+	//not supported, not sure why the original mdebug assumes this is a valid rpc parm
 //	public StepResultsVO terminate() {
 //		return stepDebug("TERMINATE");
 //	}

@@ -54,12 +54,14 @@ public class MThread extends MDebugElement implements IThread {
 
 	@Override
 	public boolean canStepOver() {
-		return true; //I think any command can be stepped over, but if nextCommand is null perhaps that is a validcheck
+		//return true; //I think any command can be stepped over, but if nextCommand is null perhaps that is a validcheck
+		return false; ////disabling until the KIDs package actually implements this
 	}
 
 	@Override
 	public boolean canStepReturn() {
-		return true; //TODO: check if there is anything on the stack?
+		//return true; //TODO: check if there is anything on the stack?
+		return false; ////disabling until the KIDs package actually implements this
 	}
 
 	@Override
