@@ -34,13 +34,16 @@ public class MDebugger {
 			
 			//this helps it to skip over line labels, which appear to return an empty string from the server
 			for (int i = 1; strResults.trim().equals("") && i <= 4; i++) {
+				//TODO: a blank string is ok for DELETEing watchpoints, don't retry on that.
 				System.out.println("Response was empty, sending "+ dbCommand +" again: "+ i);
 				strResults = callRPC(dbCommand);
 			}
 		} catch (VistaLinkFaultException e) {
-			e.printStackTrace(); //TODO: throw core exception
+			e.printStackTrace();
+			throw new RuntimeException(e); //TODO: use checked ex?
 		} catch (FoundationsException e) {
 			e.printStackTrace();
+			throw new RuntimeException(e); //TODO: use checked ex?
 		}
 		
 		if (strResults.trim().equals(""))
@@ -183,7 +186,7 @@ public class MDebugger {
 	}
 	
 	public void removeBreakpoint(String breakPoint) {
-		rpcName = "XTDEBUG DELETE BREAKPOINT";
+		rpcName = "XTDEBUG DELETE BREAKPOINT"; //TODO: for some reason this an invalid RPC call and fails.
 		handleResults = false;
 		doDebug(breakPoint);
 	}
