@@ -196,6 +196,14 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	public void removeBreakPoint(String breakPoint) {
 		mDebugger.removeBreakpoint(breakPoint);
 	}
+	
+	public void addWatchPoint(String watchPoint) {
+		mDebugger.addWatchpoint(watchPoint);
+	}
+	
+	public void removeWatchPoint(String watchPoint) {
+		mDebugger.removeWatchpoint(watchPoint);
+	}
 
 	public StepResultsVO getResponseResults() {
 		return responseResults;

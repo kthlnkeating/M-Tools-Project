@@ -121,12 +121,22 @@
             id="org.eclipse.debug.examples.ui.pda.launchConfigurationTypeImage">
       </launchConfigurationTypeImage>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.viewActions">
       <viewContribution
             targetID="org.eclipse.debug.ui.BreakpointView"
             id="gov.va.mumps.debug.ui.breakpointsview.toolbar">
+         <!-- Add custom action "Add Tag Breakpoing" to Debug Breakpoints view --> 
+         <action
+               id="gov.va.mumps.debug.ui.toolbar.addMumpsBreakpoint"
+               toolbarPath="mumpsGroup"
+               class="gov.va.mumps.debug.ui.breakpoint.AddWatchpointActionDelegate"
+               icon="$nl$/icons/full/cview16/pda.gif"
+               label="Add Mumps Watchpoint"
+               tooltip="Add a variable to break on when changed">
+         </action>
+         <!-- Add custom action "Add Watchpoint" to Debug Breakpoints view -->
          <action
                id="gov.va.mumps.debug.ui.toolbar.addMumpsBreakpoint"
                toolbarPath="mumpsGroup"

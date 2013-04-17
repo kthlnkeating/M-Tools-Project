@@ -1,6 +1,7 @@
 package gov.va.mumps.debug.ui.model;
 
 import gov.va.mumps.debug.core.model.MTagBreakpoint;
+import gov.va.mumps.debug.core.model.MWatchpoint;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.debug.core.DebugException;
@@ -18,7 +19,7 @@ public class MDebugModelPresentation extends LabelProvider implements
 	
 	@Override
 	public Image getImage(Object element) {
-		//TODO: also implement this for MTagBreakpoint so it returns a nice fancy picture in the breakpoint view
+		//TODO: also implement this for MTagBreakpoint so it returns a nice fancy picture in the breakpoint view instead of the line breakpoint
 		
 		return null;
 	}
@@ -27,6 +28,9 @@ public class MDebugModelPresentation extends LabelProvider implements
 	public String getText(Object element) {
 		if (element instanceof MTagBreakpoint)
 			return ((MTagBreakpoint)element).getBreakpointAsTag();
+		
+		if (element instanceof MWatchpoint)
+			return ((MWatchpoint)element).getWatchpointVariable();
 		
 		return null;
 	}

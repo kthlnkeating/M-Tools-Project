@@ -153,9 +153,13 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 	public void breakpointAdded(IBreakpoint breakpoint) {
 		if (supportsBreakpoint(breakpoint) && !isTerminated()) {
 			try {
-				if (breakpoint.isEnabled()) {
+				if (!breakpoint.isEnabled())
+					return;
+				
+				if (breakpoint instanceof AbstractMBreakpoint)
 					rpcDebugProcess.addBreakPoint(((AbstractMBreakpoint)breakpoint).getBreakpointAsTag());
-				}
+				else if (breakpoint instanceof MWatchpoint)
+					rpcDebugProcess.addWatchPoint(((MWatchpoint)breakpoint).getWatchpointVariable());
 			} catch (CoreException e) {
 			}
 		}
@@ -180,7 +184,10 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		if (!supportsBreakpoint(breakpoint) && !isTerminated())
 			return;
 		
-		rpcDebugProcess.removeBreakPoint(((AbstractMBreakpoint)breakpoint).getBreakpointAsTag());
+		if (breakpoint instanceof AbstractMBreakpoint)
+			rpcDebugProcess.removeBreakPoint(((AbstractMBreakpoint)breakpoint).getBreakpointAsTag());
+		else if (breakpoint instanceof MWatchpoint)
+			rpcDebugProcess.removeWatchPoint(((MWatchpoint)breakpoint).getWatchpointVariable());
 	}
 
 	@Override
@@ -239,7 +246,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 	@Override
 	public boolean supportsBreakpoint(IBreakpoint breakpoint) {
 		if (breakpoint.getModelIdentifier().equals(MDebugConstants.M_DEBUG_MODEL) &&
-				breakpoint instanceof AbstractMBreakpoint) {
+				(breakpoint instanceof AbstractMBreakpoint || breakpoint instanceof MWatchpoint)) {
 			return true;
 			//the previous example only supports breakpoints on a per file basis.
 			//many languages, if not all common languages, will allow you to jump

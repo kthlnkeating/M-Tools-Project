@@ -88,8 +88,8 @@ public class StepResultsParser {
 			case VALUES:
 				variables.add(new VariableVO(line, scanner.next()));
 				break;
-			case WHATCH:
-				System.out.println(line);
+			case WATCH:
+				System.out.println(line); //TODO: handle this, inform the UI that is stopped on this watchpoint. there is a breakpoint fire event for that. However, the API does not send any data back if it is suspending on a breakpoint. so breakpoints suspending will not benefit from this currently and that would be inconsistent
 				break;
 			case READ:
 				System.out.println(line);
@@ -105,7 +105,6 @@ public class StepResultsParser {
 	}
 
 	private enum SectionType {
-		REASON, WRITE, READ, VALUES, STACK, WHATCH, LOCATION;
-		
+		REASON, WRITE, READ, VALUES, STACK, WATCH, LOCATION;
 	}
 }

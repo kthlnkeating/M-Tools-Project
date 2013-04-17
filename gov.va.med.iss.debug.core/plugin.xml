@@ -76,5 +76,27 @@
             value="true">
       </persistent>
    </extension>
+   
+   <!-- Watchpoints -->
+   <extension
+         point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            markerType="gov.va.med.iss.debug.core.watchpoint.marker"
+            class="gov.va.mumps.debug.core.model.MTagBreakpoint"
+            id="gov.va.mumps.debug.core.watchpoint">
+      </breakpoint>
+   </extension>
+   <!-- note: the ids for extension ids are prefixed with the plugin id, 
+   		hence why gov.va.etc... is not here-->
+   <extension
+         id="watchpoint.marker"
+         point="org.eclipse.core.resources.markers">
+      <super 
+			type="org.eclipse.debug.core.breakpointMarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
 
 </plugin>
