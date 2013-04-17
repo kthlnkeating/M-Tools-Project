@@ -31,7 +31,6 @@
       </sourcePathComputer>
    </extension>
    
-   
    <!-- Breakpoints -->
    <!-- Line Breakpoint -->
    <extension
@@ -82,7 +81,7 @@
          point="org.eclipse.debug.core.breakpoints">
       <breakpoint
             markerType="gov.va.med.iss.debug.core.watchpoint.marker"
-            class="gov.va.mumps.debug.core.model.MTagBreakpoint"
+            class="gov.va.mumps.debug.core.model.MWatchpoint"
             id="gov.va.mumps.debug.core.watchpoint">
       </breakpoint>
    </extension>
