@@ -185,4 +185,25 @@
             name="M-Editor"
             id="gov.va.med.iss.meditor.page1"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="gov.va.med.iss.meditor.mserverutil"
+            objectClass="org.eclipse.core.resources.IFile">
+         <menu
+               id="gov.va.med.iss.meditor.mserverutil.topmenu"
+               label="M Server Util"
+               path="additions">
+            <separator
+                  name="seperator1">
+            </separator>
+         </menu>
+         <action
+               class="gov.va.med.iss.meditor.actions.SaveToServer"
+               id="gov.va.med.iss.meditor.actions.SaveToServer"
+               label="Save to Server"
+               menubarPath="gov.va.med.iss.meditor.mserverutil.topmenu/seperator1">
+         </action>
+      </objectContribution>
+   </extension>
 </plugin>
