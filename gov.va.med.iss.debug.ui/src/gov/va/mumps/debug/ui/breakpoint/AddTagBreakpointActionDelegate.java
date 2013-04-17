@@ -16,7 +16,7 @@ public class AddTagBreakpointActionDelegate implements IViewActionDelegate {
 	private IViewPart viewPart;
 	
 	@Override
-	public void run(IAction action) {
+	public void run(IAction action) { //TODO: not sure why eclipse wants this to be an IActionDelegate / not sure what to do with action parm
 
 		MTagDialog dialog = new MTagDialog(viewPart.getViewSite().getShell());
 		dialog.open();
