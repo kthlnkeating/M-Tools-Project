@@ -56,7 +56,7 @@ import com.sun.org.apache.bcel.internal.classfile.LineNumber;
 /*
  * About variables. The debugger returns all variables back. 
  * 
- * In order to map variables to a stack, it may be possible
+ * In order to map variables to a stack, it may be possible (update: its not, not currently)
  * to separate variables by taking all the first variables that come in from 
  * START, place them in a separate custom view. Any new variables can be added
  * to a stack by diffing all the currently defined variables. But new variables
@@ -104,7 +104,7 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 
 	@Override
 	public boolean canStepOver() {
-		return getThread().canStepOver();
+		return getThread().canStepOver(); //TODO: disable these for children stacks
 	}
 
 	@Override
@@ -154,7 +154,6 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 
 	@Override
 	public void suspend() throws DebugException {
-		getThread().suspend();
 	}
 
 	@Override

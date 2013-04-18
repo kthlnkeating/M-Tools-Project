@@ -33,7 +33,7 @@ public class MDebugger {
 			strResults = callRPC(dbCommand);
 			
 			//this helps it to skip over line labels, which appear to return an empty string from the server
-			for (int i = 1; strResults.trim().equals("") && i <= 4; i++) {
+			for (int i = 1; handleResults && strResults.trim().equals("") && i <= 4; i++) {
 				//TODO: a blank string is ok for DELETEing watchpoints, don't retry on that.
 				System.out.println("Response was empty, sending "+ dbCommand +" again: "+ i);
 				strResults = callRPC(dbCommand);
@@ -46,7 +46,7 @@ public class MDebugger {
 			throw new RuntimeException(e); //TODO: use checked ex?
 		}
 		
-		if (strResults.trim().equals(""))
+		if (strResults.trim().equals("") && handleResults)
 			throw new RuntimeException("Unable to fetch any results from Debugger after 5 requests"); //TODO: this should definetly be a a custom exception to indicate to the caller to terminate the IProcess
 		
 		StepResultsVO results = null;		
@@ -77,7 +77,7 @@ public class MDebugger {
 			 * this situation is encountered, the client side fix is to resend
 			 * the request again.
 			 */
-			if (dbCommand.equals("RUN") || dbCommand.equals("STEPOUT")) {
+			if (dbCommand.equals("RUN") || dbCommand.equals("STEP")) {
 				if (
 						!results.isComplete() && 
 						results.getLineLocation() == -1 &&

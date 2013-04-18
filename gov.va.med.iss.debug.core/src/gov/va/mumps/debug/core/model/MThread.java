@@ -38,18 +38,17 @@ public class MThread extends MDebugElement implements IThread {
 
 	@Override
 	public void resume() throws DebugException {
-		getDebugTarget().resume();
 		fireResumeEvent(DebugEvent.CLIENT_REQUEST);
+		getDebugTarget().resume();
 	}
 
 	@Override
 	public void suspend() throws DebugException {
-		getDebugTarget().suspend();
 	}
 
 	@Override
 	public boolean canStepInto() {
-		return true; //TODO: this will take some lexical analysis of the nextCommand to see if it is a fanout
+		return !isTerminated() && !isStepping(); //TODO: this will take some lexical analysis of the nextCommand to see if it is a fanout
 	}
 
 	@Override
@@ -67,28 +66,28 @@ public class MThread extends MDebugElement implements IThread {
 	@Override
 	public boolean isStepping() {
 		//return false;
-		return isSuspended();
+		return !isSuspended();
 	}
 
 	@Override
 	public void stepInto() throws DebugException {
-		fireResumeEvent(DebugEvent.CLIENT_REQUEST);
+		fireResumeEvent(DebugEvent.STEP_INTO);
 		((MDebugTarget)getDebugTarget()).stepInto();
-		fireSuspendEvent(DebugEvent.STEP_INTO);
+		fireSuspendEvent(DebugEvent.STEP_END); //TODO: cannot assume this is step_end. need to have the MDebugTarget invoke this MThread to call the right suspend event (breakpoint, watchpoint or step end)
 	}
 
 	@Override
 	public void stepOver() throws DebugException {
-		fireResumeEvent(DebugEvent.CLIENT_REQUEST);
+		fireResumeEvent(DebugEvent.STEP_OVER);
 		((MDebugTarget)getDebugTarget()).stepOver();
-		fireSuspendEvent(DebugEvent.STEP_OVER);
+		fireSuspendEvent(DebugEvent.STEP_END);
 	}
 
 	@Override
 	public void stepReturn() throws DebugException {
-		fireResumeEvent(DebugEvent.CLIENT_REQUEST);
+		fireResumeEvent(DebugEvent.STEP_RETURN);
 		((MDebugTarget)getDebugTarget()).stepOut();
-		fireSuspendEvent(DebugEvent.STEP_RETURN);
+		fireSuspendEvent(DebugEvent.STEP_END);
 	}
 
 	@Override

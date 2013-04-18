@@ -88,6 +88,17 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 			breakpointAdded(breakpoints[i]);
 		}
 	}
+	
+	/**
+	 * Removes all active breakpoints currently registered with the breakpoint
+	 * manager.
+	 */
+	private void uninstallActiveBreakpoints() {
+		IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(MDebugConstants.M_DEBUG_MODEL);
+		for (int i = 0; i < breakpoints.length; i++) {
+			breakpointRemoved(breakpoints[i], null);
+		}
+	}
 
 	@Override
 	public IDebugTarget getDebugTarget() {
@@ -135,12 +146,13 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 
 	@Override
 	public void resume() throws DebugException {
+		debugThread.fireResumeEvent(DebugEvent.CLIENT_REQUEST);
 		rpcDebugProcess.resume();
 		suspended = false;
 		StepResultsVO results = rpcDebugProcess.getResponseResults();
 		suspended = true;
 		handleResponse(results);
-		debugThread.fireResumeEvent(DebugEvent.CLIENT_REQUEST); //CLIENT_REQUEST - user/guiclient requested
+		//debugThread.fireResumeEvent(DebugEvent.CLIENT_REQUEST); //CLIENT_REQUEST - user/guiclient requested
 	}
 
 	@Override
@@ -151,37 +163,50 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 
 	@Override
 	public void breakpointAdded(IBreakpoint breakpoint) {
-		if (supportsBreakpoint(breakpoint) && !isTerminated()) {
-			try {
-				if (!breakpoint.isEnabled())
-					return;
-				
-				if (breakpoint instanceof AbstractMBreakpoint)
-					rpcDebugProcess.addBreakPoint(((AbstractMBreakpoint)breakpoint).getBreakpointAsTag());
-				else if (breakpoint instanceof MWatchpoint)
-					rpcDebugProcess.addWatchPoint(((MWatchpoint)breakpoint).getWatchpointVariable());
-			} catch (CoreException e) {
-			}
+		if (!supportsBreakpoint(breakpoint) || isTerminated())
+			return;
+		
+		try {
+			if (!breakpoint.isEnabled())
+				return;
+
+			if (breakpoint instanceof AbstractMBreakpoint)
+				rpcDebugProcess
+						.addBreakPoint(((AbstractMBreakpoint) breakpoint)
+								.getBreakpointAsTag());
+			else if (breakpoint instanceof MWatchpoint)
+				rpcDebugProcess.addWatchPoint(((MWatchpoint) breakpoint)
+						.getWatchpointVariable());
+		} catch (CoreException e) {
 		}
 	}
 
 	@Override
 	public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta marker) {
-		if (supportsBreakpoint(breakpoint) && !isTerminated()) { //TODO: does the rpc api let me re-add the breakpoint?
-			try {
-				if (breakpoint.isEnabled()) {
-					breakpointAdded(breakpoint);
-				} else {
-					breakpointRemoved(breakpoint, null);
-				}
-			} catch (CoreException e) {
+		if (!supportsBreakpoint(breakpoint) || isTerminated())
+			return;
+		
+		try {
+			// this code is from the custom debugger tutorial. it assumes that
+			// breakpoints only property being changed is the enable/disable
+			// toggle. Which is not quite true, what if a line number changes?
+			// if so, use the IMarkerDelta parm to compute this change and
+			// remove the old value from the RPC api... although I think that
+			// would only be benefecial for editing a file while debugging it
+			// at the same time, which I am not a big fan of supporting.
+			if (breakpoint.isEnabled()) {
+				breakpointAdded(breakpoint);
+			} else {
+				breakpointRemoved(breakpoint, null);
 			}
+		} catch (CoreException e) {
 		}
+		
 	}
 
 	@Override
 	public void breakpointRemoved(IBreakpoint breakpoint, IMarkerDelta marker) {
-		if (!supportsBreakpoint(breakpoint) && !isTerminated())
+		if (!supportsBreakpoint(breakpoint) || isTerminated())
 			return;
 		
 		if (breakpoint instanceof AbstractMBreakpoint)
@@ -272,7 +297,6 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		fireResumeEvent(DebugEvent.STEP_OVER);
 		rpcDebugProcess.stepOver();
 		handleResponse(rpcDebugProcess.getResponseResults()); //TODO: move this to a new thread if yo want asychon. also move the suspend events to the async thread
-		fireSuspendEvent(DebugEvent.STEP_OVER);
 	}
 
 	public void stepInto() {
@@ -280,7 +304,6 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		fireResumeEvent(DebugEvent.STEP_INTO);
 		rpcDebugProcess.stepInto();
 		handleResponse(rpcDebugProcess.getResponseResults());
-		fireResumeEvent(DebugEvent.STEP_INTO);
 	}
 
 	public void stepOut() {
@@ -288,7 +311,6 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		fireResumeEvent(DebugEvent.STEP_RETURN);
 		rpcDebugProcess.stepOut();
 		handleResponse(rpcDebugProcess.getResponseResults());
-		fireResumeEvent(DebugEvent.STEP_RETURN);
 	}
 	
 	public MStackFrame[] getStackFrames() {
@@ -330,6 +352,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 			 * locationAsATag to a lineNumber and routine name.
 			 */
 			
+			//TODO: implement this as async or have the api fixed
 			// update: no, location as a tag will not work so well because it will
 			// require opening the entire file and lightly parsing it. way to
 			// much work to occur here in this model thread. will have to either
@@ -376,14 +399,15 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		}
 		
 		if (vo.getNextCommnd() != null) {
-			fireResumeEvent(DebugEvent.STEP_END); //TODO: does the API tell me whether it stops on a breakpoint or just a normal step ending? maybe I have to compare the next command value with current breakpoints set?
+			fireSuspendEvent(DebugEvent.STEP_END); //TODO: use the value from the API for breakpoint/watchpoint/step end
 		}
 	}
 	
 	private void terminated() {
+		uninstallActiveBreakpoints();
+		DebugPlugin.getDefault().getBreakpointManager().removeBreakpointListener(this);
 		rpcDebugProcess.terminate();
 		suspended = false;
-		DebugPlugin.getDefault().getBreakpointManager().removeBreakpointListener(this);
 		fireTerminateEvent(); //this fires the event to indicate that the debugtarget has terminated.
 	}
 

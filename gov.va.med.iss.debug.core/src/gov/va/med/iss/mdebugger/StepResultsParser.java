@@ -53,7 +53,7 @@ public class StepResultsParser {
 			case REASON:
 				if (line.equals("DONE -- PROCESSING FINISHED"))
 					complete = true;
-				else if (line.startsWith("STEP MODE: ")) {
+				else if (line.startsWith("STEP MODE: ")) { //TODO: implement Break and watchpoint parsing
 					Matcher m = captureStepMode.matcher(line);
 					m.find();
 					locationAsTag = m.group(1);
