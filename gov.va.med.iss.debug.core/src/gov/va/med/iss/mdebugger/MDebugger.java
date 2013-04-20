@@ -9,6 +9,7 @@ import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.mdebugger.vo.StackVO;
 import gov.va.med.iss.mdebugger.vo.StepResultsVO;
+import gov.va.med.iss.mdebugger.vo.WatchVO;
 
 import java.util.Iterator;
 
@@ -17,7 +18,6 @@ public class MDebugger {
 	private VistaLinkConnection myConnection;
 	private String rpcName = "";
 	private boolean handleResults = true;
-	//private boolean repeatLastDebug = false; //this is always null, perhaps earlier in dev it was being set --jspivey
 	private String lastCommand = "";
 
 	public StepResultsVO doDebug(String dbCommand) {
@@ -34,7 +34,7 @@ public class MDebugger {
 			
 			//this helps it to skip over line labels, which appear to return an empty string from the server
 			for (int i = 1; handleResults && strResults.trim().equals("") && i <= 4; i++) {
-				//TODO: a blank string is ok for DELETEing watchpoints, don't retry on that.
+				//TODO: is this even possible now?
 				System.out.println("Response was empty, sending "+ dbCommand +" again: "+ i);
 				strResults = callRPC(dbCommand);
 			}
@@ -55,6 +55,7 @@ public class MDebugger {
 			//StepResults.ProcessInput(vResp.getResults()); //comment out, no longer pass resulting to this, but isntead returning them--jspivey
 			results = new StepResultsParser().parse(strResults);
 
+			System.out.println("reason: " + results.getResultReason());
 			System.out.println("complete: "+ results.isComplete());
 			System.out.println("nextCommand: "+ results.getNextCommnd());
 			System.out.println("lastCommand: "+ results.getLastCommand());
@@ -67,6 +68,18 @@ public class MDebugger {
 			while (stackItr.hasNext()) {
 				StackVO stack = stackItr.next();
 				System.out.println(stack.getStackName() +" called by: "+ stack.getCaller());
+			}
+			Iterator<WatchVO> watchItr = results.getWatchedVars();
+			if (watchItr.hasNext()) {
+				System.out.println("WATCHED VARS:");
+			
+				while (watchItr.hasNext()) {
+					System.out.println(watchItr.next().getVariableName());
+				}
+			}
+			if (results.getWriteLine() != null) {
+				System.out.println("WRITE LINE: ");
+				System.out.println(results.getWriteLine());
 			}
 			
 			/*
@@ -123,24 +136,6 @@ public class MDebugger {
 //		return stepDebug("TERMINATE");
 //	}
 
-	/**
-	 * method used to indicate to the server to process more
-	 * of the code.  The range of code to be covered is
-	 * indicated by the value of dbCommand.
-	 * @param dbCommand - contains a text value indicating
-	 * the amount of code to be processed:
-	 *    "STEP" the next command should be processed 
-	 *    "STEPLINE" commands on the current line should be 
-	 *             processed
-	 *    "RUN" commands are executed until a specified 
-	 *             reason to pause (e.g., breakpoint, watched
-	 *             value change, etc.) is reached.
-	 *    "STEPOUT" commands are processed until the processing
-	 *             exits the current stack level for an earlier
-	 *             one
-	 *    "STEPINTO" the processing is traced into the next higher
-	 *             stack level
-	 */
 	public StepResultsVO stepDebug(String dbCommand) {
 		rpcName = "XTDEBUG NEXT";
 		handleResults = true;

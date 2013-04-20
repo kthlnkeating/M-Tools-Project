@@ -2,7 +2,9 @@ package gov.va.med.iss.mdebugger;
 
 import gov.va.med.iss.mdebugger.vo.StackVO;
 import gov.va.med.iss.mdebugger.vo.StepResultsVO;
+import gov.va.med.iss.mdebugger.vo.StepResultsVO.ResultReasonType;
 import gov.va.med.iss.mdebugger.vo.VariableVO;
+import gov.va.med.iss.mdebugger.vo.WatchVO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,11 +21,12 @@ public class StepResultsParserTest {
 	@Test
 	public void testParse() throws IOException {
 		
+		StepResultsParser testMe = new StepResultsParser();
 		StepResultsVO vo;
-//		vo = new StepResultsParser().parse(getDataFromFile("doneResults.txt"));
-//		Assert.assertEquals(true, vo.isComplete());
-		
-		vo = new StepResultsParser().parse(getDataFromFile("stepOutResult1.txt"));
+
+		//Test a result coming back due to a step completing
+		vo = testMe.parse(getDataFromFile("stepResult1.txt"));
+		Assert.assertFalse(vo.isComplete());
 		Assert.assertEquals("TSTBLAH2", vo.getRoutineName());
 		Assert.assertEquals("W \"IM IN STACK3\"", vo.getNextCommnd());
 		Assert.assertEquals(13, vo.getLineLocation());
@@ -40,6 +43,30 @@ public class StepResultsParserTest {
 		VariableVO var = varItr.next();
 		Assert.assertEquals("%DT", var.getName());
 		Assert.assertEquals("T", var.getValue());
+		
+		Assert.assertNull(vo.getWriteLine());
+		
+		//test breakpoint result coming back
+		vo = testMe.parse(getDataFromFile("breakResult1.txt"));
+		Assert.assertEquals(ResultReasonType.BREAKPOINT, vo.getResultReason());
+		Assert.assertEquals("STACK5+1^TSTROUT", vo.getLocationAsTag());
+		
+		//test watchpoint
+		vo = testMe.parse(getDataFromFile("watchResult1.txt"));
+		Assert.assertEquals(ResultReasonType.WATCHPOINT, vo.getResultReason());
+		Assert.assertEquals("STACK5+2^TSTROUT", vo.getLocationAsTag());
+		Iterator<WatchVO> watchItr = vo.getWatchedVars();
+		Assert.assertTrue(watchItr.hasNext());
+		Assert.assertEquals("Q", watchItr.next().getVariableName());
+		//TODO: assert prev and new values of variable when implemented and fixed
+		
+		//test Write results
+		vo = testMe.parse(getDataFromFile("writeResult1.txt"));
+		Assert.assertEquals(ResultReasonType.WRITE, vo.getResultReason());
+		Assert.assertEquals("STACK5+3^TSTROUT", vo.getLocationAsTag());
+		Assert.assertEquals("IM IN STACK2IM IN STACK5", vo.getWriteLine());
+		
+		//test read results
 	}
 	
 	@Ignore
@@ -57,7 +84,7 @@ public class StepResultsParserTest {
 
 		while(read != null) {
 		    sb.append(read);
-		    sb.append("\r\n");
+		    sb.append("\n");
 		    try {
 				read = br.readLine();
 			} catch (IOException e) {

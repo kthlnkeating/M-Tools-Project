@@ -2,7 +2,9 @@ package gov.va.med.iss.mdebugger;
 
 import gov.va.med.iss.mdebugger.vo.StackVO;
 import gov.va.med.iss.mdebugger.vo.StepResultsVO;
+import gov.va.med.iss.mdebugger.vo.StepResultsVO.ResultReasonType;
 import gov.va.med.iss.mdebugger.vo.VariableVO;
+import gov.va.med.iss.mdebugger.vo.WatchVO;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -12,11 +14,13 @@ import java.util.regex.Pattern;
 
 public class StepResultsParser {
 	
-	private static final Pattern captureStepMode = Pattern.compile("^STEP MODE\\: ([\\w\\+\\^]+)\\s*.*$");
+	private static final Pattern captureTagLocation = Pattern.compile("^.*?[A-Z]+\\: *([\\w\\+\\^]+)\\s*.*$");
 	private static final Pattern stackCaller = Pattern.compile("^\\s*([%\\w\\d\\+\\^]*).*$");
 	
 	public StepResultsVO parse(String data) {
+		System.out.println(data);
 		//results
+		ResultReasonType resultReason = null;
 		String routineName = null;
 		boolean complete = false;
 		LinkedList<StackVO> stack = new LinkedList<StackVO>();
@@ -25,6 +29,8 @@ public class StepResultsParser {
 		String nextCommand = null;
 		String lastCommand = null;
 		LinkedHashSet<VariableVO> variables = new LinkedHashSet<VariableVO>(70);
+		String resultLine = null;
+		LinkedList<WatchVO> watchedVariables = new LinkedList<WatchVO>();
 		
 		//scanning logic
 		SectionType section = null;
@@ -53,10 +59,24 @@ public class StepResultsParser {
 			case REASON:
 				if (line.equals("DONE -- PROCESSING FINISHED"))
 					complete = true;
-				else if (line.startsWith("STEP MODE: ")) { //TODO: implement Break and watchpoint parsing
-					Matcher m = captureStepMode.matcher(line);
-					m.find();
-					locationAsTag = m.group(1);
+				else if (line.startsWith("START:" )) {
+					resultReason = ResultReasonType.START;
+				} else if (line.startsWith("STEP MODE: ")) { //TODO: implement Break and watchpoint parsing
+					resultReason = ResultReasonType.STEP;
+					locationAsTag = captureTagLoc(line);
+				} else if (line.startsWith("BREAKPOINT: ")) {
+					//BREAKPOINT: TST33+2^TSTROUT   <-- note: the breakpoint sent originaly was TSTROUT+72^TSTROUT... will not be able to tie my line breakpoints back until either 1) the rpc sends back the original 2) I send the offset of the last line label
+					resultReason = ResultReasonType.BREAKPOINT;
+					locationAsTag = captureTagLoc(line);
+				} else if (line.startsWith("WATCH ON VARIABLES:")) {
+					//WATCH ON VARIABLES: STACK5+2^TSTROUT AT +55^TSTROUT     S Q="a",R="b",S="c"
+					resultReason = ResultReasonType.WATCHPOINT;
+					locationAsTag = captureTagLoc(line);
+				} else if (line.startsWith("WRITE:")) {
+					//WRITE:  STACK5+3^TSTROUT  LINE: IM IN STACK2IM IN STACK5
+					//TODO: READ command too
+					resultReason = ResultReasonType.WRITE;
+					locationAsTag = captureTagLoc(line);
 				} else if (line.startsWith("   NEXT COMMAND: ")) {
 					nextCommand = line.substring(17);
 				} else if (line.startsWith("   LAST COMMAND: ")) {
@@ -89,22 +109,50 @@ public class StepResultsParser {
 				variables.add(new VariableVO(line, scanner.next()));
 				break;
 			case WATCH:
-				System.out.println(line); //TODO: handle this, inform the UI that is stopped on this watchpoint. there is a breakpoint fire event for that. However, the API does not send any data back if it is suspending on a breakpoint. so breakpoints suspending will not benefit from this currently and that would be inconsistent
+//				WATCH DATA
+//				Q = x^<UNDEFINED>
+//
+//				R = y^<UNDEFINED>
+				if (line.contains("=") && line.contains(" "))
+					watchedVariables.add(new WatchVO(line.substring(0, line.indexOf(" ")),
+							null, null));
+				//TODO: problem in api results. the API cannot tell me the correct prev and new values if they contain the "^" character
+				//setting null until API is fixed
+
+				
+				//this returns a list of vars that are (1) being watched (2) changed.
+				//it is possible for this to be more than 1, example. the NEW comand
+				//does not actually run seperatly for each parm, but once, wiping out
+				//all of the previous values in the symbol table. In which case multiple
+				//watchpoints are being hit actually.
 				break;
 			case READ:
-				System.out.println(line);
+				//TODO: implement
+				//System.out.println(line);
 				break;
 			case WRITE:
-				System.out.println(line);
+				if (line.startsWith("LINE: "))
+					resultLine = line.substring(6);
 			}
 
 		}
 		
-		return new StepResultsVO(complete, variables, routineName, lineLocation, 
-				locationAsTag, nextCommand, lastCommand, stack);
+		assert(resultReason != null); //TODO: throw proper parsing exception
+		return new StepResultsVO(resultReason, complete, variables, 
+				routineName, lineLocation, 
+				locationAsTag, nextCommand, lastCommand, stack, resultLine,
+				watchedVariables); //TODO: instead of a pojo with a single level, having all variables, considering having a pojo with a tree level, one for each section maybe. more organized
+	}
+
+	private String captureTagLoc(String line) {
+		Matcher m = captureTagLocation.matcher(line);
+		m.find();
+		return m.group(1);
 	}
 
 	private enum SectionType {
 		REASON, WRITE, READ, VALUES, STACK, WATCH, LOCATION;
 	}
+	
+
 }
