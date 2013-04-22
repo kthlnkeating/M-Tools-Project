@@ -38,6 +38,9 @@ Thumbs.db
 # Folder config file
 Desktop.ini
 
+# MS Word
+~$*.doc
+~$*.docx
 
 #############
 ## Python
