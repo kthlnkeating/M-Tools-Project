@@ -39,7 +39,7 @@ public class SaveToServer implements IObjectActionDelegate {
 				ITreeSelection treeSelection = (ITreeSelection) selection;
 				TreePath[] paths = treeSelection.getPaths();
 				if ((paths != null) && (paths.length > 0)) {
-					List<IFile> result = new ArrayList<>(paths.length);
+					List<IFile> result = new ArrayList<IFile>(paths.length);
 					for (TreePath p : paths) {
 						Object lastSegment = p.getLastSegment();
 						if (lastSegment instanceof IFile) {
