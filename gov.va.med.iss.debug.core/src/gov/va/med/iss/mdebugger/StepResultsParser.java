@@ -61,7 +61,7 @@ public class StepResultsParser {
 					complete = true;
 				else if (line.startsWith("START:" )) {
 					resultReason = ResultReasonType.START;
-				} else if (line.startsWith("STEP MODE: ")) { //TODO: implement Break and watchpoint parsing
+				} else if (line.startsWith("STEP MODE: ")) {
 					resultReason = ResultReasonType.STEP;
 					locationAsTag = captureTagLoc(line);
 				} else if (line.startsWith("BREAKPOINT: ")) {
