@@ -2,6 +2,7 @@ package gov.va.mumps.debug.core.model;
 
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.mdebugger.MDebugger;
+import gov.va.med.iss.mdebugger.RPCHandler;
 import gov.va.med.iss.mdebugger.vo.StepResultsVO;
 
 import java.util.HashMap;
@@ -39,7 +40,8 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	
 	public MDebugRpcProcess(ILaunch launch, String debugEntryTag, Map<String, String> attributes) {
 		initializeAttributes(attributes);
-		mDebugger = new MDebugger();
+		RPCHandler rpcHandler = new RPCHandler(VistaConnection.getConnection());
+		mDebugger = new MDebugger(rpcHandler);
 		responseResults = mDebugger.startDebug(debugEntryTag);
 		//name = debugEntryTag;
 		if (VistaConnection.getCurrentServer() != null && !VistaConnection.getCurrentServer().isEmpty()) { //dislike globals like this, want to refactor this to OOP using factories and explicit dependencies in contructors
