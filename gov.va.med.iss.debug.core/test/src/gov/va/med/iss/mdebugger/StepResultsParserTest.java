@@ -1,5 +1,6 @@
 package gov.va.med.iss.mdebugger;
 
+import gov.va.med.iss.mdebugger.vo.ReadResultsVO;
 import gov.va.med.iss.mdebugger.vo.StackVO;
 import gov.va.med.iss.mdebugger.vo.StepResultsVO;
 import gov.va.med.iss.mdebugger.vo.StepResultsVO.ResultReasonType;
@@ -67,6 +68,15 @@ public class StepResultsParserTest {
 		Assert.assertEquals("IM IN STACK2IM IN STACK5", vo.getWriteLine());
 		
 		//test read results
+		vo = testMe.parse(getDataFromFile("readResult1.txt"));
+		Assert.assertEquals(ResultReasonType.READ, vo.getResultReason());
+		Assert.assertEquals("STACK5+5^TSTROUT", vo.getLocationAsTag());
+		Assert.assertEquals("TEST PROMPT: ", vo.getWriteLine());
+		ReadResultsVO readVO = vo.getReadResults();
+		Assert.assertEquals(null, readVO.getMaxChars());
+		Assert.assertEquals(30, (int)readVO.getTimeout());
+		Assert.assertEquals(false, readVO.isStarRead());
+		Assert.assertEquals(false, readVO.isTypeAhead());
 	}
 	
 	@Ignore
