@@ -1,4 +1,4 @@
-package gov.va.med.iss.mdebugger.vo;
+package gov.va.mumps.debug.xtdebug.vo;
 
 public class StackVO {
 

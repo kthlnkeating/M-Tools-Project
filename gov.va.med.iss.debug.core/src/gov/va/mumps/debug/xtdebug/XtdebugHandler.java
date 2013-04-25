@@ -1,4 +1,4 @@
-package gov.va.med.iss.mdebugger;
+package gov.va.mumps.debug.xtdebug;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.adapter.record.VistaLinkFaultException;
@@ -6,43 +6,105 @@ import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
-import gov.va.med.iss.mdebugger.vo.StackVO;
-import gov.va.med.iss.mdebugger.vo.StepResultsVO;
-import gov.va.med.iss.mdebugger.vo.WatchVO;
+import gov.va.mumps.debug.xtdebug.vo.StackVO;
+import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
+import gov.va.mumps.debug.xtdebug.vo.WatchVO;
 
 import java.util.Iterator;
 
 /**
  * This class handles all communication (synchronously) between eclipse and the
  * RPC. There should only be one instance of this class created for a given
- * server. Multiple async threads may call that instance.
+ * server. Multiple async threads may call that instance. It is mostly
+ * stateless as value are pushed onto the stack instead of loaded into instance
+ * variables.
  * 
  * TODO: A factory should be created to handle this creational concern.
  * 
  */
-public class RPCHandler {
+public class XtdebugHandler {
+	
+	private static final String STEP = "STEP";
+	private static final String RUN = "RUN";
+	//RPC Entry points
+	public static final String XTDEBUG_NEXT = "XTDEBUG NEXT";
+	public static final String XTDEBUG_START = "XTDEBUG START";
+	public static final String XTDEBUG_ADD_WATCH = "XTDEBUG ADD WATCH";
+	public static final String XTDEBUG_DELETE_WATCH = "XTDEBUG DELETE WATCH";
+	public static final String XTDEBUG_ADD_BREAKPOINT = "XTDEBUG ADD BREAKPOINT";
+	public static final String XTDEBUG_DELETE_BREAK = "XTDEBUG DELETE BREAK";
+	public static final String XTDEBUG_READ_INPUT = "XTDEBUG READ INPUT";
+
 
 	private volatile boolean readTimeout; //TODO: what are the benefits again of using volatile here?
 	private volatile String lastDebugCommand;
 	
 	private VistaLinkConnection connection;
+	private StepResultsParser parser;
 	
-	public RPCHandler(VistaLinkConnection connection) {
+	
+	public XtdebugHandler(VistaLinkConnection connection) {
 		this.connection = connection;
+		parser = new StepResultsParser();
+	}
+	
+	/**
+	 * method to start a debugging session
+	 * @param mCode - contains the line of code to be executed.
+	 */
+	public StepResultsVO startDebug(String mCode) {
+		return fetchResults(XTDEBUG_START, mCode);
+	}
+
+	public StepResultsVO resume() {
+		return stepDebug(RUN);
+	}
+	
+	public StepResultsVO stepInto() {
+		return stepDebug(STEP); //currently STEP behaves like stepinto
+	}
+		
+	public void addWatchpoint(String watchPoint) {
+		fetchResults(XTDEBUG_ADD_WATCH, watchPoint);
+	}
+	
+	public void removeWatchpoint(String watchPoint) {
+		fetchResults(XTDEBUG_DELETE_WATCH, watchPoint);
+	}
+	
+	public void addBreakpoint(String breakPoint) {
+		fetchResults(XTDEBUG_ADD_BREAKPOINT, breakPoint);
+	}
+	
+	public void removeBreakpoint(String breakPoint) {
+		fetchResults(XTDEBUG_DELETE_BREAK, breakPoint);
+	}
+	
+	public StepResultsVO sendReadInput(String input) {
+		return fetchResults(XTDEBUG_READ_INPUT, input);
+	}
+	
+	private StepResultsVO stepDebug(String debugCommand) {
+		return fetchResults(XTDEBUG_NEXT, debugCommand);
+//		while (repeatLastDebug) { // commented out because repeatLastDebug has no chance to become true--jspivey
+//			doDebug(dbCommand);
+//		}
 	}
 	
 	public synchronized StepResultsVO fetchResults(String rpcName, String debugCommand) { //should this by synchronized? if so I cannot stay in here for too long. which shouldn't be the case, this attempts to get the results as soon as possible and returns them
 		try {
 			return handleRPC(rpcName, debugCommand);
 		} finally {
-			if (!debugCommand.equals(MDebugger.XTDEBUG_READ_INPUT)) //what was the last non-read command. may also want to cover this in write commands too? another design choice would be to refer to the interactive GUI thread of MDebugger and see what its last command is, as that will never be READ/WRITE
+			if (!rpcName.equals(XTDEBUG_NEXT)) //what was the last command. may also want to cover this in write commands too? another design choice would be to refer to the interactive GUI thread of MDebugger and see what its last command is, as that will never be READ/WRITE
 				lastDebugCommand = debugCommand;
 		}
 	}
 	
 	private StepResultsVO handleRPC(String rpcName, String debugCommand) {
-		//VistaLinkConnection myConnection = VistaConnection.getConnection();
-		boolean handleResults = rpcName.equals(MDebugger.XTDEBUG_START) || rpcName.equals(MDebugger.XTDEBUG_NEXT);
+		boolean handleResults = 
+				rpcName.equals(XTDEBUG_START)	 ||
+				rpcName.equals(XTDEBUG_NEXT)	 ||
+				rpcName.equals(XTDEBUG_READ_INPUT);
 		
 		if (connection == null) {
 			throw new RuntimeException("Not connected to VistaServer"); //TODO: throw core exception? I think throw a not connected exception so that it can retry connecting.
@@ -71,7 +133,7 @@ public class RPCHandler {
 		
 		StepResultsVO results = null;		
 		if (handleResults) {
-			results = new StepResultsParser().parse(strResults);
+			results = parser.parse(strResults);
 			
 			/*
 			 * XTDEBUG API fix for suspending on linelabels:
@@ -88,10 +150,11 @@ public class RPCHandler {
 						results.getNextCommnd() == null) {
 					return handleRPC(rpcName, debugCommand); //TODO: this could potentially endless loop, maybe do a for command with a limit //TODO: how does syncrhonize work here with reentry locks?
 				}
+				printResults(debugCommand, results);
 			}
 		}
 		
-		printResults(debugCommand, results);
+		
 		return results;
 	}
 
@@ -101,12 +164,14 @@ public class RPCHandler {
 		vReq.setUseProprietaryMessageFormat(false);
 		vReq.getParams().setParam(1, "string", debugCommand); // RD RL GD GL RS
 
-		if (rpcName.equals(MDebugger.XTDEBUG_READ_INPUT)) {
+		if (rpcName.equals(XTDEBUG_READ_INPUT)) {
 			vReq.getParams().setParam(2, "string", readTimeout ? "1" : "0");
 			vReq.getParams().setParam(3, "string", lastDebugCommand);
 		}
 
 		RpcResponse vResp = connection.executeRPC(vReq);
+//		System.out.println("response from server: ");
+//		System.out.println(vResp.getResults());
 		return vResp.getResults();
 	}
 	

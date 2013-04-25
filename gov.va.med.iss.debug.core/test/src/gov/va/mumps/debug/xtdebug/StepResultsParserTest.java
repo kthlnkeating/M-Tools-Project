@@ -1,11 +1,12 @@
-package gov.va.med.iss.mdebugger;
+package gov.va.mumps.debug.xtdebug;
 
-import gov.va.med.iss.mdebugger.vo.ReadResultsVO;
-import gov.va.med.iss.mdebugger.vo.StackVO;
-import gov.va.med.iss.mdebugger.vo.StepResultsVO;
-import gov.va.med.iss.mdebugger.vo.StepResultsVO.ResultReasonType;
-import gov.va.med.iss.mdebugger.vo.VariableVO;
-import gov.va.med.iss.mdebugger.vo.WatchVO;
+import gov.va.mumps.debug.xtdebug.StepResultsParser;
+import gov.va.mumps.debug.xtdebug.vo.ReadResultsVO;
+import gov.va.mumps.debug.xtdebug.vo.StackVO;
+import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
+import gov.va.mumps.debug.xtdebug.vo.VariableVO;
+import gov.va.mumps.debug.xtdebug.vo.WatchVO;
+import gov.va.mumps.debug.xtdebug.vo.StepResultsVO.ResultReasonType;
 
 import java.io.BufferedReader;
 import java.io.IOException;

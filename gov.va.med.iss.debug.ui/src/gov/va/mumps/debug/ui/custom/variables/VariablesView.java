@@ -1,8 +1,8 @@
 package gov.va.mumps.debug.ui.custom.variables;
 
-import gov.va.med.iss.mdebugger.vo.VariableVO;
 import gov.va.mumps.debug.core.MDebugConstants;
 import gov.va.mumps.debug.core.model.MDebugTarget;
+import gov.va.mumps.debug.xtdebug.vo.VariableVO;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.core.model.IDebugElement;

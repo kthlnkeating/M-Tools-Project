@@ -1,9 +1,9 @@
 package gov.va.mumps.debug.core.model;
 
-import gov.va.med.iss.mdebugger.vo.StackVO;
-import gov.va.med.iss.mdebugger.vo.StepResultsVO;
-import gov.va.med.iss.mdebugger.vo.VariableVO;
 import gov.va.mumps.debug.core.MDebugConstants;
+import gov.va.mumps.debug.xtdebug.vo.StackVO;
+import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
+import gov.va.mumps.debug.xtdebug.vo.VariableVO;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -26,7 +26,7 @@ import org.eclipse.debug.core.model.IThread;
 public class MDebugTarget extends MDebugElement implements IDebugTarget {
 
 	private ILaunch launch;
-	private MDebugRpcProcess rpcDebugProcess;
+	private MDebugRpcProcess rpcDebugProcess; //TODO: I'm supposed to just store this for the getProcess method. I shouldn't invoke it otherwise.
 	private boolean suspended;
 	private MThread debugThread;
 	private String name;
@@ -300,8 +300,15 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 	}
 
 	public void stepInto() {
+		System.out.println("THREAD ID: " +Thread.currentThread().getId());
 		suspended = true;
 		fireResumeEvent(DebugEvent.STEP_INTO);
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		rpcDebugProcess.stepInto();
 		handleResponse(rpcDebugProcess.getResponseResults());
 	}

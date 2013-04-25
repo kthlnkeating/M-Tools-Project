@@ -10,7 +10,7 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.examples.core.pda.model.PDADebugTarget;
 
-public class MThread extends MDebugElement implements IThread {
+public class MThread extends MDebugElement implements IThread { //TODO: in the future perhaps this can be used to repsent a JOB on the server
 
 	private IBreakpoint[] breakpoints;
 	private boolean stepping = false; //TODO: move to constructor?
@@ -60,7 +60,7 @@ public class MThread extends MDebugElement implements IThread {
 	@Override
 	public boolean canStepReturn() {
 		//return true; //TODO: check if there is anything on the stack?
-		return false; ////disabling until the KIDs package actually implements this
+		return true; ////disabling until the KIDs package actually implements this
 	}
 
 	@Override
@@ -85,9 +85,10 @@ public class MThread extends MDebugElement implements IThread {
 
 	@Override
 	public void stepReturn() throws DebugException {
-		fireResumeEvent(DebugEvent.STEP_RETURN);
-		((MDebugTarget)getDebugTarget()).stepOut();
-		fireSuspendEvent(DebugEvent.STEP_END);
+//		fireResumeEvent(DebugEvent.STEP_RETURN);
+//		((MDebugTarget)getDebugTarget()).stepOut();
+//		fireSuspendEvent(DebugEvent.STEP_END); //TODO: move out, just for testing
+		((MDebugRpcProcess)((MDebugTarget)getDebugTarget()).getProcess()).sendReadInput("TEST INPUT!!");
 	}
 
 	@Override

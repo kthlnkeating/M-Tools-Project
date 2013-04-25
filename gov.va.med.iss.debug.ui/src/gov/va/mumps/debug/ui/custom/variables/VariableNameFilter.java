@@ -1,6 +1,6 @@
 package gov.va.mumps.debug.ui.custom.variables;
 
-import gov.va.med.iss.mdebugger.vo.VariableVO;
+import gov.va.mumps.debug.xtdebug.vo.VariableVO;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
