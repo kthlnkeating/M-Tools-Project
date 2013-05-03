@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.0"?>
+<?eclipse version="3.4"?>
 <plugin>
 
-<!-- this can support run, but it will need a more cleaner way of just running the code without breaking -->
+   <!-- this can support run, but it will need a more cleaner way of just running the code without breaking -->
+   <!-- Launch Configuration Type -->
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType

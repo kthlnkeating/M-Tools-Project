@@ -1,52 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.0"?>
+<?eclipse version="3.4"?>
 <plugin>
 
-	<extension point="org.eclipse.debug.ui.launchShortcuts">
-	  <shortcut
-	    label="MUMPS"
-	    icon="$nl$/icons/full/cview16/pda.gif"
-	    modes="run, debug"
-	    class="gov.va.mumps.debug.ui.launching.MLaunchShortcut"
-	    description="Launch a remote MUMPS routine"
-	    id="gov.va.mumps.debug.ui.remoteMShortcut">
-	    <description
-	     description="Runs a remote MUMPS Routine"
-	     mode="run">
-	    </description>
-	    <description
-	     description="Debugs a remote MUMPS Routine"
-	     mode="debug">
-	    </description>
-	  <contextualLaunch>
-         <enablement >
-           <with variable="selection">
-           <count value="1"/>
-          <iterate>
-            <adapt type="org.eclipse.core.resources.IResource">
-                <and>
-                <test property="org.eclipse.core.resources.name" value="*.m"/>
-            </and>
-        </adapt>
-          </iterate>
-           </with>
-       </enablement>
-	  </contextualLaunch>
-	  <configurationType
-	    id="gov.va.mumps.debug.core.launchConfigurationType">
-	  </configurationType>
-	  </shortcut>
-	</extension>
-
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-      <launchConfigurationTabGroup
-            type="gov.va.mumps.debug.core.launchConfigurationType"
-            description="Run or debug a remote MUMPS Routine"
-            class="gov.va.mumps.debug.ui.launching.MTabGroup"
-            id="gov.va.mumps.debug.ui.launchConfigurationTabGroup">
-      </launchConfigurationTabGroup>
-   </extension>
+   <!-- Debug Model Presentation -->
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations">
       <debugModelPresentation
@@ -54,6 +10,21 @@
             id="gov.va.mumps.debug">
       </debugModelPresentation>
    </extension>
+   
+   <!-- Won't be moving the lauch delegate to the ui plugin after all
+ <extension point="org.eclipse.debug.core.launchDelegates">
+  <launchDelegate
+    id="gov.va.mumps.debug.ui.launchDelegate"
+    delegate="gov.va.mumps.debug.ui.launching.UILaunchDelegate"
+    type="gov.va.mumps.debug.core.launchConfigurationType"
+    name="MUMPS UI Launch Delegate"
+    modes="run, debug"
+    perspective="org.eclipse.debug.ui.DebugPerspective"
+	delegateDescription="">
+  </launchDelegate>
+ </extension>-->
+
+   <!-- Toggle breakpoint Adapter Factor -->
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
@@ -64,15 +35,20 @@
          </adapter>
       </factory>
    </extension>
+   
+   <!-- custom view for showing All of the M variables -->
    <extension
          point="org.eclipse.ui.views">
       <view
             name="M Variables"
             icon="icons/full/cview16/datastack_view.gif"
             class="gov.va.mumps.debug.ui.custom.variables.VariablesView"
-            id="gov.va.mumps.debug.ui.VariablesView">
+            id="gov.va.mumps.debug.ui.AllVariablesView">
       </view>
    </extension>
+   
+   
+   <!-- Add the All M Variables view to the debug perspective -->
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
@@ -81,13 +57,15 @@
                relative="org.eclipse.debug.ui.VariableView"
                visible="false"
                relationship="stack"
-               id="org.eclipse.debug.examples.ui.pda.DataStackView">
+               id="gov.va.mumps.debug.ui.AllVariablesView">
          </view>
          <viewShortcut
-               id="org.eclipse.debug.examples.ui.pda.DataStackView">
+               id="gov.va.mumps.debug.ui.AllVariablesView">
          </viewShortcut>
       </perspectiveExtension>
    </extension>
+   
+   <!-- This is suppose to auto close-open our custom view... maybe -->
    <extension
          point="org.eclipse.ui.contexts">
       <context
@@ -107,18 +85,21 @@
    <extension
          point="org.eclipse.debug.ui.contextViewBindings">
       <contextViewBinding
-            viewId="org.eclipse.debug.examples.ui.pda.DataStackView"
+            viewId="gov.va.mumps.debug.ui.AllVariablesView"
             contextId="gov.va.mumps.debug.ui.debugging"
             autoClose="true"
             autoOpen="true">
       </contextViewBinding>
    </extension>
+   
+   <!-- Simply registers an image to a launch configuration type -->
+   <!-- TODO: find an M or MUMPS related icon -->
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            icon="icons/full/cview16/pda.gif"
-            configTypeID="org.eclipse.debug.examples.core.launchConfigurationType.pda"
-            id="org.eclipse.debug.examples.ui.pda.launchConfigurationTypeImage">
+            icon="icons/full/cview16/meditor.gif"
+            configTypeID="gov.va.mumps.debug.core.launchConfigurationType"
+            id="gov.va.mumps.debug.ui.launchConfigurationTypeImage">
       </launchConfigurationTypeImage>
    </extension>
 
@@ -162,5 +143,113 @@
          </action>
       </editorContribution>
    </extension>
+   
+   <!-- Register the ui tabs needed for the launch configuration -->
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="gov.va.mumps.debug.core.launchConfigurationType"
+            description="Run or debug a remote MUMPS Routine"
+            class="gov.va.mumps.debug.ui.launching.MTabGroup"
+            id="gov.va.mumps.debug.ui.launchConfigurationTabGroup">
+      </launchConfigurationTabGroup>
+   </extension>
+   
+	<!-- Add a shortcut to execute the launch configuration type. Handy for just clicking the debug/run icon while an M file is open.-->
+	<extension point="org.eclipse.debug.ui.launchShortcuts">
+	  <shortcut
+	    label="MUMPS"
+	    icon="$nl$/icons/full/cview16/meditor.gif"
+	    modes="run, debug"
+	    class="gov.va.mumps.debug.ui.launching.MLaunchShortcut"
+	    description="Launch a remote MUMPS routine"
+	    id="gov.va.mumps.debug.ui.remoteMShortcut">
+	    <description
+	     description="Runs a remote MUMPS Routine"
+	     mode="run">
+	    </description>
+	    <description
+	     description="Debugs a remote MUMPS Routine"
+	     mode="debug">
+	    </description>
+	  <contextualLaunch>
+         <enablement >
+           <with variable="selection">
+           <count value="1"/>
+          <iterate>
+            <adapt type="org.eclipse.core.resources.IResource">
+                <and>
+                <test property="org.eclipse.core.resources.name" value="*.m"/>
+            </and>
+        </adapt>
+          </iterate>
+           </with>
+       </enablement>
+	  </contextualLaunch>
+	  <configurationType
+	    id="gov.va.mumps.debug.core.launchConfigurationType">
+	  </configurationType>
+	  </shortcut>
+	</extension>
+	
+   <!-- copied from JDT's debug.ui plugin: -->
+<!-- Adds the launch and java debug actions whenever a java relevant part is open -->
+   <!-- <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="org.eclipse.jdt.debug.ui.JDTDebugActionSet">
+         <part
+               id="org.eclipse.jdt.ui.PackageExplorer">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.TypeHierarchy">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.CompilationUnitEditor">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.ClassFileEditor">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.ProjectsView">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.PackagesView">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.TypesView">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.MembersView">
+         </part>
+      </actionSetPartAssociation>
+      <actionSetPartAssociation
+            targetID="org.eclipse.debug.ui.launchActionSet">
+         <part
+               id="org.eclipse.jdt.ui.PackageExplorer">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.TypeHierarchy">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.CompilationUnitEditor">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.ClassFileEditor">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.ProjectsView">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.PackagesView">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.TypesView">
+         </part>
+         <part
+               id="org.eclipse.jdt.ui.MembersView">
+         </part>
+      </actionSetPartAssociation>
+   </extension>-->
 
 </plugin>

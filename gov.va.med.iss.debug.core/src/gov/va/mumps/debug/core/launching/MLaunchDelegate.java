@@ -17,8 +17,8 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 public class MLaunchDelegate extends LaunchConfigurationDelegate {
 
 	@Override
-	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch,
-			IProgressMonitor monitor) throws CoreException {
+	public void launch(ILaunchConfiguration configuration, String mode,
+			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 
 		// routine name
 		String debugEntryTag = configuration.getAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, (String)null);

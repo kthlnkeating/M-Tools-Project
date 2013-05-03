@@ -21,6 +21,7 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 
 import com.sun.corba.se.impl.activation.ProcessMonitorThread;
 
+//TODO: This is really supposed to be wrapper for a system process. Since there is no system process running, I could/should move all this logic elsewhere
 public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	
 	//private MDebugger mDebugger; //TODO: this will no longer be a wrapper for mDebugger (one of many threads, but more of a wrapper for the RPCHandler) instance, it just uses 1 of 2 mDebuggers to talk to it.
@@ -35,11 +36,10 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	
 	private ILaunch launch;
 	private ProcessMonitorThread monitor;
-	private IStreamsProxy streamsProxy;
+	//private IStreamsProxy streamsProxy = new MConsoleStreamProxy();
 	private String name;
 	private boolean terminated;
 	private Map<String,String> attributes;
-	private boolean captureOutput = true;
 	private StepResultsVO responseResults;
 	private XtdebugHandler xtdebugHandler;
 	
@@ -158,10 +158,8 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 
 	@Override
 	public IStreamsProxy getStreamsProxy() {
-	    if (!captureOutput) {
-	        return null;
-	    }
-		return streamsProxy;
+		//return streamsProxy;
+		return null;
 	}
 
 	private void fireChangeEvent() {

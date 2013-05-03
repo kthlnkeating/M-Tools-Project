@@ -152,12 +152,14 @@ public class VariablesView extends ViewPart implements ISelectionListener {
 
 	@Override
 	public void selectionChanged(IWorkbenchPart arg0, ISelection arg1) {
+		System.out.println("1");
 		IAdaptable adaptable = DebugUITools.getDebugContext();
 		Object input = null;
 		if (adaptable != null) {
 			IDebugElement element = (IDebugElement) adaptable
 					.getAdapter(IDebugElement.class);
 			if (element != null) {
+				System.out.println("2");
 				if (element.getModelIdentifier().equals(
 						MDebugConstants.M_DEBUG_MODEL)) {
 					if (element.getDebugTarget() instanceof MDebugTarget) {

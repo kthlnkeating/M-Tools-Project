@@ -11,13 +11,6 @@
  *******************************************************************************/
 package gov.va.mumps.debug.core;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -28,8 +21,8 @@ public class MDebugCorePlugin extends Plugin {
 	
 	private static MDebugCorePlugin fgDefault = null;
 	
-	public MDebugCorePlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public MDebugCorePlugin() {
+		super();
 		fgDefault = this;
 	}
 	
@@ -62,6 +55,7 @@ public class MDebugCorePlugin extends Plugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		System.out.println("CORE STARTED!!!!!!!!!!!");
 	}
 
 	/**

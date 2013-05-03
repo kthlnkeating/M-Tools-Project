@@ -15,8 +15,9 @@ Require-Bundle:
  gov.va.med.iss.meditor;bundle-version="0.1.2",
  gov.va.med.iss.connection;bundle-version="0.1.2"
 Export-Package: gov.va.mumps.debug.core,
+ gov.va.mumps.debug.core.launching,
  gov.va.mumps.debug.core.model,
  gov.va.mumps.debug.xtdebug.vo,
  org.eclipse.debug.examples.core.pda.launching,
  org.eclipse.debug.examples.core.pda.model
-Plugin-Class: gov.va.mumps.debug.core.MDebugCorePlugin
+Bundle-Activator: gov.va.mumps.debug.core.MDebugCorePlugin
