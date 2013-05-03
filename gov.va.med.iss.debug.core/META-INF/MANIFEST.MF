@@ -18,6 +18,7 @@ Export-Package: gov.va.mumps.debug.core,
  gov.va.mumps.debug.core.launching,
  gov.va.mumps.debug.core.model,
  gov.va.mumps.debug.xtdebug.vo,
+ gov.va.mumps.launching,
  org.eclipse.debug.examples.core.pda.launching,
  org.eclipse.debug.examples.core.pda.model
 Bundle-Activator: gov.va.mumps.debug.core.MDebugCorePlugin

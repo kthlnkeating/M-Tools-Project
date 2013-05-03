@@ -1,5 +1,9 @@
 package gov.va.mumps.debug.ui.console;
 
+import gov.va.mumps.launching.InputReadyListener;
+
+import java.util.Iterator;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.KeyEvent;
@@ -24,6 +28,7 @@ public class MDevConsolePage implements IPageBookViewPage, KeyListener {
 	private StyledText textWidget;
 	private IPageSite pageSite;
 	
+	
 	public MDevConsolePage(MDevConsole console) {
 		super();
 		
@@ -41,7 +46,6 @@ public class MDevConsolePage implements IPageBookViewPage, KeyListener {
 		FontData fd = new FontData("Courier New", 10, 0);
 		textWidget.setFont(new Font(device, fd)); //TODO: add backup true type fonts/test for other supported OS'es
 		textWidget.addKeyListener(this);
-		
 		
 		//NOTE: can create actions and add them to the toolbar here.	
 	}
@@ -78,30 +82,73 @@ public class MDevConsolePage implements IPageBookViewPage, KeyListener {
 		this.pageSite = pageSite;
 	}
 
-	
-	//key listener: TODO: its large enough to move toits own class
-	char[] keyBuffer = new char[2048]; //TODO: refactor this to a new class that is reusable
-	int bufferPos = -1;
+	private int keysTyped = 0;
+	private String keyInput = "";
 	
 	@Override
-	public void keyPressed(KeyEvent ke) {
-		if (ke.character != 0 && console.isAcceptingUserInput())
-			keyBuffer[++bufferPos] = ke.character;
+	public void keyPressed(KeyEvent keyEvent) {
+		System.out.println("char: " +keyEvent.character);
+		System.out.println("code: " +keyEvent.keyCode);
+		
+		if (keyEvent.character != 0 && keyEvent.character != '\r' && keyEvent.character != '\n') {
+			//echo the input
+			if (!console.isReadingUserInput()) //not possible for this to happen: || keysTyped >= console.getMaxCharInput())
+				return;
+			
+			appendText(keyEvent.character+"");
+			keyInput += keyEvent.character;
+			
+		} else if (keyEvent.keyCode == SWT.BS && keysTyped > 0) {
+			//remove the echo'ed input
+			keysTyped--;
+			textWidget.setText(textWidget.getText().substring(0, textWidget.getText().length()));
+			keyInput = keyInput.substring(0, keyInput.length() - 1);
+		}
+		
+		if (keysTyped == console.getMaxCharInput() || keyEvent.character == SWT.CR) { //TODO: test this on eclipse linux
+			handleInputReadyListeners();
+			keysTyped = 0;
+			keyInput = "";
+			console.setReadingInput(false);
+		}
+	}
+	
+	private void handleInputReadyListeners() {
+		
+		Iterator<InputReadyListener> inputListeners = console.getInputReadyInputListeners();
+		while (inputListeners.hasNext()) {
+			getSite().getShell().getDisplay().asyncExec(new ReadInputHandler(inputListeners.next(), new String(this.keyInput)));
+		}
+	}
+	
+	private class ReadInputHandler implements Runnable {
+		
+		private InputReadyListener listener;
+		private String input;
+		
+		private ReadInputHandler(InputReadyListener listener, String input) {
+			this.listener = listener;
+			this.input = input;
+		}
+
+		@Override
+		public void run() {
+			listener.handleInput(input);
+		}
+		
 	}
 
 	@Override
-	public void keyReleased(KeyEvent ke) { //TODO: this could be improved slightly, right now all the keys in the buffer appear on screen at once. it makes more sense to put them onto the screen sooner
-		StringBuffer contents = new StringBuffer();
-		for (int i = 0; i <= bufferPos; i++)
-			contents.append(keyBuffer[i]);
-		textWidget.setText(textWidget.getText() + contents.toString());
-		keyBuffer = new char[2048];
-		bufferPos = -1;
-		
-		//update cursor to end pos
-		//textWidget.setCaretOffset(textWidget.getText().length());
+	public void keyReleased(KeyEvent keyEvent) {
+		//do nothing, this only is fired when no more keys are pressed, not for each key release.
+	}
 
-		//if (ke.keyCode == ) handle page up, page down.
+	public void setKeysTyped(int keysTyped) {
+		this.keysTyped = keysTyped;
+	}
+
+	public void appendText(String text) {
+		textWidget.setText(textWidget.getText() + text);
 	}
 	
 }

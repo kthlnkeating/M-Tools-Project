@@ -1,9 +1,13 @@
 package gov.va.mumps.debug.core.model;
 
 import gov.va.mumps.debug.core.MDebugConstants;
+import gov.va.mumps.debug.xtdebug.vo.ReadResultsVO;
 import gov.va.mumps.debug.xtdebug.vo.StackVO;
 import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
 import gov.va.mumps.debug.xtdebug.vo.VariableVO;
+import gov.va.mumps.launching.InputReadyListener;
+import gov.va.mumps.launching.ReadCommandListener;
+import gov.va.mumps.launching.WriteCommandListener;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,6 +17,10 @@ import java.util.TreeSet;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -23,13 +31,18 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 
-public class MDebugTarget extends MDebugElement implements IDebugTarget {
+public class MDebugTarget extends MDebugElement implements IDebugTarget, InputReadyListener {
 
 	private ILaunch launch;
 	private MDebugRpcProcess rpcDebugProcess; //TODO: I'm supposed to just store this for the getProcess method. I shouldn't invoke it otherwise.
 	private boolean suspended;
 	private MThread debugThread;
 	private String name;
+	
+	//Console handling
+	private boolean linkedToConsole;
+	private List<WriteCommandListener> writeCommandListeners = new LinkedList<WriteCommandListener>();
+	private List<ReadCommandListener> readCommandListeners = new LinkedList<ReadCommandListener>();
 	
 	//variables
 	//variables already defined at debug start
@@ -47,6 +60,9 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		setDebugTarget(this);
 		this.launch = launch;
 		this.rpcDebugProcess = rpcProcess;
+		setLinkedToConsole(false);
+		
+		
 		
 		debugThread = new MThread(this);		
 		suspended = true; //false in tutorial, because it waits for the event to come back on the socket saying suspended
@@ -58,7 +74,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		
 		stack = new MStackFrame[0];
 		
-		handleResponse(rpcProcess.getResponseResults());
+		handleResponse(rpcProcess.getResponseResults()); //TODO: should results really be handled while setting up the launch config? this may be too soon.
 		
 		// temp just for testing
 //		if (Math.random() > .8) {
@@ -69,13 +85,25 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		
 		fireCreationEvent(); //to register that the DebugTarget has been started.
 		installDeferredBreakpoints();
-		try {
-			resume();
-		} catch (DebugException e) {
-			e.printStackTrace();
-		}
-		
 		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
+
+		Job resumeJob = new Job("Resume") { //the LaunchManager is (probably?) executing this and it shouldn't block and hold while the code is resuming (running). It needs to let go at this point
+			
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				try {
+					resume();
+				} catch (DebugException e) {
+					e.printStackTrace();
+					return Status.CANCEL_STATUS; //was it really cancelled? like by a user?
+				}
+				
+				return Status.OK_STATUS;
+			}
+		};
+		resumeJob.schedule();
+
+		
 	}
 	
 	/**
@@ -243,10 +271,10 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 	@Override
 	public String getName() throws DebugException {
 		if (name == null) {
-			name = "MUMPS Routine";
+			name = "MUMPS Code";
 			try {
-				name = getLaunch().getLaunchConfiguration().getAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, "MUMPS Routine");
-				name += " [DebugTarget]";
+				name = getLaunch().getLaunchConfiguration().getAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, "MUMPS Code");
+				//name += " [DebugTarget]";
 			} catch (CoreException e) {
 			}
 		}
@@ -333,7 +361,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		return allVariables;
 	}
 	
-	private void handleResponse(StepResultsVO vo) {
+	private synchronized void handleResponse(StepResultsVO vo) {
 		
 		//invoke terminate event if DONE found + fireevents/setflags
 		if (vo.isComplete()) {
@@ -405,7 +433,27 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 				}
 		}
 		
-		if (vo.getNextCommnd() != null) {
+		//handle any lines that come back (as result of a read or write command)
+		if (vo.getWriteLine() != null && !vo.getWriteLine().equals("")) {
+			for (WriteCommandListener listener : writeCommandListeners) {
+				listener.handleWriteCommand(vo.getWriteLine());
+			}
+		}
+		
+		//handle read command results
+		//TODO: set suspend = true, fire no debug events, and set stepping = false
+		//TODO: the state of teh debug target should be updated wrt to the readCmdResults (isStarRead,etc). This may be important for sending the response back, if it isn't persisted it won't know what it was
+		if (vo.getReadResults() != null) {
+			ReadResultsVO readCmdResults = vo.getReadResults();
+			for (ReadCommandListener listener : readCommandListeners) {
+				int maxReadChars;
+				if (readCmdResults.isStarRead())
+					maxReadChars = 1;
+				else
+					maxReadChars = readCmdResults.getMaxChars() == null ? Integer.MAX_VALUE : readCmdResults.getMaxChars();
+				listener.handleReadCommand(maxReadChars);
+			}
+		} else if (vo.getNextCommnd() != null) { //why is it checking for null nextCommand. when is this null? this was just bad defensive programming
 			fireSuspendEvent(DebugEvent.STEP_END); //TODO: use the value from the API for breakpoint/watchpoint/step end
 		}
 	}
@@ -416,6 +464,41 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget {
 		rpcDebugProcess.terminate();
 		suspended = false;
 		fireTerminateEvent(); //this fires the event to indicate that the debugtarget has terminated.
+	}
+
+	public boolean isLinkedToConsole() {
+		return linkedToConsole;
+	}
+
+	public void setLinkedToConsole(boolean linkedToConsole) {
+		this.linkedToConsole = linkedToConsole;
+	}
+
+	@Override
+	public void handleInput(final String input) {
+		if (isTerminated())
+			return;
+		
+		//input must be handled because it causes the program to continue (resume) running, and it completes the read command which may update variable values
+		rpcDebugProcess.sendReadInput(input);
+		handleResponse(rpcDebugProcess.getResponseResults());
+
+	}
+	
+	public void addWriteCommandListener(WriteCommandListener listener) {
+		writeCommandListeners.add(listener);
+	}
+
+	public void addReadCommandListener(ReadCommandListener listener) {
+		readCommandListeners.add(listener);
+	}
+	
+	public void removeWriteCommandListener(WriteCommandListener listener) {
+		writeCommandListeners.remove(listener);
+	}
+
+	public void removeReadCommandListener(ReadCommandListener listener) {
+		readCommandListeners.remove(listener);
 	}
 
 }

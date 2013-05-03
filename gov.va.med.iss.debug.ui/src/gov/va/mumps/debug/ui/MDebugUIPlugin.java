@@ -3,6 +3,7 @@ package gov.va.mumps.debug.ui;
 import gov.va.mumps.debug.core.model.MDebugTarget;
 import gov.va.mumps.debug.ui.console.MDevConsole;
 
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchListener;
@@ -15,7 +16,7 @@ public class MDebugUIPlugin extends AbstractUIPlugin implements
 		ILaunchListener {
 
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(BundleContext context) throws Exception { //TODO: what if this is started after launches were already added?
 		super.start(context);	
 		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this);
 	}
@@ -35,16 +36,31 @@ public class MDebugUIPlugin extends AbstractUIPlugin implements
 
 	@Override
 	public void launchChanged(ILaunch launch) {
-		
-		if (launch == null || launch.getDebugTarget() == null)
+				
+		if (launch.getDebugTarget() == null)
 			return;
 		
-		//TODO: set a variable on synced method to MDebugTarget to incidate that the console was created to prevent it from creating multiple console each time this event files.
+		MDebugTarget mDebugTarget = (MDebugTarget) launch.getDebugTarget();
 		
-		MDevConsole mDevConsole = new MDevConsole("hi I'm a new test console", null, null, true);
-		ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] { mDevConsole });
-		
-		System.out.println("found MDebugTarget: " +((MDebugTarget)launch.getDebugTarget()).getAllVariables());
+		synchronized (mDebugTarget) {
+			if (mDebugTarget.isLinkedToConsole())
+				return;
+			
+//			String debugTargetName = launch.getLaunchConfiguration().getName();
+//			try {
+//				String debugTargetName = mDebugTarget.getName();
+//			} catch (DebugException e) {
+//			}
+//			
+			MDevConsole mDevConsole = new MDevConsole("MUMPS Console: " +launch.getLaunchConfiguration().getName(), null, null, true);
+			ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] { mDevConsole });
+			
+			mDebugTarget.addReadCommandListener(mDevConsole);
+			mDebugTarget.addWriteCommandListener(mDevConsole);
+			mDevConsole.addInputReadyListener(mDebugTarget);
+			
+			mDebugTarget.setLinkedToConsole(true);
+		}
 	}
 
 	@Override

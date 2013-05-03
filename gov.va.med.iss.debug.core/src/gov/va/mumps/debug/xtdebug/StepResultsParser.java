@@ -43,6 +43,9 @@ public class StepResultsParser {
 		Scanner scanner = new Scanner(data);
 		scanner = scanner.useDelimiter("\n");
 		String line;
+		
+		//parsing state
+		boolean readCommandFound = false;
 
 		while (scanner.hasNext()) {
 			line = scanner.next();
@@ -54,6 +57,8 @@ public class StepResultsParser {
 					scanner.next();
 					assert scanner.next().equals("VALUES");
 					continue;
+				} else if (section == SectionType.READ) {
+					readCommandFound = true;
 				}
 			} catch (IllegalArgumentException e1) {
 			} catch (NullPointerException e2) {
@@ -171,7 +176,8 @@ public class StepResultsParser {
 		}
 		
 		assert(resultReason != null); //TODO: throw proper parsing exception
-		readResult = new ReadResultsVO(maxChars, timeout, starRead, typeAhead);
+		if (readCommandFound)
+			readResult = new ReadResultsVO(maxChars, timeout, starRead, typeAhead);
 		return new StepResultsVO(resultReason, complete, variables, 
 				routineName, lineLocation, 
 				locationAsTag, nextCommand, lastCommand, stack, resultLine,
