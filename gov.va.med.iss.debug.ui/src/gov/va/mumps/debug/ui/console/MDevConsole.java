@@ -46,7 +46,7 @@ public class MDevConsole extends AbstractConsole implements ReadCommandListener,
 	}
 
 	@Override
-	public void handleWriteCommand(final String output) {
+	public void handleWriteCommand(final String output) { //TODO: bug: write command could theoretically come in before the main gui thread creates the pageBookView causing a NPE
 		//TODO: bug? is this bein called twice? why? I'm not seeing double input but that may just becaues both async threads run so closely they grab append the same value to the same orig value
 		pageBookView.getSite().getShell().getDisplay().asyncExec(new Runnable() { //Only the async thread can access SWT controls
 			
@@ -62,6 +62,14 @@ public class MDevConsole extends AbstractConsole implements ReadCommandListener,
 	public void handleReadCommand(int maxCharInput) {
 		this.maxCharInput = maxCharInput;
 		readingUserInput = true;
+		pageBookView.getSite().getShell().getDisplay().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				pageBookView.setFocus();
+			}
+		});
+		
 	}
 	
 	public void addInputReadyListener(InputReadyListener listener) {

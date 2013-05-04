@@ -89,22 +89,26 @@ public class MDevConsolePage implements IPageBookViewPage, KeyListener {
 	public void keyPressed(KeyEvent keyEvent) {
 		System.out.println("char: " +keyEvent.character);
 		System.out.println("code: " +keyEvent.keyCode);
+
+		if (!console.isReadingUserInput()) //not possible for this to happen: || keysTyped >= console.getMaxCharInput())
+			return;
 		
-		if (keyEvent.character != 0 && keyEvent.character != '\r' && keyEvent.character != '\n') {
-			//echo the input
-			if (!console.isReadingUserInput()) //not possible for this to happen: || keysTyped >= console.getMaxCharInput())
-				return;
-			
-			appendText(keyEvent.character+"");
-			keyInput += keyEvent.character;
-			
-		} else if (keyEvent.keyCode == SWT.BS && keysTyped > 0) {
-			//remove the echo'ed input
-			keysTyped--;
-			textWidget.setText(textWidget.getText().substring(0, textWidget.getText().length()));
-			keyInput = keyInput.substring(0, keyInput.length() - 1);
+		//determine if typing character or special key like esc, page up, etc
+		if (Character.isLetterOrDigit(keyEvent.character)) {
+
+			appendText(keyEvent.character+""); //echo input
+			keyInput += keyEvent.character; //record input
+			keysTyped++;
+		} else { //handle special keys
+			if (keyEvent.keyCode == SWT.BS && keysTyped > 0) { //support for delete key
+				//remove the echo'ed input
+				keysTyped--;
+				textWidget.setText(textWidget.getText().substring(0, textWidget.getText().length() - 1));
+				keyInput = keyInput.substring(0, keyInput.length() - 1);
+			}
 		}
 		
+		//handle return key or max chars entered
 		if (keysTyped == console.getMaxCharInput() || keyEvent.character == SWT.CR) { //TODO: test this on eclipse linux
 			handleInputReadyListeners();
 			keysTyped = 0;

@@ -4,6 +4,7 @@ import gov.va.mumps.debug.core.MDebugConstants;
 import gov.va.mumps.debug.xtdebug.vo.ReadResultsVO;
 import gov.va.mumps.debug.xtdebug.vo.StackVO;
 import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
+import gov.va.mumps.debug.xtdebug.vo.StepResultsVO.ResultReasonType;
 import gov.va.mumps.debug.xtdebug.vo.VariableVO;
 import gov.va.mumps.launching.InputReadyListener;
 import gov.va.mumps.launching.ReadCommandListener;
@@ -55,6 +56,9 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 	//process stack
 	private MStackFrame[] stack;
 	
+	//state
+	private StepMode stepMode;
+	
 	public MDebugTarget(ILaunch launch, MDebugRpcProcess rpcProcess) {
 		super(null);
 		setDebugTarget(this);
@@ -93,8 +97,8 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
 					resume();
-				} catch (DebugException e) {
-					e.printStackTrace();
+				} catch (Throwable t) {
+					t.printStackTrace();
 					return Status.CANCEL_STATUS; //was it really cancelled? like by a user?
 				}
 				
@@ -173,7 +177,8 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 	}
 
 	@Override
-	public void resume() throws DebugException {
+	public void resume() {
+		stepMode = StepMode.RESUME;
 		debugThread.fireResumeEvent(DebugEvent.CLIENT_REQUEST);
 		rpcDebugProcess.resume();
 		suspended = false;
@@ -184,7 +189,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 	}
 
 	@Override
-	public void suspend() throws DebugException {
+	public void suspend() {
 		//rpcProcess has no suspend command
 		//suspended = true; //what would this do though?
 	}
@@ -321,6 +326,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 	}
 
 	public void stepOver() {
+		stepMode = StepMode.STEP_OVER;
 		suspended = true; //note that handleResponse can set this to false if it the debug is completed
 		fireResumeEvent(DebugEvent.STEP_OVER);
 		rpcDebugProcess.stepOver();
@@ -328,20 +334,15 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 	}
 
 	public void stepInto() {
-		System.out.println("THREAD ID: " +Thread.currentThread().getId());
+		stepMode = StepMode.STEP_INTO;
 		suspended = true;
 		fireResumeEvent(DebugEvent.STEP_INTO);
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		rpcDebugProcess.stepInto();
 		handleResponse(rpcDebugProcess.getResponseResults());
 	}
 
 	public void stepOut() {
+		stepMode = StepMode.STEP_OUT;
 		suspended = true;
 		fireResumeEvent(DebugEvent.STEP_RETURN);
 		rpcDebugProcess.stepOut();
@@ -363,10 +364,29 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 	
 	private synchronized void handleResponse(StepResultsVO vo) {
 		
-		//invoke terminate event if DONE found + fireevents/setflags
+		//handle any lines that come back (as result of a read or write command)
+		if (vo.getWriteLine() != null && !vo.getWriteLine().equals("")) {
+			for (WriteCommandListener listener : writeCommandListeners) {
+				listener.handleWriteCommand(vo.getWriteLine());
+			}
+		}
+		
 		if (vo.isComplete()) {
 			terminated();
 			return;
+		}
+		
+		//resend commands. Wheneever the debugger comes back it suspends execution of the MUMPS code
+		
+		//resend resume when write is encountered command
+		if (vo.getResultReason() == ResultReasonType.WRITE && stepMode == StepMode.RESUME) {
+			resume();
+			return;
+		}
+		
+		//when a read command is encountered, while stepping in resume mode, it must send a step into. wierd bug with the RPC is that is must step over the read command even though it sends a read command back to the client.
+		if (vo.getResultReason() == ResultReasonType.READ && stepMode == StepMode.RESUME) {
+			rpcDebugProcess.stepInto();
 		}
 		
 		//create stack objects from incoming RPC results
@@ -433,13 +453,6 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 				}
 		}
 		
-		//handle any lines that come back (as result of a read or write command)
-		if (vo.getWriteLine() != null && !vo.getWriteLine().equals("")) {
-			for (WriteCommandListener listener : writeCommandListeners) {
-				listener.handleWriteCommand(vo.getWriteLine());
-			}
-		}
-		
 		//handle read command results
 		//TODO: set suspend = true, fire no debug events, and set stepping = false
 		//TODO: the state of teh debug target should be updated wrt to the readCmdResults (isStarRead,etc). This may be important for sending the response back, if it isn't persisted it won't know what it was
@@ -501,4 +514,8 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 		readCommandListeners.remove(listener);
 	}
 
+	private enum StepMode {
+		RESUME, STEP_INTO, STEP_OUT, STEP_OVER;
+	}
+	
 }
