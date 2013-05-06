@@ -367,7 +367,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 		//handle any lines that come back (as result of a read or write command)
 		if (vo.getWriteLine() != null && !vo.getWriteLine().equals("")) {
 			for (WriteCommandListener listener : writeCommandListeners) {
-				listener.handleWriteCommand(vo.getWriteLine());
+				listener.handleWriteCommand(vo.getWriteLine() + (vo.getResultReason() == ResultReasonType.WRITE ? '\n' : ""));
 			}
 		}
 		

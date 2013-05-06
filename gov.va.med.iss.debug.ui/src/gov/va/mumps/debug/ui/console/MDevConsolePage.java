@@ -87,15 +87,16 @@ public class MDevConsolePage implements IPageBookViewPage, KeyListener {
 	
 	@Override
 	public void keyPressed(KeyEvent keyEvent) {
-		System.out.println("char: " +keyEvent.character);
-		System.out.println("code: " +keyEvent.keyCode);
+//		System.out.println("char: " +keyEvent.character);
+//		System.out.println("code: " +keyEvent.keyCode);
+		
+		if (keyEvent.character > 128)
+			return; //only handle writing ascii to the terminal
 
-		if (!console.isReadingUserInput()) //not possible for this to happen: || keysTyped >= console.getMaxCharInput())
+		if (!console.isReadingUserInput())
 			return;
 		
-		//determine if typing character or special key like esc, page up, etc
-		if (Character.isLetterOrDigit(keyEvent.character)) {
-
+		if (keyEvent.character >= 32 && keyEvent.character <= 126) {//determine if this is a char that is printable, eg: abc,123,!@#
 			appendText(keyEvent.character+""); //echo input
 			keyInput += keyEvent.character; //record input
 			keysTyped++;
