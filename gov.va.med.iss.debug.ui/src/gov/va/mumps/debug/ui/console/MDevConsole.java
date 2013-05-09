@@ -66,7 +66,7 @@ public class MDevConsole extends AbstractConsole implements ReadCommandListener,
 			
 			@Override
 			public void run() {
-				pageBookView.setFocus();
+				pageBookView.setFocus(); //TODO: possibly have other indicator to the user that the console is ready for input
 			}
 		});
 		
