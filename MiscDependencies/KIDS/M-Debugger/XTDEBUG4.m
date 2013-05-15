@@ -92,7 +92,7 @@ SETNTRNL ; set internal values after all are ready, in case of dependencies amon
 LEAVETAG ;
  G POPLEVEL
  ;
-NEWVARS(XTDEBVAR)	;
+NEWVARS(XTDEBVAR) ;
  ; TODO: HANDLE UNARGUMENTED NEW (SHOULDN'T HAPPEN)
  ; TODO: HANDLE EXCLUSIVE NEW
  N XTDEBGLO,XTDEBUGI,XTDEBVA1,XTDEBLVL,XTDEBUGJ,XTDEBVA2,XTDEBVA3,XTDEBSTR,XTDEBTMP
@@ -102,8 +102,6 @@ NEWVARS(XTDEBVAR)	;
  ; save off any variables related to our arguments name, for restore on leave level, then kill
  ;   if a variable is newed twice in the same level, don't need to save off current value, the initial save will be restored
  ;F XTDEBUGI=1:1 S XTDEBVA1=$G(XTDEBVAR("ARGS",XTDEBUGI)) Q:XTDEBVA1=""  M:'$D(@XTDEBGLO@(XTDEBVA1)) @XTDEBGLO@(XTDEBVA1)=@XTDEBVA1 K @XTDEBVA1
- ; modified to handle a single set of comma separated arguments
- K ^TMP("LOLMAN","NEWVARS")
  ; Must iterate each element inside XTDEBVAR("ARGS",XTDEBUGI), take its @ ("indirect") value, which 99% of the time would just be its
  ; actual literal value. But for the cases where the newed var starts with "@", it will resolve to its actual var, or list of vars. These must
  ; be concated to a final string which will contains all the new'ed vars.
@@ -112,16 +110,23 @@ NEWVARS(XTDEBVAR)	;
  S XTDEBVA1=XTDEBVAR("ARGS",1)
  ;iterate over each parm of NEW
  S XTDEBSTR=""
- S ^TMP("LOLMAN","NEWVARS","VA1")=XTDEBVA1 ;S:`$E(XTDEBVA2)="@" XTDEBSTR=XTDEBSTR_XTDEBVA2_"," S:$E(XTDEBVA2)="@" XTDEBSTR=XTDEBSTR_@XTDEBVA2_","
  F XTDEBUGI=1:1 S XTDEBVA2=$P(XTDEBVA1,",",XTDEBUGI) Q:XTDEBVA2=""  D
- . S ^TMP("LOLMAN","NEWVARS","VA2")=XTDEBVA2
  . S:$E(XTDEBVA2)'="@" XTDEBTMP=XTDEBVA2 S:$E(XTDEBVA2)="@" XTDEBTMP=@$E(XTDEBVA2,2,$L(XTDEBVA2))
- . ; S:$E(XTDEBVA2)'="@" XTDEBSTR=XTDEBSTR_XTDEBVA2_"," S:$E(XTDEBVA2)="@" XTDEBSTR=XTDEBSTR_@XTDEBVA2_","
  . S XTDEBSTR=XTDEBSTR_XTDEBTMP_","
- . S ^TMP("LOLMAN","NEWVARS","STR")=XTDEBSTR
  . Q
- ; S XTDEBSTR=$E(XTDEBSTR,1,$L(XTDEBSTR)-1)
- F XTDEBUGJ=1:1 S XTDEBVA3=$P(XTDEBSTR,",",XTDEBUGJ) Q:XTDEBVA3=""  S ^TMP("LOLMAN","NEWVARS","VA3")=XTDEBVA3 I $E(XTDEBVA3)'="$" M:'$D(@XTDEBGLO@(XTDEBVA3)) @XTDEBGLO@(XTDEBVA3)=@XTDEBVA3 K @XTDEBVA3
+ K ^LOLMAN3("XTDEBUG4","NEWVARS","XTDEBVA3")
+ S ^LOLMAN3("XTDEBUG4","NEWVARS","XTDEBSTR")=XTDEBSTR ; K @XTDEBVA3
+ F XTDEBUGJ=1:1 S XTDEBVA3=$P(XTDEBSTR,",",XTDEBUGJ) Q:XTDEBVA3=""  I $E(XTDEBVA3)'="$" D
+ . M:'$D(@XTDEBGLO@(XTDEBVA3)) @XTDEBGLO@(XTDEBVA3)=@XTDEBVA3
+ . S:XTDEBVA3="XWBPTYPE" ^LOLMAN3("XTDEBUG4","NEWVARS","XWBPTYPE")=XTDEBVA3
+ . ; S ^TMP("something","before","XWBPTYPE")=XWBPTYPE
+ . ; S ^TMP("something","before","XOBPTYPE")=XOBPTYPE
+ . ; K:XTDEBVA3'="XWBPTYPE" @XTDEBVA3  K:XTDEBVA3="XWBPTYPE" XWBPTYPE
+ . K:$E(XTDEBVA3,1,3)'="XWB" @XTDEBVA3
+ . ; S ^TMP("something","after","XWBPTYPE")=$G(XWBPTYPE)
+ . ; S ^TMP("something","after","XOBPTYPE")=$G(XOBPTYPE)
+ . ; S ^TMP("something","cause bug","XOBPTYPE")=XOBPTYPE
+ . Q
  Q
  ;
 ADDLEVEL ;

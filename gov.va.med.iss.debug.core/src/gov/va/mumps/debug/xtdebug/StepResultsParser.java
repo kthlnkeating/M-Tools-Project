@@ -68,7 +68,7 @@ public class StepResultsParser {
 			switch (section) {
 			
 			case REASON:
-				if (line.equals("DONE -- PROCESSING FINISHED"))
+				if (line.equals("DONE -- PROCESSING FINISHED") || line.equals("TERMINATED -- EXECUTION OF NEXT COMMAND [EXCLUSIVE OR GLOBAL KILL] WILL DESTROY CONNECTION")) //TODO: parse this new TERMINATED result and act on it
 					complete = true;
 				else if (line.startsWith("START:" )) {
 					resultReason = ResultReasonType.START;
