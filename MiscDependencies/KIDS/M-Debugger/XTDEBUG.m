@@ -343,3 +343,10 @@ STRTVALS ;
  ;
 STARTLOC() ; returns location to save variables at start
  Q $NA(@$$GETGLOB()@("START"))
+EVALEXPR(XTDEBEXP)	; very useful, not sure why it doesn't exist already. returns the value of an expression
+ N XTDEBVAL,XTDEBUGX
+ S:$G(XTDEBEXP)="" XTDEBEXP=""""""
+ S XTDEBUGX = "S XTDEBVAL="_XTDEBEXP
+ ; D RESETLGR^XTDEBUG X XTDEBUGX D SETDOLT^XTDEBUG,SETLGR^XTDEBUG
+ X XTDEBUGX
+ Q XTDEBVAL
