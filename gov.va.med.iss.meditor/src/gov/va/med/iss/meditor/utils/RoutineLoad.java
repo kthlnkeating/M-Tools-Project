@@ -35,6 +35,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -454,6 +455,10 @@ public class RoutineLoad {
         //Eclipse API.
 	private static void doRefresh(String routineName, boolean updateBackup) throws Exception {
         String project = VistaConnection.getCurrentProject();
+        
+        if (project.equals(""))
+        	project = "mcode";
+        
         if (! (project.compareTo("") == 0)) {
             doRefreshProject(routineName, project);
         }
@@ -533,10 +538,18 @@ public class RoutineLoad {
             VistaConnection.getCurrentServer();
             routineName = getRelativeFileName(routineName);
 
+    		IPreferenceStore store = MEditorPlugin.getDefault().getPreferenceStore();
+    		//VistaConnection.getPrimaryServer(); //must force the properties to load...
+    		boolean saveByServer = store.getBoolean(MEditorPlugin.P_SAVE_BY_SERVER);
+    		boolean vcPorject = !MPiece.getPiece(VistaConnection.getCurrentServer(), ";", 4).equals("");	
+    		if (saveByServer && !vcPorject) {
+    			routineName = "//" +MPiece.getPiece(VistaConnection.getCurrentServer(), ";")+ routineName; 
+    		}
+    		
             IPath location = new Path(routineName);
             final IFile file = project.getFile(location); //wrong, because a loaded directory may come from location outside of the project root.
             //final IFile file = project.getFile(location.lastSegment());
-        
+            
             IWorkbenchWindow win = MEditorUtilities.getIWorkbenchWindow();
             win.getShell().getDisplay().asyncExec(
                 new Runnable() {

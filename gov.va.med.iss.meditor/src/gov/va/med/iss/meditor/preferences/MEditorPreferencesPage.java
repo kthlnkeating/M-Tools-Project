@@ -146,7 +146,7 @@ public class MEditorPreferencesPage
 		if (saveByServer) {
 			str += "/"+serverName;
 		}
-		str += str +"/"+ routineName.substring(0, saveByNamespaceCnt);
+		str += "/"+ routineName.substring(0, saveByNamespaceCnt);
 
 		
 		if (! ((serverName.compareTo("Server") == 0) && (routineName.compareTo("ROUTINE") == 0) )) {
