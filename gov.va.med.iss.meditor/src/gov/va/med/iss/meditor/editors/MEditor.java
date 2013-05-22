@@ -310,7 +310,7 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 				location = RoutineLoad.getFullFileLocation(routineName);
 			}
 			str = input.getName();
-			String fileName = location+"/"+str;
+			String fileName = location+str; //location+"/"+str;
 			if (fileName.compareTo(originalFileName) != 0) {
 				if (MessageDialog.openQuestion(
 						MEditorUtilities.getIWorkbenchWindow().getShell(),

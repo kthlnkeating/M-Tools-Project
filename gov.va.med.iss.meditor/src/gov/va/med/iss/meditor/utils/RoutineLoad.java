@@ -182,8 +182,8 @@ public class RoutineLoad {
 				fw2.write(sourceCode);
 			fw2.flush();
 			fw2.close();
-			if ((! RoutineSave.isCopy()) || 
-					(currentServer.compareTo(VistaConnection.getPrimaryServerID()) == 0)) {
+			if (!RoutineSave.isCopy() || 
+					currentServer.compareTo(VistaConnection.getPrimaryServerID()) == 0) {
 				doRefresh(routineName+".m", updateBackup);
 				if (isReadOnly) {
 					file.setReadOnly();

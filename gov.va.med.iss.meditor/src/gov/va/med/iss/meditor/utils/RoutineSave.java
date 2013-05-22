@@ -177,12 +177,12 @@ public class RoutineSave {
 // JLI 100810			if (!routineWasEdited(originalCodeLocation, currentCodeLocation)) {
 // JLI 100813			if (!routineWasEdited(currentCodeLocation)) {
 				if (!routineWasEdited()) {
-					if (MessageDialog.openQuestion(
+					MessageDialog.openInformation(
 							MEditorUtilities.getIWorkbenchWindow().getShell(),
 							"Meditor Plug-in: Routine Save",
-							"No significant change was made to the routine.\nDo you want to save with the same date and time?")) {
-						currentIsCopy = true;
-					}
+							"Routine saved is identical to the what is already deployed onto the server.");
+					currentIsCopy = true;
+
 				}
 				saveRoutine(routineFileName, myConnection, currentIsCopy);
 				if (!cancelledDueToProduction) {
@@ -456,17 +456,17 @@ public class RoutineSave {
 				MessageDialog.openWarning(
 					MEditorUtilities.getIWorkbenchWindow().getShell(),
 					"Meditor Plug-in Routine Save",
-					"Saving "+routineName+" to "+VistaConnection.getCurrentServer()+"\n***  There ARE Errors and/or Warnings  ***\n\nSee the Console for details");
+					"Routine saved, but XINDEX has reported errors or warnings in the M code. Refer to the Console for details.");
 			}
 		} catch (Exception e) {
-				MessageDialog.openInformation(
+				MessageDialog.openError(
 						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 						"M-Editor Plug-in",
-						"Error encountered while executing Routine Save "+e.getMessage());
+						"Error encountered while executing Routine Save: "+e.getMessage());
 				setErrorDocHeader("Failed");
 		}
 		fullDoc = fullDoc + doc;
-		return doc.length()>0?true:false;
+		return doc.length()>0;
 	}
 	
 	/*
@@ -746,7 +746,7 @@ public class RoutineSave {
 		currentServerPort = MPiece.getPiece(currentServer,";",3);
 		currentServerProject = MPiece.getPiece(currentServer,";",4);
 		fullDoc = fullDoc + currentRoutineName +" saved to: "
-			+ currentServerName + " ("+currentServerAddress+", "+currentServerPort+")\n";
+			+ currentServerName + " ("+currentServerAddress+", "+currentServerPort+")\n\n";
 	}
 	
 	static void setErrorDocHeader(String type) {
@@ -770,11 +770,6 @@ public class RoutineSave {
 		return fullDoc;
 	}
 	
-/*
-	static private String getServerHeader() {
-		return "Saved to: "+ currentServerName + " ("+currentServerAddress+", "+currentServerPort+")\n";
-	}
-*/	
 	static public boolean isCopy() {
 		return currentIsCopy;
 	}
