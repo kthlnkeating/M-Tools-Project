@@ -27,10 +27,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 //import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
@@ -45,17 +53,28 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 	/**
 	 * A segment element.
 	 */
-	protected static class Segment {
+	protected static class Segment implements IAdaptable {
+		private IFile file;
 		public String name;
 		public Position position;
 
-		public Segment(String name, Position position) {
+		public Segment(IFile file, String name, Position position) {
 			this.name= name;
 			this.position= position;
+			this.file = file;
 		}
 
 		public String toString() {
 			return name;
+		}
+		
+		@Override
+		public Object getAdapter(Class adapter) {
+			if (adapter == IFile.class) {
+				return this.file;
+			} else {
+				return null;
+			}
 		}
 	}
 
@@ -68,12 +87,17 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 		protected final static String SEGMENTS= "__M_segments"; //$NON-NLS-1$
 		protected IPositionUpdater fPositionUpdater= new DefaultPositionUpdater(SEGMENTS);
 		protected List fContent= new ArrayList(100);
-
+		private IFile file;
+		
+		public ContentProvider(IFile file) {
+			this.file = file;
+		}
+		
 		protected void parse(IDocument document) {
 			int lines= document.getNumberOfLines();
 			int lineNum = 0;
 			String tagName = "";
-
+			
 			for (int line= 0; line < lines; line++) { // += increment) {
 				int length = 1;
 
@@ -94,7 +118,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 					if (! (str1.compareTo("") == 0)) {
 						Position p= new Position(offset, end - offset);
 						document.addPosition(SEGMENTS, p);
-						fContent.add(new Segment(str1, p)); //MessageFormat.format(MEditorMessages.getString("OutlinePage.segment.title_pattern"), new Object[] { new Integer(offset) }), p)); //$NON-NLS-1$
+						fContent.add(new Segment(file, str1, p)); //MessageFormat.format(MEditorMessages.getString("OutlinePage.segment.title_pattern"), new Object[] { new Integer(offset) }), p)); //$NON-NLS-1$
 						lineNum = 0;
 						tagName = str1;
 					} else {
@@ -102,7 +126,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 						if ((lineNum % 10) == 0) {
 							Position p= new Position(offset, end-offset);
 							document.addPosition(SEGMENTS, p);
-							fContent.add(new Segment("      "+tagName+"+"+lineNum, p)); //MessageFormat.format(MEditorMessages.getString("OutlinePage.segment.title_pattern"), new Object[] { new Integer(offset) }), p)); //$NON-NLS-1$
+							fContent.add(new Segment(file, "      "+tagName+"+"+lineNum, p)); //MessageFormat.format(MEditorMessages.getString("OutlinePage.segment.title_pattern"), new Object[] { new Integer(offset) }), p)); //$NON-NLS-1$
 						}
 					}
 
@@ -114,7 +138,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 				int val1 = document.getLength();
 				Position p = new Position(val1, 0);
 				document.addPosition(SEGMENTS, p);
-				fContent.add(new Segment("<<END>>", p));
+				fContent.add(new Segment(file, "<<END>>", p));
 			} catch (Exception e) {
 			}
 		}
@@ -216,6 +240,17 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 		fDocument.addDocumentListener(this);
 	}
 	
+	private void createContextMenuFor(StructuredViewer viewer) {
+		MenuManager contextMenu = new MenuManager("#PopUpMenu","com.com.com");
+		contextMenu.add(new Separator("additions"));
+		contextMenu.setRemoveAllWhenShown(true);
+		Menu menu = contextMenu.createContextMenu(viewer.getControl());
+		viewer.getControl().setMenu(menu);
+		IWorkbenchPart part = this.mEditor.getEditorSite().getPart();
+		this.mEditor.getEditorSite().registerContextMenu("com.com.com", contextMenu, this.mEditor.getEditorSite().getSelectionProvider());
+
+	}
+
 	/* (non-Javadoc)
 	 * Method declared on ContentOutlinePage
 	 */
@@ -224,10 +259,13 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 		super.createControl(parent);
 
 		TreeViewer viewer= getTreeViewer();
-		viewer.setContentProvider(new ContentProvider());
+		IEditorInput input = this.mEditor.getEditorInput();
+		IFile file = (IFile) input.getAdapter(IFile.class);
+		viewer.setContentProvider(new ContentProvider(file));
 		viewer.setLabelProvider(new LabelProvider());
 		viewer.addSelectionChangedListener(this);
-
+		createContextMenuFor(viewer);
+		
 		if (fInput != null)
 			viewer.setInput(fInput);
 	}
