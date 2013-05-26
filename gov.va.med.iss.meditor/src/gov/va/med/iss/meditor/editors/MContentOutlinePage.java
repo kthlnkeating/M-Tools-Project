@@ -49,6 +49,7 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
  * 10 lines between TAGS segments.
  */
 public class MContentOutlinePage extends ContentOutlinePage implements IDocumentListener {
+	private static final String CONTEXT_MENU_ID = "gov.va.med.iss.meditor.editors.outline.contextmenu"; 
 
 	/**
 	 * A segment element.
@@ -241,14 +242,12 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 	}
 	
 	private void createContextMenuFor(StructuredViewer viewer) {
-		MenuManager contextMenu = new MenuManager("#PopUpMenu","com.com.com");
+		MenuManager contextMenu = new MenuManager("#PopUpMenu", CONTEXT_MENU_ID);
 		contextMenu.add(new Separator("additions"));
 		contextMenu.setRemoveAllWhenShown(true);
 		Menu menu = contextMenu.createContextMenu(viewer.getControl());
 		viewer.getControl().setMenu(menu);
-		IWorkbenchPart part = this.mEditor.getEditorSite().getPart();
-		this.mEditor.getEditorSite().registerContextMenu("com.com.com", contextMenu, this.mEditor.getEditorSite().getSelectionProvider());
-
+		this.mEditor.getEditorSite().registerContextMenu(CONTEXT_MENU_ID, contextMenu, this.mEditor.getEditorSite().getSelectionProvider());
 	}
 
 	/* (non-Javadoc)
