@@ -58,7 +58,7 @@ public class RoutineChangedDialog extends Dialog {
 		isSaveValue = isSave;
 		
 		final Shell shell = new Shell(getParent(), SWT.DIALOG_TRIM |
-				SWT.APPLICATION_MODAL);
+				SWT.APPLICATION_MODAL | SWT.CENTER);
 		String strVal = MPiece.getPiece(VistaConnection.getCurrentServer(),";");
 		strVal = "Routine "+routineName+" Changed on Server '"+strVal+"'";
 		String strProject = MPiece.getPiece(VistaConnection.getCurrentServer(),";",4);
@@ -83,7 +83,7 @@ public class RoutineChangedDialog extends Dialog {
 		Label lblQ2 = new Label(shell, SWT.NONE);
 		lblQ2.setLocation(20,30);
 		lblQ2.setSize(350,20);
-		lblQ2.setText("this version on the server? (note that the changes HAVE");
+		lblQ2.setText("this version onto the server? (note that the changes HAVE");
 		
 		String projectName = VistaConnection.getCurrentProject();
 		if (projectName.compareTo("") == 0) {
