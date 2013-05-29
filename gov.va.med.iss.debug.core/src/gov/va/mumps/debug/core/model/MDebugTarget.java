@@ -28,9 +28,11 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
+import org.eclipse.debug.core.model.IWatchpoint;
 
 public class MDebugTarget extends MDebugElement implements IDebugTarget, InputReadyListener {
 
@@ -183,9 +185,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 		rpcDebugProcess.resume();
 		suspended = false;
 		StepResultsVO results = rpcDebugProcess.getResponseResults();
-		suspended = true;
 		handleResponse(results);
-		//debugThread.fireResumeEvent(DebugEvent.CLIENT_REQUEST); //CLIENT_REQUEST - user/guiclient requested
 	}
 
 	@Override
@@ -327,7 +327,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 
 	public void stepOver() {
 		stepMode = StepMode.STEP_OVER;
-		suspended = true; //note that handleResponse can set this to false if it the debug is completed
+		suspended = false; //note that handleResponse can set this to false if it the debug is completed
 		fireResumeEvent(DebugEvent.STEP_OVER);
 		rpcDebugProcess.stepOver();
 		handleResponse(rpcDebugProcess.getResponseResults()); //TODO: move this to a new thread if yo want asychon. also move the suspend events to the async thread
@@ -335,7 +335,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 
 	public void stepInto() {
 		stepMode = StepMode.STEP_INTO;
-		suspended = true;
+		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_INTO);
 		rpcDebugProcess.stepInto();
 		handleResponse(rpcDebugProcess.getResponseResults());
@@ -343,7 +343,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 
 	public void stepOut() {
 		stepMode = StepMode.STEP_OUT;
-		suspended = true;
+		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_RETURN);
 		rpcDebugProcess.stepOut();
 		handleResponse(rpcDebugProcess.getResponseResults());
@@ -364,6 +364,8 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 	
 	private synchronized void handleResponse(StepResultsVO vo) {
 		
+		debugThread.setBreakpoints(null);
+		
 		//handle any lines that come back (as result of a read or write command)
 		if (vo.getWriteLine() != null && !vo.getWriteLine().equals("")) {
 			for (WriteCommandListener listener : writeCommandListeners) {
@@ -376,7 +378,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 			return;
 		}
 		
-		//resend commands. Wheneever the debugger comes back it suspends execution of the MUMPS code
+		//resend commands. Whenever the debugger comes back it suspends execution of the MUMPS code
 		
 		//resend resume when write is encountered command
 		if (vo.getResultReason() == ResultReasonType.WRITE && stepMode == StepMode.RESUME) {
@@ -466,9 +468,54 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 					maxReadChars = readCmdResults.getMaxChars() == null ? Integer.MAX_VALUE : readCmdResults.getMaxChars();
 				listener.handleReadCommand(maxReadChars);
 			}
-		} else if (vo.getNextCommnd() != null) { //why is it checking for null nextCommand. when is this null? this was just bad defensive programming
-			fireSuspendEvent(DebugEvent.STEP_END); //TODO: use the value from the API for breakpoint/watchpoint/step end
 		}
+		
+		if (vo.getResultReason() == ResultReasonType.BREAKPOINT || vo.getResultReason() == ResultReasonType.WATCHPOINT)
+			//breakPointHit(vo.getBreakpointName()) //TODO: to handle breakpoint hit, will need to change 1) what is sent to the RPC 2) what the RPC sends back
+			suspended(DebugEvent.BREAKPOINT);
+		else if (vo.getResultReason() == ResultReasonType.STEP)
+			suspended(DebugEvent.STEP_INTO); //STEP_INTO, the only currently supported type.
+		else if (vo.getResultReason() == ResultReasonType.START)
+			;
+		else
+			suspended(DebugEvent.UNSPECIFIED);
+	}
+	
+	/**
+	 * Notification a breakpoint was encountered. Determine which breakpoint was
+	 * hit and fire a suspend event.
+	 * 
+	 * @param breakpointName
+	 *            name of the breakpoint, either a tag or a variable name for watch
+	 *            points
+	 */
+	private void breakpointHit(String breakpointName) {
+		// determine which breakpoint was hit, and set the thread's breakpoint
+		
+		if (breakpointName == null)
+			return; //guard against bad data from the backend api
+
+		IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(MDebugConstants.M_DEBUG_MODEL);
+		for (int i = 0; i < breakpoints.length; i++) {
+			IBreakpoint breakpoint = breakpoints[i];
+			if (supportsBreakpoint(breakpoint)) {
+				if (breakpoint instanceof AbstractMBreakpoint) {
+					AbstractMBreakpoint Mbreakpoint = (AbstractMBreakpoint) breakpoint;
+					if (breakpoint.equals(Mbreakpoint.getBreakpointAsTag()))
+						debugThread.setBreakpoints(new IBreakpoint[]{breakpoint});
+						break;
+				} else if (breakpoint instanceof MWatchpoint) {
+					
+				}
+			}
+		}
+
+		suspended(DebugEvent.BREAKPOINT);
+	}
+		
+	private void suspended(int detail) {
+		suspended = true;
+		debugThread.fireSuspendEvent(detail);
 	}
 	
 	private void terminated() {
