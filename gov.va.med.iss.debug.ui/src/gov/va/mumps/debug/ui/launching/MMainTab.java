@@ -6,7 +6,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -16,21 +15,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 
 public class MMainTab extends AbstractLaunchConfigurationTab {
 
-	private Text mCodeText;
-
-	private static boolean lowerCaseWarningShown; // because the
-															// framework invokes
-															// the perform apply
-															// many times if
-															// even 1 char is
-															// changed, we don't
-															// want to display
-															// this box over and
-															// over again
+	private Text fProgramText;
 	
 	@Override
 	public void createControl(Composite parent) {
@@ -52,18 +40,16 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 		programLabel.setLayoutData(gd);
 		programLabel.setFont(font);
 		
-		mCodeText = new Text(comp, SWT.SINGLE | SWT.BORDER);
+		fProgramText = new Text(comp, SWT.SINGLE | SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		mCodeText.setLayoutData(gd);
-		mCodeText.setFont(font);
-		mCodeText.setToolTipText("Ex: D TAG^ROUTINE");
-		mCodeText.addModifyListener(new ModifyListener() {
+		fProgramText.setLayoutData(gd);
+		fProgramText.setFont(font);
+		fProgramText.setToolTipText("Ex: D TAG^ROUTINE");
+		fProgramText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				updateLaunchConfigurationDialog();
 			}
 		});
-		
-		lowerCaseWarningShown = false;
 	}
 
 	@Override
@@ -73,9 +59,9 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			String mCode = configuration.getAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, (String)null);
-			if (mCode != null) {
-				mCodeText.setText(mCode);
+			String program = configuration.getAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, (String)null);
+			if (program != null) {
+				fProgramText.setText(program);
 			}
 		} catch (CoreException e) {
 			setErrorMessage(e.getMessage());
@@ -84,55 +70,11 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 	
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		String mCode = mCodeText.getText().trim();
-
-		boolean inQuote = false;
-		boolean foundQuote = false;
-		boolean foundLowerCase = false;
-		for (int i = 0; i < mCode.length(); i++) {
-			String charAt = mCode.charAt(i)+"";
-			final String QUOTE = "\"";
-			
-			if (inQuote) {
-				if (charAt.equals(QUOTE)) {
-					if (foundQuote)
-						foundQuote = false;
-					else
-						foundQuote = true;
-				} else {
-					if (foundQuote)
-						inQuote = false;
-					foundQuote = false;
-				}
-			}
-			
-			if (!inQuote) {
-				if (charAt.matches("[a-z]")) {
-					foundLowerCase = true;
-				}					 
-				
-				if (charAt.equals(QUOTE))
-					inQuote = true;
-			}
+		String program = fProgramText.getText().trim();
+		if (program.length() == 0) {
+			program = null;
 		}
-		
-		if (foundLowerCase && !lowerCaseWarningShown) {
-			mCodeText.getDisplay().asyncExec(new Runnable() {
-				  public void run() {
-						MessageDialog.openWarning(
-								PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-								"MDebugger detected lowercase characters",
-								"Please note that lowercase commands (such as d TAG^ROUTINE) are not supported.");
-				  }
-			});
-			lowerCaseWarningShown = true;
-		}
-		
-		if (mCode.length() == 0) {
-			mCode = null;
-		}
-		
-		configuration.setAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, mCode);
+		configuration.setAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, program);
 	}
 	
 	@Override
@@ -153,7 +95,6 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 //		} else {
 //			setMessage("Specify a program");
 //		}
-				
 		return super.isValid(launchConfig);
 	}
 }
