@@ -55,7 +55,6 @@ public class MDebugCorePlugin extends Plugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		System.out.println("CORE STARTED!!!!!!!!!!!");
 	}
 
 	/**

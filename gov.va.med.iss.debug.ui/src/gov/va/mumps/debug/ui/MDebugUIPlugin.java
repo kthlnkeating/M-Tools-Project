@@ -3,7 +3,6 @@ package gov.va.mumps.debug.ui;
 import gov.va.mumps.debug.core.model.MDebugTarget;
 import gov.va.mumps.debug.ui.console.MDevConsole;
 
-import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchListener;
