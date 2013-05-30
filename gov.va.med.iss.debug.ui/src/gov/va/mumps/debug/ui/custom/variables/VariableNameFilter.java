@@ -17,7 +17,7 @@ public class VariableNameFilter extends ViewerFilter {
 		if (pattern == null || pattern.length() == 0)
 			return true;
 		
-		if (((VariableVO)element).getName().contains(pattern))
+		if (((VariableVO)element).getName().startsWith(pattern.toUpperCase()))
 			return true;
 		
 		return false;
