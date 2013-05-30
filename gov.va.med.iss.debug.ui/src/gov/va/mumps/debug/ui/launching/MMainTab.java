@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Text;
 
 public class MMainTab extends AbstractLaunchConfigurationTab {
 
-	private Text fProgramText;
+	private Text mCodeText;
 	
 	@Override
 	public void createControl(Composite parent) {
@@ -40,12 +40,12 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 		programLabel.setLayoutData(gd);
 		programLabel.setFont(font);
 		
-		fProgramText = new Text(comp, SWT.SINGLE | SWT.BORDER);
+		mCodeText = new Text(comp, SWT.SINGLE | SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		fProgramText.setLayoutData(gd);
-		fProgramText.setFont(font);
-		fProgramText.setToolTipText("Ex: D TAG^ROUTINE");
-		fProgramText.addModifyListener(new ModifyListener() {
+		mCodeText.setLayoutData(gd);
+		mCodeText.setFont(font);
+		mCodeText.setToolTipText("Ex: D TAG^ROUTINE");
+		mCodeText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				updateLaunchConfigurationDialog();
 			}
@@ -59,9 +59,9 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			String program = configuration.getAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, (String)null);
-			if (program != null) {
-				fProgramText.setText(program);
+			String mCode = configuration.getAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, (String)null);
+			if (mCode != null) {
+				mCodeText.setText(mCode);
 			}
 		} catch (CoreException e) {
 			setErrorMessage(e.getMessage());
@@ -70,11 +70,44 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 	
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		String program = fProgramText.getText().trim();
-		if (program.length() == 0) {
-			program = null;
+		String mCode = mCodeText.getText().trim();
+
+		//bug fix: convert syntax to upper case: ie: d ^ROUTINE to D ^ROUTINE. Convert anything that is not in ""'s to upper case
+		StringBuilder sb = new StringBuilder(mCode);
+		boolean inQuote = false;
+		boolean foundQuote = false;
+		for (int i = 0; i < mCode.length(); i++) {
+			String charAt = mCode.charAt(i)+"";
+			final String QUOTE = "\"";
+			
+			if (inQuote) {
+				if (charAt.equals(QUOTE)) {
+					if (foundQuote)
+						foundQuote = false;
+					else
+						foundQuote = true;
+				} else {
+					if (foundQuote)
+						inQuote = false;
+					foundQuote = false;
+				}
+			}
+			
+			if (!inQuote) {
+				if (charAt.matches("[a-z]"))
+					sb.replace(i, i+1, charAt.toUpperCase());
+				
+				if (charAt.equals(QUOTE))
+					inQuote = true;
+			}
 		}
-		configuration.setAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, program);
+		mCode = sb.toString();
+		
+		if (mCode.length() == 0) {
+			mCode = null;
+		}
+		
+		configuration.setAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, mCode);
 	}
 	
 	@Override
