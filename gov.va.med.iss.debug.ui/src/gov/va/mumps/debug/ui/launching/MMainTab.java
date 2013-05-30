@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -15,10 +16,21 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 public class MMainTab extends AbstractLaunchConfigurationTab {
 
 	private Text mCodeText;
+
+	private static boolean lowerCaseWarningShown; // because the
+															// framework invokes
+															// the perform apply
+															// many times if
+															// even 1 char is
+															// changed, we don't
+															// want to display
+															// this box over and
+															// over again
 	
 	@Override
 	public void createControl(Composite parent) {
@@ -50,6 +62,8 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 				updateLaunchConfigurationDialog();
 			}
 		});
+		
+		lowerCaseWarningShown = false;
 	}
 
 	@Override
@@ -72,10 +86,9 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		String mCode = mCodeText.getText().trim();
 
-		//bug fix: convert syntax to upper case: ie: d ^ROUTINE to D ^ROUTINE. Convert anything that is not in ""'s to upper case
-		StringBuilder sb = new StringBuilder(mCode);
 		boolean inQuote = false;
 		boolean foundQuote = false;
+		boolean foundLowerCase = false;
 		for (int i = 0; i < mCode.length(); i++) {
 			String charAt = mCode.charAt(i)+"";
 			final String QUOTE = "\"";
@@ -94,14 +107,26 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 			}
 			
 			if (!inQuote) {
-				if (charAt.matches("[a-z]"))
-					sb.replace(i, i+1, charAt.toUpperCase());
+				if (charAt.matches("[a-z]")) {
+					foundLowerCase = true;
+				}					 
 				
 				if (charAt.equals(QUOTE))
 					inQuote = true;
 			}
 		}
-		mCode = sb.toString();
+		
+		if (foundLowerCase && !lowerCaseWarningShown) {
+			mCodeText.getDisplay().asyncExec(new Runnable() {
+				  public void run() {
+						MessageDialog.openWarning(
+								PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+								"MDebugger detected lowercase characters",
+								"Please note that lowercase commands (such as d TAG^ROUTINE) are not supported.");
+				  }
+			});
+			lowerCaseWarningShown = true;
+		}
 		
 		if (mCode.length() == 0) {
 			mCode = null;
@@ -128,6 +153,7 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 //		} else {
 //			setMessage("Specify a program");
 //		}
+				
 		return super.isValid(launchConfig);
 	}
 }
