@@ -15,18 +15,9 @@ public class MDebugUIPlugin extends AbstractUIPlugin implements
 		ILaunchListener {
 
 	@Override
-	public void start(BundleContext context) throws Exception { //TODO: what if this is started after launches were already added?
+	public void start(BundleContext context) throws Exception { //TODO: what if this is started after launches were already added? is that possible? Can a launch be created without activating this UI plugin?
 		super.start(context);	
 		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this);
-	}
-	
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		try {
-			DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(this);
-		} finally {
-			super.stop(context);
-		}
 	}
 
 	@Override
