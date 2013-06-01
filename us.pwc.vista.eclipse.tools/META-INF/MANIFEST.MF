@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vista
-Bundle-SymbolicName: com.raygroupintl.eclipse.vista; singleton:=true
+Bundle-SymbolicName: us.pwc.vista.eclipse.tools;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: com.raygroupintl.eclipse.vista.Activator
 Bundle-Vendor: RAYGROUPINTL
