@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding ="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="com.raygroupintl.eclipse.vista.command.ReportAssumeVariables"
+            id="com.raygroupintl.eclipse.vista.assumevariable"
+            name="Report Assume Variables">
+      </command>
+      <command
+            defaultHandler="com.raygroupintl.eclipse.vista.command.ReportErrors"
+            id="com.raygroupintl.eclipse.vista.error"
+            name="Report Errors">
+      </command>
+      <command
+            defaultHandler="com.raygroupintl.eclipse.vista.command.ReportOccurances"
+            id="com.raygroupintl.eclipse.vista.occurance"
+            name="Report Occurances">
+      </command>
+      <command
+            defaultHandler="com.raygroupintl.eclipse.vista.command.ValidateQuitTypes"
+            id="com.raygroupintl.eclipse.vista.quittype"
+            name="Validate Quit Types">
+      </command>
+      <command
+            defaultHandler="com.raygroupintl.eclipse.vista.command.ExpandKeywords"
+            id="com.raygroupintl.eclipse.vista.expandkeywords"
+            name="Expand Keywords">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:gov.va.med.iss.meditor.editors.outline.contextmenu?after=additions">
+         <menu
+               label="M Tools">
+            <command
+                  commandId="com.raygroupintl.eclipse.vista.assumevariable"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.raygroupintl.eclipse.vista.error"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.raygroupintl.eclipse.vista.occurance"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.raygroupintl.eclipse.vista.quittype"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
+         <menu
+               label="M Tools">
+            <command
+                  commandId="com.raygroupintl.eclipse.vista.assumevariable"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.raygroupintl.eclipse.vista.error"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.raygroupintl.eclipse.vista.occurance"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.raygroupintl.eclipse.vista.quittype"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:#TextEditorContext?after=additions">
+         <menu
+               label="Refactor">
+            <command
+                  commandId="com.raygroupintl.eclipse.vista.expandkeywords"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <!--extension
+         point="org.eclipse.ui.views">
+      <category
+            id="com.raygroupintl.eclipse.vista"
+            name="MUMPs">
+      </category>
+      <view
+            category="com.raygroupintl.eclipse.vista"
+            class="com.raygroupintl.eclipse.vista.views.MRAToolConsoleView"
+            icon="icons/sample.gif"
+            id="com.raygroupintl.eclipse.vista.views.MRAToolConsoleView"
+            name="MRA Tool Console View">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension-->
+
+</plugin>
