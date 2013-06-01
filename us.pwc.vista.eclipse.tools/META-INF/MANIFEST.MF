@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Vista
 Bundle-SymbolicName: us.pwc.vista.eclipse.tools;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: com.raygroupintl.eclipse.vista.Activator
+Bundle-Activator: us.pwc.eclipse.vista.Activator
 Bundle-Vendor: RAYGROUPINTL
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -15,5 +15,4 @@ Require-Bundle: org.eclipse.ui,
  us.pwc.vista.mra;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: com.raygroupintl.vista.jar,
- .
+Bundle-ClassPath: .

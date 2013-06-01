@@ -1,4 +1,4 @@
-package com.raygroupintl.eclipse.vista.util;
+package us.pwc.eclipse.vista.util;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;

@@ -1,4 +1,4 @@
-package com.raygroupintl.eclipse.vista.toolconsole;
+package us.pwc.eclipse.vista.toolconsole;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;

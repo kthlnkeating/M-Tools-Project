@@ -5,28 +5,28 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="com.raygroupintl.eclipse.vista.command.ReportAssumeVariables"
-            id="com.raygroupintl.eclipse.vista.assumevariable"
+            defaultHandler="us.pwc.eclipse.vista.command.ReportAssumeVariables"
+            id="us.pwc.eclipse.vista.assumevariable"
             name="Report Assume Variables">
       </command>
       <command
-            defaultHandler="com.raygroupintl.eclipse.vista.command.ReportErrors"
-            id="com.raygroupintl.eclipse.vista.error"
+            defaultHandler="us.pwc.eclipse.vista.command.ReportErrors"
+            id="us.pwc.eclipse.vista.error"
             name="Report Errors">
       </command>
       <command
-            defaultHandler="com.raygroupintl.eclipse.vista.command.ReportOccurances"
-            id="com.raygroupintl.eclipse.vista.occurance"
+            defaultHandler="us.pwc.eclipse.vista.command.ReportOccurances"
+            id="us.pwc.eclipse.vista.occurance"
             name="Report Occurances">
       </command>
       <command
-            defaultHandler="com.raygroupintl.eclipse.vista.command.ValidateQuitTypes"
-            id="com.raygroupintl.eclipse.vista.quittype"
+            defaultHandler="us.pwc.eclipse.vista.command.ValidateQuitTypes"
+            id="us.pwc.eclipse.vista.quittype"
             name="Validate Quit Types">
       </command>
       <command
-            defaultHandler="com.raygroupintl.eclipse.vista.command.ExpandKeywords"
-            id="com.raygroupintl.eclipse.vista.expandkeywords"
+            defaultHandler="us.pwc.eclipse.vista.command.ExpandKeywords"
+            id="us.pwc.eclipse.vista.expandkeywords"
             name="Expand Keywords">
       </command>
    </extension>
@@ -38,19 +38,19 @@
          <menu
                label="M Tools">
             <command
-                  commandId="com.raygroupintl.eclipse.vista.assumevariable"
+                  commandId="us.pwc.eclipse.vista.assumevariable"
                   style="push">
             </command>
             <command
-                  commandId="com.raygroupintl.eclipse.vista.error"
+                  commandId="us.pwc.eclipse.vista.error"
                   style="push">
             </command>
             <command
-                  commandId="com.raygroupintl.eclipse.vista.occurance"
+                  commandId="us.pwc.eclipse.vista.occurance"
                   style="push">
             </command>
             <command
-                  commandId="com.raygroupintl.eclipse.vista.quittype"
+                  commandId="us.pwc.eclipse.vista.quittype"
                   style="push">
             </command>
          </menu>
@@ -61,19 +61,19 @@
          <menu
                label="M Tools">
             <command
-                  commandId="com.raygroupintl.eclipse.vista.assumevariable"
+                  commandId="us.pwc.eclipse.vista.assumevariable"
                   style="push">
             </command>
             <command
-                  commandId="com.raygroupintl.eclipse.vista.error"
+                  commandId="us.pwc.eclipse.vista.error"
                   style="push">
             </command>
             <command
-                  commandId="com.raygroupintl.eclipse.vista.occurance"
+                  commandId="us.pwc.eclipse.vista.occurance"
                   style="push">
             </command>
             <command
-                  commandId="com.raygroupintl.eclipse.vista.quittype"
+                  commandId="us.pwc.eclipse.vista.quittype"
                   style="push">
             </command>
          </menu>
@@ -84,7 +84,7 @@
          <menu
                label="Refactor">
             <command
-                  commandId="com.raygroupintl.eclipse.vista.expandkeywords"
+                  commandId="us.pwc.eclipse.vista.expandkeywords"
                   style="push">
             </command>
          </menu>
@@ -93,14 +93,14 @@
    <!--extension
          point="org.eclipse.ui.views">
       <category
-            id="com.raygroupintl.eclipse.vista"
+            id="us.pwc.eclipse.vista"
             name="MUMPs">
       </category>
       <view
-            category="com.raygroupintl.eclipse.vista"
-            class="com.raygroupintl.eclipse.vista.views.MRAToolConsoleView"
+            category="us.pwc.eclipse.vista"
+            class="us.pwc.eclipse.vista.views.MRAToolConsoleView"
             icon="icons/sample.gif"
-            id="com.raygroupintl.eclipse.vista.views.MRAToolConsoleView"
+            id="us.pwc.eclipse.vista.views.MRAToolConsoleView"
             name="MRA Tool Console View">
       </view>
    </extension>

@@ -1,4 +1,4 @@
-package com.raygroupintl.eclipse.vista.views;
+package us.pwc.eclipse.vista.views;
 
 import java.io.OutputStream;
 
@@ -12,7 +12,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 
-import com.raygroupintl.eclipse.vista.util.SWTTextOutputStream;
+import us.pwc.eclipse.vista.util.SWTTextOutputStream;
+
 
 public class MRAToolConsoleView extends ViewPart {
 	private static StyledText text;

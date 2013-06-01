@@ -1,4 +1,4 @@
-package com.raygroupintl.eclipse.vista;
+package us.pwc.eclipse.vista;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;

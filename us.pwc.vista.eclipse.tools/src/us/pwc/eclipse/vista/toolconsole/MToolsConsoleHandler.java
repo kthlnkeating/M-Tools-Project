@@ -1,4 +1,4 @@
-package com.raygroupintl.eclipse.vista.toolconsole;
+package us.pwc.eclipse.vista.toolconsole;
 
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
