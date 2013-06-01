@@ -90,25 +90,5 @@
          </menu>
       </menuContribution>
    </extension>
-   <!--extension
-         point="org.eclipse.ui.views">
-      <category
-            id="us.pwc.eclipse.vista"
-            name="MUMPs">
-      </category>
-      <view
-            category="us.pwc.eclipse.vista"
-            class="us.pwc.eclipse.vista.views.MRAToolConsoleView"
-            icon="icons/sample.gif"
-            id="us.pwc.eclipse.vista.views.MRAToolConsoleView"
-            name="MRA Tool Console View">
-      </view>
-   </extension>
-   <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="contexts.xml">
-      </contexts>
-   </extension-->
 
 </plugin>
