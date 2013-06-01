@@ -1,20 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="MToolsFeature"
-      label="MToolsFeature"
-      version="1.0.15">
+      id="gov.va.vista.mtools"
+      label="MTools Feature"
+      version="1.0.15"
+      provider-name="US Department of Veterans Affairs">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
-   </description>
+   <license url="http://www.apache.org/licenses/LICENSE-2.0">
+      Copyright 2013 US Department of Veterans Affairs
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
-   </copyright>
+   Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
    </license>
+
+   <requires>
+      <import plugin="org.apache.log4j" version="1.2.8" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.7.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.editors" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help" version="3.5.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.console" version="3.5.100" match="greaterOrEqual"/>
+      <import plugin="gov.va.med.iss.connection" version="0.1.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.debug.core" version="3.7.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.variables" version="3.2.500" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime.compatibility" version="3.2.100" match="greaterOrEqual"/>
+      <import plugin="gov.va.med.iss.meditor" version="0.1.2" match="greaterOrEqual"/>
+      <import plugin="gov.va.med.iss.connection" version="0.1.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.debug.ui" version="3.7.102" match="greaterOrEqual"/>
+      <import plugin="gov.va.med.iss.debug.core" version="0.1.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filebuffers" version="3.5.200" match="greaterOrEqual"/>
+   </requires>
 
    <plugin
          id="gov.va.med.iss.connection"
@@ -37,6 +65,13 @@
 
    <plugin
          id="gov.va.med.iss.debug.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="us.pwc.vista.eclipse.tools"
          download-size="0"
          install-size="0"
          version="0.0.0"

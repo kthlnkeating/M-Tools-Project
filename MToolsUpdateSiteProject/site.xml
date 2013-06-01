@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/MToolsFeature_1.0.15.jar" id="MToolsFeature" version="1.0.15"/>
+   <feature url="features/gov.va.vista.mtools_1.0.15.jar" id="gov.va.vista.mtools" version="1.0.15">
+      <category name="gov.va.vista.eclipse"/>
+   </feature>
+   <category-def name="gov.va.vista.eclipse" label="VistA Tools"/>
 </site>

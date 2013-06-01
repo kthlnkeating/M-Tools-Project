@@ -36,7 +36,7 @@ public class MToolsPatternMatchListener implements IPatternMatchListener {
 
 	@Override
 	public String getPattern() {
-		return "\\([\\w%]+\\:\\d+\\)";		
+		return "\\([\\w%]+\\:\\d+\\)"; //TODO: convert this returning a precompile regex for optimization
 	}
 	
 	@Override
