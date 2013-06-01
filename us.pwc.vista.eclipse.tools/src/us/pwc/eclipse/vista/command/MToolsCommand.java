@@ -10,10 +10,15 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -88,7 +93,7 @@ abstract class MToolsCommand extends AbstractHandler{
 		MToolsConsoleHandler.displayMToolsConsole();
 	}
 	
-	public void run(IWorkbenchWindow window, Shell shell, IProject project, TreePath[] selections) {
+	public void run(IWorkbenchWindow window, final Shell shell, IProject project, TreePath[] selections) {
 		try {
 			List<String> selectedFileNames = this.getFileNames(selections);
 			if (selectedFileNames == null) {
@@ -103,12 +108,16 @@ abstract class MToolsCommand extends AbstractHandler{
 			this.writeResult(project, window, result, scf);
 		} catch (Exception e) {
 			e.printStackTrace();
-			String msg = "Unexpected error.";
-			MessageDialog.openInformation(shell, "M Tools", msg);
+			final String msg = "Unexpected error.";
+			Display.getDefault().asyncExec(new Runnable() {
+				  public void run() {
+					  MessageDialog.openInformation(shell, "M Tools", msg);
+				  }
+				});
 		}
 	}
 
-	public void run(IWorkbenchWindow window, Shell shell, IProject project, IFile file, String tag) {
+	public void run(IWorkbenchWindow window, final Shell shell, IProject project, IFile file, String tag) {
 		try {
 			SourceCodeFiles scf = MRAParamSupply.getSourceCodeFiles(project);
 			SourceCodeToParseTreeAdapter pts = new SourceCodeToParseTreeAdapter(scf);
@@ -121,38 +130,59 @@ abstract class MToolsCommand extends AbstractHandler{
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			String msg = "Unexpected error.";
-			MessageDialog.openInformation(shell, "M Tools", msg);
-		}
+			final String msg = "Unexpected error.";
+			Display.getDefault().asyncExec(new Runnable() {
+				  public void run() {
+					  MessageDialog.openInformation(shell, "M Tools", msg);
+				  }
+				});		}
 	}
 
+	
+	/**
+	 * This occurs in the main/UI eclipse thread. It schedules a new 
+	 * asynchronous job to do the heavy lifting.
+	 */
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ISelection selection = HandlerUtil.getCurrentSelection(event);
-		if (selection instanceof TreeSelection) {
-			TreeSelection ts = (TreeSelection) selection;
-			TreePath[] paths = ts.getPaths();
-			TreePath[] selections = paths;
-			TreePath path = paths[paths.length-1];
-			Object lastSegment = path.getLastSegment();
-			if (lastSegment instanceof IResource) {
-				IProject project = ((IResource) lastSegment).getProject();
-				IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-				Shell shell = HandlerUtil.getActiveShell(event);
-				this.run(window, shell, project, selections);
-			} else {
-				IEditorPart editorPart = HandlerUtil.getActiveEditor(event);
-				IEditorInput input = editorPart.getEditorInput();
-				IFile file = (IFile) input.getAdapter(IFile.class);
-				String tag = lastSegment.toString();
-				if (! (tag.startsWith(" ") || tag.startsWith(">"))) {
-					IProject project = file.getProject();
-					IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-					Shell shell = HandlerUtil.getActiveShell(event);
-					this.run(window, shell, project, file, tag);
+	public Object execute(final ExecutionEvent event) throws ExecutionException {
+		final MToolsCommand this1 = this;
+		
+		Job job = new Job("MTools Fetch Report") {
+			@Override
+			protected IStatus run(IProgressMonitor arg0) {
+
+				ISelection selection = HandlerUtil.getCurrentSelection(event);
+				if (selection instanceof TreeSelection) {
+					TreeSelection ts = (TreeSelection) selection;
+					TreePath[] paths = ts.getPaths();
+					TreePath[] selections = paths;
+					TreePath path = paths[paths.length-1];
+					Object lastSegment = path.getLastSegment();
+					if (lastSegment instanceof IResource) {
+						IProject project = ((IResource) lastSegment).getProject();
+						IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
+						Shell shell = HandlerUtil.getActiveShell(event);
+						this1.run(window, shell, project, selections);
+					} else {
+						IEditorPart editorPart = HandlerUtil.getActiveEditor(event);
+						IEditorInput input = editorPart.getEditorInput();
+						IFile file = (IFile) input.getAdapter(IFile.class);
+						String tag = lastSegment.toString();
+						if (! (tag.startsWith(" ") || tag.startsWith(">"))) {
+							IProject project = file.getProject();
+							IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
+							Shell shell = HandlerUtil.getActiveShell(event);
+							this1.run(window, shell, project, file, tag);
+						}
+					}
 				}
+
+				return Status.OK_STATUS;
 			}
-		}
+		};
+		
+		job.schedule();
+
 		return null;
 	}
 }

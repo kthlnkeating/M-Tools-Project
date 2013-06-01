@@ -1,5 +1,6 @@
 package us.pwc.eclipse.vista.toolconsole;
 
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -13,14 +14,22 @@ public class MToolsConsoleHandler {
 	private static MessageConsole console;
 
 	private static IConsoleView getConsoleView() {
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		try {
-			IConsoleView consoleView = (IConsoleView) page.showView(IConsoleConstants.ID_CONSOLE_VIEW);
-			return consoleView;
-		} catch (PartInitException e) {
-			e.printStackTrace();
-			return null;
-		}		
+		final IConsoleView container[] = new IConsoleView[1];
+		
+		Display.getDefault().syncExec(new Runnable() { //must get the getActiveWorkbenchWindow from the main UI thread
+					public void run() {
+						IWorkbenchPage page = PlatformUI.getWorkbench()
+								.getActiveWorkbenchWindow().getActivePage();
+						try {
+							container[0] = (IConsoleView) page
+									.showView(IConsoleConstants.ID_CONSOLE_VIEW);
+						} catch (PartInitException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+
+		return container[0];
 	}
 	
 	public static MessageConsole getMessageConsole() {
