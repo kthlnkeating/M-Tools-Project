@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
+<?eclipse version="3.0"?>
 <plugin>
 
    <!-- this can support run, but it will need a more cleaner way of just running the code without breaking -->
