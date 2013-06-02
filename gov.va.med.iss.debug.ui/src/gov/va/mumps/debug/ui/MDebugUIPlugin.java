@@ -3,6 +3,9 @@ package gov.va.mumps.debug.ui;
 import gov.va.mumps.debug.core.model.MDebugTarget;
 import gov.va.mumps.debug.ui.console.MDevConsole;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchListener;
@@ -14,10 +17,13 @@ import org.osgi.framework.BundleContext;
 public class MDebugUIPlugin extends AbstractUIPlugin implements
 		ILaunchListener {
 
+	Map<MDebugTarget,MDevConsole> consoles;
+	
 	@Override
 	public void start(BundleContext context) throws Exception { //TODO: what if this is started after launches were already added? is that possible? Can a launch be created without activating this UI plugin?
 		super.start(context);	
 		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this);
+		consoles = new HashMap<MDebugTarget,MDevConsole>(5);
 	}
 
 	@Override
@@ -26,10 +32,9 @@ public class MDebugUIPlugin extends AbstractUIPlugin implements
 
 	@Override
 	public void launchChanged(ILaunch launch) {
-				
+		
 		if (launch.getDebugTarget() == null)
 			return;
-		
 		MDebugTarget mDebugTarget = (MDebugTarget) launch.getDebugTarget();
 		
 		synchronized (mDebugTarget) {
@@ -50,11 +55,19 @@ public class MDebugUIPlugin extends AbstractUIPlugin implements
 			mDevConsole.addInputReadyListener(mDebugTarget);
 			
 			mDebugTarget.setLinkedToConsole(true);
+			consoles.put(mDebugTarget, mDevConsole);
 		}
 	}
 
 	@Override
 	public void launchRemoved(ILaunch launch) {
-		//TODO: remove the listeners that were added to the custom console
+		
+		if (launch.getDebugTarget() == null)
+			return;
+		MDebugTarget mDebugTarget = (MDebugTarget) launch.getDebugTarget();
+		MDevConsole mDevConsole = consoles.get(mDebugTarget);
+		
+		ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] { mDevConsole});
+		consoles.remove(mDevConsole);		
 	}
 }

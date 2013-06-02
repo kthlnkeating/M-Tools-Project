@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.IPageSite;
 
@@ -146,10 +147,6 @@ public class MDevConsolePage implements IPageBookViewPage, KeyListener {
 	@Override
 	public void keyReleased(KeyEvent keyEvent) {
 		//do nothing, this only is fired when no more keys are pressed, not for each key release.
-	}
-
-	public void setKeysTyped(int keysTyped) {
-		this.keysTyped = keysTyped;
 	}
 
 	public void appendText(String text) {

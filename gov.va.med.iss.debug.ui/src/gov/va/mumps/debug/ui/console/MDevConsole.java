@@ -53,6 +53,7 @@ public class MDevConsole extends AbstractConsole implements ReadCommandListener,
 			@Override
 			public void run() {
 				pageBookView.appendText(output);
+				pageBookView.setFocus();
 				//TODO: the classes for this need to be organized better? this seems kind of funny
 			}
 		});
@@ -76,7 +77,7 @@ public class MDevConsole extends AbstractConsole implements ReadCommandListener,
 		inputReadyListeners.add(listener);
 	}
 	
-	public void reemoveInputReadyListener(InputReadyListener listener) {
+	public void removeInputReadyListener(InputReadyListener listener) {
 		inputReadyListeners.remove(listener);
 	}
 	
