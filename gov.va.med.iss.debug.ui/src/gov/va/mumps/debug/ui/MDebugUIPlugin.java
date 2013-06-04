@@ -68,6 +68,6 @@ public class MDebugUIPlugin extends AbstractUIPlugin implements
 		MDevConsole mDevConsole = consoles.get(mDebugTarget);
 		
 		ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] { mDevConsole});
-		consoles.remove(mDevConsole);		
+		consoles.remove(mDevConsole);
 	}
 }

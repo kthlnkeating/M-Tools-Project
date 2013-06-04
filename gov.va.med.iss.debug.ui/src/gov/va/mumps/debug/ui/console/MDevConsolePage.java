@@ -53,8 +53,10 @@ public class MDevConsolePage implements IPageBookViewPage, KeyListener {
 
 	@Override
 	public void dispose() {
-		textWidget.removeKeyListener(this);
-		textWidget.dispose();
+		if (!textWidget.isDisposed()) {
+			textWidget.removeKeyListener(this);
+			textWidget.dispose();
+		}
 	}
 
 	@Override
@@ -68,9 +70,8 @@ public class MDevConsolePage implements IPageBookViewPage, KeyListener {
 
 	@Override
 	public void setFocus() {
-		if (textWidget != null) {
+		if (textWidget != null)
 			textWidget.setFocus();
-		}
 	}
 
 	@Override
