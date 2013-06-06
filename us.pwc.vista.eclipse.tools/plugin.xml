@@ -34,9 +34,10 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="popup:gov.va.med.iss.meditor.editors.outline.contextmenu?after=additions">
+            locationURI="popup:gov.va.med.iss.meditor.editors.outline.contextmenu"> <!--?after=additions -->
          <menu
-               label="M Tools">
+               label="M Tools"
+               icon="$nl$/icons/full/mtools16/meditor.gif">
             <command
                   commandId="us.pwc.eclipse.vista.assumevariable"
                   style="push">
@@ -59,7 +60,8 @@
             allPopups="false"
             locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
          <menu
-               label="M Tools">
+               label="M Tools"
+               icon="$nl$/icons/full/mtools16/meditor.gif">
             <command
                   commandId="us.pwc.eclipse.vista.assumevariable"
                   style="push">
@@ -78,11 +80,40 @@
             </command>
          </menu>
       </menuContribution>
+
+
+	<!-- Adding MRA Tools to the M Editor -->
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:#TextEditorContext?after=additions"> <!--TODO: add logic to only apply to M Editor -->
+         <menu
+               label="M Tools"
+               icon="$nl$/icons/full/mtools16/meditor.gif">
+            <command
+                  commandId="us.pwc.eclipse.vista.assumevariable"
+                  style="push">
+            </command>
+            <command
+                  commandId="us.pwc.eclipse.vista.error"
+                  style="push">
+            </command>
+            <command
+                  commandId="us.pwc.eclipse.vista.occurance"
+                  style="push">
+            </command>
+            <command
+                  commandId="us.pwc.eclipse.vista.quittype"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+      
       <menuContribution
             allPopups="false"
             locationURI="popup:#TextEditorContext?after=additions">
          <menu
-               label="Refactor">
+               label="M Refactor"
+               icon="$nl$/icons/full/mtools16/meditor.gif">
             <command
                   commandId="us.pwc.eclipse.vista.expandkeywords"
                   style="push">

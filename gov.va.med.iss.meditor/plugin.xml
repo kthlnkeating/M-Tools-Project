@@ -87,6 +87,7 @@
       </actionSet>
        <actionSet
             label="Multiple Routine Load From Server"
+            icon="$nl$/icons/full/cview16/meditor.gif"
             visible="true"
             id="gov.va.med.iss.meditor.multipleRoutineLoad">
          <menu

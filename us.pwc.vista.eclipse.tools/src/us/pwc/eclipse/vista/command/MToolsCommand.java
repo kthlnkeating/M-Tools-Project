@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
@@ -93,18 +94,21 @@ abstract class MToolsCommand extends AbstractHandler{
 		MToolsConsoleHandler.displayMToolsConsole();
 	}
 	
-	public void run(IWorkbenchWindow window, final Shell shell, IProject project, TreePath[] selections) {
+	/**
+	 * Runs for a file collection of files
+	 * 
+	 * @param window
+	 * @param shell
+	 * @param project
+	 * @param selections
+	 */
+	public void run(IWorkbenchWindow window, final Shell shell, IProject project, List<String> fileNames) {
 		try {
-			List<String> selectedFileNames = this.getFileNames(selections);
-			if (selectedFileNames == null) {
-				String msg = "No file is selected.";
-				MessageDialog.openInformation(shell, "M Tools", msg);
-				return;			
-			}			
+
 			SourceCodeFiles scf = MRAParamSupply.getSourceCodeFiles(project);
 			SourceCodeToParseTreeAdapter pts = new SourceCodeToParseTreeAdapter(scf);
 			
-			ToolResult result = this.getResult(pts, selectedFileNames);
+			ToolResult result = this.getResult(pts, fileNames);
 			this.writeResult(project, window, result, scf);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -117,6 +121,15 @@ abstract class MToolsCommand extends AbstractHandler{
 		}
 	}
 
+	/**
+	 * Runs only for a given tag. This is for right clicking on the outline view.
+	 * 
+	 * @param window
+	 * @param shell
+	 * @param project
+	 * @param file
+	 * @param tag
+	 */
 	public void run(IWorkbenchWindow window, final Shell shell, IProject project, IFile file, String tag) {
 		try {
 			SourceCodeFiles scf = MRAParamSupply.getSourceCodeFiles(project);
@@ -134,8 +147,9 @@ abstract class MToolsCommand extends AbstractHandler{
 			Display.getDefault().asyncExec(new Runnable() {
 				  public void run() {
 					  MessageDialog.openInformation(shell, "M Tools", msg);
-				  }
-				});		}
+				}
+			});
+		}
 	}
 
 	
@@ -149,7 +163,7 @@ abstract class MToolsCommand extends AbstractHandler{
 		
 		Job job = new Job("MTools Fetch Report") {
 			@Override
-			protected IStatus run(IProgressMonitor arg0) {
+			protected IStatus run(IProgressMonitor monitor) { //TODO: the plugin.xml should only show the M Tools menu when M files are selected only, so no validations need to be done.
 
 				ISelection selection = HandlerUtil.getCurrentSelection(event);
 				if (selection instanceof TreeSelection) {
@@ -162,7 +176,20 @@ abstract class MToolsCommand extends AbstractHandler{
 						IProject project = ((IResource) lastSegment).getProject();
 						IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
 						Shell shell = HandlerUtil.getActiveShell(event);
-						this1.run(window, shell, project, selections);
+						
+						List<String> selectedFileNames = this1.getFileNames(selections);
+						if (selectedFileNames == null) {
+							Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									MessageDialog.openInformation(Display
+											.getCurrent().getActiveShell(),
+											"M Tools", "No file is selected.");
+								}
+							});
+							return Status.CANCEL_STATUS;			
+						}
+						
+						this1.run(window, shell, project, selectedFileNames);
 					} else {
 						IEditorPart editorPart = HandlerUtil.getActiveEditor(event);
 						IEditorInput input = editorPart.getEditorInput();
@@ -172,9 +199,29 @@ abstract class MToolsCommand extends AbstractHandler{
 							IProject project = file.getProject();
 							IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
 							Shell shell = HandlerUtil.getActiveShell(event);
-							this1.run(window, shell, project, file, tag);
+							tag = tag.replace((char)10, (char)0); //remove the newlines that come in from the outline selection
+							tag = tag.replace((char)13, (char)0);
+							this1.run(window, shell, project, file, tag.trim());
 						}
 					}
+				} else if (selection instanceof TextSelection) { //assume it was invoked from the M Editor
+					IEditorPart editorPart = HandlerUtil.getActiveEditor(event);
+					IEditorInput input = editorPart.getEditorInput();
+					IFile file = (IFile) input.getAdapter(IFile.class);
+
+					IProject project = file.getProject();
+					IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
+					Shell shell = HandlerUtil.getActiveShell(event);
+					List<String> selectedRoutines = new ArrayList<String>();
+					String routineName = file.getLocation().lastSegment();
+					if (routineName.contains(".")) {
+						// although the plugin.xml will prevent non M Editors
+						// from seeing/using this command. It is possible in
+						// Eclipse to open an arbitrary in any editor
+						routineName = routineName.split("\\.")[0];
+					}
+					selectedRoutines.add(routineName);
+					this1.run(window, shell, project, selectedRoutines);
 				}
 
 				return Status.OK_STATUS;
