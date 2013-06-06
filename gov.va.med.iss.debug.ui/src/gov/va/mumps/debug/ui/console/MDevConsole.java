@@ -1,7 +1,7 @@
 package gov.va.mumps.debug.ui.console;
 
-import gov.va.mumps.launching.ReadCommandListener;
 import gov.va.mumps.launching.InputReadyListener;
+import gov.va.mumps.launching.ReadCommandListener;
 import gov.va.mumps.launching.WriteCommandListener;
 
 import java.util.Iterator;
@@ -9,6 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.AbstractConsole;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.part.IPageBookViewPage;
@@ -19,6 +22,7 @@ public class MDevConsole extends AbstractConsole implements ReadCommandListener,
 	private int maxCharInput;
 	private MDevConsolePage pageBookView;
 	private List<InputReadyListener> inputReadyListeners;
+	private String missedText = "";
 
 	public MDevConsole(String name, String consoleType,
 			ImageDescriptor imageDescriptor, boolean autoLifecycle) {
@@ -46,15 +50,23 @@ public class MDevConsole extends AbstractConsole implements ReadCommandListener,
 	}
 
 	@Override
-	public void handleWriteCommand(final String output) { //TODO: bug: write command could theoretically come in before the main gui thread creates the pageBookView causing a NPE
-		//TODO: bug? is this bein called twice? why? I'm not seeing double input but that may just becaues both async threads run so closely they grab append the same value to the same orig value
-		pageBookView.getSite().getShell().getDisplay().asyncExec(new Runnable() { //Only the async thread can access SWT controls
+	public void handleWriteCommand(final String output) {
+		//TODO: bug? is this being called twice? why? I'm not seeing double input but that may just because both async threads run so closely they grab append the same value to the same orig value
+		Display.getDefault().asyncExec(new Runnable() { //Only the async thread can access SWT controls
 			
 			@Override
 			public void run() {
-				pageBookView.appendText(output);
-				pageBookView.setFocus();
-				//TODO: the classes for this need to be organized better? this seems kind of funny
+				if (pageBookView != null) {
+					if (missedText == null) {
+						pageBookView.appendText(output);
+					} else {
+						pageBookView.appendText(missedText+output);
+						missedText = null;
+					}
+				} else {
+					missedText += output;
+				}
+				setConsoleViewFocus();
 			}
 		});
 	}
@@ -67,10 +79,19 @@ public class MDevConsole extends AbstractConsole implements ReadCommandListener,
 			
 			@Override
 			public void run() {
-				pageBookView.setFocus(); //TODO: possibly have other indicator to the user that the console is ready for input
+				setConsoleViewFocus();
 			}
 		});
-		
+	}
+	
+	private void setConsoleViewFocus() {
+		try {
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.console.ConsoleView");
+		} catch (PartInitException e) {
+			e.printStackTrace();
+		}
+		if (pageBookView != null)
+			pageBookView.setFocus();
 	}
 	
 	public void addInputReadyListener(InputReadyListener listener) {
