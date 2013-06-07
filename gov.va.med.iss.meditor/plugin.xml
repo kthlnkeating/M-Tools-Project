@@ -87,7 +87,7 @@
       </actionSet>
        <actionSet
             label="Multiple Routine Load From Server"
-            icon="$nl$/icons/full/cview16/meditor.gif"
+            icon="icons/meditor.gif"
             visible="true"
             id="gov.va.med.iss.meditor.multipleRoutineLoad">
          <menu
@@ -169,6 +169,7 @@
          <menu
                id="gov.va.med.iss.meditor.mserverutil.topmenu"
                label="M Server Util"
+               icon="icons/meditor.gif"
                path="additions">
             <separator
                   name="seperator1">
