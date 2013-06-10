@@ -154,7 +154,7 @@ public class StepResults {
 		}
 		if ((routineName.compareTo("") != 0) && (editor == null)) {
 			RoutineLoad rouLoad = new RoutineLoad();
-			rouLoad.loadRoutine(routineName,true);
+			rouLoad.loadRoutine(routineName,true, null);
 			editor = getEditor(routineName);
 		}
 		if (editor != null) {

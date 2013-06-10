@@ -111,21 +111,9 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 
 
 	public VistaConnection() {
-		try {
-//			getDefaultPrefs();
-		} catch (Exception e) {
-		}
 	}
 	
-	
-	public VistaConnection(String serverName, String serverAddress, String portNumber) {
-		currServerAddress = serverAddress;
-		currServerName = serverName;
-		currPort = portNumber;
-        currServerProject = "";  // JLI 090908 added for Source Code Version Control
-    } // JLI 090908 added for Source Code Version Control
-    
-    public VistaConnection(String serverName, String serverAddress, String portNumber, String projectName) { // JLI 090908 added for Source Code Version Control
+	public VistaConnection(String serverName, String serverAddress, String portNumber, String projectName) { // JLI 090908 added for Source Code Version Control
         currServerAddress = serverAddress;
         currServerName = serverName;
         currPort = portNumber;

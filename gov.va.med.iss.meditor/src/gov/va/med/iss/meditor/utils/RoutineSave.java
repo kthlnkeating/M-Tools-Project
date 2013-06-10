@@ -310,7 +310,7 @@ public class RoutineSave {
 					
 					if (! encounteredError) {
 						RoutineLoad rl = new RoutineLoad();
-						rl.loadRoutine(routineName, false);
+						rl.loadRoutine(routineName, false, null);
 
 						if (!hasText) {
 							fullDoc = fullDoc + routineName + " saved.\n";

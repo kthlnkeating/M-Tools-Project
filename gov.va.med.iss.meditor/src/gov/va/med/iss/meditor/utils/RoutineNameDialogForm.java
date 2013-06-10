@@ -24,6 +24,10 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Combo;
 
+//TODO: this is wrong. it extends dialog but it doesn't actually make use of any of its SWT invoked methods. It's basically just a plain java object which adds SWT listeners, but never disposes them
+//This dialog should follow the examples here: http://www.vogella.com/articles/EclipseDialogs/article.html
+//but also, there is 1 mistake in that tutorial in that it doesn't cleanup the listeners it adds. Whenver an SWT widget is created, there is an dispose method which will be called
+//when the widget is closed (permanently). this is an ideal place to remove listeners.
 public class RoutineNameDialogForm extends Dialog {
 	private Label lblQuestion;
 	private Text txtResponse;
@@ -92,7 +96,7 @@ public class RoutineNameDialogForm extends Dialog {
 			shell.setText("Multiple Routine Load");
 		}
 		else {
-			shell.setText("Routine Name Dialog");
+			shell.setText("Load Routine");
 		}
 		if (isShowDirectory) {
 			shell.setSize(600,200);
@@ -274,7 +278,7 @@ public class RoutineNameDialogForm extends Dialog {
 			}
 		};
 		
-		btnOK.addListener(SWT.Selection, listener);
+		btnOK.addListener(SWT.Selection, listener); //TODO: remove this listener later, cannot just keep adding these or it makes the main UI thread to slow as it iterates over all the listeners, dead ones included
 		btnCancel.addListener(SWT.Selection, listener);
 		if (btnDirectory != null) {
 			btnDirectory.addListener(SWT.Selection, directoryListener);

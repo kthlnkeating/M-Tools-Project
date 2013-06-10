@@ -1,12 +1,18 @@
 package org.mumps.pathstructure.vista.foia;
 
+import java.nio.file.FileSystems;
+
 import org.mumps.pathstructure.vista.RoutinePathResolver;
 
 public class VFPathResolver implements RoutinePathResolver {
 
+	private RoutinePathResolver resolver;
 	private PackageRepository packageRepository;
 	
-	public VFPathResolver(PackageRepository packageRepository) {
+	private static final String SEP = FileSystems.getDefault().getSeparator();
+	
+	public VFPathResolver(RoutinePathResolver backupResolver, PackageRepository packageRepository) {
+		this.resolver = backupResolver;
 		this.packageRepository = packageRepository;
 	}
 
@@ -19,10 +25,10 @@ public class VFPathResolver implements RoutinePathResolver {
 		for (int i = 1; i <= 4; i++) { //try using all the namespaces prefix of up to 4
 			String packageDirectory = packageRepository.getPackageDirectory(routineName.substring(0, i));
 			if (packageDirectory != null)
-				return "Packages/"+ packageDirectory +"/Routines";
+				return "Packages"+SEP+ packageDirectory +SEP+"Routines";
 		}
 		
-		return ""; //return the root path if a routine cannot be mapped
+		return resolver.getRelativePath(routineName);
 	}
 
 }
