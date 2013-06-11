@@ -1,31 +1,18 @@
 package gov.va.med.iss.mdebugger.util;
 
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.internal.WorkbenchWindow;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.MarkerUtilities;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IFile;
-
-import java.util.HashMap;
-
 import gov.va.med.iss.mdebugger.views.AllValuesView;
 import gov.va.med.iss.mdebugger.views.CurrentStackView;
-import gov.va.med.iss.mdebugger.views.WatchValuesView;
 import gov.va.med.iss.mdebugger.views.MDebuggerConsoleDisplay;
 import gov.va.med.iss.mdebugger.views.MDebuggerReadCommand;
-import gov.va.med.iss.meditor.utils.RoutineLoad;
-import gov.va.med.iss.meditor.editors.MEditor;
-import gov.va.med.iss.meditor.utils.RoutineSave;
+import gov.va.med.iss.mdebugger.views.WatchValuesView;
+
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 
 public class StepResults {
@@ -152,27 +139,27 @@ public class StepResults {
 				editor = getEditor(routineName);
 			}
 		}
-		if ((routineName.compareTo("") != 0) && (editor == null)) {
-			RoutineLoad rouLoad = new RoutineLoad();
-			rouLoad.loadRoutine(routineName,true, null);
-			editor = getEditor(routineName);
-		}
-		if (editor != null) {
-		MEditor meditor = (MEditor)editor;
-//		loc = meditor.getCaretOffset();
-//		IDocumentProvider docProvider = meditor.meditorDocumentProvider;
-		meditor.setTopIndex(lineNumber);
-		final IFile file = RoutineSave.getIFile(routineName);
-		try {
-			if (marker.exists())
-				marker.delete();
-			marker = file.createMarker(IMarker.PROBLEM);
-			marker.setAttribute("Line",lineNumber);
-			MarkerUtilities.setLineNumber(marker,lineNumber);
-		} catch (Exception e) {
-			
-		}
-		}
+//		if ((routineName.compareTo("") != 0) && (editor == null)) {
+//			RoutineLoad rouLoad = new RoutineLoad();
+//			rouLoad.loadRoutine(routineName,true, null);
+//			editor = getEditor(routineName);
+//		}
+//		if (editor != null) {
+//		MEditor meditor = (MEditor)editor;
+////		loc = meditor.getCaretOffset();
+////		IDocumentProvider docProvider = meditor.meditorDocumentProvider;
+//		meditor.setTopIndex(lineNumber);
+//		final IFile file = RoutineSave.getIFile(routineName);
+//		try {
+//			if (marker.exists())
+//				marker.delete();
+//			marker = file.createMarker(IMarker.PROBLEM);
+//			marker.setAttribute("Line",lineNumber);
+//			MarkerUtilities.setLineNumber(marker,lineNumber);
+//		} catch (Exception e) {
+//			
+//		}
+//		}
 /*
 		HashMap map = new HashMap();
 		MarkerUtilities.setLineNumber(map, lineNumber);

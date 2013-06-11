@@ -1,10 +1,5 @@
 package org.mumps.meditor;
 
-import java.util.HashMap;
-
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.PlatformUI;
-
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
@@ -15,7 +10,10 @@ import gov.va.med.iss.connection.utilities.MPiece;
 import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 import gov.va.med.iss.meditor.utils.MEditorUtilities;
-import gov.va.med.iss.meditor.utils.RoutineLoad;
+
+import java.util.HashMap;
+
+import org.eclipse.jface.dialogs.MessageDialog;
 
 public class MEditorRPC {
 
