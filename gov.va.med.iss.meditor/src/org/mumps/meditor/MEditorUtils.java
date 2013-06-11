@@ -117,7 +117,7 @@ public class MEditorUtils {
 	public static void syncBackup(String projectName, String routineName,
 			String serverCode) throws CoreException {
 		IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-		IFolder backupFolder = iProject.getFolder("backups");
+		IFolder backupFolder = getBackupFolder(projectName);
 		if (!backupFolder.exists())
 			backupFolder.create(true, true, null);
 		
@@ -148,14 +148,23 @@ public class MEditorUtils {
 	 * @throws CoreException 
 	 */
 	public static String getBackupFileContents(String projectName, String routineName) throws CoreException, IOException {
-		IFolder backupFolder = ResourcesPlugin.getWorkspace().getRoot()
-				.getProject(projectName).getFolder("backups");
+		IFolder backupFolder = getBackupFolder(projectName);
 		
 		IFile backupFile = getBackupFile(backupFolder, routineName);
 		if (backupFile == null) {
 			throw new FileNotFoundException("Cannot find backup file for: " +routineName);
 		}
 		return readFile(backupFile);
+	}
+
+	private static IFolder getBackupFolder(String projectName)
+			throws CoreException {
+		IFolder backupFolder = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject(projectName).getFolder("backups");
+		
+		if (!backupFolder.exists())
+			backupFolder.create(true, true, null);
+		return backupFolder;
 	}
 
 	private static IFile updateBackupFileName(String routineName,
