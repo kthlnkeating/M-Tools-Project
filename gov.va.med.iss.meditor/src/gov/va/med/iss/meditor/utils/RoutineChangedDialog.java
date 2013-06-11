@@ -88,7 +88,7 @@ public class RoutineChangedDialog extends Dialog {
 		Label lblQ4 = new Label(shell, SWT.NONE);
 		lblQ4.setLocation(20,50);
 		lblQ4.setSize(350,20);
-		lblQ4.setText("been saved in the "+projectName+" directory and you may open that");
+		lblQ4.setText("been saved in the "+projectName+" project and you may open that");
 		if (! isSave) {
 			lblQ2.setText("this version from the server?");
 			lblQ4.setText("");

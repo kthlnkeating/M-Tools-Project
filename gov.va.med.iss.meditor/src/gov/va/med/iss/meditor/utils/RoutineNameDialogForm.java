@@ -1,28 +1,24 @@
 package gov.va.med.iss.meditor.utils;
 
+import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.connection.utilities.ConnectionUtilities;
+import gov.va.med.iss.connection.utilities.MPiece;
+
 import java.io.File;
 import java.util.ArrayList;
 
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
-import gov.va.med.iss.connection.utilities.ConnectionUtilities;
-import gov.va.med.iss.connection.utilities.MPiece;
-import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.meditor.preferences.MEditorPreferencesPage;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 //TODO: this is wrong. it extends dialog but it doesn't actually make use of any of its SWT invoked methods. It's basically just a plain java object which adds SWT listeners, but never disposes them
 //This dialog should follow the examples here: http://www.vogella.com/articles/EclipseDialogs/article.html
@@ -33,25 +29,22 @@ public class RoutineNameDialogForm extends Dialog {
 	private Text txtResponse;
 	private Button btnOK;
 	private Button btnCancel;
-	private Button btnUpperCase;
-	private Button btnReadOnly;
+//	private Button btnUpperCase;
+//	private Button btnReadOnly;
 	private Label lblServer;
 	private Label lblPort;
 	private Text txtServer;
 	private Text txtPort;
 	private Text txtProject;
-	private Label lblProject;
 	private Label lblDirectory;
-	private Text txtDirectory;
 	private Combo comboDirectory;
-	private boolean isShowReadOnly = false;
+//	private boolean isShowReadOnly = false;
 	private boolean isShowDirectory = false;
 	private boolean isMultSave = false;
 	private RoutineNameDialogData data;
 	private static ArrayList dropList = null;
 	private Button btnDirectory = null;
-	private Listener listenerDirectory;
-	private static String directorySelection;
+
 
 	public RoutineNameDialogForm(Shell parent, int style) {
 		super(parent, style);
@@ -69,15 +62,15 @@ public class RoutineNameDialogForm extends Dialog {
 	}
 	
 	public RoutineNameDialogData openMultiple() {
-		isShowReadOnly = false;
+//		isShowReadOnly = false;
 		isShowDirectory = true;
 		return open();
 	}
 	
-	public RoutineNameDialogData open(boolean showReadOnly) {
-		isShowReadOnly = showReadOnly;
-		return open();
-	}
+//	public RoutineNameDialogData open(boolean showReadOnly) {
+//		//isShowReadOnly = showReadOnly;
+//		return open();
+//	}
 	
 	// 091201
 	
@@ -162,18 +155,18 @@ public class RoutineNameDialogForm extends Dialog {
 		}
 		
 		
-		btnUpperCase = new Button(shell, SWT.CHECK);
-		btnUpperCase.setText("Set name to ALL Caps");
-		btnUpperCase.setLocation(25,70);
-		btnUpperCase.setSize(150,25);
-		btnUpperCase.setSelection(true);
-		
-		if (isShowReadOnly) {
-			btnReadOnly = new Button(shell, SWT.CHECK);
-			btnReadOnly.setText("Load as Read-Only");
-			btnReadOnly.setLocation(25,95);
-			btnReadOnly.setSize(150,25);
-		}
+//		btnUpperCase = new Button(shell, SWT.CHECK);
+//		btnUpperCase.setText("Set name to ALL Caps");
+//		btnUpperCase.setLocation(25,70);
+//		btnUpperCase.setSize(150,25);
+//		btnUpperCase.setSelection(true);
+//		
+//		if (isShowReadOnly) {
+//			btnReadOnly = new Button(shell, SWT.CHECK);
+//			btnReadOnly.setText("Load as Read-Only");
+//			btnReadOnly.setLocation(25,95);
+//			btnReadOnly.setSize(150,25);
+//		}
 		else if (isShowDirectory) {
 			lblDirectory = new Label(shell, SWT.NONE);
 			if (isMultSave) {
@@ -229,19 +222,19 @@ public class RoutineNameDialogForm extends Dialog {
 		btnCancel.setLocation(165,130);
 		btnCancel.setSize(55,25);
 		
-		if (isShowReadOnly) {
+//		if (isShowReadOnly) {
+//			shell.setTabList(new Control[] {
+//				txtResponse,
+//				btnOK, btnCancel });
+//		}
+		if (isShowDirectory) {
 			shell.setTabList(new Control[] {
-				txtResponse, btnUpperCase, btnReadOnly,
-				btnOK, btnCancel });
-		}
-		else if (isShowDirectory) {
-			shell.setTabList(new Control[] {
-					txtResponse, btnUpperCase, comboDirectory,
+					txtResponse, comboDirectory,
 					btnOK, btnCancel });
 		}
 		else {
 			shell.setTabList(new Control[] {
-					txtResponse, btnUpperCase,
+					txtResponse,
 					btnOK, btnCancel });
 		}
 		
@@ -249,10 +242,10 @@ public class RoutineNameDialogForm extends Dialog {
 			public void handleEvent(Event event) {
 				data.setButtonResponse(event.widget == btnOK);
 				data.setTextResponse(txtResponse.getText());
-				data.setUpperCase(btnUpperCase.getSelection());
-				if (isShowReadOnly) {
-					data.setReadOnly(btnReadOnly.getSelection());
-				}
+//				data.setUpperCase(btnUpperCase.getSelection());
+//				if (isShowReadOnly) {
+//					data.setReadOnly(btnReadOnly.getSelection());
+//				}
 				if (isShowDirectory) {
 					data.setDirectory(comboDirectory.getText());
 					String result = comboDirectory.getText();
