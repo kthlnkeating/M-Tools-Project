@@ -1,15 +1,13 @@
 package gov.va.med.iss.meditor.utils;
 
+import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.connection.utilities.MPiece;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import gov.va.med.iss.connection.utilities.MPiece;
-import gov.va.med.iss.meditor.utils.RoutineLoad;
-import gov.va.med.iss.connection.actions.VistaConnection;
 
 public class RoutineCompare {
 	

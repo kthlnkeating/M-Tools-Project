@@ -58,12 +58,12 @@ public class RoutineLoad {
 	private static String currentServer = "";
 	public static boolean newPage = false;
 	
-	public void loadRoutine(String routineName, boolean updateBackup, boolean setReadOnly) {
+	public void loadRoutine(String routineName, boolean updateBackup, boolean setReadOnly, String userSelDirectory) {
 		isReadOnly = setReadOnly;
-		loadRoutine(routineName, updateBackup);
+		loadRoutine(routineName, updateBackup, userSelDirectory);
 	}
 
-	public void loadRoutine(String routineName, boolean updateBackup) {
+	public void loadRoutine(String routineName, boolean updateBackup, String userSelDirectory) {
 		IResource resource = null;
 		if (! MEditorPrefs.isPrefsActive()) {
 			try {
@@ -97,7 +97,7 @@ public class RoutineLoad {
 						// JLI 101104 value2 = sourceCode.indexOf("\n");
 						doc = sourceCode.substring(value2+1);
 					}
-					saveCode(routineName, doc, updateBackup, isNew);
+					saveCode(routineName, doc, updateBackup, isNew, userSelDirectory);
 					try {
 						MEditorMessageConsole.writeToConsole("");
 					} catch (Exception e) {
@@ -119,11 +119,11 @@ public class RoutineLoad {
 		isReadOnly = false;
 	}
 	
-	private static void saveCode(String routineName, String sourceCode, boolean updateBackup, boolean isNew)
+	private static void saveCode(String routineName, String sourceCode, boolean updateBackup, boolean isNew, String userSelDirectory)
 																		throws Exception {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
 		Date date = new Date();
-		String location = getFullFileLocation(routineName);
+		String location = getFullFileLocation(routineName, userSelDirectory);
 		boolean isOK = true;
 		// if first time loaded, save a copy as prior day.
 		if (! (new File(location).exists())) {
@@ -184,7 +184,7 @@ public class RoutineLoad {
 			fw2.close();
 			if (!RoutineSave.isCopy() || 
 					currentServer.compareTo(VistaConnection.getPrimaryServerID()) == 0) {
-				doRefresh(routineName+".m", updateBackup);
+				doRefresh(routineName+".m", updateBackup, userSelDirectory);
 				if (isReadOnly) {
 					file.setReadOnly();
 				}
@@ -351,30 +351,29 @@ public class RoutineLoad {
 	}
 	
 	protected static String getRoutineFromServer(String routineName) throws Exception {
-		myConnection = VistaConnection.getCurrentConnection(); //091027 to make check for change in servers
-		String str = "";
-		if (! (myConnection == null)) {
-				RpcRequest vReq = RpcRequestFactory.getRpcRequest("", "XT ECLIPSE M EDITOR");
-					vReq.setUseProprietaryMessageFormat(false);
-				vReq.getParams().setParam(1, "string", "RL");  // RD  RL  GD  GL  RS
-				vReq.getParams().setParam(2, "string", "notused");
-				vReq.getParams().setParam(3, "string", routineName);
-				RpcResponse vResp = myConnection.executeRPC(vReq);
-				str = vResp.getResults();
-		}
-		return str;
+		RpcRequest vReq = RpcRequestFactory.getRpcRequest("", "XT ECLIPSE M EDITOR");
+			vReq.setUseProprietaryMessageFormat(false);
+		vReq.getParams().setParam(1, "string", "RL"); // RD  RL  GD  GL  RS
+		vReq.getParams().setParam(2, "string", "notused");
+		vReq.getParams().setParam(3, "string", routineName);
+		RpcResponse vResp = VistaConnection.getCurrentConnection().executeRPC(vReq);
+		return vResp.getResults();
 	}
 	
 	public static String getFullFileName(String routineName) throws Exception {
-		return getFullFileLocation(routineName)+"/"+routineName+".m";
+		return getFullFileLocation(routineName, null)+"/"+routineName+".m";
 	}
 	
 	public static String getFullFileLocation(String routineName) throws Exception {
-		return getFullFileLocation("", routineName);
+		return getFullFileLocation(routineName, null);
+	}
+	
+	public static String getFullFileLocation(String routineName, String userSelDirectory) throws Exception {
+		return getFullFileLocation("", routineName, userSelDirectory);
 	}
 	
 	
-	public static String getFullFileLocation(String project, String routineName) throws Exception {
+	public static String getFullFileLocation(String project, String routineName, String userSelDirectory) throws Exception {
 		String location;
 
 		if ((project.compareTo("") == 0) || (project.compareTo("mcode") == 0)) { //TODO: still has references to 'mcode'
@@ -382,7 +381,10 @@ public class RoutineLoad {
 			String server = MPiece.getPiece(currentServer,";",1);
 			project = MPiece.getPiece(currentServer,";",4);
 	        //if (project.compareTo("") == 0) { //if this is a VC project, it should always get the location from here, which will in turn be VC location with correct path adjusted
-			location = MEditorPreferencesPage.getDirectoryPreference(project, server, routineName);
+			if (userSelDirectory != null) {
+				location = userSelDirectory;
+			} else
+				location = MEditorPreferencesPage.getDirectoryPreference(project, server, routineName);
 //			if (project.equals("")) {
 //	            location = MEditorPreferencesPage.getDirectoryPreference("", server, routineName);
 //	        }
@@ -453,14 +455,14 @@ public class RoutineLoad {
         //Make sure the project is refreshed
         //as the file was created outside the
         //Eclipse API.
-	private static void doRefresh(String routineName, boolean updateBackup) throws Exception {
+	private static void doRefresh(String routineName, boolean updateBackup, String userSelDirectory) throws Exception {
         String project = VistaConnection.getCurrentProject();
         
         if (project.equals(""))
         	project = "mcode";
         
         if (! (project.compareTo("") == 0)) {
-            doRefreshProject(routineName, project);
+            doRefreshProject(routineName, project,userSelDirectory);
         }
         else {
             IResource resource = MEditorUtilities.getProject(MEditorPreferencesPage.getProjectName()); //"mcode");
@@ -524,7 +526,7 @@ public class RoutineLoad {
         } // else
     }
     
-    private static void doRefreshProject(String routineName, String projectName) {
+    private static void doRefreshProject(String routineName, String projectName, String userSelDirectory) {
         try {
             IWorkspace workspace = ResourcesPlugin.getWorkspace();
             IWorkspaceRoot root = workspace.getRoot();
@@ -536,17 +538,21 @@ public class RoutineLoad {
                     IResource.DEPTH_INFINITE, null);
 
             VistaConnection.getCurrentServer();
-            routineName = getRelativeFileName(routineName);
+            String routinePath = getRelativeFileName(routineName);
 
     		IPreferenceStore store = MEditorPlugin.getDefault().getPreferenceStore();
     		//VistaConnection.getPrimaryServer(); //must force the properties to load...
     		boolean saveByServer = store.getBoolean(MEditorPlugin.P_SAVE_BY_SERVER);
     		boolean vcPorject = !MPiece.getPiece(VistaConnection.getCurrentServer(), ";", 4).equals("");	
     		if (saveByServer && !vcPorject) {
-    			routineName = "//" +MPiece.getPiece(VistaConnection.getCurrentServer(), ";")+ routineName; 
+    			routinePath = "//" +MPiece.getPiece(VistaConnection.getCurrentServer(), ";")+ routinePath; 
     		}
     		
-            IPath location = new Path(routineName);
+    		if (userSelDirectory != null) {
+    			routinePath = userSelDirectory + "/" +routineName;
+    		}
+    		
+            IPath location = new Path(routinePath);
             final IFile file = project.getFile(location); //wrong, because a loaded directory may come from location outside of the project root.
             //final IFile file = project.getFile(location.lastSegment());
             

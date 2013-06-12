@@ -82,8 +82,8 @@ public class MEditorPreferencesPage
 		store.setDefault(MEditorPlugin.P_PROJECT_NAME,"mcode");
 		store.setDefault(MEditorPlugin.P_SAVE_BY_SERVER,true);
 		store.setDefault(MEditorPlugin.P_SAVE_BY_NAMESPACE,"0");
-		store.setDefault(MEditorPlugin.P_SAVE_DIR_EXAMPLE,
-				MEditorPreferencesPage.getDirectoryPreference("", "Server","ROUTINE"));
+//		store.setDefault(MEditorPlugin.P_SAVE_DIR_EXAMPLE,
+//				MEditorPreferencesPage.getDirectoryPreference("", "Server","ROUTINE"));
 
 		store.setDefault(MEditorPlugin.P_MULTI_LINE_COMMENT_COLOR, "64,128,128");
 		store.setDefault(MEditorPlugin.P_COMMENT_COLOR, "128,128,0");
@@ -139,10 +139,12 @@ public class MEditorPreferencesPage
 				}
 			
 			File projectPath = new File(str);
-			RoutinePathResolver routinePathResolver = RoutinePathResolverFactory.getInstance().getRoutinePathResolver(projectPath);
-			return str +"/"+routinePathResolver.getRelativePath(routineName);
+			//RoutinePathResolver routinePathResolver = RoutinePathResolverFactory.getInstance().getRoutinePathResolver(projectPath);
+			return str +"/"; //+routinePathResolver.getRelativePath(routineName);
 		}
+
 		
+		//TODO: incorporate all this logic into the RoutinePathResolver classes, default project should work the same as VC projects
 		if (saveByServer) {
 			str += "/"+serverName;
 		}

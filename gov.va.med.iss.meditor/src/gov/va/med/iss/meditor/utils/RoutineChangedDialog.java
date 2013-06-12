@@ -1,27 +1,22 @@
 package gov.va.med.iss.meditor.utils;
 
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
-import gov.va.med.iss.connection.utilities.ConnectionUtilities;
-import gov.va.med.iss.meditor.MEditorPlugin;
-import gov.va.med.iss.meditor.preferences.MEditorPrefs;
-import gov.va.med.iss.meditor.utils.RoutineCompare;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.MPiece;
+import gov.va.med.iss.meditor.MEditorPlugin;
+import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 
+//TODO: there is no point with this extending dialog. It's just a plain java class creating its own SWT controls.
+//However because it is adding listeners, there is no dispose method invoked.. the listeners are building up and slowing down the Eclipse Main thread
 public class RoutineChangedDialog extends Dialog {
 
 	private Label lblQuestion;
@@ -93,7 +88,7 @@ public class RoutineChangedDialog extends Dialog {
 		Label lblQ4 = new Label(shell, SWT.NONE);
 		lblQ4.setLocation(20,50);
 		lblQ4.setSize(350,20);
-		lblQ4.setText("been saved in the "+projectName+" directory and you may open that");
+		lblQ4.setText("been saved in the "+projectName+" project and you may open that");
 		if (! isSave) {
 			lblQ2.setText("this version from the server?");
 			lblQ4.setText("");

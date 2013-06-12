@@ -2,7 +2,6 @@ package gov.va.med.iss.meditor.actions;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.meditor.utils.RoutineSave;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -22,6 +21,8 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.mumps.meditor.MEditorRPC;
+import org.mumps.meditor.MEditorUtils;
 
 public class SaveToServer implements IObjectActionDelegate {
 	private ISelectionProvider selectionProvider;
@@ -78,7 +79,8 @@ public class SaveToServer implements IObjectActionDelegate {
 				Scanner scanner = new Scanner(stream).useDelimiter("\\A");
 				String content = scanner.hasNext() ? scanner.next() : "";
 				scanner.close();
-				RoutineSave.doSaveRoutine(name, content, c, false);
+				new MEditorRPC(c).saveRoutineToServer(name, MEditorUtils.cleanSource(content), false);
+//				RoutineSave.doSaveRoutine(name, content, c, false);
 			}
 		} catch (Exception t) {
 			String msg = "Unexpected error.";

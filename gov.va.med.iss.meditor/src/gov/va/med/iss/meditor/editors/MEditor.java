@@ -10,65 +10,35 @@ package gov.va.med.iss.meditor.editors;
  */
 
 //import java.io.File;
-import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.nio.channels.FileChannel;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-//import java.awt.event.*;
-
-//import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.preference.*;
-//import org.eclipse.ui.texteditor.AbstractTextEditor;
-//import org.eclipse.jface.text.IDocument;
-//import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.custom.StyledText;
-//import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.texteditor.DefaultRangeIndicator;
-/*
-import org.eclipse.ui.texteditor.AbstractTextEditor;
-import org.eclipse.ui.texteditor.AddTaskAction;
-import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-import org.eclipse.ui.texteditor.ResourceAction;
-import org.eclipse.ui.texteditor.TextOperationAction;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-*/
-import org.eclipse.ui.views.contentoutline.*;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchPart;
-
-import gov.va.med.iss.meditor.m.MCodeScanner;
+import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
+import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.meditor.MEditorDocumentProvider;
-import gov.va.med.iss.meditor.MEditorSourceViewerConfiguration;
 import gov.va.med.iss.meditor.MEditorPlugin;
-//import gov.va.med.iss.meditor.actions.RoutineEditAction;
-//import gov.va.med.iss.meditor.utils.MColorProvider;
-import gov.va.med.iss.meditor.utils.RoutineSave;
-import gov.va.med.iss.meditor.utils.RoutineLoad;
-import gov.va.med.iss.meditor.utils.MEditorUtilities;
-import gov.va.med.iss.meditor.editors.MEditor;
+import gov.va.med.iss.meditor.MEditorSourceViewerConfiguration;
+import gov.va.med.iss.meditor.m.MCodeScanner;
 import gov.va.med.iss.meditor.preferences.MEditorPreferencesPage;
 import gov.va.med.iss.meditor.preferences.MEditorPrefs;
-import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.connection.utilities.MPiece;
+import gov.va.med.iss.meditor.utils.MEditorMessageConsole;
+import gov.va.med.iss.meditor.utils.MEditorUtilities;
+import gov.va.med.iss.meditor.utils.RoutineChangedDialog;
+import gov.va.med.iss.meditor.utils.RoutineChangedDialogData;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.texteditor.DefaultRangeIndicator;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.mumps.meditor.MEditorRPC;
+import org.mumps.meditor.MEditorUtils;
+import org.mumps.meditor.RoutineNotFoundException;
 
 /**
  *	This class is responsible for configuring the M editor.
@@ -80,8 +50,6 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 	
 	private static MCodeScanner fMCodeScanner;
 	private MContentOutlinePage outlinePage = null;
-	private static String routineName = "";
-    private static String oldCode = ""; // JLI 090915
 	public IDocumentProvider meditorDocumentProvider;
 	private static MEditorPreferencesPage meditorPreferencesPage;
 	public ISourceViewer sourceViewer = null;
@@ -128,10 +96,6 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 		return super.getSourceViewer();
 	}
 	
-	public void setRoutineName(String rouName) {
-		routineName = rouName;
-	}
-	
 	public int getTopIndex() {
 		int val = getSourceViewer().getTextWidget().getTopIndex();
 		return val;
@@ -175,61 +139,6 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 	}
 
 	/**
-	 * Method to install the editor actions.
-	 * 
-	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#createActions()
-	 * 
-	 * Changes required in V 2.1. Shortcut keys on global actions must be explicitly set.  
-	 * Content Assist and Context Information Shortcut keys must be set to the key 
-	 * defintion ID's. 
-	 */
-	protected void createActions() {
-		// Added in 2.1,  global action revert, undo etc. are otherwise not enabled  
-		super.createActions();
-		// Above is new line reqired in 2.1 to enable undo, redo, revert actions
-		ResourceBundle bundle =
-			MEditorPlugin.getDefault().getResourceBundle();
-/*
-	IAction a =
-			new TextOperationAction(
-				bundle,
-				"ContentAssistProposal.",
-				this,
-				ISourceViewer.CONTENTASSIST_PROPOSALS);
-// Added this call for 2.1 changes
-// New to 2.1 - CTRL+Space key doesn't work without making this call 	
-				
-		a.setActionDefinitionId(
-			ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
-		setAction("ContentAssistProposal", a);
-		a =
-			new TextOperationAction(
-				bundle,
-				"ContentAssistTip.",
-				this,
-				ISourceViewer.CONTENTASSIST_CONTEXT_INFORMATION);
-//		Added this call for 2.1 changes				
-				
-		a.setActionDefinitionId(
-			ITextEditorActionDefinitionIds.CONTENT_ASSIST_CONTEXT_INFORMATION);
-		setAction("ContentAssistTip", a);
-		a =
-			new TextOperationAction(
-				bundle,
-				"ContentFormatProposal.",
-				this,
-				ISourceViewer.FORMAT);
-		setAction("ContentFormatProposal", a);
-
-		ResourceAction ra= new AddTaskAction(bundle, "AddTask.", this); 
-			ra.setHelpContextId(IAbstractTextEditorHelpContextIds.ADD_TASK_ACTION);
-			ra.setActionDefinitionId(ITextEditorActionDefinitionIds.ADD_TASK);
-			setAction(ITextEditorActionConstants.ADD_TASK, ra);
-*/		
-		
-	}
-
-	/**
 	 * Getter method that returns a  M Code Scanner.
 	 * @return MCodeScanner
 	 */
@@ -250,101 +159,199 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 			return;
 		}
 		
-		// JLI 110127 Make sure a server is defined first
-		//if (VistaConnection.getPrimaryServer().compareTo(";;;") == 0) {
-		if (! VistaConnection.getPrimaryServer()) { // 110821
+//		compare what is in the backup to what is in the server
+//		-get the latest from the server
+//		-compare the 2 routines
+//		-show the diff OK/CANCEL promprt if they are not the same
+//
+//		Save to the server
+//		-catch exception but do not return
+//		-print out server XINDEX results on success, show error dialog on failure
+		
+//		sync the backup file with latest saved on server
+//
+//		Save the file by calling super
+		
+		//Resolve object dependencies (calculate dependencies at the entry point up front)
+		VistaLinkConnection connection = VistaConnection.getConnection();
+		MEditorRPC rpc = new MEditorRPC(connection);
+		
+		String projectName = VistaConnection.getPrimaryProject();
+		String routineName = getEditorInput().getName();
+		if (!routineName.endsWith(".m")) {
+			//TODO: show warning and refuse to save
 			return;
 		}
-		IEditorInput input = getEditorInput();
-// JLI 100813
-		int number = 0;
-		String str = " ";
-		String toolTipText = input.getToolTipText(); //happens to be "[projectName]/[filename]"
-		while (str.compareTo("") != 0) {
-			str = MPiece.getPiece(toolTipText,"/",++number);
+		routineName = routineName.substring(0, routineName.length()-2);
+		
+		//Load routine from server
+		String serverCode;
+		try { //attempt Load routine into a string, if not found show error
+			serverCode = rpc.getRoutineFromServer(routineName);
+		} catch (RoutineNotFoundException e) {
+			//TODO: show error message about routine not existing on server
+			return;
 		}
-		String originalToolTipPath = MPiece.getPiece(toolTipText,"/",1,number-2);
-		String originalTopName = MPiece.getPiece(input.getToolTipText(),"/");
-		String defaultProjectName = MEditorPrefs.getPrefs(MEditorPlugin.P_PROJECT_NAME);
-		if (originalTopName.compareTo(defaultProjectName) == 0) { //if current project == default 'mcode' project
-			if (VistaConnection.getCurrentConnection() == null) {
-				VistaConnection.getPrimaryServer();
-			}
-		}
-		String originalLocation = "";
+		String fileCode = getSourceViewer().getTextWidget().getText();
+		String backupCode = null;
 		try {
-			IResource originalResource = MEditorUtilities.getProject(originalTopName); //"mcode");
-			if (!(originalResource == null)) {
-				originalLocation = originalResource.getLocation().toString();
-				String routineName = input.getName();
-				originalLocation = RoutineLoad.getFullFileLocation(originalTopName, routineName);
-				if (originalTopName.compareTo(defaultProjectName) == 0) {
-					originalLocation = MPiece.getPiece(originalLocation,defaultProjectName+"/")
-					                   +defaultProjectName+"/"+MPiece.getPiece(originalToolTipPath,defaultProjectName+"/",2);
-				}
-			}
+			backupCode = MEditorUtils.getBackupFileContents(projectName, routineName);
+		} catch (FileNotFoundException e1) {
+			//TODO: inform backup file cannot be found and ask whether or not to proceed with a dialog
+			System.out.println("BACKUP FILE NOT FOUND");
+		} catch (CoreException | IOException e1) {
+			// TODO show error dialog
+			e1.printStackTrace();
+			return;
 		}
-		catch (Exception e) {
-			MessageDialog.openInformation(
-					PlatformUI.getWorkbench().
-					   getActiveWorkbenchWindow().getShell(),
-					"Routine Save - Exception Encountered",
-					"Error MEditor001 Error message = "+e.getMessage());
-		}
-		str = input.getName();
-		String originalFileName = originalLocation+"/"+str;
 
-		if (VistaConnection.getCurrentConnection() == null) {
-			VistaConnection.getPrimaryServer();
+		
+		//First compare contents of editor to contents on server to see if there is even a proposed change
+		boolean isCopy = false;
+		if (MEditorUtils.cleanSource(fileCode).equals(MEditorUtils.cleanSource(serverCode))) {
+			//TODO: show prompt asking about whether to cancel because they are same, or to continue thereby updating the routine header on server and client			
+			isCopy = true;
 		}
-		String currentProjectName = VistaConnection.getCurrentProject();
-		if (currentProjectName.compareTo("") == 0) {
-			currentProjectName = MEditorPrefs.getPrefs(MEditorPlugin.P_PROJECT_NAME);
-		}
-		try {
-			IResource resource = MEditorUtilities.getProject(currentProjectName); //"mcode");
-			String location = "";
-			if (!(resource == null)) {
-				location = resource.getLocation().toString();
-				String routineName = input.getName();
-				location = RoutineLoad.getFullFileLocation(routineName);
+		
+		//Next compare contents of server to contents of backup to see if MEditor was the last to touch the server
+		if (backupCode != null && !MEditorUtils.cleanSource(backupCode).equals(MEditorUtils.cleanSource(serverCode))) {
+			RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
+			RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, backupCode, true, false);
+			if (!userInput.getReturnValue()) {
+				super.doSave(monitor);
+				return; //TODO: add new button to prompt for save to local only?
 			}
-			str = input.getName();
-			String fileName = location+str; //location+"/"+str;
-			if (fileName.compareTo(originalFileName) != 0) {
-				if (MessageDialog.openQuestion(
+		}
+		
+		//Save to server and display XINDEX results
+		String saveResults = "";
+		try {
+			saveResults = rpc.saveRoutineToServer(routineName, MEditorUtils.cleanSource(fileCode), isCopy);
+		} catch (Throwable t) {
+			saveResults = "Unable to save routine " +routineName+ " to server";
+			return;
+		} finally {
+			try {
+				MEditorMessageConsole.writeToConsole(saveResults);
+			} catch (Exception e) {
+				MessageDialog.openError(
 						MEditorUtilities.getIWorkbenchWindow().getShell(),
-						"Meditor Plug-in: Routine Save  **WARNING**",
-						"The location you are saving to differs from where it was loaded\n\n" +
-						"Loaded From:\n"+
-						"  "+originalFileName+"\n\n"+
-						"Saving To:\n"+
-						"  "+fileName+"\n\n"+
-						"Do you want to TERMINATE the Save operation?")) {
-					return;
-				}
+						"Meditor Plug-in Routine Save",
+						saveResults);
 			}
-			RoutineSave.previousCode = MEditorUtilities.fileToString(originalFileName);
-			RoutineSave.currentCode = getTextFromActiveEditor();
-
-			VistaConnection.getPrimaryServer(); // 100730 moved here
-			super.doSave(monitor);  // Let Eclipse save the file to original location
-			
-			oldTopIndex = getTopIndex();
-			oldCaretOffset = getCaretOffset();
-			IWorkbenchWindow win = MEditorUtilities.getIWorkbenchWindow();
-			IWorkbenchPage activePage = win.getActivePage();
-			RoutineSave.saveRoutine(input.getName());
-// JLI 100811 now activate the editor page
-			activePage.activate(MEditorUtilities.getIWorkbenchPage().getActiveEditor());
-			if (outlinePage != null)
-				outlinePage.update();
-		} catch (Exception e) {
-			MessageDialog.openInformation(
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-					"Meditor Plug-in",
-					"Error encountered while saving routine: "+e.getMessage());
 		}
+		
+		//Sync the latest on server to the backup
+		try {
+			MEditorUtils.syncBackup(projectName, routineName, fileCode);
+		} catch (CoreException e) {
+			// TODO show warning
+			e.printStackTrace();
+		}
+		
+		super.doSave(monitor);
+		
+		
+		
+		
+		
+		
+		
+//		// JLI 110127 Make sure a server is defined first
+//		//if (VistaConnection.getPrimaryServer().compareTo(";;;") == 0) {
+//		if (! VistaConnection.getPrimaryServer()) { // 110821
+//			return;
+//		}
+//		IEditorInput input = getEditorInput();
+//// JLI 100813
+//		int number = 0;
+//		String str = " ";
+//		String toolTipText = input.getToolTipText(); //happens to be "[projectName]/[filename]"
+//		while (str.compareTo("") != 0) {
+//			str = MPiece.getPiece(toolTipText,"/",++number);
+//		}
+//		String originalToolTipPath = MPiece.getPiece(toolTipText,"/",1,number-2);
+//		String originalTopName = MPiece.getPiece(input.getToolTipText(),"/");
+//		String defaultProjectName = MEditorPrefs.getPrefs(MEditorPlugin.P_PROJECT_NAME);
+//		if (originalTopName.compareTo(defaultProjectName) == 0) { //if current project == default 'mcode' project
+//			if (VistaConnection.getCurrentConnection() == null) {
+//				VistaConnection.getPrimaryServer();
+//			}
+//		}
+//		String originalLocation = "";
+//		try {
+//			IResource originalResource = MEditorUtilities.getProject(originalTopName); //"mcode");
+//			if (!(originalResource == null)) {
+//				originalLocation = originalResource.getLocation().toString();
+//				String routineName = input.getName();
+//				originalLocation = RoutineLoad.getFullFileLocation(originalTopName, routineName);
+//				if (originalTopName.compareTo(defaultProjectName) == 0) {
+//					originalLocation = MPiece.getPiece(originalLocation,defaultProjectName+"/")
+//					                   +defaultProjectName+"/"+MPiece.getPiece(originalToolTipPath,defaultProjectName+"/",2);
+//				}
+//			}
+//		}
+//		catch (Exception e) {
+//			MessageDialog.openInformation(
+//					PlatformUI.getWorkbench().
+//					   getActiveWorkbenchWindow().getShell(),
+//					"Routine Save - Exception Encountered",
+//					"Error MEditor001 Error message = "+e.getMessage());
+//		}
+//		str = input.getName();
+//		String originalFileName = originalLocation+"/"+str;
+//
+//		if (VistaConnection.getCurrentConnection() == null) {
+//			VistaConnection.getPrimaryServer();
+//		}
+//		String currentProjectName = VistaConnection.getCurrentProject();
+//		if (currentProjectName.compareTo("") == 0) {
+//			currentProjectName = MEditorPrefs.getPrefs(MEditorPlugin.P_PROJECT_NAME);
+//		}
+//		try {
+//			IResource resource = MEditorUtilities.getProject(currentProjectName); //"mcode");
+//			String location = "";
+//			if (!(resource == null)) {
+//				location = resource.getLocation().toString();
+//				String routineName = input.getName();
+//				location = RoutineLoad.getFullFileLocation(routineName);
+//			}
+//			str = input.getName();
+//			String fileName = location+str; //location+"/"+str;
+//			if (fileName.compareTo(originalFileName) != 0) {
+//				if (MessageDialog.openQuestion(
+//						MEditorUtilities.getIWorkbenchWindow().getShell(),
+//						"Meditor Plug-in: Routine Save  **WARNING**",
+//						"The location you are saving to differs from where it was loaded\n\n" +
+//						"Loaded From:\n"+
+//						"  "+originalFileName+"\n\n"+
+//						"Saving To:\n"+
+//						"  "+fileName+"\n\n"+
+//						"Do you want to TERMINATE the Save operation?")) {
+//					return;
+//				}
+//			}
+//			RoutineSave.previousCode = MEditorUtilities.fileToString(originalFileName);
+//			RoutineSave.currentCode = getTextFromActiveEditor();
+//
+//			VistaConnection.getPrimaryServer(); // 100730 moved here
+//			super.doSave(monitor);  // Let Eclipse save the file to original location
+//			
+//			oldTopIndex = getTopIndex();
+//			oldCaretOffset = getCaretOffset();
+//			IWorkbenchWindow win = MEditorUtilities.getIWorkbenchWindow();
+//			IWorkbenchPage activePage = win.getActivePage();
+//			RoutineSave.saveRoutine(input.getName());
+//// JLI 100811 now activate the editor page
+//			activePage.activate(MEditorUtilities.getIWorkbenchPage().getActiveEditor());
+//			if (outlinePage != null)
+//				outlinePage.update();
+//		} catch (Exception e) {
+//			MessageDialog.openInformation(
+//					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+//					"Meditor Plug-in",
+//					"Error encountered while saving routine: "+e.getMessage());
+//		}
 //		timer = new java.util.Timer();
 //		timer.schedule(new UpdateTask(),5000);
 	}
