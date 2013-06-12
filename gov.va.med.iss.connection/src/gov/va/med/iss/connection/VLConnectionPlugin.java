@@ -16,11 +16,11 @@ public class VLConnectionPlugin extends AbstractUIPlugin {
 	private ResourceBundle resourceBundle;
 	
 	private static String PluginId = "gov.va.med.iss.connection";
-	public static ImageDescriptor IMG_ERROR = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons\\error.gif");
-	public static ImageDescriptor IMG_SUCCESS = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons\\yes1a.gif");
-	public static ImageDescriptor IMG_POST_TEXT = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons\\yes1a.gif");
-	public static ImageDescriptor IMG_HELP = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons\\helpbook07.gif");
-	public static ImageDescriptor IMG_VA_LOGO = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons\\VAlogo.gif");
+	public static ImageDescriptor IMG_ERROR = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons/error.gif");
+	public static ImageDescriptor IMG_SUCCESS = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons/yes1a.gif");
+	public static ImageDescriptor IMG_POST_TEXT = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons/yes1a.gif");
+	public static ImageDescriptor IMG_HELP = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons/helpbook07.gif");
+	public static ImageDescriptor IMG_VA_LOGO = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons/VAlogo.gif");
 
 	
 	/**
