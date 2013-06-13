@@ -4,6 +4,7 @@ import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
 
 import java.io.InputStream;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +28,8 @@ import org.mumps.meditor.MEditorUtils;
 public class SaveToServer implements IObjectActionDelegate {
 	private ISelectionProvider selectionProvider;
 	private Shell shell;
+	
+	private static final String SEP = FileSystems.getDefault().getSeparator();
 	
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		this.selectionProvider = targetPart.getSite().getSelectionProvider();
@@ -74,7 +77,7 @@ public class SaveToServer implements IObjectActionDelegate {
 		}
 		try {
 			for (IFile file : files) {
-				String name = file.getName().split("\\.m")[0];
+				String name = file.getName().split(SEP+".m")[0];
 				InputStream stream = file.getContents();
 				Scanner scanner = new Scanner(stream).useDelimiter("\\A");
 				String content = scanner.hasNext() ? scanner.next() : "";

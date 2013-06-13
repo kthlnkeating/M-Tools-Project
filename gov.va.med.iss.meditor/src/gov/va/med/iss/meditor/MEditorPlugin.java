@@ -20,6 +20,7 @@ import org.osgi.framework.BundleContext;
 
 import gov.va.med.iss.meditor.utils.MColorProvider;
 
+import java.nio.file.FileSystems;
 import java.util.*;
 
 /**
@@ -33,12 +34,14 @@ public class MEditorPlugin extends AbstractUIPlugin {
 
 	MColorProvider colorProvider;
 	
+	private static final String SEP = FileSystems.getDefault().getSeparator();
+	
 	private static String PluginId = "gov.va.med.iss.meditor";
-	public static ImageDescriptor IMG_ERROR = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons\\error.gif");
-	public static ImageDescriptor IMG_SUCCESS = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons\\yes1a.gif");
-	public static ImageDescriptor IMG_POST_TEXT = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons\\yes1a.gif");
-	public static ImageDescriptor IMG_HELP = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons\\helpbook07.gif");
-	public static ImageDescriptor IMG_VA_LOGO = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons\\VAlogo.gif");
+	public static ImageDescriptor IMG_ERROR = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons"+SEP+"error.gif");
+	public static ImageDescriptor IMG_SUCCESS = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons"+SEP+"yes1a.gif");
+	public static ImageDescriptor IMG_POST_TEXT = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons"+SEP+"yes1a.gif");
+	public static ImageDescriptor IMG_HELP = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons"+SEP+"helpbook07.gif");
+	public static ImageDescriptor IMG_VA_LOGO = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons"+SEP+"VAlogo.gif");
 
 	public static final String OFFLINE_MODE = "offlineMode";
 	public static final String P_BACKGROUND_COLOR = "BackgroundColor";

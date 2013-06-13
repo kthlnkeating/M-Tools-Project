@@ -6,12 +6,15 @@ package gov.va.med.iss.meditor.utils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import java.io.FileWriter;
 import java.io.File;
+import java.nio.file.FileSystems;
 
 /**
  * @author vhaisfiveyj
  *
  */
 public class MultRoutineLoad {
+	
+	public static final String SEP = FileSystems.getDefault().getSeparator();
 
 	/**
 	 *   This class takes a routine specifier, which may be ambiguous, and loads the routines
@@ -65,8 +68,8 @@ public class MultRoutineLoad {
 					else {
 						errorType = "saving";
 						char c = saveToDirectory.charAt(saveToDirectory.length()-1);
-						if (! (c == '\\')) {
-							saveToDirectory = saveToDirectory + "\\";
+						if (!saveToDirectory.endsWith(SEP)) {
+							saveToDirectory = saveToDirectory + SEP;
 						}
 						checkDirectory(saveToDirectory);
 						String fileName = saveToDirectory+routine+".m";
@@ -125,11 +128,11 @@ public class MultRoutineLoad {
 	}
 	
 	private static void checkDirectory(String directoryName) {
-		if (directoryName.charAt(directoryName.length()-1) == '\\') {
+		if (directoryName.endsWith(SEP)) {
 			directoryName = directoryName.substring(0,directoryName.length()-1);
 		}
 		if (! (new File(directoryName)).exists()) {
-			int index = directoryName.lastIndexOf("\\");
+			int index = directoryName.lastIndexOf(SEP);
 			String previous = directoryName.substring(0,index);
 			checkDirectory(previous);
 //			boolean success = (new File(directoryName)).mkdir(); 

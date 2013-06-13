@@ -4,22 +4,22 @@ import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
 
 import java.io.File;
+import java.nio.file.FileSystems;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
 
 public class MultRoutineSave {
 	
-	private static String fullDoc = "";
+	private static final String SEP = FileSystems.getDefault().getSeparator();
 	
 	public static void saveMultipleRoutines(String loadFromDirectory, String routine) {
 		VistaLinkConnection myConnection;
 		RoutineSave.clearFullDoc();
 		String routines = expandNames(loadFromDirectory, routine);
 		routines = routines.substring(0,routines.length()-1);
-		int length = loadFromDirectory.length();
-		if (loadFromDirectory.charAt(length-1) != '\\') {
-			loadFromDirectory = loadFromDirectory + "\\";
+		if (!loadFromDirectory.endsWith(SEP)) {
+			loadFromDirectory = loadFromDirectory + SEP;
 		}
 		if (routines.compareTo("") == 0) {
 			MessageDialog.openInformation(

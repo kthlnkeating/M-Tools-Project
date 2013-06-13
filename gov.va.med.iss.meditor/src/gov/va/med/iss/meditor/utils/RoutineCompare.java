@@ -5,11 +5,14 @@ import gov.va.med.iss.connection.utilities.MPiece;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.file.FileSystems;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class RoutineCompare {
+	
+	private static final String SEP = FileSystems.getDefault().getSeparator();
 	
 	private static String routineName;
 	
@@ -76,7 +79,7 @@ public class RoutineCompare {
 			if (! isSave) {
 				location = "on loading from ";
 			}
-			location = "diff_htmls\\"+routineName+" fileComparison "+location+strVal+dtString1+".html";
+			location = "diff_htmls"+SEP+routineName+" fileComparison "+location+strVal+dtString1+".html";
 //			String location = routineName+" fileComparison "+strVal+dtString1+".html";
 			FileWriter fw;
 			fw = new FileWriter(location);
