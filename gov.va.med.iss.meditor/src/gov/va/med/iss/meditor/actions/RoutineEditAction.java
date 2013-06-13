@@ -70,7 +70,7 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 			//show error message about routine not existing on server
 			MessageDialog.openInformation(PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getShell(), "MEditor",
-					"Routine " +routineName+ "does not exist on server.");
+					"Routine " +routineName+ " does not exist on server.");
 			return;
 		}
 		//Collect additional input from user (note: this should be moved into a new, redesign routine load dialog which calculates all the input needed up front
@@ -115,9 +115,10 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 				//FileEditorInput editorInput = new FileEditorInput(routineFile);
 				RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
 				RoutineChangedDialogData userInput = dialog.open(
-						MEditorUtils.cleanSource(routineName),
+						routineName,
+						MEditorUtils.cleanSource(fileCode),
 						MEditorUtils.cleanSource(serverCode),
-						fileCode, false, false);
+						false, false);
 				if (!userInput.getReturnValue())
 					return;
 			}

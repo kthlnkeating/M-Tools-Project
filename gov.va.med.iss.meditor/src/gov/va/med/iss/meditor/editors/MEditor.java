@@ -26,6 +26,7 @@ import gov.va.med.iss.meditor.utils.RoutineChangedDialogData;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -169,7 +170,7 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 		if (!routineName.endsWith(".m")) {
 			MessageDialog.openInformation(PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getShell(), "MEditor",
-					"Routine must end in \".m\".");
+					"A MUMPS Routine must end in \".m\" to be saved to server.");
 			super.doSave(monitor);
 			return;
 		}
@@ -187,7 +188,8 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 		String fileCode = getSourceViewer().getTextWidget().getText();
 		String backupCode = null;
 		try {
-			backupCode = MEditorUtils.getBackupFileContents(projectName, routineName);
+			if (!isNewRoutine)
+				backupCode = MEditorUtils.getBackupFileContents(projectName, routineName);
 		} catch (FileNotFoundException e1) {
 			//inform backup file cannot be found and ask whether or not to proceed with a dialog
 //			MessageDialog dialog = new MessageDialog(null, "MEditor", null,
@@ -195,12 +197,16 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 //					new String[] { "Yes", "No" }, 
 //							1); // No is the default
 //	   int result = dialog.open();
-			RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
-			RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, fileCode, false, false,
-					"This routine exists on the server, but no backup file exists in this project. Therefore it is not known if the editor and the server are in sync.");
-			if (!userInput.getReturnValue()) {
-				super.doSave(monitor);
-				return; 
+			
+			if (!MEditorUtils.cleanSource(fileCode).equals(MEditorUtils.cleanSource(serverCode))) {
+			
+				RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
+				RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, fileCode, false, false,
+						"This routine exists on the server, but no backup file exists"); //TODO: fix this dialog so it display wrapped text messages. "in this project. Therefore it is not known if the editor and the server are in sync.");
+				if (!userInput.getReturnValue()) {
+					super.doSave(monitor);
+					return; 
+				}
 			}
 			
 		} catch (CoreException | IOException e1) {
@@ -216,7 +222,11 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 		//First compare contents of editor to contents on server to see if there is even a proposed change
 		boolean isCopy = false;
 		if (!isNewRoutine && MEditorUtils.cleanSource(fileCode).equals(MEditorUtils.cleanSource(serverCode))) {
-			//show prompt asking about whether to cancel because they are same, or to continue thereby updating the routine header on server and client			
+			//show prompt asking about whether to cancel because they are same, or to continue thereby updating the routine header on server and client	
+			
+//			MessageDialog.openError(PlatformUI.getWorkbench()
+//					.getActiveWorkbenchWindow().getShell(), "MEditor",
+//					"Rotine on server is identical to the local routine. Nothing new to deploy to server.");
 			
 			MessageDialog dialog = new MessageDialog(null, "MEditor", null,
 			"Routines are the same on the client and in this project. Would " +

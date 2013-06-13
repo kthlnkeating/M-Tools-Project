@@ -34,7 +34,7 @@ public class MEditorRPC {
 			vReq.getParams().setParam(3, "string", routineName);
 			RpcResponse vResp = connection.executeRPC(vReq);
 			String result = vResp.getResults();
-			if (result.equals("-1^Error Processing load request")) {
+			if (result.startsWith("-1^Error Processing load request")) {
 				throw new RoutineNotFoundException();
 			} else {
 				return result.substring(result.indexOf('\n')+1);
@@ -50,11 +50,7 @@ public class MEditorRPC {
 		String doc = "";
 		int nlines = 0;
 		HashMap hm = new HashMap();
-		// remove spaces and tabs at end of line, replace first tab with space,
-		// remove any non-tab control characters
-		//contents = cleanSource(contents); // JLI 100227 extracted code to cleanSource
-		//TODO: move this clean source responsibility to another object and invoke it before even coming here
-		// now convert to array by line
+		// convert to array by line
 		String stra= "";
 		while (!(contents.compareTo("") == 0)) {
 			int fromIndex1 = contents.indexOf('\n');
@@ -93,7 +89,8 @@ public class MEditorRPC {
 		String updateEntryInRoutineFile = MEditorPrefs.getPrefs(MEditorPlugin.P_DEFAULT_UPDATE);
 		//String unitTestName = getUnitTestName(routineName+".m"); //--jspivey not supported beause it is loading this value into the eclipse persistence store when the routine is loaded in. This won't work for routines imported from the filesystem
 		String unitTestName = "";
-		String updateFirstLine = isCopy ? "0" : "1";
+		String updateFirstLine = isCopy ? "1" : "0";
+		//String updateFirstLine = "0"; //fixed because it makes syncing and comparing files difficult when it changes on the server but not locally --jspivey
 		updateEntryInRoutineFile = (updateEntryInRoutineFile=="true") ? "1" : "0";
 		vReq.getParams().setParam(4, "string",updateEntryInRoutineFile +"^"+unitTestName+"^"+updateFirstLine);
 		RpcResponse vResp = connection.executeRPC(vReq);

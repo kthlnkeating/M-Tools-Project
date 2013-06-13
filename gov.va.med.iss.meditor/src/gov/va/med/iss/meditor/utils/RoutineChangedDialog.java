@@ -76,7 +76,8 @@ public class RoutineChangedDialog extends Dialog {
 		lblQuestion.setSize(350,20);
 		if (message != null) {
 			lblQuestion.setText(message);
-		} else if (! isSave) {
+			lblQuestion.setSize(350, 20 * (message.length() / 70 + 1));
+		} else if (!isSave) {
 			lblQuestion.setText("The version on the server has changed.  Do you still want to load");
 		} else {
 			lblQuestion.setText("The version on the server has changed.  Do you still want to save");
