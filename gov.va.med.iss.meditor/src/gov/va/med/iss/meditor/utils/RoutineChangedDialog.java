@@ -48,6 +48,10 @@ public class RoutineChangedDialog extends Dialog {
 	String file2;
 	
 	public RoutineChangedDialogData open(String rouName, String infile1, String infile2, boolean isSave, boolean isMult) {
+		return open(rouName, infile1, infile2, isSave, isMult, null);
+	}
+	
+	public RoutineChangedDialogData open(String rouName, String infile1, String infile2, boolean isSave, boolean isMult, String message) {
 		result = new RoutineChangedDialogData();
 		routineName = rouName;
 		isSaveValue = isSave;
@@ -70,9 +74,12 @@ public class RoutineChangedDialog extends Dialog {
 		lblQuestion = new Label(shell, SWT.NONE);
 		lblQuestion.setLocation(20,10);
 		lblQuestion.setSize(350,20);
-		lblQuestion.setText("The version on the server has changed.  Do you still want to save");
-		if (! isSave) {
+		if (message != null) {
+			lblQuestion.setText(message);
+		} else if (! isSave) {
 			lblQuestion.setText("The version on the server has changed.  Do you still want to load");
+		} else {
+			lblQuestion.setText("The version on the server has changed.  Do you still want to save");
 		}
 
 		Label lblQ2 = new Label(shell, SWT.NONE);

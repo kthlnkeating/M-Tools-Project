@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -66,7 +67,10 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 		try { //attempt Load routine into a string, if not found show error
 			serverCode = rpc.getRoutineFromServer(routineName);
 		} catch (RoutineNotFoundException e) {
-			//TODO: show error message about routine not existing on server
+			//show error message about routine not existing on server
+			MessageDialog.openInformation(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell(), "MEditor",
+					"Routine " +routineName+ "does not exist on server.");
 			return;
 		}
 		//Collect additional input from user (note: this should be moved into a new, redesign routine load dialog which calculates all the input needed up front
@@ -93,18 +97,27 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 				fileCode = MEditorUtils.readFile(routineFile);
 			} catch (CoreException | IOException e) {
 				e.printStackTrace();
-				//TODO: show warning
+				//show error
+				MessageDialog.openError(PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow().getShell(), "MEditor",
+						"Failed to load routine. Error occured while loading the local code for compairson to the server: " +e.getMessage());
 				return;
 			}
 						
-			//TODO: if cannot figure out how to load changes into an editor but not save them, show a warning ask what to do with a diff option
-			if (serverCode.equals(fileCode)) {
-				//TODO: just show a warning stating they are the same and do nothing
+			//if cannot figure out how to load changes into an editor but not save them, show a warning ask what to do with a diff option
+			if (MEditorUtils.cleanSource(serverCode).equals(MEditorUtils.cleanSource(fileCode))) {
+				//just show an info dialog stating they are the same and do nothing
+				MessageDialog.openInformation(PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow().getShell(), "MEditor",
+						"Both the routine on the server and on the local are the same");
 			} else {
 				//replace the local contents with latest from server but do not save the actual file
 				//FileEditorInput editorInput = new FileEditorInput(routineFile);
 				RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
-				RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, fileCode, false, false);
+				RoutineChangedDialogData userInput = dialog.open(
+						MEditorUtils.cleanSource(routineName),
+						MEditorUtils.cleanSource(serverCode),
+						fileCode, false, false);
 				if (!userInput.getReturnValue())
 					return;
 			}
@@ -115,7 +128,10 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 			MEditorUtils.createOrReplace(routineFile, serverCode);
 		} catch (UnsupportedEncodingException | CoreException e) {
 			e.printStackTrace();
-			//TODO: show error
+			//show error
+			MessageDialog.openError(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell(), "MEditor",
+					"Failed to load routine. Error occured while writing the local file: " +e.getMessage());
 			return;
 		}
 		
@@ -130,8 +146,12 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 		try {
 			MEditorUtils.syncBackup(projectName, routineName, serverCode);
 		} catch (CoreException e) {
-			// TODO show warning
+			// show warning only
 			e.printStackTrace();
+			e.printStackTrace();
+			MessageDialog.openWarning(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell(), "MEditor",
+					"Routine Saved on server, but error occured while syncing the local backup file: " +e.getMessage());	
 		}
 	}
 
@@ -164,10 +184,10 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 			return false;
 		
 		if (!routineName.matches("%?[A-Z][A-Z0-9]+")) {
-			//TODO: put validations into (redesigned) dialog
+			//TODO: put validations into (redesigned) dialog class so the user sees this input immediately before they close the dialog
 			return false;
 		} else if (routineName.length() > 8) {
-			//TODO: put validations into (redesigned) dialog
+			//TODO: put validations into (redesigned) dialog class so the user sees this input immediately before they close the dialog
 			return false;
 		}
 		

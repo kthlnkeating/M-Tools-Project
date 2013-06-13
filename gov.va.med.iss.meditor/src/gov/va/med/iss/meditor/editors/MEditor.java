@@ -32,6 +32,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.DefaultRangeIndicator;
 import org.eclipse.ui.texteditor.IDocumentProvider;
@@ -159,19 +160,6 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 			return;
 		}
 		
-//		compare what is in the backup to what is in the server
-//		-get the latest from the server
-//		-compare the 2 routines
-//		-show the diff OK/CANCEL promprt if they are not the same
-//
-//		Save to the server
-//		-catch exception but do not return
-//		-print out server XINDEX results on success, show error dialog on failure
-		
-//		sync the backup file with latest saved on server
-//
-//		Save the file by calling super
-		
 		//Resolve object dependencies (calculate dependencies at the entry point up front)
 		VistaLinkConnection connection = VistaConnection.getConnection();
 		MEditorRPC rpc = new MEditorRPC(connection);
@@ -179,47 +167,78 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 		String projectName = VistaConnection.getPrimaryProject();
 		String routineName = getEditorInput().getName();
 		if (!routineName.endsWith(".m")) {
-			//TODO: show warning and refuse to save
+			MessageDialog.openInformation(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell(), "MEditor",
+					"Routine must end in \".m\".");
+			super.doSave(monitor);
 			return;
 		}
 		routineName = routineName.substring(0, routineName.length()-2);
 		
 		//Load routine from server
-		String serverCode;
-		try { //attempt Load routine into a string, if not found show error
+		String serverCode = null;
+		boolean isNewRoutine = false;
+		try { //attempt Load routine into a string
 			serverCode = rpc.getRoutineFromServer(routineName);
 		} catch (RoutineNotFoundException e) {
-			//TODO: show error message about routine not existing on server
-			return;
+			//save the routine as a new file.
+			isNewRoutine = true;
 		}
 		String fileCode = getSourceViewer().getTextWidget().getText();
 		String backupCode = null;
 		try {
 			backupCode = MEditorUtils.getBackupFileContents(projectName, routineName);
 		} catch (FileNotFoundException e1) {
-			//TODO: inform backup file cannot be found and ask whether or not to proceed with a dialog
-			System.out.println("BACKUP FILE NOT FOUND");
+			//inform backup file cannot be found and ask whether or not to proceed with a dialog
+//			MessageDialog dialog = new MessageDialog(null, "MEditor", null,
+//					"This routine exists on the server, but no backup file exists in this project. Therefore it is not known if the editor and the server are in sync.", MessageDialog.QUESTION, 
+//					new String[] { "Yes", "No" }, 
+//							1); // No is the default
+//	   int result = dialog.open();
+			RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
+			RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, fileCode, false, false,
+					"This routine exists on the server, but no backup file exists in this project. Therefore it is not known if the editor and the server are in sync.");
+			if (!userInput.getReturnValue()) {
+				super.doSave(monitor);
+				return; 
+			}
+			
 		} catch (CoreException | IOException e1) {
-			// TODO show error dialog
 			e1.printStackTrace();
+			MessageDialog.openError(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell(), "MEditor",
+					"Failed to save routine onto the server. Error occured while loading the backup file: " +e1.getMessage());
+			super.doSave(monitor);
 			return;
 		}
 
 		
 		//First compare contents of editor to contents on server to see if there is even a proposed change
 		boolean isCopy = false;
-		if (MEditorUtils.cleanSource(fileCode).equals(MEditorUtils.cleanSource(serverCode))) {
-			//TODO: show prompt asking about whether to cancel because they are same, or to continue thereby updating the routine header on server and client			
-			isCopy = true;
+		if (!isNewRoutine && MEditorUtils.cleanSource(fileCode).equals(MEditorUtils.cleanSource(serverCode))) {
+			//show prompt asking about whether to cancel because they are same, or to continue thereby updating the routine header on server and client			
+			
+			MessageDialog dialog = new MessageDialog(null, "MEditor", null,
+			"Routines are the same on the client and in this project. Would " +
+			"you like to continue by updating the date in the routine header" +
+			" on both the client and server?",
+			MessageDialog.QUESTION, 
+			new String[] { "OK", "Cancel" },
+					1); // Cancel is the default
+			if (dialog.open() != 0) {
+				super.doSave(monitor);
+				return;
+			} else			
+				isCopy = true;
 		}
 		
 		//Next compare contents of server to contents of backup to see if MEditor was the last to touch the server
-		if (backupCode != null && !MEditorUtils.cleanSource(backupCode).equals(MEditorUtils.cleanSource(serverCode))) {
+		if (!isNewRoutine && backupCode != null && !MEditorUtils.cleanSource(backupCode).equals(MEditorUtils.cleanSource(serverCode))) {
 			RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
 			RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, backupCode, true, false);
 			if (!userInput.getReturnValue()) {
 				super.doSave(monitor);
-				return; //TODO: add new button to prompt for save to local only?
+				return;
 			}
 		}
 		
@@ -245,8 +264,11 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 		try {
 			MEditorUtils.syncBackup(projectName, routineName, fileCode);
 		} catch (CoreException e) {
-			// TODO show warning
+			// show warning only
 			e.printStackTrace();
+			MessageDialog.openWarning(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell(), "MEditor",
+					"Routine Saved on server, but error occured while syncing the local backup file: " +e.getMessage());			
 		}
 		
 		super.doSave(monitor);
