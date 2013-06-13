@@ -2,7 +2,7 @@
 <feature
       id="gov.va.vista.mtools"
       label="MTools Feature"
-      version="1.0.17"
+      version="1.0.18"
       provider-name="US Department of Veterans Affairs">
 
    <license url="http://www.apache.org/licenses/LICENSE-2.0">
