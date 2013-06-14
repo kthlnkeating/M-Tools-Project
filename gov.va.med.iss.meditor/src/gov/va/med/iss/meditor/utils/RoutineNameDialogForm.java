@@ -184,15 +184,9 @@ public class RoutineNameDialogForm extends Dialog {
 			btnDirectory.setLocation(535,95);
 			btnDirectory.setSize(30,20);
 			btnDirectory.setText("...");
-// JLI 110718 end			
-			comboDirectory = new Combo(shell, SWT.DROP_DOWN);
-			comboDirectory.setText("");
-			comboDirectory.setLocation(80,95);
-//			comboDirectory.setSize(475,25);
-			comboDirectory.setSize(450,25);
+
 			try {
 				String currentServer = VistaConnection.getPrimaryServerID();
-				String server = MPiece.getPiece(currentServer,";",1);
 		        String location;
 		        if (MPiece.getPiece(currentServer,";",4).compareTo("") != 0) {
 		            location = MEditorUtilities.getProject(MPiece.getPiece(currentServer,";",4)).getLocation().toString();
@@ -203,12 +197,18 @@ public class RoutineNameDialogForm extends Dialog {
 		        }
 			} catch (Exception e) {
 			}
-			if (dropList == null) {
-				dropList = new ArrayList();
-			}
-			for (int i=0 ; i<dropList.size(); i++ ) {
-				comboDirectory.add((String) dropList.get(i));
-			}
+		}
+		
+
+		comboDirectory = new Combo(shell, SWT.DROP_DOWN);
+		comboDirectory.setText("");
+		comboDirectory.setLocation(80,95);
+		comboDirectory.setSize(450,25);
+		if (dropList == null) {
+			dropList = new ArrayList();
+		}
+		for (int i=0 ; i<dropList.size(); i++ ) {
+			comboDirectory.add((String) dropList.get(i));
 		}
 		
 		btnOK = new Button(shell, SWT.PUSH);
