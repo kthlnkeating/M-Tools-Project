@@ -24,6 +24,8 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.mumps.meditor.MEditorRPC;
 import org.mumps.meditor.MEditorUtils;
+import org.mumps.meditor.SaveRoutine;
+import org.mumps.meditor.ServerSaveFailure;
 
 public class SaveToServer implements IObjectActionDelegate {
 	private ISelectionProvider selectionProvider;
@@ -82,7 +84,13 @@ public class SaveToServer implements IObjectActionDelegate {
 				Scanner scanner = new Scanner(stream).useDelimiter("\\A");
 				String content = scanner.hasNext() ? scanner.next() : "";
 				scanner.close();
-				new MEditorRPC(c).saveRoutineToServer(name, MEditorUtils.cleanSource(content), false);
+				try {
+					String projectName = VistaConnection.getPrimaryProject();
+					new SaveRoutine(new MEditorRPC(c)).save(name, projectName, content);
+				} catch (ServerSaveFailure e) {
+					e.printStackTrace();
+				}
+//				new MEditorRPC(c).saveRoutineToServer(name, MEditorUtils.cleanSource(content), false);
 //				RoutineSave.doSaveRoutine(name, content, c, false);
 			}
 		} catch (Exception t) {

@@ -1,10 +1,7 @@
 package gov.va.med.iss.meditor.utils;
 
-import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.ConnectionUtilities;
-import gov.va.med.iss.connection.utilities.MPiece;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
@@ -53,24 +50,12 @@ public class RoutineNameDialogForm extends Dialog {
 	public RoutineNameDialogForm(Shell parent) {
 		this(parent, 0);
 	}
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
 	
 	public RoutineNameDialogData openMultiple() {
 //		isShowReadOnly = false;
 		isShowDirectory = true;
 		return open();
 	}
-	
-//	public RoutineNameDialogData open(boolean showReadOnly) {
-//		//isShowReadOnly = showReadOnly;
-//		return open();
-//	}
 	
 	// 091201
 	
@@ -100,9 +85,10 @@ public class RoutineNameDialogForm extends Dialog {
 		
 		lblQuestion = new Label(shell, SWT.NONE);
 		lblQuestion.setLocation(25,10);
-		lblQuestion.setSize(80,20);
+		lblQuestion.setSize(95,20);
 		lblQuestion.setText("Routine Name(s): ");
 		if (!isShowDirectory) {
+			lblQuestion.setSize(80,20);
 			lblQuestion.setText("Routine Name: ");
 		}
 		
@@ -167,7 +153,7 @@ public class RoutineNameDialogForm extends Dialog {
 //			btnReadOnly.setLocation(25,95);
 //			btnReadOnly.setSize(150,25);
 //		}
-		else if (isShowDirectory) {
+		if (isShowDirectory) {
 			lblDirectory = new Label(shell, SWT.NONE);
 			if (isMultSave) {
 				lblDirectory.setText("Load from: ");
@@ -184,25 +170,11 @@ public class RoutineNameDialogForm extends Dialog {
 			btnDirectory.setLocation(535,95);
 			btnDirectory.setSize(30,20);
 			btnDirectory.setText("...");
-// JLI 110718 end			
+			
 			comboDirectory = new Combo(shell, SWT.DROP_DOWN);
 			comboDirectory.setText("");
 			comboDirectory.setLocation(80,95);
-//			comboDirectory.setSize(475,25);
 			comboDirectory.setSize(450,25);
-			try {
-				String currentServer = VistaConnection.getPrimaryServerID();
-				String server = MPiece.getPiece(currentServer,";",1);
-		        String location;
-		        if (MPiece.getPiece(currentServer,";",4).compareTo("") != 0) {
-		            location = MEditorUtilities.getProject(MPiece.getPiece(currentServer,";",4)).getLocation().toString();
-		            comboDirectory.setText(location);
-					if (! (new File(location).exists())) {
-						new File(location).mkdirs();
-					}
-		        }
-			} catch (Exception e) {
-			}
 			if (dropList == null) {
 				dropList = new ArrayList();
 			}

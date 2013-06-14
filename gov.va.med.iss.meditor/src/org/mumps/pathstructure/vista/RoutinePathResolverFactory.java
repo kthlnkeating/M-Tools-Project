@@ -17,8 +17,6 @@ import org.mumps.pathstructure.vista.foia.VFPathResolver;
 
 public class RoutinePathResolverFactory {
 	
-	private static final String SEP = FileSystems.getDefault().getSeparator();
-
 	//Singleton class, easier to put inside the existing code this way
 	private static volatile RoutinePathResolverFactory psf = null;
 	public static RoutinePathResolverFactory getInstance() {
@@ -42,7 +40,7 @@ public class RoutinePathResolverFactory {
 		File packagesCsvFile = new File(projectPath, "Packages.csv");
 		RoutinePathResolver backupResolver;
 		if (containsFolder(projectPath))
-			backupResolver = getDialogResolver(projectPath);
+			backupResolver = new FileDialogPathResolver(projectPath.getAbsolutePath());
 		else
 			backupResolver = new RootPathResolver();
 		
@@ -63,19 +61,19 @@ public class RoutinePathResolverFactory {
 		return false;
 	}
 
-	public RoutinePathResolver getDialogResolver(File projectPath) {
-		String absPath = projectPath.getAbsolutePath();
-		String projectName = absPath.substring(absPath.lastIndexOf(SEP)+SEP.length());
-		CustElementTreeSelectionDialog dialog = new CustElementTreeSelectionDialog(Display.getDefault().getActiveShell(),
-				new WorkbenchLabelProvider(),
-			    new WorkbenchContentProvider());
-		dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
-		dialog.setAllowMultiple(false);
-		dialog.setMessage("Select a directory to load the routine into.");
-		dialog.setTitle("Routine Import");
-		ViewerFilter filter = new ProjectDirViewerFilter(projectName);
-		dialog.addFilter(filter);
-		return new FileDialogPathResolver(dialog);
-	}
+//	public RoutinePathResolver getDialogResolver(File projectPath) {
+//		String absPath = projectPath.getAbsolutePath();
+//		String projectName = absPath.substring(absPath.lastIndexOf(SEP)+SEP.length());
+//		CustElementTreeSelectionDialog dialog = new CustElementTreeSelectionDialog(Display.getDefault().getActiveShell(),
+//				new WorkbenchLabelProvider(),
+//			    new WorkbenchContentProvider());
+//		dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
+//		dialog.setAllowMultiple(false);
+//		dialog.setMessage("Select a directory to load the routine into.");
+//		dialog.setTitle("Routine Import");
+//		ViewerFilter filter = new ProjectDirViewerFilter(projectName);
+//		dialog.addFilter(filter);
+//		return new FileDialogPathResolver(dialog);
+//	}
 
 }
