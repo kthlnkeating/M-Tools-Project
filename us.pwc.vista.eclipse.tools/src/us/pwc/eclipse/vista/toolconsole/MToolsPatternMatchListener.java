@@ -11,7 +11,7 @@ import org.eclipse.ui.console.IPatternMatchListener;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
 
-import com.raygroupintl.m.tool.SourceCodeFiles;
+import com.pwc.us.rgi.m.tool.SourceCodeFiles;
 
 public class MToolsPatternMatchListener implements IPatternMatchListener {
 	private SourceCodeFiles scf;

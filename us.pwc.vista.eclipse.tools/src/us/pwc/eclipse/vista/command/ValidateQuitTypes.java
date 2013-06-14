@@ -2,13 +2,13 @@ package us.pwc.eclipse.vista.command;
 
 import java.util.List;
 
-import com.raygroupintl.m.parsetree.data.EntryId;
-import com.raygroupintl.m.tool.CommonToolParams;
-import com.raygroupintl.m.tool.ParseTreeSupply;
-import com.raygroupintl.m.tool.entry.MEntryToolResult;
-import com.raygroupintl.m.tool.entry.RecursionDepth;
-import com.raygroupintl.m.tool.entry.quittype.QuitType;
-import com.raygroupintl.m.tool.entry.quittype.QuitTypeTool;
+import com.pwc.us.rgi.m.parsetree.data.EntryId;
+import com.pwc.us.rgi.m.tool.CommonToolParams;
+import com.pwc.us.rgi.m.tool.ParseTreeSupply;
+import com.pwc.us.rgi.m.tool.entry.MEntryToolResult;
+import com.pwc.us.rgi.m.tool.entry.RecursionDepth;
+import com.pwc.us.rgi.m.tool.entry.quittype.QuitType;
+import com.pwc.us.rgi.m.tool.entry.quittype.QuitTypeTool;
 
 public class ValidateQuitTypes extends MToolsCommand {
 	private QuitTypeTool getTool(ParseTreeSupply pts) {

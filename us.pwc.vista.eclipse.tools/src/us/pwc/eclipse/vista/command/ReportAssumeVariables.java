@@ -2,14 +2,14 @@ package us.pwc.eclipse.vista.command;
 
 import java.util.List;
 
-import com.raygroupintl.m.parsetree.data.EntryId;
-import com.raygroupintl.m.tool.OutputFlags;
-import com.raygroupintl.m.tool.ParseTreeSupply;
-import com.raygroupintl.m.tool.entry.MEntryToolResult;
-import com.raygroupintl.m.tool.entry.RecursionDepth;
-import com.raygroupintl.m.tool.entry.assumedvariables.AssumedVariables;
-import com.raygroupintl.m.tool.entry.assumedvariables.AssumedVariablesTool;
-import com.raygroupintl.m.tool.entry.assumedvariables.AssumedVariablesToolParams;
+import com.pwc.us.rgi.m.parsetree.data.EntryId;
+import com.pwc.us.rgi.m.tool.OutputFlags;
+import com.pwc.us.rgi.m.tool.ParseTreeSupply;
+import com.pwc.us.rgi.m.tool.entry.MEntryToolResult;
+import com.pwc.us.rgi.m.tool.entry.RecursionDepth;
+import com.pwc.us.rgi.m.tool.entry.assumedvariables.AssumedVariables;
+import com.pwc.us.rgi.m.tool.entry.assumedvariables.AssumedVariablesTool;
+import com.pwc.us.rgi.m.tool.entry.assumedvariables.AssumedVariablesToolParams;
 
 public class ReportAssumeVariables extends MToolsCommand {
 	@Override

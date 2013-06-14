@@ -29,19 +29,19 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import com.pwc.us.rgi.m.parsetree.data.EntryId;
+import com.pwc.us.rgi.m.tool.OutputFlags;
+import com.pwc.us.rgi.m.tool.ParseTreeSupply;
+import com.pwc.us.rgi.m.tool.SourceCodeFiles;
+import com.pwc.us.rgi.m.tool.SourceCodeToParseTreeAdapter;
+import com.pwc.us.rgi.m.tool.ToolResult;
+import com.pwc.us.rgi.output.OSTerminal;
+import com.pwc.us.rgi.output.Terminal;
+import com.pwc.us.rgi.output.TerminalFormatter;
+
 import us.pwc.eclipse.vista.toolconsole.MToolsConsoleHandler;
 import us.pwc.eclipse.vista.toolconsole.MToolsPatternMatchListener;
 import us.pwc.eclipse.vista.util.MRAParamSupply;
-
-import com.raygroupintl.m.parsetree.data.EntryId;
-import com.raygroupintl.m.tool.OutputFlags;
-import com.raygroupintl.m.tool.ParseTreeSupply;
-import com.raygroupintl.m.tool.SourceCodeFiles;
-import com.raygroupintl.m.tool.SourceCodeToParseTreeAdapter;
-import com.raygroupintl.m.tool.ToolResult;
-import com.raygroupintl.output.OSTerminal;
-import com.raygroupintl.output.Terminal;
-import com.raygroupintl.output.TerminalFormatter;
 
 abstract class MToolsCommand extends AbstractHandler{
 	protected List<String> getFileNames(TreePath[] selections) {

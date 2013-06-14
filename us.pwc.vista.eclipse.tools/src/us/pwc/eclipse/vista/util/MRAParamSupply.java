@@ -7,7 +7,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
-import com.raygroupintl.m.tool.SourceCodeFiles;
+import com.pwc.us.rgi.m.tool.SourceCodeFiles;
 
 public class MRAParamSupply {
 	private static void updateForResource(IResource resource, SourceCodeFiles scf) throws CoreException {
