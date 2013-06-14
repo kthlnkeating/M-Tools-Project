@@ -8,14 +8,18 @@ import java.nio.file.FileSystems;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
+import org.mumps.meditor.MEditorRPC;
+import org.mumps.meditor.MEditorUtils;
 
 public class MultRoutineSave {
 	
 	private static final String SEP = FileSystems.getDefault().getSeparator();
 	
 	public static void saveMultipleRoutines(String loadFromDirectory, String routine) {
-		VistaLinkConnection myConnection;
-		RoutineSave.clearFullDoc();
+		
+		VistaLinkConnection connection = VistaConnection.getConnection();
+		MEditorRPC rpc = new MEditorRPC(connection);
+		
 		String routines = expandNames(loadFromDirectory, routine);
 		routines = routines.substring(0,routines.length()-1);
 		if (!loadFromDirectory.endsWith(SEP)) {
@@ -28,6 +32,7 @@ public class MultRoutineSave {
 					"There were no matching routines found to save");
 			return;
 		}
+		String saveResults = "";
 		while (routines != "") {
 			int loc = routines.indexOf(",");
 			String rouname;
@@ -45,16 +50,22 @@ public class MultRoutineSave {
 //				String codeFromServer = RoutineSave.getCodeFromServer(rouname);
 				// get code from when we last loaded into Eclipse
 				String codeFromDisk = MEditorUtilities.fileToString(filename);
-				boolean isOK = RoutineSave.checkForServerChange(rouname, codeFromDisk, true, true);
+				boolean isOK = true; //RoutineSave.checkForServerChange(rouname, codeFromDisk, true, true);
 				if (isOK) {
-					myConnection = VistaConnection.getCurrentConnection();
-					RoutineSave.doSaveRoutine(rouname, codeFromDisk, myConnection, true);
+					saveResults += rpc.saveRoutineToServer(rouname, MEditorUtils.cleanSource(codeFromDisk), false);
+					//RoutineSave.doSaveRoutine(rouname, codeFromDisk, myConnection, true);
 				}
 			} catch (Exception e) {
-				
+				e.printStackTrace();
+				saveResults += "Unable to save routine " +rouname+ " to server"+SEP;
 			}
 		}
-		RoutineSave.writeDocToConsole(RoutineSave.getFullDoc());
+		try {
+			MEditorMessageConsole.writeToConsole(saveResults);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/*
