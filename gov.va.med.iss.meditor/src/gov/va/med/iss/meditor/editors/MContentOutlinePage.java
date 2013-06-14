@@ -15,24 +15,35 @@ package gov.va.med.iss.meditor.editors;
  */
 
 //import gov.va.med.iss.meditor.utils.MEditorUtilities;
-import gov.va.med.iss.meditor.utils.RoutineLoad;
-import gov.va.med.iss.connection.actions.VistaConnection;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
-import java.nio.channels.FileChannel;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
-//import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.text.*;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.BadPositionCategoryException;
+import org.eclipse.jface.text.DefaultPositionUpdater;
+import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
+import org.eclipse.jface.text.IPositionUpdater;
+import org.eclipse.jface.text.Position;
+import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -282,25 +293,95 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 	 * Updates the outline page.
 	 */
 	public void update() {
-		TreeViewer viewer= getTreeViewer();
-
-		if (viewer != null) {
-			Control control= viewer.getControl();
-			if (control != null && !control.isDisposed()) {
-				control.setRedraw(false);
-				viewer.setInput(fInput);
-				viewer.expandAll();
-				control.setRedraw(true);
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				TreeViewer viewer = getTreeViewer();
+				if (viewer != null) {
+					Control control = viewer.getControl();
+					if (control != null && !control.isDisposed()) {
+						control.setRedraw(false);
+						viewer.setInput(fInput);
+						viewer.expandAll();
+						control.setRedraw(true);
+					}
+				}
 			}
-		}
+		});
 	}
 	
 	private int fNumberOfLines = 0;
 	public void documentChanged(DocumentEvent event) {
+		
+		Job job = new Job("MEditor Sync Outline View") {
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+
+				IDocument doc = fDocumentProvider.getDocument(fTextEditor.getEditorInput());
+				int nLines = doc.getNumberOfLines();
+				if (fNumberOfLines == 0)
+					fNumberOfLines = nLines;
+//				if (fNumberOfLines == 0) {
+//					fNumberOfLines = nLines;
+		            //  JLI start insert 060203
+					//  code added to correct problem with routine on workstation disk
+					//  edited on a prior date when compared to routine on server gave
+					//  indication it was not the same -- actually didn't have last
+					//  saved file with current date, so copy working copy to that file
+					//
+					//  This only works if Outline is showing and active
+//					try { //--jspivey, commenting this out, the newer routine save/load/backup logic doesn't depend on this, and this logic uses the old flat director structure exclusively
+////						if (VistaConnection.getPrimaryProject().compareTo("") == 0) {
+//							String routineName = fTextEditor.getTitle();
+//							routineName = routineName.substring(0,routineName.length()-2);
+//							String location = RoutineLoad.getFullFileLocation(routineName);
+//							String dstFilename = RoutineLoad.getLastLoadFileName(routineName, location);
+//							File f = new File(dstFilename);
+//							if (! f.exists()) {
+//								try {
+//									String srcFilename = location + "/" + routineName + ".m";
+//									// Create channel on the source
+//									FileChannel srcChannel = new FileInputStream(srcFilename).getChannel();
+//								
+//									// Create channel on the destination
+//									FileChannel dstChannel = new FileOutputStream(dstFilename).getChannel();
+//					    
+//									// Copy file contents from source to destination
+//									dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+//					    
+//									// Close the channels
+//									srcChannel.close();
+//									dstChannel.close();
+//								} catch (IOException e) {
+//								}
+//							}
+////						}
+//					} catch (Exception e) {
+//						
+//					}  
+//					// JLI end of insertion 060203
+//				}
+				if (! (nLines == fNumberOfLines)) {
+					TreeViewer viewer= getTreeViewer();
+					IContentProvider cp = viewer.getContentProvider();
+					cp.inputChanged(viewer, null, fTextEditor.getEditorInput());
+					fTextEditor.getEditorInput();
+					update();
+				}
+
+				
+				return Status.OK_STATUS;
+			}
+			
+		};
+		job.schedule();
+		
 		IDocument doc = fDocumentProvider.getDocument(fTextEditor.getEditorInput());
 		int nLines = doc.getNumberOfLines();
-		if (fNumberOfLines == 0) {
+		if (fNumberOfLines == 0)
 			fNumberOfLines = nLines;
+//		if (fNumberOfLines == 0) {
+//			fNumberOfLines = nLines;
             //  JLI start insert 060203
 			//  code added to correct problem with routine on workstation disk
 			//  edited on a prior date when compared to routine on server gave
@@ -308,37 +389,37 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 			//  saved file with current date, so copy working copy to that file
 			//
 			//  This only works if Outline is showing and active
-			try {
-//				if (VistaConnection.getPrimaryProject().compareTo("") == 0) {
-					String routineName = fTextEditor.getTitle();
-					routineName = routineName.substring(0,routineName.length()-2);
-					String location = RoutineLoad.getFullFileLocation(routineName);
-					String dstFilename = RoutineLoad.getLastLoadFileName(routineName, location);
-					File f = new File(dstFilename);
-					if (! f.exists()) {
-						try {
-							String srcFilename = location + "/" + routineName + ".m";
-							// Create channel on the source
-							FileChannel srcChannel = new FileInputStream(srcFilename).getChannel();
-						
-							// Create channel on the destination
-							FileChannel dstChannel = new FileOutputStream(dstFilename).getChannel();
-			    
-							// Copy file contents from source to destination
-							dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
-			    
-							// Close the channels
-							srcChannel.close();
-							dstChannel.close();
-						} catch (IOException e) {
-						}
-					}
-//				}
-			} catch (Exception e) {
-				
-			}  
-			// JLI end of insertion 060203
-		}
+//			try { //--jspivey, commenting this out, the newer routine save/load/backup logic doesn't depend on this, and this logic uses the old flat director structure exclusively
+////				if (VistaConnection.getPrimaryProject().compareTo("") == 0) {
+//					String routineName = fTextEditor.getTitle();
+//					routineName = routineName.substring(0,routineName.length()-2);
+//					String location = RoutineLoad.getFullFileLocation(routineName);
+//					String dstFilename = RoutineLoad.getLastLoadFileName(routineName, location);
+//					File f = new File(dstFilename);
+//					if (! f.exists()) {
+//						try {
+//							String srcFilename = location + "/" + routineName + ".m";
+//							// Create channel on the source
+//							FileChannel srcChannel = new FileInputStream(srcFilename).getChannel();
+//						
+//							// Create channel on the destination
+//							FileChannel dstChannel = new FileOutputStream(dstFilename).getChannel();
+//			    
+//							// Copy file contents from source to destination
+//							dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+//			    
+//							// Close the channels
+//							srcChannel.close();
+//							dstChannel.close();
+//						} catch (IOException e) {
+//						}
+//					}
+////				}
+//			} catch (Exception e) {
+//				
+//			}  
+//			// JLI end of insertion 060203
+//		}
 		if (! (nLines == fNumberOfLines)) {
 			TreeViewer viewer= getTreeViewer();
 			IContentProvider cp = viewer.getContentProvider();

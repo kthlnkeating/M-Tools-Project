@@ -205,4 +205,9 @@ public class MEditorUtils {
 			routineFile.setContents(stream, true, true, null);
 	}
 	
+	//added to support existing MEditor code, it replaces RoutineLoad.getFullLocation method
+	public static void getRoutineDirectory(String routineName) {
+		
+	}
+	
 }
