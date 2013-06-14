@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
@@ -75,22 +76,29 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 		}
 		//Collect additional input from user (note: this should be moved into a new, redesign routine load dialog which calculates all the input needed up front
 		String relRoutinePath;
-		Path foundPath = searchForFile(Paths.get(ResourcesPlugin.getWorkspace().getRoot().getProject(projectName).getLocationURI()), routineName+ ".m");
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+		try {
+			if (!project.exists())
+				project.create(null);
+			if (!project.isOpen())
+				project.open(null);
+		} catch (CoreException e1) {
+		}
+		Path foundPath = searchForFile(Paths.get(project.getLocationURI()), routineName+ ".m");
 		if (foundPath != null) {
 			relRoutinePath = foundPath.toString().substring(
-					ResourcesPlugin.getWorkspace().getRoot().getProject(projectName).getLocation().toOSString().length() + 1,
+					project.getLocation().toOSString().length() + 1,
 					foundPath.toString().length() - routineName.length() - 2);
 		} else {
 			RoutinePathResolver routinePathResolver = RoutinePathResolverFactory
 					.getInstance()
 					.getRoutinePathResolver(
-							ResourcesPlugin.getWorkspace().getRoot()
-									.getProject(projectName).getLocation().toFile());
+							project.getLocation().toFile());
 			relRoutinePath = routinePathResolver.getRelativePath(routineName);
 		}
 
 		//check to see if a routine is already loaded here. Are we syncing or are we loading it in new?
-		IFile routineFile = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName).getFile(relRoutinePath +SEP+ routineName + ".m");
+		IFile routineFile = project.getFile(relRoutinePath +SEP+ routineName + ".m");
 		if (routineFile.exists()) {
 			String fileCode;
 			try {

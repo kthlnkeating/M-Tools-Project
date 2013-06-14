@@ -567,6 +567,8 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 	}
     
     static public String getPrimaryProject() {
+    	if (primaryProject.trim().equals(""))
+    		return "mcode";
         return primaryProject;
     }
 	
