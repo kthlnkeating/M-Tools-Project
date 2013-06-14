@@ -17,7 +17,9 @@ public class ProjectDirViewerFilter extends ViewerFilter {
 		IResource eRes = (IResource) element;
 		IResource pRes = (IResource) element;
 		
-		if (!eRes.getProject().getName().equals(projectName))
+		String elemProjName = eRes.getProject().getLocation().lastSegment();
+		
+		if (!elemProjName.equals(projectName))
 			return false;
 		
 		if (eRes.getType() == IResource.FILE || (eRes.getType() == IResource.FOLDER && eRes.getName().equals("backups")))
