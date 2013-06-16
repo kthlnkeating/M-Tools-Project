@@ -106,7 +106,7 @@ public class SaveRoutine {
 		//Save to server and display XINDEX results
 		String saveResults = "";
 		try {
-			saveResults = rpc.saveRoutineToServer(routineName, MEditorUtils.cleanSource(fileCode), isCopy);
+			saveResults = rpc.saveRoutineToServer(routineName, fileCode, isCopy);
 		} catch (Throwable t) {
 			saveResults = "Unable to save routine " +routineName+ " to server";
 //			return;

@@ -52,7 +52,7 @@ public class MultRoutineSave {
 				String codeFromDisk = MEditorUtilities.fileToString(filename);
 				boolean isOK = true; //RoutineSave.checkForServerChange(rouname, codeFromDisk, true, true);
 				if (isOK) {
-					saveResults += rpc.saveRoutineToServer(rouname, MEditorUtils.cleanSource(codeFromDisk), false);
+					saveResults += rpc.saveRoutineToServer(rouname, codeFromDisk, false);
 					//RoutineSave.doSaveRoutine(rouname, codeFromDisk, myConnection, true);
 				}
 			} catch (Exception e) {

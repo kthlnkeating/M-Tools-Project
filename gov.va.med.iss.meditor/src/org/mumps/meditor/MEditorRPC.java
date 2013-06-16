@@ -49,6 +49,9 @@ public class MEditorRPC {
 		String saveResults = "";
 		String doc = "";
 		int nlines = 0;
+		
+		contents = MEditorUtils.cleanSource(contents);
+		
 		HashMap hm = new HashMap();
 		// convert to array by line
 		String stra= "";
