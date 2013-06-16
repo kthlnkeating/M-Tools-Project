@@ -113,7 +113,7 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 			}
 						
 			//if cannot figure out how to load changes into an editor but not save them, show a warning ask what to do with a diff option
-			if (MEditorUtils.cleanSource(serverCode).equals(MEditorUtils.cleanSource(fileCode))) {
+			if (MEditorUtils.compareRoutines(serverCode, fileCode)) {
 				//just show an info dialog stating they are the same and do nothing
 				MessageDialog.openInformation(PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow().getShell(), "MEditor",

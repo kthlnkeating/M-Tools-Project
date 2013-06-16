@@ -44,7 +44,7 @@ public class SaveRoutine {
 //							1); // No is the default
 //	   int result = dialog.open();
 			
-			if (!MEditorUtils.cleanSource(fileCode).equals(MEditorUtils.cleanSource(serverCode))) {
+			if (!MEditorUtils.compareRoutines(fileCode, serverCode)) {
 			
 				RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
 				RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, fileCode, false, false,
@@ -70,7 +70,7 @@ public class SaveRoutine {
 		
 		//First compare contents of editor to contents on server to see if there is even a proposed change
 		boolean isCopy = false;
-		if (!isNewRoutine && MEditorUtils.cleanSource(fileCode).equals(MEditorUtils.cleanSource(serverCode))) {
+		if (!isNewRoutine && MEditorUtils.compareRoutines(fileCode, serverCode)) {
 			//show prompt asking about whether to cancel because they are same, or to continue thereby updating the routine header on server and client	
 			
 //			MessageDialog.openError(PlatformUI.getWorkbench()
@@ -93,7 +93,7 @@ public class SaveRoutine {
 		}
 		
 		//Next compare contents of server to contents of backup to see if MEditor was the last to touch the server
-		if (!isNewRoutine && backupCode != null && !MEditorUtils.cleanSource(backupCode).equals(MEditorUtils.cleanSource(serverCode))) {
+		if (!isNewRoutine && backupCode != null && MEditorUtils.compareRoutines(backupCode, serverCode)) {
 			RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
 			RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, backupCode, true, false);
 			if (!userInput.getReturnValue()) {

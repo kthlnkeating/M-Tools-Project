@@ -135,7 +135,7 @@ public class MEditorUtils {
 		try {
 			createOrReplace(backupFile, serverCode);
 		} catch (UnsupportedEncodingException | CoreException e) {
-			// TODO throw exception so handler can display error
+			// TODO throw exception so handler can display error or not
 			e.printStackTrace();
 		}
 	}
@@ -205,9 +205,21 @@ public class MEditorUtils {
 			routineFile.setContents(stream, true, true, null);
 	}
 	
-	//added to support existing MEditor code, it replaces RoutineLoad.getFullLocation method
-	public static void getRoutineDirectory(String routineName) {
-		
+	/**
+	 * Compares 2 routines to see if they are equal. It normalizes line feeds so
+	 * tha CRLF and LF won't produce differences. It also strips out special
+	 * characters.
+	 * 
+	 * 
+	 * @param routine1
+	 * @param routine2
+	 * @return
+	 */
+	public static boolean compareRoutines(String routine1, String routine2) {
+		if (routine1.contains("\r\n"))
+			routine1 = routine1.replaceAll("\r\n", "\n");
+		if (routine2.contains("\r\n"))
+			routine2 = routine2.replaceAll("\r\n", "\n");
+		return cleanSource(routine1).equals(cleanSource(routine2));
 	}
-	
 }
