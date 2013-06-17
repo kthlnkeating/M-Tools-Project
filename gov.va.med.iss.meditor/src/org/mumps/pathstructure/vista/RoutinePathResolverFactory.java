@@ -1,17 +1,14 @@
 package org.mumps.pathstructure.vista;
 
-import java.io.File;
-import java.nio.file.FileSystems;
+import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.meditor.MEditorPlugin;
+import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.mumps.pathstructure.generic.CustElementTreeSelectionDialog;
+import java.io.File;
+
 import org.mumps.pathstructure.generic.FileDialogPathResolver;
-import org.mumps.pathstructure.generic.ProjectDirViewerFilter;
 import org.mumps.pathstructure.generic.RootPathResolver;
+import org.mumps.pathstructure.vista.foia.PreferencesPathResolver;
 import org.mumps.pathstructure.vista.foia.VFPackageRepo;
 import org.mumps.pathstructure.vista.foia.VFPathResolver;
 
@@ -35,6 +32,12 @@ public class RoutinePathResolverFactory {
 	
 	public RoutinePathResolver getRoutinePathResolver(File projectPath) {
 
+		if (Boolean.valueOf(MEditorPrefs.getPrefs(MEditorPlugin.P_SAVE_BY_SERVER)) || Integer.parseInt(MEditorPrefs.getPrefs(MEditorPlugin.P_SAVE_BY_NAMESPACE)) > 0) {
+			String serverName = Boolean.valueOf(MEditorPrefs.getPrefs(MEditorPlugin.P_SAVE_BY_SERVER)) ?
+					VistaConnection.getPrimaryServerName() : null;
+			return new PreferencesPathResolver(serverName, Integer.parseInt(MEditorPrefs.getPrefs(MEditorPlugin.P_SAVE_BY_NAMESPACE)));
+		}
+		
 		RoutinePathResolver result;
 		
 		File packagesCsvFile = new File(projectPath, "Packages.csv");

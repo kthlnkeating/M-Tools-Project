@@ -17,9 +17,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -60,6 +62,8 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 		
 		//Collect input
 		RoutineNameDialogData dialogInput = dialogForm.open();
+		if (dialogInput.getButtonResponse() == false)
+			return;
 		String routineName = dialogInput.getTextResponse().trim().toUpperCase();
 		//Validations on input
 		validateInput(dialogInput, routineName);
@@ -84,18 +88,25 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 				project.open(null);
 		} catch (CoreException e1) {
 		}
+		
+		//Look into project for file first, always use the existing location if it is found
 		Path foundPath = searchForFile(Paths.get(project.getLocationURI()), routineName+ ".m");
 		if (foundPath != null) {
 			relRoutinePath = foundPath.toString().substring(
 					project.getLocation().toOSString().length() + 1,
 					foundPath.toString().length() - routineName.length() - 2);
-		} else {
+		} else { //else get the default path
 			RoutinePathResolver routinePathResolver = RoutinePathResolverFactory
 					.getInstance()
 					.getRoutinePathResolver(
 							project.getLocation().toFile());
 			relRoutinePath = routinePathResolver.getRelativePath(routineName);
+			
+			//make sure that this relative path exists
+			createFolders(relRoutinePath, project);
 		}
+		
+
 
 		//check to see if a routine is already loaded here. Are we syncing or are we loading it in new?
 		IFile routineFile = project.getFile(relRoutinePath +SEP+ routineName + ".m");
@@ -161,6 +172,49 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 			MessageDialog.openWarning(PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getShell(), "MEditor",
 					"Routine Saved on server, but error occured while syncing the local backup file: " +e.getMessage());	
+		}
+	}
+
+//	private void createFolders(String relRoutinePath, IProject project) {
+//		IFolder folder = project.getFolder(relRoutinePath);
+//		if (folder.exists())
+//			return;
+//		
+//		IPath parent = folder.getLocation().removeLastSegments(1);
+//		
+//		if (!folder.exists())
+//			try {
+//				folder.create(true, true, null);
+//			} catch (CoreException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//	}
+//	
+	private void createFolders(String relPath, IProject project) {
+		
+		if (relPath.equals("") || project.getFolder(relPath).exists())
+			return;
+
+		
+		
+		String[] paths;
+		if (relPath.indexOf("/") == -1)
+			paths = new String[] {relPath};
+		else
+			paths = relPath.split("/");
+		String createPath = "";
+		for (int i = 0; i < paths.length; i++){
+			 createPath += paths[i] + "/";
+			if (project.getFolder(createPath).exists())
+				continue;
+
+				try {
+					project.getFolder(createPath).create(true, true, null);
+				} catch (CoreException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 	}
 
