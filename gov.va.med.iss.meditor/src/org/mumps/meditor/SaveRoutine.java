@@ -93,7 +93,7 @@ public class SaveRoutine {
 		}
 		
 		//Next compare contents of server to contents of backup to see if MEditor was the last to touch the server
-		if (!isNewRoutine && backupCode != null && MEditorUtils.compareRoutines(backupCode, serverCode)) {
+		if (!isNewRoutine && backupCode != null && !MEditorUtils.compareRoutines(backupCode, serverCode)) {
 			RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
 			RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, backupCode, true, false);
 			if (!userInput.getReturnValue()) {
