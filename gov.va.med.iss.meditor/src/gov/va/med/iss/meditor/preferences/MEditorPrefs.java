@@ -22,18 +22,12 @@ public class MEditorPrefs {
 	
 	public static String getPrefs(String PrefName) {
 		if (mepp == null) {
-			mepp = new MEditorPreferencesPage(null);
+			mepp = new MEditorPreferencesPage();
 		}
 		Preferences prefs = MEditorPlugin.getDefault().getPluginPreferences();
 		String prefValue = prefs.getString(PrefName);
 
 		return prefValue;
-	}
-	
-	static public boolean isPrefsActive() {
-		if (mepp == null)
-			return false;
-		return true;
 	}
 
 }

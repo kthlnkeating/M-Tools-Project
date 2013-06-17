@@ -43,7 +43,7 @@ public class MEditorPlugin extends AbstractUIPlugin {
 	public static ImageDescriptor IMG_HELP = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons"+SEP+"helpbook07.gif");
 	public static ImageDescriptor IMG_VA_LOGO = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons"+SEP+"VAlogo.gif");
 
-	public static final String OFFLINE_MODE = "offlineMode";
+	public static final String P_AUTO_SAVE_TO_SERVER = "autoToSaveServer";
 	public static final String P_BACKGROUND_COLOR = "BackgroundColor";
 	public static final String P_MULTI_LINE_COMMENT_COLOR = "MultiLineCommentColor";
 	public static final String P_COMMENT_COLOR = "CommentColor";

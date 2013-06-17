@@ -44,7 +44,6 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 	private static MCodeScanner fMCodeScanner;
 	private MContentOutlinePage outlinePage = null;
 	public IDocumentProvider meditorDocumentProvider;
-	private static MEditorPreferencesPage meditorPreferencesPage;
 	public ISourceViewer sourceViewer = null;
 	public static MEditorSourceViewerConfiguration meditorSourceViewerConfiguration = null;
 	public static MEditor currMEditor = null;
@@ -66,7 +65,7 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 		updateSourceViewerConfiguration();
 		fMCodeScanner = new MCodeScanner();
 		setRangeIndicator(new DefaultRangeIndicator());
-		meditorPreferencesPage = new MEditorPreferencesPage(this);
+		new MEditorPreferencesPage(); //This is invoked so that preferences are set to their default values in case this is the first time running MEditor
 		sourceViewer = getTheSourceViewer();
 		currMEditor = this;
 		String wordWrapValue = MEditorPrefs.getPrefs(MEditorPlugin.P_WRAP_LINES); //"mcode");
@@ -147,7 +146,7 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 	 */
 	public void doSave(IProgressMonitor monitor) {
 		
-		if (Boolean.valueOf(MEditorPrefs.getPrefs(MEditorPlugin.OFFLINE_MODE))) {
+		if (!Boolean.valueOf(MEditorPrefs.getPrefs(MEditorPlugin.P_AUTO_SAVE_TO_SERVER))) {
 			super.doSave(monitor);
 			return;
 		}

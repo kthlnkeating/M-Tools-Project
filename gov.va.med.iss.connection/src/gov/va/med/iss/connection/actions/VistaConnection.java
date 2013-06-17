@@ -571,6 +571,10 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
     		return "mcode";
         return primaryProject;
     }
+    
+    static public String getPrimaryServerName() {
+    	return primaryServerName;
+    }
 	
 	static public void setServer(ConnectionData connData) {
 		currConnection = connData.getConnection();
