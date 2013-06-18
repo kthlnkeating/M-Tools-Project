@@ -143,7 +143,7 @@ SETROU(XTDEBROU) ;
  . ; make it so we can find the routine
  . S @XTDEBLOC@("B",XTDEBROU,XTDEBRO1)=""
  . ; and so we can find TAGS within the routine
- . F I=0:0 S I=$O(@XTDEBLOC@(XTDEBRO1,I)) Q:I'>0  S X=^(I,0) I $E(X,1)'=" ",$E(X,1)'=$C(9) S X=$P($P($P(X," "),"("),$C(9)),@XTDEBLOC@(XTDEBRO1,"TAG",X,I)=""
+ . F I=0:0 S I=$O(@XTDEBLOC@(XTDEBRO1,I)) Q:I'>0  S X=^(I,0),@XTDEBLOC@(XTDEBRO1,"LINES")=I I $E(X,1)'=" ",$E(X,1)'=$C(9) S X=$P($P($P(X," "),"("),$C(9)),@XTDEBLOC@(XTDEBRO1,"TAG",X,I)=""
  . Q
  Q XTDEBRO1
  ;
