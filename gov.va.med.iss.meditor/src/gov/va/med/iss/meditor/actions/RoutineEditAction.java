@@ -106,8 +106,6 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 			createFolders(relRoutinePath, project);
 		}
 		
-
-
 		//check to see if a routine is already loaded here. Are we syncing or are we loading it in new?
 		IFile routineFile = project.getFile(relRoutinePath +SEP+ routineName + ".m");
 		if (routineFile.exists()) {
