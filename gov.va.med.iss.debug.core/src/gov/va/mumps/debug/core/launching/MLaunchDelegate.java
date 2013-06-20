@@ -27,11 +27,9 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 		}
 		
 		MDebugRpcProcess rpcProcess = new MDebugRpcProcess(launch, debugEntryTag, null);
-		
-		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
-			IDebugTarget target = new MDebugTarget(launch, rpcProcess);
-			launch.addDebugTarget(target);
-		}
+
+		IDebugTarget target = new MDebugTarget(launch, rpcProcess);
+		launch.addDebugTarget(target);
 	}
 	
 	/**

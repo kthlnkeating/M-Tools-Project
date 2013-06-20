@@ -26,6 +26,7 @@ import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.ILineBreakpoint;
@@ -61,10 +62,14 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 	//state
 	private StepMode stepMode;
 	
+	//mode
+	private boolean debug;
+	
 	public MDebugTarget(ILaunch launch, MDebugRpcProcess rpcProcess) {
 		super(null);
 		setDebugTarget(this);
 		this.launch = launch;
+		this.debug = launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE);
 		this.rpcDebugProcess = rpcProcess;
 		setLinkedToConsole(false);
 		
@@ -90,7 +95,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 //		}
 		
 		fireCreationEvent(); //to register that the DebugTarget has been started.
-		installDeferredBreakpoints();
+		if (this.debug) installDeferredBreakpoints();
 		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
 
 		Job resumeJob = new Job("Resume") { //the LaunchManager is (probably?) executing this and it shouldn't block and hold while the code is resuming (running). It needs to let go at this point

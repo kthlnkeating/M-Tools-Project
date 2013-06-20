@@ -5,6 +5,7 @@ import gov.va.mumps.debug.core.MDebugConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
@@ -15,9 +16,11 @@ public class MThread extends MDebugElement implements IThread { //TODO: in the f
 	private IBreakpoint[] breakpoints;
 	private boolean stepping = false; //TODO: move to constructor?
 	private String name;
-	
+	private boolean debug;
+
 	public MThread(MDebugTarget target) {
 		super(target);
+		this.debug = target.getLaunch().getLaunchMode().equals(ILaunchManager.DEBUG_MODE);
 		fireCreationEvent();
 	}
 
@@ -48,7 +51,7 @@ public class MThread extends MDebugElement implements IThread { //TODO: in the f
 
 	@Override
 	public boolean canStepInto() {
-		return !isTerminated() && !isStepping(); //TODO: this will take some lexical analysis of the nextCommand to see if it is a fanout
+		return !isTerminated() && !isStepping() && this.debug; //TODO: this will take some lexical analysis of the nextCommand to see if it is a fanout
 	}
 
 	@Override
@@ -60,7 +63,7 @@ public class MThread extends MDebugElement implements IThread { //TODO: in the f
 	@Override
 	public boolean canStepReturn() {
 		//return true; //TODO: check if there is anything on the stack?
-		return true; ////disabling until the KIDs package actually implements this
+		return this.debug; ////disabling until the KIDs package actually implements this
 	}
 
 	@Override
