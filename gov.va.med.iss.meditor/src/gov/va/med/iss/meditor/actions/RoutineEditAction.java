@@ -120,23 +120,8 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 			}
 						
 			//if cannot figure out how to load changes into an editor but not save them, show a warning ask what to do with a diff option
-			if (MEditorUtils.compareRoutines(serverCode, fileCode)) {
-				//just show an info dialog stating they are the same and do nothing
-				MessageDialog.openInformation(PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow().getShell(), "MEditor",
-						"Both the routine on the server and on the local are the same");
-			} else {
+			if (!MEditorUtils.compareRoutines(serverCode, fileCode)) {
 				//replace the local contents with latest from server but do not save the actual file
-				//FileEditorInput editorInput = new FileEditorInput(routineFile);
-//				RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
-//				RoutineChangedDialogData userInput = dialog.open(
-//						routineName,
-//						MEditorUtils.cleanSource(fileCode),
-//						MEditorUtils.cleanSource(serverCode),
-//						false, false);
-//				if (!userInput.getReturnValue())
-//					return;
-
 				RoutineDiffersDialog dialog = new RoutineDiffersDialog(Display
 						.getDefault().getActiveShell(),
 						"Routine " +routineName+ " found on server and locally in the project " +projectName+". Would you like to overwrite the local version with the server version?",
@@ -180,22 +165,6 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 		}
 	}
 
-//	private void createFolders(String relRoutinePath, IProject project) {
-//		IFolder folder = project.getFolder(relRoutinePath);
-//		if (folder.exists())
-//			return;
-//		
-//		IPath parent = folder.getLocation().removeLastSegments(1);
-//		
-//		if (!folder.exists())
-//			try {
-//				folder.create(true, true, null);
-//			} catch (CoreException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//	}
-//	
 	private void createFolders(String relPath, IProject project) {
 		
 		if (relPath.equals("") || project.getFolder(relPath).exists())
