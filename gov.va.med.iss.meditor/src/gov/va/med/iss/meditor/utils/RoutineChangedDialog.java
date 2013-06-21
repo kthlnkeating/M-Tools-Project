@@ -158,7 +158,7 @@ public class RoutineChangedDialog extends Dialog {
 			public void handleEvent(Event event) {
 				if (event.widget == btnView) {
 					try {
-						RoutineCompare.compareRoutines(file1,file2,textString,routineName,isSaveValue);
+						RoutineCompare.compareRoutines(file1,file2,textString,routineName);
 					} catch (Exception e) {
 						MessageDialog.openInformation(
 								MEditorUtilities.getIWorkbenchWindow().getShell(),

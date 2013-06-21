@@ -22,13 +22,13 @@ public class RoutineCompare {
 		//file1 = MEditorUtilities.fileToString("c:\\@development\\100323 Wally Problem\\XUDHGUI KRN.m");
 		//file2 = MEditorUtilities.fileToString("c:\\@development\\100323 Wally Problem\\XUDHGUI 100323_last.m");
 		try {
-			compareRoutines(file1,file2,"the PREVIOUS version loaded from the server","routineName",false);
+			compareRoutines(file1,file2,"the PREVIOUS version loaded from the server","routineName");
 		} catch (Exception e) {
 			
 		}
 	}
 	
-	public static void compareRoutines(String file1, String file2, String comparedToString, String rouName, boolean isSave) throws Exception {
+	public static void compareRoutines(String file1, String file2, String comparedToString, String rouName) throws Exception {
 		routineName = rouName;
 		file1 = file1.replaceAll("<","&lt;");
 		file1 = file1.replaceAll(">","&gt;");
@@ -75,10 +75,10 @@ public class RoutineCompare {
 				new File("diff_htmls").mkdirs();
 			}
 			String location = "";
-			location = "on saving to ";
-			if (! isSave) {
-				location = "on loading from ";
-			}
+//			location = "on saving to ";
+//			if (! isSave) {
+//				location = "on loading from ";
+//			}
 			location = "diff_htmls"+SEP+routineName+" fileComparison "+location+strVal+dtString1+".html";
 //			String location = routineName+" fileComparison "+strVal+dtString1+".html";
 			FileWriter fw;

@@ -116,7 +116,7 @@ public class MultRoutineLoadAction implements IWorkbenchWindowActionDelegate {
 									isOK = true; //RoutineSave.checkForServerChange(routine, oldSourceCode, false, true); //jspivey-- this was always returning true anyway
 									if (! (codeFromServer.compareTo(oldSourceCode) == 0)) {
 										editedFiles++;
-										RoutineCompare.compareRoutines(oldSourceCode,codeFromServer,"the version being loaded from the server",routine,false);
+										RoutineCompare.compareRoutines(oldSourceCode,codeFromServer,"the version being loaded from the server",routine);
 										editedFileNames = editedFileNames + ((editedFileNames.length() == 0)?"":", ")+routine;
 									}
 									else {

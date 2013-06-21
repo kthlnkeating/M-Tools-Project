@@ -4,8 +4,6 @@ import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.meditor.editors.MEditor;
 import gov.va.med.iss.meditor.utils.MEditorUtilities;
-import gov.va.med.iss.meditor.utils.RoutineChangedDialog;
-import gov.va.med.iss.meditor.utils.RoutineChangedDialogData;
 import gov.va.med.iss.meditor.utils.RoutineNameDialogData;
 import gov.va.med.iss.meditor.utils.RoutineNameDialogForm;
 
@@ -17,12 +15,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
@@ -34,6 +31,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.mumps.meditor.MEditorRPC;
 import org.mumps.meditor.MEditorUtils;
 import org.mumps.meditor.RoutineNotFoundException;
+import org.mumps.meditor.dialogs.RoutineDiffersDialog;
 import org.mumps.pathstructure.generic.PathFileSearchVisitor;
 import org.mumps.pathstructure.vista.RoutinePathResolver;
 import org.mumps.pathstructure.vista.RoutinePathResolverFactory;
@@ -130,13 +128,22 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 			} else {
 				//replace the local contents with latest from server but do not save the actual file
 				//FileEditorInput editorInput = new FileEditorInput(routineFile);
-				RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
-				RoutineChangedDialogData userInput = dialog.open(
-						routineName,
-						MEditorUtils.cleanSource(fileCode),
-						MEditorUtils.cleanSource(serverCode),
-						false, false);
-				if (!userInput.getReturnValue())
+//				RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
+//				RoutineChangedDialogData userInput = dialog.open(
+//						routineName,
+//						MEditorUtils.cleanSource(fileCode),
+//						MEditorUtils.cleanSource(serverCode),
+//						false, false);
+//				if (!userInput.getReturnValue())
+//					return;
+
+				RoutineDiffersDialog dialog = new RoutineDiffersDialog(Display
+						.getDefault().getActiveShell(),
+						"Routine " +routineName+ " found on server and locally in the project " +projectName+". Would you like to overwrite the local version with the server version?",
+						" project version (" +routineFile.getFullPath().toOSString()+ ")",
+						routineName, MEditorUtils.cleanSource(fileCode),
+						MEditorUtils.cleanSource(serverCode));
+				if (dialog.open() != Dialog.OK)
 					return;
 			}
 		}
