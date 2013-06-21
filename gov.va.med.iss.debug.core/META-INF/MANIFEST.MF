@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MDebug Core
 Bundle-SymbolicName: gov.va.med.iss.debug.core;singleton:=true
-Bundle-Version: 0.1.004
+Bundle-Version: 0.1.005
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Dept. Veteran Affairs
