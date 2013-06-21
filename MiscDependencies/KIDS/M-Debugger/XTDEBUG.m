@@ -35,6 +35,7 @@ START(XTDEBRES,XTDEBCMD) ; .RPC entry point
  N XTDEBTAG
  ; ZEXCEPT: XTDEBLGR   - this is a global variable
  S XTDEBLGR=$$LGR^%ZOSV ; capture last global reference
+ D CLEANVAR^XTDEBUG3
  S XTDEBLOC=$$GETGLOB() K @XTDEBLOC ; clear all entries, etc.
  S XTDEBRES=$$RESULTS() K @XTDEBRES
  M @XTDEBLOC@("XTDEBDUZ")=DUZ
