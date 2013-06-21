@@ -67,9 +67,9 @@ abstract class MToolsCommand extends AbstractHandler{
 		}
 	}
 	
-	protected abstract ToolResult getResult(ParseTreeSupply pts, List<String> selectedFileNames);
+	protected abstract ToolResult getResult(IProject project, ParseTreeSupply pts, List<String> selectedFileNames);
 
-	protected abstract ToolResult getResult(ParseTreeSupply pts, EntryId entryId);
+	protected abstract ToolResult getResult(IProject project, ParseTreeSupply pts, EntryId entryId);
 
 	protected OutputFlags getOutputFlags() {
 		OutputFlags fs = new OutputFlags();
@@ -108,7 +108,7 @@ abstract class MToolsCommand extends AbstractHandler{
 			SourceCodeFiles scf = MRAParamSupply.getSourceCodeFiles(project);
 			SourceCodeToParseTreeAdapter pts = new SourceCodeToParseTreeAdapter(scf);
 			
-			ToolResult result = this.getResult(pts, fileNames);
+			ToolResult result = this.getResult(project, pts, fileNames);
 			this.writeResult(project, window, result, scf);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -138,7 +138,7 @@ abstract class MToolsCommand extends AbstractHandler{
 			if (name.endsWith(".m")) {
 				name = name.substring(0, name.length()-2);
 				EntryId entryId = new EntryId(name, tag);
-				ToolResult result = this.getResult(pts, entryId);
+				ToolResult result = this.getResult(project, pts, entryId);
 				this.writeResult(project, window, result, scf);
 			}
 		} catch (Exception e) {

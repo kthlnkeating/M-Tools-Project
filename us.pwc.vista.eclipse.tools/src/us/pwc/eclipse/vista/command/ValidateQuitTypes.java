@@ -2,6 +2,8 @@ package us.pwc.eclipse.vista.command;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+
 import com.pwc.us.rgi.m.parsetree.data.EntryId;
 import com.pwc.us.rgi.m.tool.CommonToolParams;
 import com.pwc.us.rgi.m.tool.ParseTreeSupply;
@@ -18,14 +20,14 @@ public class ValidateQuitTypes extends MToolsCommand {
 	}
 	
 	@Override
-	protected MEntryToolResult<QuitType> getResult(ParseTreeSupply pts, List<String> selectedFileNames) {
+	protected MEntryToolResult<QuitType> getResult(IProject project, ParseTreeSupply pts, List<String> selectedFileNames) {
 		QuitTypeTool tool = this.getTool(pts);
 		MEntryToolResult<QuitType> result = tool.getResultForRoutines(selectedFileNames);
 		return result;
 	}
 
 	@Override
-	protected QuitType getResult(ParseTreeSupply pts, EntryId entryId) {
+	protected QuitType getResult(IProject project, ParseTreeSupply pts, EntryId entryId) {
 		QuitTypeTool tool = this.getTool(pts);
 		QuitType result = tool.getResult(entryId);
 		return result;
