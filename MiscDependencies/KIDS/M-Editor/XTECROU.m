@@ -1,4 +1,4 @@
-XTECROU ;FO-OAK/JLI - routine processing for eclipse ;08/06/12  19:20
+XTECROU ;FO-OAK/JLI - routine processing for eclipse ;6/21/2013
  ;;7.3;TOOLKIT;**101**;Apr 25, 1995;Build 30
  ;;Per VHA Directive 2004-038, this routine should not be modified
  Q
@@ -49,7 +49,8 @@ LOAD(XTECGLOB,ROU) ; load the routine
  ;
  S I=0
  F  S I=$O(TMP(I)) Q:I<1  D
- . Q:TMP(I,0)=""  N J F J=1:1:$L(TMP(I,0)) I $E(TMP(I,0),J)=" " S TMP(I,0)=$E(TMP(I,0),1,J-1)_$C(9)_$E(TMP(I,0),J+1,$L(TMP(I,0))) Q
+ . Q:TMP(I,0)=""
+ .;N J F J=1:1:$L(TMP(I,0)) I $E(TMP(I,0),J)=" " S TMP(I,0)=$E(TMP(I,0),1,J-1)_$C(9)_$E(TMP(I,0),J+1,$L(TMP(I,0))) Q
  . S @XTECGLOB@(I)=TMP(I,0)
  S @XTECGLOB@(0)="1^"_ROU
  Q

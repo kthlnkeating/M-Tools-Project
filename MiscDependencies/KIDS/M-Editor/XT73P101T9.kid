@@ -1,138 +1,138 @@
-KIDS Distribution saved on Dec 29, 2012@11:25:31
+KIDS Distribution saved on Jun 21, 2013@13:26:40
 SERVER SIDE FOR M-EDITOR FOR ECLIPSE
 **KIDS**:XT*7.3*101^
 
 **INSTALL NAME**
 XT*7.3*101
-"BLD",967,0)
-XT*7.3*101^TOOLKIT^0^3121229^y^^
-"BLD",967,1,0)
+"BLD",9039,0)
+XT*7.3*101^TOOLKIT^0^3130621^y^^
+"BLD",9039,1,0)
 ^^3^3^3120127^^^^
-"BLD",967,1,1,0)
+"BLD",9039,1,1,0)
 XT*7.3*101
-"BLD",967,1,2,0)
+"BLD",9039,1,2,0)
  
-"BLD",967,1,3,0)
+"BLD",9039,1,3,0)
 See the patch module for details.
-"BLD",967,4,0)
+"BLD",9039,4,0)
 ^9.64PA^^
-"BLD",967,6.3)
-30
-"BLD",967,"KRN",0)
+"BLD",9039,6.3)
+31
+"BLD",9039,"KRN",0)
 ^9.67PA^8989.52^19
-"BLD",967,"KRN",.4,0)
+"BLD",9039,"KRN",.4,0)
 .4
-"BLD",967,"KRN",.401,0)
+"BLD",9039,"KRN",.401,0)
 .401
-"BLD",967,"KRN",.402,0)
+"BLD",9039,"KRN",.402,0)
 .402
-"BLD",967,"KRN",.403,0)
+"BLD",9039,"KRN",.403,0)
 .403
-"BLD",967,"KRN",.5,0)
+"BLD",9039,"KRN",.5,0)
 .5
-"BLD",967,"KRN",.84,0)
+"BLD",9039,"KRN",.84,0)
 .84
-"BLD",967,"KRN",3.6,0)
+"BLD",9039,"KRN",3.6,0)
 3.6
-"BLD",967,"KRN",3.8,0)
+"BLD",9039,"KRN",3.8,0)
 3.8
-"BLD",967,"KRN",9.2,0)
+"BLD",9039,"KRN",9.2,0)
 9.2
-"BLD",967,"KRN",9.8,0)
+"BLD",9039,"KRN",9.8,0)
 9.8
-"BLD",967,"KRN",9.8,"NM",0)
+"BLD",9039,"KRN",9.8,"NM",0)
 ^9.68A^5^5
-"BLD",967,"KRN",9.8,"NM",1,0)
+"BLD",9039,"KRN",9.8,"NM",1,0)
 XTECLIPS^^0^B3789827
-"BLD",967,"KRN",9.8,"NM",2,0)
+"BLD",9039,"KRN",9.8,"NM",2,0)
 XTECGLO^^0^B219857341
-"BLD",967,"KRN",9.8,"NM",3,0)
-XTECROU^^0^B51612266
-"BLD",967,"KRN",9.8,"NM",4,0)
+"BLD",9039,"KRN",9.8,"NM",3,0)
+XTECROU^^0^B51806057
+"BLD",9039,"KRN",9.8,"NM",4,0)
 XTMRPAR1^^0^B62027368
-"BLD",967,"KRN",9.8,"NM",5,0)
+"BLD",9039,"KRN",9.8,"NM",5,0)
 XTMRPAR2^^0^B36584102
-"BLD",967,"KRN",9.8,"NM","B","XTECGLO",2)
+"BLD",9039,"KRN",9.8,"NM","B","XTECGLO",2)
 
-"BLD",967,"KRN",9.8,"NM","B","XTECLIPS",1)
+"BLD",9039,"KRN",9.8,"NM","B","XTECLIPS",1)
 
-"BLD",967,"KRN",9.8,"NM","B","XTECROU",3)
+"BLD",9039,"KRN",9.8,"NM","B","XTECROU",3)
 
-"BLD",967,"KRN",9.8,"NM","B","XTMRPAR1",4)
+"BLD",9039,"KRN",9.8,"NM","B","XTMRPAR1",4)
 
-"BLD",967,"KRN",9.8,"NM","B","XTMRPAR2",5)
+"BLD",9039,"KRN",9.8,"NM","B","XTMRPAR2",5)
 
-"BLD",967,"KRN",19,0)
+"BLD",9039,"KRN",19,0)
 19
-"BLD",967,"KRN",19.1,0)
+"BLD",9039,"KRN",19.1,0)
 19.1
-"BLD",967,"KRN",101,0)
+"BLD",9039,"KRN",101,0)
 101
-"BLD",967,"KRN",409.61,0)
+"BLD",9039,"KRN",409.61,0)
 409.61
-"BLD",967,"KRN",771,0)
+"BLD",9039,"KRN",771,0)
 771
-"BLD",967,"KRN",870,0)
+"BLD",9039,"KRN",870,0)
 870
-"BLD",967,"KRN",8989.51,0)
+"BLD",9039,"KRN",8989.51,0)
 8989.51
-"BLD",967,"KRN",8989.52,0)
+"BLD",9039,"KRN",8989.52,0)
 8989.52
-"BLD",967,"KRN",8994,0)
+"BLD",9039,"KRN",8994,0)
 8994
-"BLD",967,"KRN",8994,"NM",0)
+"BLD",9039,"KRN",8994,"NM",0)
 ^9.68A^1^1
-"BLD",967,"KRN",8994,"NM",1,0)
+"BLD",9039,"KRN",8994,"NM",1,0)
 XT ECLIPSE M EDITOR^^0
-"BLD",967,"KRN",8994,"NM","B","XT ECLIPSE M EDITOR",1)
+"BLD",9039,"KRN",8994,"NM","B","XT ECLIPSE M EDITOR",1)
 
-"BLD",967,"KRN","B",.4,.4)
+"BLD",9039,"KRN","B",.4,.4)
 
-"BLD",967,"KRN","B",.401,.401)
+"BLD",9039,"KRN","B",.401,.401)
 
-"BLD",967,"KRN","B",.402,.402)
+"BLD",9039,"KRN","B",.402,.402)
 
-"BLD",967,"KRN","B",.403,.403)
+"BLD",9039,"KRN","B",.403,.403)
 
-"BLD",967,"KRN","B",.5,.5)
+"BLD",9039,"KRN","B",.5,.5)
 
-"BLD",967,"KRN","B",.84,.84)
+"BLD",9039,"KRN","B",.84,.84)
 
-"BLD",967,"KRN","B",3.6,3.6)
+"BLD",9039,"KRN","B",3.6,3.6)
 
-"BLD",967,"KRN","B",3.8,3.8)
+"BLD",9039,"KRN","B",3.8,3.8)
 
-"BLD",967,"KRN","B",9.2,9.2)
+"BLD",9039,"KRN","B",9.2,9.2)
 
-"BLD",967,"KRN","B",9.8,9.8)
+"BLD",9039,"KRN","B",9.8,9.8)
 
-"BLD",967,"KRN","B",19,19)
+"BLD",9039,"KRN","B",19,19)
 
-"BLD",967,"KRN","B",19.1,19.1)
+"BLD",9039,"KRN","B",19.1,19.1)
 
-"BLD",967,"KRN","B",101,101)
+"BLD",9039,"KRN","B",101,101)
 
-"BLD",967,"KRN","B",409.61,409.61)
+"BLD",9039,"KRN","B",409.61,409.61)
 
-"BLD",967,"KRN","B",771,771)
+"BLD",9039,"KRN","B",771,771)
 
-"BLD",967,"KRN","B",870,870)
+"BLD",9039,"KRN","B",870,870)
 
-"BLD",967,"KRN","B",8989.51,8989.51)
+"BLD",9039,"KRN","B",8989.51,8989.51)
 
-"BLD",967,"KRN","B",8989.52,8989.52)
+"BLD",9039,"KRN","B",8989.52,8989.52)
 
-"BLD",967,"KRN","B",8994,8994)
+"BLD",9039,"KRN","B",8994,8994)
 
-"BLD",967,"QDEF")
+"BLD",9039,"QDEF")
 ^^^^NO^^^^NO^^NO
-"BLD",967,"QUES",0)
+"BLD",9039,"QUES",0)
 ^9.62^^
-"BLD",967,"REQB",0)
+"BLD",9039,"REQB",0)
 ^9.611^^
-"KRN",8994,132,-1)
+"KRN",8994,3029,-1)
 0^1
-"KRN",8994,132,0)
+"KRN",8994,3029,0)
 XT ECLIPSE M EDITOR^RPC^XTECLIPS^4^^^^1
 "MBREQ")
 0
@@ -140,25 +140,23 @@ XT ECLIPSE M EDITOR^RPC^XTECLIPS^4^^^^1
 8994;16;1;;;;;;;RPCDEL^XPDIA1
 "ORD",16,8994,0)
 REMOTE PROCEDURE
-"PKG",6,-1)
+"PKG",5,-1)
 1^1
-"PKG",6,0)
-TOOLKIT^XT^PROGRAMMERS OPTIONS, MULTI. TERM LOOKUP^
-"PKG",6,20,0)
-^9.402P^^0
-"PKG",6,22,0)
+"PKG",5,0)
+TOOLKIT^XT^PROGRAMMERS OPTIONS, MULTI. TERM LOOKUP
+"PKG",5,22,0)
 ^9.49I^1^1
-"PKG",6,22,1,0)
-7.3^3040428^2970513^2
-"PKG",6,22,1,"PAH",1,0)
-101^3121229
-"PKG",6,22,1,"PAH",1,1,0)
-^^3^3^3121229
-"PKG",6,22,1,"PAH",1,1,1,0)
+"PKG",5,22,1,0)
+7.3^3051119^2960604
+"PKG",5,22,1,"PAH",1,0)
+101^3130621^1
+"PKG",5,22,1,"PAH",1,1,0)
+^^3^3^3130621
+"PKG",5,22,1,"PAH",1,1,1,0)
 XT*7.3*101
-"PKG",6,22,1,"PAH",1,1,2,0)
+"PKG",5,22,1,"PAH",1,1,2,0)
  
-"PKG",6,22,1,"PAH",1,1,3,0)
+"PKG",5,22,1,"PAH",1,1,3,0)
 See the patch module for details.
 "QUES","XPF1",0)
 Y
@@ -237,7 +235,7 @@ D XPZ2^XPDIQ
 "RTN","XTECGLO",1,0)
 XTECGLO ;FO-OAK/JLI - Global Utilities for Eclipse ;08/10/12  06:20
 "RTN","XTECGLO",2,0)
- ;;7.3;TOOLKIT;**101**;Apr 25, 1995;Build 30
+ ;;7.3;TOOLKIT;**101**;Apr 25, 1995;Build 31
 "RTN","XTECGLO",3,0)
  ;;Per VHA Directive 2004-038, this routine should not be modified
 "RTN","XTECGLO",4,0)
@@ -1043,7 +1041,7 @@ COMMACNT(GLOBAL) ;returns comma length for GLOBAL
 "RTN","XTECLIPS",1,0)
 XTECLIPS ;JLI/FO-OAK - Eclipse Interface Via VistA Link ;01/15/12  13:56
 "RTN","XTECLIPS",2,0)
- ;;7.3;TOOLKIT;**101**;Apr 25, 1995;Build 30
+ ;;7.3;TOOLKIT;**101**;Apr 25, 1995;Build 31
 "RTN","XTECLIPS",3,0)
  ;;Per VHA Directive 2004-038, this routine should not be modified
 "RTN","XTECLIPS",4,0)
@@ -1117,11 +1115,11 @@ RPC(XTECRES,XTECFUNC,XTECLINE,XTECFROM,XTECTO,XTECOPT,XTECXTRA) ;
 "RTN","XTECLIPS",38,0)
  Q
 "RTN","XTECROU")
-0^3^B51612266
+0^3^B51806057
 "RTN","XTECROU",1,0)
-XTECROU ;FO-OAK/JLI - routine processing for eclipse ;08/06/12  19:20
+XTECROU ;FO-OAK/JLI - routine processing for eclipse ;6/21/2013
 "RTN","XTECROU",2,0)
- ;;7.3;TOOLKIT;**101**;Apr 25, 1995;Build 30
+ ;;7.3;TOOLKIT;**101**;Apr 25, 1995;Build 31
 "RTN","XTECROU",3,0)
  ;;Per VHA Directive 2004-038, this routine should not be modified
 "RTN","XTECROU",4,0)
@@ -1221,373 +1219,375 @@ LOAD(XTECGLOB,ROU) ; load the routine
 "RTN","XTECROU",51,0)
  F  S I=$O(TMP(I)) Q:I<1  D
 "RTN","XTECROU",52,0)
- . Q:TMP(I,0)=""  N J F J=1:1:$L(TMP(I,0)) I $E(TMP(I,0),J)=" " S TMP(I,0)=$E(TMP(I,0),1,J-1)_$C(9)_$E(TMP(I,0),J+1,$L(TMP(I,0))) Q
+ . Q:TMP(I,0)=""
 "RTN","XTECROU",53,0)
- . S @XTECGLOB@(I)=TMP(I,0)
+ .;N J F J=1:1:$L(TMP(I,0)) I $E(TMP(I,0),J)=" " S TMP(I,0)=$E(TMP(I,0),1,J-1)_$C(9)_$E(TMP(I,0),J+1,$L(TMP(I,0))) Q
 "RTN","XTECROU",54,0)
- S @XTECGLOB@(0)="1^"_ROU
+ . S @XTECGLOB@(I)=TMP(I,0)
 "RTN","XTECROU",55,0)
- Q
+ S @XTECGLOB@(0)="1^"_ROU
 "RTN","XTECROU",56,0)
- ;
+ Q
 "RTN","XTECROU",57,0)
-ROU(X) ;encapsule the call to ^%ZOSF("TEST")
+ ;
 "RTN","XTECROU",58,0)
- X ^%ZOSF("TEST")
+ROU(X) ;encapsule the call to ^%ZOSF("TEST")
 "RTN","XTECROU",59,0)
- Q $T
+ X ^%ZOSF("TEST")
 "RTN","XTECROU",60,0)
- ;
+ Q $T
 "RTN","XTECROU",61,0)
-SAVE(XTECGLOB,ARRAY,ROU,OPTS) ; Save a routine from the array to the name ROU
+ ;
 "RTN","XTECROU",62,0)
- ; ARRAY = The array of routine to save
+SAVE(XTECGLOB,ARRAY,ROU,OPTS) ; Save a routine from the array to the name ROU
 "RTN","XTECROU",63,0)
- ; ROU = the Namespace to save it to
+ ; ARRAY = The array of routine to save
 "RTN","XTECROU",64,0)
- ; OPTS = updateroutinefile^unittestname^updatefirstline
+ ; ROU = the Namespace to save it to
 "RTN","XTECROU",65,0)
- ;       update routine file if 1
+ ; OPTS = updateroutinefile^unittestname^updatefirstline
 "RTN","XTECROU",66,0)
- ;       unittestname is routine name
+ ;       update routine file if 1
 "RTN","XTECROU",67,0)
- ;       updatefirstline if 1 (or null for original client code)
+ ;       unittestname is routine name
 "RTN","XTECROU",68,0)
- N TMP,I,DIE,DIF,X,XCN,UNITROU
+ ;       updatefirstline if 1 (or null for original client code)
 "RTN","XTECROU",69,0)
- I ROU="" S @XTECGLOB@(0)="-1^No routine name"
+ N TMP,I,DIE,DIF,X,XCN,UNITROU
 "RTN","XTECROU",70,0)
- S I=$$SETNAMES^XTECGLO(ROU,"") I I<0 S @XTECGLOB@(0)=I Q
+ I ROU="" S @XTECGLOB@(0)="-1^No routine name"
 "RTN","XTECROU",71,0)
- I '$D(ARRAY(1)) S @XTECGLOB@(0)="-1^No routine to process" Q
+ S I=$$SETNAMES^XTECGLO(ROU,"") I I<0 S @XTECGLOB@(0)=I Q
 "RTN","XTECROU",72,0)
- S I=0
+ I '$D(ARRAY(1)) S @XTECGLOB@(0)="-1^No routine to process" Q
 "RTN","XTECROU",73,0)
- F  S I=$O(ARRAY(I)) Q:I<1  D
+ S I=0
 "RTN","XTECROU",74,0)
- . I ARRAY(I)="" Q
+ F  S I=$O(ARRAY(I)) Q:I<1  D
 "RTN","XTECROU",75,0)
- . I ARRAY(I)[$C(9) S ARRAY(I)=$P(ARRAY(I),$C(9))_" "_$P(ARRAY(I),$C(9),2,99)
+ . I ARRAY(I)="" Q
 "RTN","XTECROU",76,0)
- . F  Q:$E(ARRAY(I),$L(ARRAY(I)))'=" "  S ARRAY(I)=$E(ARRAY(I),1,$L(ARRAY(I))-1)
+ . I ARRAY(I)[$C(9) S ARRAY(I)=$P(ARRAY(I),$C(9))_" "_$P(ARRAY(I),$C(9),2,99)
 "RTN","XTECROU",77,0)
- . I I=1,($P($G(OPTS),U,3)="")!(+$P($G(OPTS),U,3)) S ARRAY(I)=$$FIRSTLIN(ARRAY(I),ROU)
+ . F  Q:$E(ARRAY(I),$L(ARRAY(I)))'=" "  S ARRAY(I)=$E(ARRAY(I),1,$L(ARRAY(I))-1)
 "RTN","XTECROU",78,0)
- . S ^TMP($J,I,0)=ARRAY(I)
+ . I I=1,($P($G(OPTS),U,3)="")!(+$P($G(OPTS),U,3)) S ARRAY(I)=$$FIRSTLIN(ARRAY(I),ROU)
 "RTN","XTECROU",79,0)
- . Q
+ . S ^TMP($J,I,0)=ARRAY(I)
 "RTN","XTECROU",80,0)
- S (DIF,DIE)="^TMP($J,",XCN=0,X=ROU N ROUNAME S ROUNAME=ROU
+ . Q
 "RTN","XTECROU",81,0)
- X ^%ZOSF("SAVE")
+ S (DIF,DIE)="^TMP($J,",XCN=0,X=ROU N ROUNAME S ROUNAME=ROU
 "RTN","XTECROU",82,0)
- K ARRAY
+ X ^%ZOSF("SAVE")
 "RTN","XTECROU",83,0)
- ; following line added at suggestion of Lloyd Milligan to add
+ K ARRAY
 "RTN","XTECROU",84,0)
- ; routine to ROUTINE file if not already present 120115
+ ; following line added at suggestion of Lloyd Milligan to add
 "RTN","XTECROU",85,0)
- I +$G(OPTS) D FILE(ROU)
+ ; routine to ROUTINE file if not already present 120115
 "RTN","XTECROU",86,0)
- ; end of 120115 addition
+ I +$G(OPTS) D FILE(ROU)
 "RTN","XTECROU",87,0)
- ;
+ ; end of 120115 addition
 "RTN","XTECROU",88,0)
- I $D(^%Z("FILE")),+$G(OPTS),^%ZOSF("OS")'["GT.M" D
+ ;
 "RTN","XTECROU",89,0)
- . N XX,XX1,%X,%POP
+ I $D(^%Z("FILE")),+$G(OPTS),^%ZOSF("OS")'["GT.M" D
 "RTN","XTECROU",90,0)
- . S XX="S %NX=1 X ^%Z(""F11"") I %A>0 X ^%ZOSF(""UCI"") S ^DIC(9.8,%A,23,%C,0)=%DT_""^""_$I_""^""_Y_""^""_$S($D(DUZ)#2:DUZ,1:"""")"
+ . N XX,XX1,%X,%POP
 "RTN","XTECROU",91,0)
- . X "S %X=ROUNAME ZL @ROUNAME X ^%Z(""F2""),^%Z(""F3""),XX"
+ . S XX="S %NX=1 X ^%Z(""F11"") I %A>0 X ^%ZOSF(""UCI"") S ^DIC(9.8,%A,23,%C,0)=%DT_""^""_$I_""^""_Y_""^""_$S($D(DUZ)#2:DUZ,1:"""")"
 "RTN","XTECROU",92,0)
- . Q
+ . X "S %X=ROUNAME ZL @ROUNAME X ^%Z(""F2""),^%Z(""F3""),XX"
 "RTN","XTECROU",93,0)
- ; JLI 100509 next line added to provide routine and comment size at top console output
+ . Q
 "RTN","XTECROU",94,0)
- S ARRAY=$$GETSIZE(ROU) S @XTECGLOB@(1)="   "_(+ARRAY)_" TOTAL BYTES  "_$P(ARRAY,U,2)_" COMMENT BYTES"
+ ; JLI 100509 next line added to provide routine and comment size at top console output
 "RTN","XTECROU",95,0)
- S UNITROU=$P($G(OPTS),U,2) I UNITROU["does not exist" S UNITROU=""
+ S ARRAY=$$GETSIZE(ROU) S @XTECGLOB@(1)="   "_(+ARRAY)_" TOTAL BYTES  "_$P(ARRAY,U,2)_" COMMENT BYTES"
 "RTN","XTECROU",96,0)
- D CHKROU(XTECGLOB,ROUNAME,UNITROU)
+ S UNITROU=$P($G(OPTS),U,2) I UNITROU["does not exist" S UNITROU=""
 "RTN","XTECROU",97,0)
- K ^TMP($J)
+ D CHKROU(XTECGLOB,ROUNAME,UNITROU)
 "RTN","XTECROU",98,0)
- Q
+ K ^TMP($J)
 "RTN","XTECROU",99,0)
- ;
+ Q
 "RTN","XTECROU",100,0)
-CHKROU(XTECGLOB,XTECNAME,XTECUNIT) ;
+ ;
 "RTN","XTECROU",101,0)
- N XTECRSLT,I,J
+CHKROU(XTECGLOB,XTECNAME,XTECUNIT) ;
 "RTN","XTECROU",102,0)
- S XTECRSLT=$NA(^TMP("ROUTMP",$J))
+ N XTECRSLT,I,J
 "RTN","XTECROU",103,0)
- D XINDEX(XTECNAME,XTECRSLT)
+ S XTECRSLT=$NA(^TMP("ROUTMP",$J))
 "RTN","XTECROU",104,0)
- M @XTECGLOB=@XTECRSLT
+ D XINDEX(XTECNAME,XTECRSLT)
 "RTN","XTECROU",105,0)
- S XTROUSIZ=$$GETSIZE(XTECNAME)
+ M @XTECGLOB=@XTECRSLT
 "RTN","XTECROU",106,0)
- S @XTECGLOB@(0)="1^"_XTECNAME
+ S XTROUSIZ=$$GETSIZE(XTECNAME)
 "RTN","XTECROU",107,0)
- K @XTECRSLT
+ S @XTECGLOB@(0)="1^"_XTECNAME
 "RTN","XTECROU",108,0)
- D CHEKTAGS^XTMRPAR1(XTECNAME,XTECRSLT)
-"RTN","XTECROU",109,0)
- D ADDLINE(XTECGLOB,XTECRSLT,"Variables which are neither NEWed or arguments")
-"RTN","XTECROU",110,0)
- I $G(XTECUNIT)'="" D
-"RTN","XTECROU",111,0)
- . D UNITTEST(XTECUNIT,XTECRSLT)
-"RTN","XTECROU",112,0)
- . D ADDLINE(XTECGLOB,XTECRSLT,"Results of Unit Tests")
-"RTN","XTECROU",113,0)
- . Q
-"RTN","XTECROU",114,0)
- Q
-"RTN","XTECROU",115,0)
- ;
-"RTN","XTECROU",116,0)
-ADDLINE(XTECGLOB,XTECRSLT,HEADER) ;
-"RTN","XTECROU",117,0)
- N I,J
-"RTN","XTECROU",118,0)
- S J=$$LASTNODE(XTECGLOB)
-"RTN","XTECROU",119,0)
- S J=J+1,@XTECGLOB@(J)="",J=J+1,@XTECGLOB@(J)="",J=J+1,@XTECGLOB@(J)=HEADER,J=J+1,@XTECGLOB@(J)=""
-"RTN","XTECROU",120,0)
- S I="" F  S I=$O(@XTECRSLT@(I)) Q:I=""  S J=J+1,@XTECGLOB@(J)=@XTECRSLT@(I)
-"RTN","XTECROU",121,0)
  K @XTECRSLT
-"RTN","XTECROU",122,0)
- Q
-"RTN","XTECROU",123,0)
- ;
-"RTN","XTECROU",124,0)
-LASTNODE(GLOB) ; Extrinsic Function - returns value of current last node in global reference GLOB
-"RTN","XTECROU",125,0)
- N I,J
-"RTN","XTECROU",126,0)
- S I="",J="" F  S I=$O(@GLOB@(I)) Q:I=""  S J=I
-"RTN","XTECROU",127,0)
- Q J
-"RTN","XTECROU",128,0)
- ;
-"RTN","XTECROU",129,0)
-FIRSTLIN(INPUT,ROU) ;
-"RTN","XTECROU",130,0)
- ; update date/time on first line and if name on first line does not start with %,
-"RTN","XTECROU",131,0)
- ; make sure name is on first line
-"RTN","XTECROU",132,0)
- ;
-"RTN","XTECROU",133,0)
- ; 090918 - As pointed out by John McCormack, in some cases the name shouldn't match that on the first line
-"RTN","XTECROU",134,0)
- ;          So, removed forcing the names to match.  This allowed removal of all code dependent upon what
-"RTN","XTECROU",135,0)
- ;          linestart character was used, and only the time needed to be set
-"RTN","XTECROU",136,0)
- ;
-"RTN","XTECROU",137,0)
- ; 090918 - semicolons on first line may not have space in front of them place time simply as third ";" piece
-"RTN","XTECROU",138,0)
- N CURTIME S CURTIME=$$NOW^XLFDT(),CURTIME=$E(CURTIME,4,5)_"/"_$E(CURTIME,6,7)_"/"_$E(CURTIME,2,3)_"  "_$E(CURTIME,9,10)_":"_$E(CURTIME,11,12)
-"RTN","XTECROU",139,0)
- S $P(INPUT,";",3)=CURTIME
-"RTN","XTECROU",140,0)
- Q INPUT
-"RTN","XTECROU",141,0)
- ;
-"RTN","XTECROU",142,0)
-UNITTEST(XTECUNIT,XTECRSLT) ;
-"RTN","XTECROU",143,0)
- N XTECDOC,XTECDEV,XTECIO,I,XTECDEVN,XTMUIO
-"RTN","XTECROU",144,0)
- S XTECDOC="XTEC"_$J_"A.DAT"
-"RTN","XTECROU",145,0)
- D SETDOC(XTECDOC)
-"RTN","XTECROU",146,0)
- S XTECIO=IO
-"RTN","XTECROU",147,0)
- S XTMUIO=IO,XTECDEV="",XTECDEVN="" F  S XTECDEVN=$O(^TMP("XUDEVICE",$J,XTECDEVN)) Q:XTECDEVN=""  I $G(^(XTECDEVN,"IO"))=IO S XTECDEV=^(0) Q
-"RTN","XTECROU",148,0)
- I XTECDEV="" S XTECDEV="XTMUNIT DEVICE" D SAVDEV^%ZISUTL(XTECDEV)
-"RTN","XTECROU",149,0)
- M ^TMP("UNITTEST1",$J,"DEV1")=^TMP("XUDEVICE",$J)
-"RTN","XTECROU",150,0)
- D EN^XTMUNIT(XTECUNIT)
-"RTN","XTECROU",151,0)
- K ^TMP("UNITTEST1",$J)
-"RTN","XTECROU",152,0)
- M ^TMP("UNITTEST1",$J,"IO")=IO
-"RTN","XTECROU",153,0)
- M ^TMP("UNITTEST1",$J,"DEV2")=^TMP("XUDEVICE",$J)
-"RTN","XTECROU",154,0)
- I IO'=XTECIO D USE^%ZISUTL(XTECDEV)
-"RTN","XTECROU",155,0)
- D GETDOC(XTECDOC,XTECRSLT)
-"RTN","XTECROU",156,0)
- F I=0:0 S I=$O(@XTECRSLT@(I)) Q:I'>0  I $E(^(I),1,4)="|TOP" K ^(I) Q
-"RTN","XTECROU",157,0)
- Q
-"RTN","XTECROU",158,0)
- ;
-"RTN","XTECROU",159,0)
-XINDEX(XTECNAME,XTECGLOB) ;
-"RTN","XTECROU",160,0)
- N XTECDOC,IOP,INNDDA,INP,NRO,NDA,X,I,INDDA,J
-"RTN","XTECROU",161,0)
- S XTECDOC="XTEC"_$J_".DAT"
-"RTN","XTECROU",162,0)
- K ^UTILITY($J) S ^UTILITY($J,XTECNAME)=""
-"RTN","XTECROU",163,0)
- S INDDA=-1
-"RTN","XTECROU",164,0)
- F I=1:1:9 S INP(I)=0
-"RTN","XTECROU",165,0)
- S INP(10)=9.4,INP(11)="",INP(12)="",INP("MAX")=20000,INP("CMAX")=15000
-"RTN","XTECROU",166,0)
- S NRO=1
-"RTN","XTECROU",167,0)
- D SETDOC(XTECDOC) ; setup a spool file using XTECDOC
-"RTN","XTECROU",168,0)
- D ALIVE^XINDEX
-"RTN","XTECROU",169,0)
- D GETDOC(XTECDOC,XTECGLOB)
-"RTN","XTECROU",170,0)
- ; trim it down to just the error info
-"RTN","XTECROU",171,0)
- F I=0:0 S I=$O(@XTECGLOB@(I)) Q:I'>0  Q:$E(^(I),1,4)="Comp"  K ^(I)
-"RTN","XTECROU",172,0)
- I I>0 F  S I=$O(@XTECGLOB@(I)) Q:I'>0  I $E(^(I),1,7)="--- END" K ^(I) Q
-"RTN","XTECROU",173,0)
- I I>0 F  S I=$O(@XTECGLOB@(I)) Q:I'>0  K ^(I)
-"RTN","XTECROU",174,0)
- Q
-"RTN","XTECROU",175,0)
- ;
-"RTN","XTECROU",176,0)
-LOADROU(ROU,LOC) ;EX. FUNCTION - LOAD A ROUTINE NAMED ROU INTO LOC ARRAY
-"RTN","XTECROU",177,0)
- ; ROU ---- ROUTINE NAME
-"RTN","XTECROU",178,0)
- ; LOC ---- NAME OF ARRAY TO CONTAIN LOADED ROUTINE
-"RTN","XTECROU",179,0)
- ;          (E.G., "TMP" would return the routine in TMP(1,0),TMP(2,0), etc.)
-"RTN","XTECROU",180,0)
- ;
-"RTN","XTECROU",181,0)
- ; RETURN VALUE -1^DESCRIPTION OF ERROR IF LOAD FAILED
-"RTN","XTECROU",182,0)
- ;              1  IF LOAD SUCCEEDED
-"RTN","XTECROU",183,0)
- ;
-"RTN","XTECROU",184,0)
- N CNT,LN,I,DIF,X,XCNP
-"RTN","XTECROU",185,0)
- K @LOC
-"RTN","XTECROU",186,0)
- S I=$$SETNAMES^XTECGLO(ROU,"") I I<0 Q "-1^Invalid Routine Name"
-"RTN","XTECROU",187,0)
- ; $$ROU(ROU) used a check of the ROUTINE file for file name
-"RTN","XTECROU",188,0)
- ; but routines with names longer than the standard always 
-"RTN","XTECROU",189,0)
- ; show up as not found will trap the error instead if not present
-"RTN","XTECROU",190,0)
- ; I '$$ROU(ROU) Q "-1^Routine Not found" ; JLI 120806
-"RTN","XTECROU",191,0)
- N $ETRAP S $ETRAP="D ERROR^XTECROU" ; JLI 120806
-"RTN","XTECROU",192,0)
- S DIF=LOC_"(",XCNP=0,X=ROU
-"RTN","XTECROU",193,0)
- X ^%ZOSF("LOAD")
-"RTN","XTECROU",194,0)
- I '$D(@LOC@(1,0)) Q "-1^Error Processing load request"
-"RTN","XTECROU",195,0)
- Q 1
-"RTN","XTECROU",196,0)
- ;
-"RTN","XTECROU",197,0)
-ERROR ; catch error on trying to load file if it doesn't exist ; JLI 120806
-"RTN","XTECROU",198,0)
- S $ZE="",$EC=""
-"RTN","XTECROU",199,0)
- Q
-"RTN","XTECROU",200,0)
- ;
-"RTN","XTECROU",201,0)
-GETSIZE(XTECNAME) ; determine total and comment size of routine
-"RTN","XTECROU",202,0)
- N NUM,COM,TOT,TMP
-"RTN","XTECROU",203,0)
- S NUM=$$LOADROU(XTECNAME,"TMP") I NUM'>0 Q "0^0"
-"RTN","XTECROU",204,0)
- S COM=0,TOT=0
-"RTN","XTECROU",205,0)
- S NUM=0 F  S NUM=$O(TMP(NUM)) Q:NUM'>0  S LIN=TMP(NUM,0),LN=$L(LIN),TOT=TOT+LN+2 D
-"RTN","XTECROU",206,0)
- . S LIN=$P(LIN," ",2,999)
-"RTN","XTECROU",207,0)
- . F  Q:LIN=""  Q:" ."'[$E(LIN)  S LIN=$E(LIN,2,999)
-"RTN","XTECROU",208,0)
- . I $E(LIN)=";",$E(LIN,2)'=";" S COM=COM+$L(LIN)
-"RTN","XTECROU",209,0)
+"RTN","XTECROU",109,0)
+ D CHEKTAGS^XTMRPAR1(XTECNAME,XTECRSLT)
+"RTN","XTECROU",110,0)
+ D ADDLINE(XTECGLOB,XTECRSLT,"Variables which are neither NEWed or arguments")
+"RTN","XTECROU",111,0)
+ I $G(XTECUNIT)'="" D
+"RTN","XTECROU",112,0)
+ . D UNITTEST(XTECUNIT,XTECRSLT)
+"RTN","XTECROU",113,0)
+ . D ADDLINE(XTECGLOB,XTECRSLT,"Results of Unit Tests")
+"RTN","XTECROU",114,0)
  . Q
+"RTN","XTECROU",115,0)
+ Q
+"RTN","XTECROU",116,0)
+ ;
+"RTN","XTECROU",117,0)
+ADDLINE(XTECGLOB,XTECRSLT,HEADER) ;
+"RTN","XTECROU",118,0)
+ N I,J
+"RTN","XTECROU",119,0)
+ S J=$$LASTNODE(XTECGLOB)
+"RTN","XTECROU",120,0)
+ S J=J+1,@XTECGLOB@(J)="",J=J+1,@XTECGLOB@(J)="",J=J+1,@XTECGLOB@(J)=HEADER,J=J+1,@XTECGLOB@(J)=""
+"RTN","XTECROU",121,0)
+ S I="" F  S I=$O(@XTECRSLT@(I)) Q:I=""  S J=J+1,@XTECGLOB@(J)=@XTECRSLT@(I)
+"RTN","XTECROU",122,0)
+ K @XTECRSLT
+"RTN","XTECROU",123,0)
+ Q
+"RTN","XTECROU",124,0)
+ ;
+"RTN","XTECROU",125,0)
+LASTNODE(GLOB) ; Extrinsic Function - returns value of current last node in global reference GLOB
+"RTN","XTECROU",126,0)
+ N I,J
+"RTN","XTECROU",127,0)
+ S I="",J="" F  S I=$O(@GLOB@(I)) Q:I=""  S J=I
+"RTN","XTECROU",128,0)
+ Q J
+"RTN","XTECROU",129,0)
+ ;
+"RTN","XTECROU",130,0)
+FIRSTLIN(INPUT,ROU) ;
+"RTN","XTECROU",131,0)
+ ; update date/time on first line and if name on first line does not start with %,
+"RTN","XTECROU",132,0)
+ ; make sure name is on first line
+"RTN","XTECROU",133,0)
+ ;
+"RTN","XTECROU",134,0)
+ ; 090918 - As pointed out by John McCormack, in some cases the name shouldn't match that on the first line
+"RTN","XTECROU",135,0)
+ ;          So, removed forcing the names to match.  This allowed removal of all code dependent upon what
+"RTN","XTECROU",136,0)
+ ;          linestart character was used, and only the time needed to be set
+"RTN","XTECROU",137,0)
+ ;
+"RTN","XTECROU",138,0)
+ ; 090918 - semicolons on first line may not have space in front of them place time simply as third ";" piece
+"RTN","XTECROU",139,0)
+ N CURTIME S CURTIME=$$NOW^XLFDT(),CURTIME=$E(CURTIME,4,5)_"/"_$E(CURTIME,6,7)_"/"_$E(CURTIME,2,3)_"  "_$E(CURTIME,9,10)_":"_$E(CURTIME,11,12)
+"RTN","XTECROU",140,0)
+ S $P(INPUT,";",3)=CURTIME
+"RTN","XTECROU",141,0)
+ Q INPUT
+"RTN","XTECROU",142,0)
+ ;
+"RTN","XTECROU",143,0)
+UNITTEST(XTECUNIT,XTECRSLT) ;
+"RTN","XTECROU",144,0)
+ N XTECDOC,XTECDEV,XTECIO,I,XTECDEVN,XTMUIO
+"RTN","XTECROU",145,0)
+ S XTECDOC="XTEC"_$J_"A.DAT"
+"RTN","XTECROU",146,0)
+ D SETDOC(XTECDOC)
+"RTN","XTECROU",147,0)
+ S XTECIO=IO
+"RTN","XTECROU",148,0)
+ S XTMUIO=IO,XTECDEV="",XTECDEVN="" F  S XTECDEVN=$O(^TMP("XUDEVICE",$J,XTECDEVN)) Q:XTECDEVN=""  I $G(^(XTECDEVN,"IO"))=IO S XTECDEV=^(0) Q
+"RTN","XTECROU",149,0)
+ I XTECDEV="" S XTECDEV="XTMUNIT DEVICE" D SAVDEV^%ZISUTL(XTECDEV)
+"RTN","XTECROU",150,0)
+ M ^TMP("UNITTEST1",$J,"DEV1")=^TMP("XUDEVICE",$J)
+"RTN","XTECROU",151,0)
+ D EN^XTMUNIT(XTECUNIT)
+"RTN","XTECROU",152,0)
+ K ^TMP("UNITTEST1",$J)
+"RTN","XTECROU",153,0)
+ M ^TMP("UNITTEST1",$J,"IO")=IO
+"RTN","XTECROU",154,0)
+ M ^TMP("UNITTEST1",$J,"DEV2")=^TMP("XUDEVICE",$J)
+"RTN","XTECROU",155,0)
+ I IO'=XTECIO D USE^%ZISUTL(XTECDEV)
+"RTN","XTECROU",156,0)
+ D GETDOC(XTECDOC,XTECRSLT)
+"RTN","XTECROU",157,0)
+ F I=0:0 S I=$O(@XTECRSLT@(I)) Q:I'>0  I $E(^(I),1,4)="|TOP" K ^(I) Q
+"RTN","XTECROU",158,0)
+ Q
+"RTN","XTECROU",159,0)
+ ;
+"RTN","XTECROU",160,0)
+XINDEX(XTECNAME,XTECGLOB) ;
+"RTN","XTECROU",161,0)
+ N XTECDOC,IOP,INNDDA,INP,NRO,NDA,X,I,INDDA,J
+"RTN","XTECROU",162,0)
+ S XTECDOC="XTEC"_$J_".DAT"
+"RTN","XTECROU",163,0)
+ K ^UTILITY($J) S ^UTILITY($J,XTECNAME)=""
+"RTN","XTECROU",164,0)
+ S INDDA=-1
+"RTN","XTECROU",165,0)
+ F I=1:1:9 S INP(I)=0
+"RTN","XTECROU",166,0)
+ S INP(10)=9.4,INP(11)="",INP(12)="",INP("MAX")=20000,INP("CMAX")=15000
+"RTN","XTECROU",167,0)
+ S NRO=1
+"RTN","XTECROU",168,0)
+ D SETDOC(XTECDOC) ; setup a spool file using XTECDOC
+"RTN","XTECROU",169,0)
+ D ALIVE^XINDEX
+"RTN","XTECROU",170,0)
+ D GETDOC(XTECDOC,XTECGLOB)
+"RTN","XTECROU",171,0)
+ ; trim it down to just the error info
+"RTN","XTECROU",172,0)
+ F I=0:0 S I=$O(@XTECGLOB@(I)) Q:I'>0  Q:$E(^(I),1,4)="Comp"  K ^(I)
+"RTN","XTECROU",173,0)
+ I I>0 F  S I=$O(@XTECGLOB@(I)) Q:I'>0  I $E(^(I),1,7)="--- END" K ^(I) Q
+"RTN","XTECROU",174,0)
+ I I>0 F  S I=$O(@XTECGLOB@(I)) Q:I'>0  K ^(I)
+"RTN","XTECROU",175,0)
+ Q
+"RTN","XTECROU",176,0)
+ ;
+"RTN","XTECROU",177,0)
+LOADROU(ROU,LOC) ;EX. FUNCTION - LOAD A ROUTINE NAMED ROU INTO LOC ARRAY
+"RTN","XTECROU",178,0)
+ ; ROU ---- ROUTINE NAME
+"RTN","XTECROU",179,0)
+ ; LOC ---- NAME OF ARRAY TO CONTAIN LOADED ROUTINE
+"RTN","XTECROU",180,0)
+ ;          (E.G., "TMP" would return the routine in TMP(1,0),TMP(2,0), etc.)
+"RTN","XTECROU",181,0)
+ ;
+"RTN","XTECROU",182,0)
+ ; RETURN VALUE -1^DESCRIPTION OF ERROR IF LOAD FAILED
+"RTN","XTECROU",183,0)
+ ;              1  IF LOAD SUCCEEDED
+"RTN","XTECROU",184,0)
+ ;
+"RTN","XTECROU",185,0)
+ N CNT,LN,I,DIF,X,XCNP
+"RTN","XTECROU",186,0)
+ K @LOC
+"RTN","XTECROU",187,0)
+ S I=$$SETNAMES^XTECGLO(ROU,"") I I<0 Q "-1^Invalid Routine Name"
+"RTN","XTECROU",188,0)
+ ; $$ROU(ROU) used a check of the ROUTINE file for file name
+"RTN","XTECROU",189,0)
+ ; but routines with names longer than the standard always 
+"RTN","XTECROU",190,0)
+ ; show up as not found will trap the error instead if not present
+"RTN","XTECROU",191,0)
+ ; I '$$ROU(ROU) Q "-1^Routine Not found" ; JLI 120806
+"RTN","XTECROU",192,0)
+ N $ETRAP S $ETRAP="D ERROR^XTECROU" ; JLI 120806
+"RTN","XTECROU",193,0)
+ S DIF=LOC_"(",XCNP=0,X=ROU
+"RTN","XTECROU",194,0)
+ X ^%ZOSF("LOAD")
+"RTN","XTECROU",195,0)
+ I '$D(@LOC@(1,0)) Q "-1^Error Processing load request"
+"RTN","XTECROU",196,0)
+ Q 1
+"RTN","XTECROU",197,0)
+ ;
+"RTN","XTECROU",198,0)
+ERROR ; catch error on trying to load file if it doesn't exist ; JLI 120806
+"RTN","XTECROU",199,0)
+ S $ZE="",$EC=""
+"RTN","XTECROU",200,0)
+ Q
+"RTN","XTECROU",201,0)
+ ;
+"RTN","XTECROU",202,0)
+GETSIZE(XTECNAME) ; determine total and comment size of routine
+"RTN","XTECROU",203,0)
+ N NUM,COM,TOT,TMP
+"RTN","XTECROU",204,0)
+ S NUM=$$LOADROU(XTECNAME,"TMP") I NUM'>0 Q "0^0"
+"RTN","XTECROU",205,0)
+ S COM=0,TOT=0
+"RTN","XTECROU",206,0)
+ S NUM=0 F  S NUM=$O(TMP(NUM)) Q:NUM'>0  S LIN=TMP(NUM,0),LN=$L(LIN),TOT=TOT+LN+2 D
+"RTN","XTECROU",207,0)
+ . S LIN=$P(LIN," ",2,999)
+"RTN","XTECROU",208,0)
+ . F  Q:LIN=""  Q:" ."'[$E(LIN)  S LIN=$E(LIN,2,999)
+"RTN","XTECROU",209,0)
+ . I $E(LIN)=";",$E(LIN,2)'=";" S COM=COM+$L(LIN)
 "RTN","XTECROU",210,0)
- Q TOT_U_COM
+ . Q
 "RTN","XTECROU",211,0)
- ;
+ Q TOT_U_COM
 "RTN","XTECROU",212,0)
-SETDOC(XTECDOC) ;
-"RTN","XTECROU",213,0)
- N IOP,%ZIS
-"RTN","XTECROU",214,0)
- S IOP="HFS",%ZIS("HFSNAME")=$$CHKNM^%ZISF(XTECDOC),%ZIS("HFSMODE")="W" D ^%ZIS ;_$"SPOOL;P-OTH80;"_XTECDOC D ^%ZIS
-"RTN","XTECROU",215,0)
- U IO S $Y=0
-"RTN","XTECROU",216,0)
- Q
-"RTN","XTECROU",217,0)
  ;
-"RTN","XTECROU",218,0)
-GETDOC(XTECDOC,XTECGLOB) ;
-"RTN","XTECROU",219,0)
- N X,XNAME
-"RTN","XTECROU",220,0)
- U IO D ^%ZISC
-"RTN","XTECROU",221,0)
- S X=$$FTG^%ZISH("",XTECDOC,$NA(@XTECGLOB@(1)),3)
-"RTN","XTECROU",222,0)
- S XNAME(XTECDOC)=""
-"RTN","XTECROU",223,0)
- S X=$$DEL^%ZISH("",$NA(XNAME))
-"RTN","XTECROU",224,0)
+"RTN","XTECROU",213,0)
+SETDOC(XTECDOC) ;
+"RTN","XTECROU",214,0)
+ N IOP,%ZIS
+"RTN","XTECROU",215,0)
+ S IOP="HFS",%ZIS("HFSNAME")=$$CHKNM^%ZISF(XTECDOC),%ZIS("HFSMODE")="W" D ^%ZIS ;_$"SPOOL;P-OTH80;"_XTECDOC D ^%ZIS
+"RTN","XTECROU",216,0)
+ U IO S $Y=0
+"RTN","XTECROU",217,0)
  Q
+"RTN","XTECROU",218,0)
+ ;
+"RTN","XTECROU",219,0)
+GETDOC(XTECDOC,XTECGLOB) ;
+"RTN","XTECROU",220,0)
+ N X,XNAME
+"RTN","XTECROU",221,0)
+ U IO D ^%ZISC
+"RTN","XTECROU",222,0)
+ S X=$$FTG^%ZISH("",XTECDOC,$NA(@XTECGLOB@(1)),3)
+"RTN","XTECROU",223,0)
+ S XNAME(XTECDOC)=""
+"RTN","XTECROU",224,0)
+ S X=$$DEL^%ZISH("",$NA(XNAME))
 "RTN","XTECROU",225,0)
- ; the following tag was added at the suggestion of Lloyd Milligan,
+ Q
 "RTN","XTECROU",226,0)
- ; SeaIslandSystems, to add files on GT.M to the ROUTINE file (#9.8)
+ ; the following tag was added at the suggestion of Lloyd Milligan,
 "RTN","XTECROU",227,0)
-FILE(X) ; file routine name X to ROUTINE FILE if not already present
+ ; SeaIslandSystems, to add files on GT.M to the ROUTINE file (#9.8)
 "RTN","XTECROU",228,0)
- Q:'$L($G(X))  N FDA
+FILE(X) ; file routine name X to ROUTINE FILE if not already present
 "RTN","XTECROU",229,0)
- S FDA(9.8,"?+1,",.01)=X
+ Q:'$L($G(X))  N FDA
 "RTN","XTECROU",230,0)
- S FDA(9.8,"?+1,",1)="R"
+ S FDA(9.8,"?+1,",.01)=X
 "RTN","XTECROU",231,0)
- D UPDATE^DIE(,"FDA")
+ S FDA(9.8,"?+1,",1)="R"
 "RTN","XTECROU",232,0)
+ D UPDATE^DIE(,"FDA")
+"RTN","XTECROU",233,0)
  Q
 "RTN","XTMRPAR1")
 0^4^B62027368
 "RTN","XTMRPAR1",1,0)
 XTMRPAR1 ;jli/oifo-oak - list tags, find variables that aren't arguments or newed ;10/28/10  16:18
 "RTN","XTMRPAR1",2,0)
- ;;7.3;TOOLKIT;**101**;Apr 25, 1995;Build 30
+ ;;7.3;TOOLKIT;**101**;Apr 25, 1995;Build 31
 "RTN","XTMRPAR1",3,0)
  D EN^XTMUNIT("ZZUTXTM1") ; RUN UNIT TESTS
 "RTN","XTMRPAR1",4,0)
@@ -2001,7 +2001,7 @@ GETQUOTE(LINE,TOKEN,TERM) ;
 "RTN","XTMRPAR2",1,0)
 XTMRPAR2 ;FO-OAK/JLI - list tags, find variables that aren't arguments or newed - continued ;10/28/10  16:28
 "RTN","XTMRPAR2",2,0)
- ;;7.3;TOOLKIT;**101**;Apr 25, 1995;Build 30
+ ;;7.3;TOOLKIT;**101**;Apr 25, 1995;Build 31
 "RTN","XTMRPAR2",3,0)
  ;;Per VHA Directive 2004-038, this routine should not be modified
 "RTN","XTMRPAR2",4,0)
