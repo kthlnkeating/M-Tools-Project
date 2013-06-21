@@ -95,8 +95,10 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 //		}
 		
 		fireCreationEvent(); //to register that the DebugTarget has been started.
-		if (this.debug) installDeferredBreakpoints();
-		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
+		if (this.debug) {
+			installDeferredBreakpoints();
+			DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
+		}
 
 		Job resumeJob = new Job("Resume") { //the LaunchManager is (probably?) executing this and it shouldn't block and hold while the code is resuming (running). It needs to let go at this point
 			
@@ -524,8 +526,10 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 	}
 	
 	private void terminated() {
-		uninstallActiveBreakpoints();
-		DebugPlugin.getDefault().getBreakpointManager().removeBreakpointListener(this);
+		if (this.debug) {
+			uninstallActiveBreakpoints();
+			DebugPlugin.getDefault().getBreakpointManager().removeBreakpointListener(this);
+		}
 		rpcDebugProcess.terminate();
 		suspended = false;
 		fireTerminateEvent(); //this fires the event to indicate that the debugtarget has terminated.
