@@ -2,16 +2,18 @@ package org.mumps.meditor;
 
 import gov.va.med.iss.meditor.utils.MEditorMessageConsole;
 import gov.va.med.iss.meditor.utils.MEditorUtilities;
-import gov.va.med.iss.meditor.utils.RoutineChangedDialog;
 import gov.va.med.iss.meditor.utils.RoutineChangedDialogData;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.mumps.meditor.dialogs.RoutineDiffersDialog;
 
 public class SaveRoutine {
 	
@@ -46,14 +48,21 @@ public class SaveRoutine {
 			
 			if (!MEditorUtils.compareRoutines(fileCode, serverCode)) {
 			
-				RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
-				RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, fileCode, false, false,
-						"This routine exists on the server, but no backup file exists"); //TODO: fix this dialog so it display wrapped text messages. "in this project. Therefore it is not known if the editor and the server are in sync.");
-				if (!userInput.getReturnValue()) {
+//				RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
+//				RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, fileCode, false, false,
+//						"This routine exists on the server, but no backup file exists"); //TODO: fix this dialog so it display wrapped text messages. "in this project. Therefore it is not known if the editor and the server are in sync.");
+//				if (!userInput.getReturnValue()) {
+				RoutineDiffersDialog dialog = new RoutineDiffersDialog(Display
+						.getDefault().getActiveShell(),
+						"Would you like to overwrite what is on the server for routine " +routineName+ "?",
+						" the project version",
+						routineName, MEditorUtils.cleanSource(fileCode),
+						MEditorUtils.cleanSource(serverCode));
+				if (dialog.open() != Dialog.OK)
 					throw new ServerSaveFailure("User cancelled, no previous backup file was found.");
 //					super.doSave(monitor);
 //					return; 
-				}
+
 			}
 			
 		} catch (CoreException | IOException e1) {
@@ -94,13 +103,22 @@ public class SaveRoutine {
 		
 		//Next compare contents of server to contents of backup to see if MEditor was the last to touch the server
 		if (!isNewRoutine && backupCode != null && !MEditorUtils.compareRoutines(backupCode, serverCode)) {
-			RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
-			RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, backupCode, true, false);
-			if (!userInput.getReturnValue()) {
+//			RoutineChangedDialog dialog = new RoutineChangedDialog(Display.getDefault().getActiveShell());
+//			RoutineChangedDialogData userInput = dialog.open(routineName, serverCode, backupCode, true, false);
+//			if (!userInput.getReturnValue()) {
+//				throw new ServerSaveFailure("User cancelled, backup file differs from what is on server.");
+////				super.doSave(monitor);
+////				return;
+//			}
+			RoutineDiffersDialog dialog = new RoutineDiffersDialog(Display
+					.getDefault().getActiveShell(),
+					"The lastest version that MEditor has stored in the backups directory differs from what is currently on the server for routine " +routineName+". " +
+							"This means that a change likely occured on the server outside of MEditor. Would you like to overwrite what is on the server?",
+					" the backup version",
+					routineName, MEditorUtils.cleanSource(fileCode),
+					MEditorUtils.cleanSource(serverCode));
+			if (dialog.open() != Dialog.OK)
 				throw new ServerSaveFailure("User cancelled, backup file differs from what is on server.");
-//				super.doSave(monitor);
-//				return;
-			}
 		}
 		
 		//Save to server and display XINDEX results

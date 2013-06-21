@@ -140,7 +140,7 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 				RoutineDiffersDialog dialog = new RoutineDiffersDialog(Display
 						.getDefault().getActiveShell(),
 						"Routine " +routineName+ " found on server and locally in the project " +projectName+". Would you like to overwrite the local version with the server version?",
-						" project version (" +routineFile.getFullPath().toOSString()+ ")",
+						" the project version (" +routineFile.getFullPath().toOSString()+ ")",
 						routineName, MEditorUtils.cleanSource(fileCode),
 						MEditorUtils.cleanSource(serverCode));
 				if (dialog.open() != Dialog.OK)

@@ -8,28 +8,18 @@ import gov.va.med.iss.meditor.MEditorSourceViewerConfiguration;
 import gov.va.med.iss.meditor.m.MCodeScanner;
 import gov.va.med.iss.meditor.preferences.MEditorPreferencesPage;
 import gov.va.med.iss.meditor.preferences.MEditorPrefs;
-import gov.va.med.iss.meditor.utils.MEditorMessageConsole;
 import gov.va.med.iss.meditor.utils.MEditorUtilities;
-import gov.va.med.iss.meditor.utils.RoutineChangedDialog;
-import gov.va.med.iss.meditor.utils.RoutineChangedDialogData;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.DefaultRangeIndicator;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.mumps.meditor.MEditorRPC;
-import org.mumps.meditor.MEditorUtils;
-import org.mumps.meditor.RoutineNotFoundException;
 import org.mumps.meditor.SaveRoutine;
 import org.mumps.meditor.ServerSaveFailure;
 
