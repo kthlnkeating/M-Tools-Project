@@ -9,7 +9,6 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
-import org.eclipse.debug.examples.core.pda.model.PDADebugTarget;
 
 public class MThread extends MDebugElement implements IThread { //in the future perhaps this can be used to represent a JOB on the server
 

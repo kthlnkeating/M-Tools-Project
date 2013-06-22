@@ -51,7 +51,6 @@ public class MDevConsole extends AbstractConsole implements ReadCommandListener,
 
 	@Override
 	public void handleWriteCommand(final String output) {
-		//TODO: bug? is this being called twice? why? I'm not seeing double input but that may just because both async threads run so closely they grab append the same value to the same orig value
 		Display.getDefault().asyncExec(new Runnable() { //Only the async thread can access SWT controls
 			
 			@Override
