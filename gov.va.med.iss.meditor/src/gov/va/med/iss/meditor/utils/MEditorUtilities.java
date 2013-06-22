@@ -6,6 +6,10 @@
  */
 package gov.va.med.iss.meditor.utils;
 
+import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.meditor.MEditorPlugin;
+import gov.va.med.iss.meditor.preferences.MEditorPrefs;
+
 import java.io.FileReader;
 
 import org.eclipse.core.resources.IContainer;
@@ -15,14 +19,10 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbench;
-
-import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.meditor.MEditorPlugin;
-import gov.va.med.iss.meditor.preferences.MEditorPrefs;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author vhaisfiveyj

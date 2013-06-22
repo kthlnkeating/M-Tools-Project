@@ -8,6 +8,9 @@ package gov.va.med.iss.meditor.m;
  * 
  * Code or samples provided herein are provided without warranty of any kind.
  */
+import gov.va.med.iss.meditor.MEditorPlugin;
+import gov.va.med.iss.meditor.utils.WordPartDetector;
+
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -20,9 +23,6 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationPresenter;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-
-import gov.va.med.iss.meditor.MEditorPlugin;
-import gov.va.med.iss.meditor.utils.WordPartDetector;
 
 /**
  * The SQL content assis processor. This content assist processor proposes 

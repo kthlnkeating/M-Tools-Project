@@ -3,9 +3,9 @@ package gov.va.mumps.debug.xtdebug;
 import gov.va.mumps.debug.xtdebug.vo.ReadResultsVO;
 import gov.va.mumps.debug.xtdebug.vo.StackVO;
 import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
+import gov.va.mumps.debug.xtdebug.vo.StepResultsVO.ResultReasonType;
 import gov.va.mumps.debug.xtdebug.vo.VariableVO;
 import gov.va.mumps.debug.xtdebug.vo.WatchVO;
-import gov.va.mumps.debug.xtdebug.vo.StepResultsVO.ResultReasonType;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;

@@ -9,18 +9,16 @@ package gov.va.med.iss.meditor.utils;
  * Code or samples provided herein are provided without warranty of any kind.
  */
 import gov.va.med.iss.meditor.MEditorPlugin;
-//import gov.va.med.iss.meditor.preferences.MEditorPreferencesPage;
 import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-//import org.eclipse.core.runtime.Preferences;
+import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.jface.resource.StringConverter;
 
 /**
  * Colors used in the SQL editor

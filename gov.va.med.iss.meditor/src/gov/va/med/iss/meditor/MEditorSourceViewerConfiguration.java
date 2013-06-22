@@ -8,6 +8,12 @@ package gov.va.med.iss.meditor;
  * 
  * Code or samples provided herein are provided without warranty of any kind.
  */
+import gov.va.med.iss.meditor.editors.MEditor;
+import gov.va.med.iss.meditor.m.MCompletionProcessor;
+import gov.va.med.iss.meditor.m.MDoubleClickStrategy;
+import gov.va.med.iss.meditor.m.MPartitionScanner;
+import gov.va.med.iss.meditor.m.MWordStrategy;
+
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.TextAttribute;
@@ -24,13 +30,6 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.graphics.RGB;
-
-import gov.va.med.iss.meditor.m.MCompletionProcessor;
-import gov.va.med.iss.meditor.m.MDoubleClickStrategy;
-import gov.va.med.iss.meditor.m.MPartitionScanner;
-import gov.va.med.iss.meditor.m.MWordStrategy;
-//import gov.va.med.iss.meditor.utils.MColorProvider;
-import gov.va.med.iss.meditor.editors.MEditor;
 
 /**
  * This class defines the editor add-ons; content assist, content formatter,

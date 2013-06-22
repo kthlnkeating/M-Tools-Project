@@ -10,18 +10,17 @@ package gov.va.med.iss.meditor;
  */
 
 //import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.plugin.*;
-//import org.eclipse.core.runtime.*;
-import org.eclipse.core.resources.*;
-//import org.eclipse.jface.preference.ColorFieldEditor;
-//import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.osgi.framework.BundleContext;
-
 import gov.va.med.iss.meditor.utils.MColorProvider;
 
 import java.nio.file.FileSystems;
-import java.util.*;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class.

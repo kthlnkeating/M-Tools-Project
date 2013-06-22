@@ -6,10 +6,9 @@
  */
 package gov.va.med.iss.meditor.actions;
 
-import gov.va.med.iss.meditor.utils.GlobalNameDialog;
-import gov.va.med.iss.meditor.utils.GlobalListing;
-//import gov.va.med.iss.meditor.editors.MEditor;
 import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.meditor.utils.GlobalListing;
+import gov.va.med.iss.meditor.utils.GlobalNameDialog;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;

@@ -6,6 +6,8 @@
  */
 package gov.va.med.iss.meditor.utils;
 
+import gov.va.med.iss.connection.utilities.ConnectionUtilities;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -14,19 +16,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JCheckBox;
 import javax.swing.JTextField;
-
-import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 
 /**
  * @author vhaisfiveyj

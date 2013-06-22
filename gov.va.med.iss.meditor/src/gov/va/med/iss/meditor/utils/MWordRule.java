@@ -6,16 +6,15 @@
  */
 package gov.va.med.iss.meditor.utils;
 
-import org.eclipse.jface.text.rules.WordRule;
-// import java.util.HashMap;
-// import java.util.Map;
-
-import gov.va.med.iss.meditor.utils.MColorProvider;
-// import gov.va.med.iss.meditor.m.MCodeScanner;
-import org.eclipse.jface.text.Assert;
-import org.eclipse.jface.text.rules.*;
-import org.eclipse.jface.text.TextAttribute;
 import gov.va.med.iss.meditor.MEditorPlugin;
+
+import org.eclipse.jface.text.Assert;
+import org.eclipse.jface.text.TextAttribute;
+import org.eclipse.jface.text.rules.ICharacterScanner;
+import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.IWordDetector;
+import org.eclipse.jface.text.rules.Token;
+import org.eclipse.jface.text.rules.WordRule;
 
 
 /**

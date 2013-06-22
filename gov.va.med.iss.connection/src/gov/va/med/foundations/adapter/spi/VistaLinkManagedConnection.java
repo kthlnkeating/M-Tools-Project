@@ -33,9 +33,6 @@ import javax.resource.spi.ManagedConnectionMetaData;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 
-// import x.gov.va.med.iss.log4j.*;
-
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 

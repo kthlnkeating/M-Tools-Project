@@ -3,7 +3,6 @@ package gov.va.med.foundations.adapter.heartbeat;
 import gov.va.med.foundations.adapter.record.VistaLinkResponseVOImpl;
 
 import org.apache.log4j.Logger;
-
 import org.w3c.dom.Document;
 
 //import x.gov.va.med.iss.log4j.*;

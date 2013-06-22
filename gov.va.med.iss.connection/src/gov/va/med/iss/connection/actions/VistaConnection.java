@@ -1,71 +1,32 @@
 package gov.va.med.iss.connection.actions;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Font;
-import java.util.ArrayList;
-import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.HashMap;
-import java.util.Map;
-
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.security.vistalink.EclipseConnection;
-import gov.va.med.foundations.security.vistalink.CallbackHandlerSwing;
 import gov.va.med.foundations.security.vistalink.VistaKernelPrincipalImpl;
 import gov.va.med.foundations.utilities.FoundationsException;
-// import gov.va.med.foundations.security.vistalink.VistaLoginModule;
-import gov.va.med.foundations.security.vistalink.EclipseLoginModule;
+import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.med.iss.connection.dialogs.SecondaryServerSelectionDialogData;
 import gov.va.med.iss.connection.dialogs.SecondaryServerSelectionDialogForm;
+import gov.va.med.iss.connection.preferences.ConnectionPreferencePage;
 import gov.va.med.iss.connection.utilities.MPiece;
 
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.login.LoginContext;
-import javax.security.auth.login.LoginException;
-import javax.security.auth.login.AppConfigurationEntry;
-import javax.security.auth.login.Configuration;
-import javax.security.auth.Subject;
+import java.util.ArrayList;
 
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.Border;
-
-//import x.gov.va.med.iss.log4j.*;
-
-
-import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.Logger;
-
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.core.runtime.Preferences;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbenchWindow;
-
-import gov.va.med.iss.connection.VLConnectionPlugin;
-import gov.va.med.iss.connection.preferences.ConnectionPreferencePage;
 
 /**
  * Our sample action implements workbench action delegate.

@@ -1,15 +1,14 @@
 package gov.va.med.iss.connection.preferences;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.IWorkbench;
-
 import gov.va.med.iss.connection.VLConnectionPlugin;
-import gov.va.med.iss.connection.preferences.ServerListFieldEditor;
 
 import java.util.ArrayList;
 
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * This class represents a preference page that

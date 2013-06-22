@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.mumps.meditor.MEditorRPC;
-import org.mumps.meditor.MEditorUtils;
 import org.mumps.meditor.SaveRoutine;
 import org.mumps.meditor.ServerSaveFailure;
 

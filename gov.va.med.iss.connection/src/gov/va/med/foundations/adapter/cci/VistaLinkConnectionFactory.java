@@ -20,8 +20,6 @@ import javax.resource.spi.ConnectionManager;
 import javax.resource.spi.ManagedConnectionFactory;
 import javax.resource.spi.ResourceAdapterInternalException;
 
-//import x.gov.va.med.iss.log4j.*;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 

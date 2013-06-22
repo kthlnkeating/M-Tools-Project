@@ -1,15 +1,10 @@
 package gov.va.med.iss.mdebugger.views;
 
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.part.ViewPart;
-import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.jface.text.TextViewer;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
 
 public class MDebuggerConsoleDisplay extends ViewPart {
 	public static String strval = "";

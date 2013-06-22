@@ -13,7 +13,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
-
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 import org.jaxen.dom.DOMXPath;

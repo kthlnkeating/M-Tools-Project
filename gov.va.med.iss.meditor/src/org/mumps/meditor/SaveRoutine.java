@@ -2,12 +2,10 @@ package org.mumps.meditor;
 
 import gov.va.med.iss.meditor.utils.MEditorMessageConsole;
 import gov.va.med.iss.meditor.utils.MEditorUtilities;
-import gov.va.med.iss.meditor.utils.RoutineChangedDialogData;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;

@@ -1,10 +1,11 @@
 package gov.va.med.iss.connection;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.plugin.*;
-import org.osgi.framework.BundleContext;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
-import java.util.*;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.

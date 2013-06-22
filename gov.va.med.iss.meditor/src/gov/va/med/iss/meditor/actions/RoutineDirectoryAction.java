@@ -6,13 +6,11 @@
  */
 package gov.va.med.iss.meditor.actions;
 
+import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.meditor.utils.MEditorUtilities;
 import gov.va.med.iss.meditor.utils.RoutineDirectory;
-//import gov.va.med.iss.meditor.utils.RoutineLoad;
-//import gov.va.med.iss.meditor.utils.RoutineNameDialog;
 import gov.va.med.iss.meditor.utils.RoutineNameDialogData;
 import gov.va.med.iss.meditor.utils.RoutineNameDialogForm;
-import gov.va.med.iss.connection.actions.VistaConnection;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;

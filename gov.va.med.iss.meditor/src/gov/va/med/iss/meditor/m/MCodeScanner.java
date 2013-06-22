@@ -8,6 +8,15 @@ package gov.va.med.iss.meditor.m;
  * 
  * Code or samples provided herein are provided without warranty of any kind.
  */
+import gov.va.med.iss.meditor.MEditorPlugin;
+import gov.va.med.iss.meditor.utils.MColorProvider;
+import gov.va.med.iss.meditor.utils.MFunctionDetector;
+import gov.va.med.iss.meditor.utils.MOpDetector;
+import gov.va.med.iss.meditor.utils.MTagDetector;
+import gov.va.med.iss.meditor.utils.MVarDetector;
+import gov.va.med.iss.meditor.utils.MWhiteSpaceDetector;
+import gov.va.med.iss.meditor.utils.MWordRule;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,19 +28,7 @@ import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
-import org.eclipse.jface.text.rules.WordRule;
-import org.eclipse.jface.text.rules.WordPatternRule;
 import org.eclipse.swt.SWT;
-
-import gov.va.med.iss.meditor.MEditorPlugin;
-import gov.va.med.iss.meditor.utils.MColorProvider;
-import gov.va.med.iss.meditor.utils.MFunctionDetector;
-import gov.va.med.iss.meditor.utils.MOpDetector;
-import gov.va.med.iss.meditor.utils.MTagDetector;
-import gov.va.med.iss.meditor.utils.MVarDetector;
-import gov.va.med.iss.meditor.utils.MWhiteSpaceDetector;
-import gov.va.med.iss.meditor.utils.MWordRule;
-//import com.ibm.lab.soln.sqleditor.utils.SQLWordDetector;
 
 /**
  * The MCodeScanner is a RuleBaseScanner.This class finds M comments and

@@ -1,9 +1,7 @@
 package gov.va.med.foundations.security.vistalink;
 
-import java.util.Map;
-import java.util.HashMap;
-import javax.security.auth.login.Configuration;
 import javax.security.auth.login.AppConfigurationEntry;
+import javax.security.auth.login.Configuration;
 
 /**
  * @author vhaisfiveyj

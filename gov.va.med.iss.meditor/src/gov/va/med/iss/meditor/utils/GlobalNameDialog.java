@@ -27,24 +27,11 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-/*
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.lang.StringBuffer;
-import java.util.HashMap;
-*/
-import java.lang.String;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-//import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;

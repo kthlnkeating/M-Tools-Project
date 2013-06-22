@@ -15,22 +15,15 @@ import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.MPiece;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
-/*
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.part.FileEditorInput;
-*/
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 /**
  * @author vhaisfiveyj

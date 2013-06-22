@@ -1,16 +1,13 @@
 package gov.va.med.iss.mdebugger.views;
 
+import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
-import gov.va.med.iss.mdebugger.util.StepResults;
-import gov.va.med.iss.mdebugger.util.MDebuggerSteps;
 import gov.va.med.iss.mdebugger.util.MDebuggerReadWait;
-
-import java.util.Timer;
-import java.util.TimerTask;
+import gov.va.med.iss.mdebugger.util.MDebuggerSteps;
+import gov.va.med.iss.mdebugger.util.StepResults;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;

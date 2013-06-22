@@ -7,9 +7,7 @@
 package gov.va.med.iss.meditor;
 
 //import org.eclipse.ui.plugin.*;
-import org.eclipse.core.runtime.*;
-//import org.eclipse.core.resources.*;
-//import org.osgi.framework.BundleContext;
+import org.eclipse.core.runtime.QualifiedName;
 
 /**
  * @author VHAISFIVEYJ

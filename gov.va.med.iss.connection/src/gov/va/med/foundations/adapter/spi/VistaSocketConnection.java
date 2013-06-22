@@ -11,8 +11,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
-//import x.gov.va.med.iss.log4j.*;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 

@@ -6,8 +6,6 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 
-import com.sun.org.apache.bcel.internal.classfile.LineNumber;
-
 //This class is mutable for variables to be synced, since they can be scoped back to multiple parent stacks.
 //However for everything else, a stack is created whenever a debug result comes back from the server and
 //it is not updated.

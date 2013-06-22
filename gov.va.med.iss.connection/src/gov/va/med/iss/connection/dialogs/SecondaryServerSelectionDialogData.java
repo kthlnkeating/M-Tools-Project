@@ -1,12 +1,8 @@
 package gov.va.med.iss.connection.dialogs;
 
-import java.util.ArrayList;
-
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.PlatformUI;
-
-import gov.va.med.iss.connection.preferences.ConnectionPreferencePage;
 import gov.va.med.iss.connection.utilities.MPiece;
+
+import java.util.ArrayList;
 
 public class SecondaryServerSelectionDialogData {
 	

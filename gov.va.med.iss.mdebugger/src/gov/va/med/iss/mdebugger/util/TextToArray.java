@@ -1,11 +1,11 @@
 package gov.va.med.iss.mdebugger.util;
 
-import java.util.LinkedList;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.IWorkbench;
 
 public class TextToArray {
 	

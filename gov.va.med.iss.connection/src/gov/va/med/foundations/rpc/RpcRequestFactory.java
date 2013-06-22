@@ -7,7 +7,6 @@ import gov.va.med.foundations.xml.XmlUtilities;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

@@ -3,8 +3,6 @@ package gov.va.med.iss.connection.utilities;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.med.iss.connection.preferences.ConnectionPreferencePage;
 
-import org.eclipse.core.runtime.Preferences;
-
 /**
  * Utilities related to connections in Eclipse
  * @author VHAISFIVEYJ

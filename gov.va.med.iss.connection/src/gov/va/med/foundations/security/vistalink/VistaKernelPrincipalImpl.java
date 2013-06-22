@@ -8,8 +8,6 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 
-// import x.gov.va.med.iss.log4j.*;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 

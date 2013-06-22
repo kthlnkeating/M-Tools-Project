@@ -1,6 +1,6 @@
 package gov.va.med.iss.mdebugger.views;
 
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.TableViewer;
 
 
 public class ViewerUtils {

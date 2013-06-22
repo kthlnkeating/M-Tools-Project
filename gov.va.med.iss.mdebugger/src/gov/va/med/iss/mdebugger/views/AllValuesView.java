@@ -1,41 +1,35 @@
 package gov.va.med.iss.mdebugger.views;
 
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.widgets.Sash;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.SWT;
-import org.eclipse.jface.text.TextViewer;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-
-import gov.va.med.iss.mdebugger.util.TextToArray;
-import gov.va.med.iss.mdebugger.views.MDebuggerContentProvider;
-//import gov.va.med.iss.mdebugger.views.WatchValuesView.NameSorter;
-//import gov.va.med.iss.mdebugger.views.WatchValuesView.ViewContentProvider;
-import gov.va.med.iss.mdebugger.views.WatchValuesView.ViewLabelProvider;
-import gov.va.med.iss.mdebugger.util.MPiece;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Sash;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.part.ViewPart;
 ;
 
 

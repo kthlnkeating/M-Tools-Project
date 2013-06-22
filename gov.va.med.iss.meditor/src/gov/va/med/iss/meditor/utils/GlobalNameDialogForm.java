@@ -8,25 +8,20 @@ package gov.va.med.iss.meditor.utils;
 
 
 // import java.awt.Component;
-import java.util.ArrayList;
-/*
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-*/
 import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 
-// import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Shell;
+import java.util.ArrayList;
+
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 public class GlobalNameDialogForm {
 	

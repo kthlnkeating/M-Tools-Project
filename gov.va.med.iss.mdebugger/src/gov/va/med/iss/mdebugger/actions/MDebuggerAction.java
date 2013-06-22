@@ -1,21 +1,17 @@
 package gov.va.med.iss.mdebugger.actions;
 
-import java.util.ArrayList;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.internal.Perspective;
-import org.eclipse.ui.internal.PerspectiveSwitcher;
-import org.eclipse.ui.internal.PerspectiveAction;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
+import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
+import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.mdebugger.MDebuggerDialog;
 import gov.va.med.iss.mdebugger.util.MDebuggerSteps;
-import gov.va.med.iss.mdebugger.views.AllValuesView;
-import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
+
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Our sample action implements workbench action delegate.

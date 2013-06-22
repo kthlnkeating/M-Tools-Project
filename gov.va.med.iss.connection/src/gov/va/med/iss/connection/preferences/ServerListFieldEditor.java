@@ -4,7 +4,6 @@
 package gov.va.med.iss.connection.preferences;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.jface.preference.FieldEditor;
 /**
  * @author vhaisfiveyj
  *

@@ -6,27 +6,10 @@
  */
 package gov.va.med.iss.meditor.actions;
 
-import gov.va.med.iss.meditor.utils.GlobalNameDialog;
-import gov.va.med.iss.meditor.utils.GlobalDirectory;
 import gov.va.med.iss.connection.actions.VistaConnection;
-/*
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import gov.va.med.iss.meditor.utils.GlobalDirectory;
+import gov.va.med.iss.meditor.utils.GlobalNameDialog;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-*/
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;

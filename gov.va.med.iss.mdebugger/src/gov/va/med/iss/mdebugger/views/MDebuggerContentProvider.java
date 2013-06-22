@@ -1,9 +1,10 @@
 package gov.va.med.iss.mdebugger.views;
 
-import gov.va.med.iss.mdebugger.util.TextToArray;
 import gov.va.med.iss.mdebugger.util.MPiece;
+import gov.va.med.iss.mdebugger.util.TextToArray;
 
 import java.util.List;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 

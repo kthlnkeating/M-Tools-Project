@@ -6,21 +6,6 @@
  */
 package gov.va.med.foundations.security.vistalink;
 
-import java.io.IOException;
-import java.net.ConnectException;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.Vector;
-
-//import javax.resource.ResourceException;
-import javax.security.auth.Subject;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.UnsupportedCallbackException;
-import javax.security.auth.login.LoginException;
-import javax.security.auth.spi.LoginModule;
-import javax.xml.parsers.ParserConfigurationException;
-
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.adapter.cci.VistaLinkConnectionFactory;
 import gov.va.med.foundations.adapter.cci.VistaLinkResourceException;
@@ -31,6 +16,19 @@ import gov.va.med.foundations.net.VistaSocketException;
 import gov.va.med.foundations.utilities.ExceptionUtils;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.foundations.utilities.VistaKernelHashCountLimitExceededException;
+
+import java.io.IOException;
+import java.net.ConnectException;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Vector;
+
+import javax.security.auth.Subject;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.login.LoginException;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;

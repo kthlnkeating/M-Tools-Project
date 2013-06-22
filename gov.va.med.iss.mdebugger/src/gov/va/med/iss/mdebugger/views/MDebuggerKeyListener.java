@@ -1,9 +1,10 @@
 package gov.va.med.iss.mdebugger.views;
 
+import java.util.EventListener;
+
+import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.KeyAdapter;
-import java.util.EventListener;
 
 public class MDebuggerKeyListener extends KeyAdapter implements EventListener,KeyListener {
 

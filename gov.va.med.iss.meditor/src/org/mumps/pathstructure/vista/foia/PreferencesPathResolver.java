@@ -1,7 +1,5 @@
 package org.mumps.pathstructure.vista.foia;
 
-import java.nio.file.FileSystems;
-
 import org.mumps.pathstructure.vista.RoutinePathResolver;
 
 public class PreferencesPathResolver implements RoutinePathResolver {

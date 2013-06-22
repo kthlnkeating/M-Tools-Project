@@ -26,8 +26,6 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import javax.xml.parsers.ParserConfigurationException;
 
-// import x.gov.va.med.iss.log4j.*;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 

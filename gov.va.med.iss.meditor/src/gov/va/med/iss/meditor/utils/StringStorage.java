@@ -6,8 +6,8 @@
  */
 package gov.va.med.iss.meditor.utils;
 
-import java.io.InputStream;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;

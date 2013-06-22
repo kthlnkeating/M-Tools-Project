@@ -6,46 +6,35 @@
  */
 package gov.va.med.foundations.security.vistalink;
 
+import gov.va.med.iss.connection.actions.VistaConnection;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.Frame;
-import java.awt.Panel;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Dialog;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginException;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
-import java.lang.ClassNotFoundException;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.RowLayout;
-
-import gov.va.med.foundations.security.vistalink.EclipseLoginModule;
-import gov.va.med.iss.connection.actions.VistaConnection;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 
 
 //import gov.va.med.iss.connection.actions.LaunchPoint;

@@ -8,9 +8,6 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-//import x.gov.va.med.iss.log4j.*;
-
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 

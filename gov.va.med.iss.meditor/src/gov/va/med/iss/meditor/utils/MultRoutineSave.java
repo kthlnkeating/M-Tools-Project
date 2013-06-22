@@ -9,7 +9,6 @@ import java.nio.file.FileSystems;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
 import org.mumps.meditor.MEditorRPC;
-import org.mumps.meditor.MEditorUtils;
 
 public class MultRoutineSave {
 	

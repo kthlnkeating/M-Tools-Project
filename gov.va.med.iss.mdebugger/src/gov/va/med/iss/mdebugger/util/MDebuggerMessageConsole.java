@@ -1,18 +1,17 @@
 package gov.va.med.iss.mdebugger.util;
 //  Created 070301
 
-import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.MessageConsoleStream;
-import org.eclipse.ui.console.IOConsoleInputStream;
-import org.eclipse.ui.console.IConsoleView;
-import org.eclipse.ui.console.IConsoleConstants;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleConstants;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.IConsoleView;
+import org.eclipse.ui.console.IOConsoleInputStream;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 
 /**
  * @author vhaisfiveyj

@@ -6,27 +6,19 @@
  */
 package gov.va.med.iss.meditor.utils;
 
+import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
-/*
-import java.io.File;
-import java.io.FileWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import org.eclipse.core.resources.IResource;
-*/
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.IStorageEditorInput;
+
 import org.eclipse.core.resources.IStorage;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author vhaisfiveyj

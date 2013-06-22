@@ -6,24 +6,9 @@
  */
 package gov.va.med.iss.connection.actions;
 
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
-import gov.va.med.foundations.security.vistalink.EclipseConnection;
-import gov.va.med.foundations.security.vistalink.VistaKernelPrincipalImpl;
-import gov.va.med.iss.connection.VLConnectionPlugin;
-import gov.va.med.iss.connection.preferences.ConnectionPreferencePage;
-
-import javax.security.auth.login.LoginContext;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 

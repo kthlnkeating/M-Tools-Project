@@ -15,10 +15,7 @@ import gov.va.med.iss.connection.actions.VistaConnection;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IStorageEditorInput;
-//import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-//import org.eclipse.ui.IWorkbenchWindow;
-//import org.eclipse.ui.PlatformUI;
 
 /**
  * @author vhaisfiveyj

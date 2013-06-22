@@ -8,6 +8,8 @@ package gov.va.med.iss.meditor.editors;
  * 
  * Code or samples provided herein are provided without warranty of any kind.
  */
+import gov.va.med.iss.meditor.MEditorPlugin;
+
 import java.util.ResourceBundle;
 
 import org.eclipse.jface.action.IMenuManager;
@@ -16,11 +18,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.editors.text.TextEditorActionContributor;
+import org.eclipse.ui.part.EditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-import org.eclipse.ui.texteditor.RetargetTextEditorAction;
-
-import gov.va.med.iss.meditor.MEditorPlugin;
 
 /**
  *  Manages the installation and deinstallation of actions for the SQL editor. 

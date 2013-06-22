@@ -6,8 +6,6 @@ import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionEvent;
 import javax.resource.spi.ConnectionEventListener;
 
-// import x.gov.va.med.iss.log4j.*;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 

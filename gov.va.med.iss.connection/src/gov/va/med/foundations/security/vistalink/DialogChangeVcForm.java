@@ -1,30 +1,23 @@
 package gov.va.med.foundations.security.vistalink;
 
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.events.HelpListener;
-import org.eclipse.swt.events.HelpEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.ui.PlatformUI;
-
 import java.awt.Frame;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
-import java.util.EventListener;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Swing Dialog to collect user input for a "change verify code" event

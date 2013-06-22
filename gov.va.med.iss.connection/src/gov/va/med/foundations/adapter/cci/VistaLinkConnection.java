@@ -7,7 +7,6 @@ import gov.va.med.foundations.adapter.record.VistaLinkResponseVO;
 import gov.va.med.foundations.adapter.spi.VistaLinkManagedConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcResponse;
-import gov.va.med.foundations.utilities.ExceptionUtils;
 import gov.va.med.foundations.utilities.FoundationsException;
 
 import javax.resource.NotSupportedException;
@@ -17,12 +16,6 @@ import javax.resource.cci.ConnectionMetaData;
 import javax.resource.cci.Interaction;
 import javax.resource.cci.LocalTransaction;
 import javax.resource.cci.ResultSetInfo;
-
-//import x.gov.va.med.iss.log4j.*;
-
-
-import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**
  * This implementation class represents an application level connection

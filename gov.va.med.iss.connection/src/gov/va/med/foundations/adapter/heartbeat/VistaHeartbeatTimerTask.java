@@ -9,8 +9,6 @@ import gov.va.med.foundations.utilities.FoundationsException;
 import java.util.ArrayList;
 import java.util.TimerTask;
 
-// import x.gov.va.med.iss.log4j.*;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 

@@ -24,39 +24,15 @@ import java.util.GregorianCalendar;
 import java.lang.StringBuffer;
 import java.util.HashMap;
 */
-import java.lang.String;
-import org.eclipse.swt.widgets.Shell;
-/*
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-*/
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.graphics.Font;
-// import org.eclipse.swt.layout.GridLayout;
-// import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.SWT;
 
 
 /**
