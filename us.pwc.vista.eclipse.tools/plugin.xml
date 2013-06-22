@@ -126,22 +126,34 @@
       <page
             class="us.pwc.eclipse.vista.propertyPage.MTools"
             id="us.pwc.eclipse.vista.propertyPage.MTools"
-            name="M Tools"
-            objectClass="org.eclipse.core.resources.IProject">
+            name="M Tools">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
       </page>
       <page
             category="us.pwc.eclipse.vista.propertyPage.MTools"
             class="us.pwc.eclipse.vista.propertyPage.AssumedVariables"
             id="us.pwc.eclipse.vista.propertyPage.AssumedVariables"
-            name="Assumed Variables"
-            objectClass="org.eclipse.core.resources.IProject">
+            name="Assumed Variables">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
       </page>
       <page
             category="us.pwc.eclipse.vista.propertyPage.MTools"
             class="us.pwc.eclipse.vista.propertyPage.Occurances"
             id="us.pwc.eclipse.vista.propertyPage.Occurances"
-            name="Occurances"
-            objectClass="org.eclipse.core.resources.IProject">
+            name="Occurances">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
       </page>
    </extension>
 
