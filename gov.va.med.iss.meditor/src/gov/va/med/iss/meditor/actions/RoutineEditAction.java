@@ -170,25 +170,22 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 		if (relPath.equals("") || project.getFolder(relPath).exists())
 			return;
 
-		
-		
 		String[] paths;
 		if (relPath.indexOf("/") == -1)
 			paths = new String[] {relPath};
 		else
 			paths = relPath.split("/");
 		String createPath = "";
-		for (int i = 0; i < paths.length; i++){
-			 createPath += paths[i] + "/";
+		for (int i = 0; i < paths.length; i++) {
+			createPath += paths[i] + "/";
 			if (project.getFolder(createPath).exists())
 				continue;
 
-				try {
-					project.getFolder(createPath).create(true, true, null);
-				} catch (CoreException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			try {
+				project.getFolder(createPath).create(true, true, null);
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

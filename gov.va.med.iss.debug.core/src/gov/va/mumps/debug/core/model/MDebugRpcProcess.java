@@ -24,9 +24,6 @@ import com.sun.corba.se.impl.activation.ProcessMonitorThread;
 //TODO: This is really supposed to be wrapper for a system process. Since there is no system process running, I could/should move all this logic elsewhere
 public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	
-	//private MDebugger mDebugger; //TODO: this will no longer be a wrapper for mDebugger (one of many threads, but more of a wrapper for the RPCHandler) instance, it just uses 1 of 2 mDebuggers to talk to it.
-
-	//TODO: what are concernsof this class... probably just the implementing methods of the IProcess interface and that is it.
 	/*
 	 * terminate does nothing, as is the same with resume, since a process
 	 * cannot be suspended. additionally stream proxy may also not be used since
@@ -181,13 +178,12 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 		fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
 	}
 
-	//TODO: why go through the debug wrapper for these? Can I just invoke mDebugger directly from either the console or debugger ui now that there are 2 copies of it?
 	public void resume() {
 		responseResults = xtdebugHandler.resume();
 	}
 
 	public void stepOver() {
-		//responseResults = mDebugger.stepOver();
+		//responseResults = xtdebugHandler.stepOver();
 	}
 
 	public void stepInto() {
@@ -195,7 +191,7 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	}
 
 	public void stepOut() {
-		//responseResults = mDebugger.stepOut();
+		//responseResults = xtdebugHandler.stepOut();
 	}
 	
 	public void addBreakPoint(String breakPoint) {

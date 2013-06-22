@@ -16,7 +16,7 @@ public class AddTagBreakpointActionDelegate implements IViewActionDelegate {
 	private IViewPart viewPart;
 	
 	@Override
-	public void run(IAction action) { //TODO: not sure why eclipse wants this to be an IActionDelegate / not sure what to do with action parm
+	public void run(IAction action) { //not sure why eclipse wants this to be an IActionDelegate / not sure what to do with action parm
 
 		MTagDialog dialog = new MTagDialog(viewPart.getViewSite().getShell());
 		dialog.open();
@@ -27,7 +27,6 @@ public class AddTagBreakpointActionDelegate implements IViewActionDelegate {
 		
 		try {
 			IResource res = ResourcesPlugin.getWorkspace().getRoot();
-			//TODO: may be better to find the resource of a file based on the routine in the tag? but which if there are more than 1 project...
 			DebugPlugin.getDefault().getBreakpointManager().addBreakpoint(new MTagBreakpoint(
 					tag,
 					res));

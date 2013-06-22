@@ -84,17 +84,6 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 	
 	@Override
 	public boolean isValid(ILaunchConfiguration launchConfig) {
-		//TODO: could validate this based on an RPC call to check if the routine is present?
-//		String text = fProgramText.getText();
-//		if (text.length() > 0) {
-//			IPath path = new Path(text);
-//			if (ResourcesPlugin.getWorkspace().getRoot().findMember(path) == null) {
-//				setErrorMessage("Specified routine does not exist");
-//				return false;
-//			}
-//		} else {
-//			setMessage("Specify a program");
-//		}
 		return super.isValid(launchConfig);
 	}
 }

@@ -63,7 +63,6 @@ public class MultRoutineSave {
 		try {
 			MEditorMessageConsole.writeToConsole(saveResults);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

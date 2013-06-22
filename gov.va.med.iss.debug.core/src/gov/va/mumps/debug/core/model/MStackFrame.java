@@ -98,13 +98,13 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 	 */
 	
 	@Override
-	public boolean canStepInto() {
+	public boolean canStepInto() { //TODO: disable all of these for these for children stacks
 		return getThread().canStepInto();
 	}
 
 	@Override
 	public boolean canStepOver() {
-		return getThread().canStepOver(); //TODO: disable these for children stacks
+		return getThread().canStepOver();
 	}
 
 	@Override
@@ -174,12 +174,6 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 	@Override
 	public int getCharEnd() throws DebugException {
 		return -1; 
-		/*
-		 * TODO: implement this by searching the line contents for the
-		 * nextCommand, also keep a count of which command this is and if the
-		 * line number changes so that it can discern between lines which
-		 * contain the same command more than once.
-		 */
 	}
 
 	@Override

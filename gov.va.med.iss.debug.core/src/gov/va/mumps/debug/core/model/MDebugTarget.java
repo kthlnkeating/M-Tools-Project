@@ -29,16 +29,14 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
-import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
-import org.eclipse.debug.core.model.IWatchpoint;
 
 public class MDebugTarget extends MDebugElement implements IDebugTarget, InputReadyListener {
 
 	private ILaunch launch;
-	private MDebugRpcProcess rpcDebugProcess; //TODO: I'm supposed to just store this for the getProcess method. I shouldn't invoke it otherwise.
+	private MDebugRpcProcess rpcDebugProcess;
 	private boolean suspended;
 	private MThread debugThread;
 	private String name;
@@ -73,26 +71,11 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 		this.rpcDebugProcess = rpcProcess;
 		setLinkedToConsole(false);
 		
-		
-		
 		debugThread = new MThread(this);		
-		suspended = true; //false in tutorial, because it waits for the event to come back on the socket saying suspended
-		
-//		stack = new Stack<MStackFrame>(15); //the server can't handle more than 15 anyway.
-		
-//		eventDispatch = new EventDispatchJob();
-//		eventDispatch.schedule();
-		
+		suspended = true;		
 		stack = new MStackFrame[0];
 		
-		handleResponse(rpcProcess.getResponseResults()); //TODO: should results really be handled while setting up the launch config? this may be too soon.
-		
-		// temp just for testing
-//		if (Math.random() > .8) {
-//			for (int i = 0; i < 30; i++)
-//				System.out.println("test breakpoint added!");
-//			rpcProcess.addBreakPoint("STACK5+3^TSTBLAH2");
-//		}
+		handleResponse(rpcProcess.getResponseResults());
 		
 		fireCreationEvent(); //to register that the DebugTarget has been started.
 		if (this.debug) {
@@ -115,8 +98,6 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 			}
 		};
 		resumeJob.schedule();
-
-		
 	}
 	
 	/**
@@ -174,14 +155,11 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 
 	@Override
 	public boolean canSuspend() {
-		//System.out.println("canSuspend()");
-		return !isTerminated() && !isSuspended(); //maybe always return false since the suspend button doesn't do anything?
+		return !isTerminated() && !isSuspended();
 	}
 
 	@Override
 	public boolean isSuspended() {
-		//TODO: what is this for? when and why is it called?
-		//System.out.println("isSuspended()");
 		return suspended;
 	}
 
@@ -197,8 +175,6 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 
 	@Override
 	public void suspend() {
-		//rpcProcess has no suspend command
-		//suspended = true; //what would this do though?
 	}
 
 	@Override
@@ -334,10 +310,10 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 
 	public void stepOver() {
 		stepMode = StepMode.STEP_OVER;
-		suspended = false; //note that handleResponse can set this to false if it the debug is completed
+		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_OVER);
 		rpcDebugProcess.stepOver();
-		handleResponse(rpcDebugProcess.getResponseResults()); //TODO: move this to a new thread if yo want asychon. also move the suspend events to the async thread
+		handleResponse(rpcDebugProcess.getResponseResults());
 	}
 
 	public void stepInto() {
@@ -416,12 +392,6 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 			 * locationAsATag to a lineNumber and routine name.
 			 */
 			
-			//TODO: implement this as async or have the api fixed
-			// update: no, location as a tag will not work so well because it will
-			// require opening the entire file and lightly parsing it. way to
-			// much work to occur here in this model thread. will have to either
-			// index these somehow, or at least make this asycnrhonus/event
-			// based by putting the rpc call in a new thread.
 			if (i == svoList.size() - 1)
 				stack[0] = 
 				new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(),
@@ -430,16 +400,13 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 				stack[svoList.size() - 1 - i] = 
 				new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(),
 						null, -1, null);
-			
-			//prevStackCaller = svo.getCaller();
 		}
-		
+
 		//handle variables
 		allVariables = new LinkedList<VariableVO>();
 		Iterator<VariableVO> varItr = vo.getVariables();
 		while (varItr.hasNext())
 			allVariables.add(varItr.next());
-		//TODO: fire selectionChanged event.
 		
 		if (initialVars == null) { //set all the initial variables
 			initialVars = new TreeSet<VariableVO>(allVariables);
@@ -463,8 +430,6 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 		}
 		
 		//handle read command results
-		//TODO: set suspend = true, fire no debug events, and set stepping = false
-		//TODO: the state of teh debug target should be updated wrt to the readCmdResults (isStarRead,etc). This may be important for sending the response back, if it isn't persisted it won't know what it was
 		if (vo.getReadResults() != null) {
 			ReadResultsVO readCmdResults = vo.getReadResults();
 			for (ReadCommandListener listener : readCommandListeners) {
@@ -478,7 +443,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 		}
 		
 		if (vo.getResultReason() == ResultReasonType.BREAKPOINT || vo.getResultReason() == ResultReasonType.WATCHPOINT)
-			//breakPointHit(vo.getBreakpointName()) //TODO: to handle breakpoint hit, will need to change 1) what is sent to the RPC 2) what the RPC sends back
+			//breakPointHit(vo.getBreakpointName()) //TODO: not possible atm. the RPC is sent the breakpoint location as ROU+55^ROU instead of TAG+5^ROU. The Rpc then sends back TAG+5^ROU. So it isn't possible to figure out which breakpoint was hit unless that is fixed
 			suspended(DebugEvent.BREAKPOINT);
 		else if (vo.getResultReason() == ResultReasonType.STEP)
 			suspended(DebugEvent.STEP_INTO); //STEP_INTO, the only currently supported type.

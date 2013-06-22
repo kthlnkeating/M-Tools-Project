@@ -68,7 +68,7 @@ public class StepResultsParser {
 			switch (section) {
 			
 			case REASON:
-				if (line.equals("DONE -- PROCESSING FINISHED") || line.equals("TERMINATED -- EXECUTION OF NEXT COMMAND [EXCLUSIVE OR GLOBAL KILL] WILL DESTROY CONNECTION")) //TODO: parse this new TERMINATED result and act on it
+				if (line.equals("DONE -- PROCESSING FINISHED") || line.equals("TERMINATED -- EXECUTION OF NEXT COMMAND [EXCLUSIVE OR GLOBAL KILL] WILL DESTROY CONNECTION"))
 					complete = true;
 				else if (line.startsWith("START:" )) {
 					resultReason = ResultReasonType.START;
@@ -175,7 +175,7 @@ public class StepResultsParser {
 
 		}
 		
-		assert(resultReason != null); //TODO: throw proper parsing exception
+		assert(resultReason != null);
 		if (readCommandFound)
 			readResult = new ReadResultsVO(maxChars, timeout, starRead, typeAhead);
 		return new StepResultsVO(resultReason, complete, variables, 

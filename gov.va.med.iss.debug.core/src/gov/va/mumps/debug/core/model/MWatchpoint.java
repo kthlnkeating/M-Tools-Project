@@ -23,7 +23,7 @@ public class MWatchpoint extends Breakpoint implements IWatchpoint {
 		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				IMarker marker = resource
-						.createMarker("gov.va.med.iss.debug.core.watchpoint.marker"); //TODO: need a good system for looking up constants
+						.createMarker("gov.va.med.iss.debug.core.watchpoint.marker");
 				setMarker(marker);
 				marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
 				marker.setAttribute(IBreakpoint.ID, getModelIdentifier());

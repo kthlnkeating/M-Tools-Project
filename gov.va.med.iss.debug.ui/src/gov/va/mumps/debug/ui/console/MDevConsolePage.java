@@ -45,7 +45,7 @@ public class MDevConsolePage implements IPageBookViewPage, KeyListener {
 		textWidget.setEditable(false);
 		textWidget.setForeground(new Color(device, 255, 255, 255));
 		FontData fd = new FontData("Courier New", 10, 0);
-		textWidget.setFont(new Font(device, fd)); //TODO: add backup true type fonts/test for other supported OS'es
+		textWidget.setFont(new Font(device, fd));
 		textWidget.addKeyListener(this);
 		
 		//NOTE: can create actions and add them to the toolbar here.	
@@ -112,7 +112,7 @@ public class MDevConsolePage implements IPageBookViewPage, KeyListener {
 		}
 		
 		//handle return key or max chars entered
-		if (keysTyped == console.getMaxCharInput() || keyEvent.character == SWT.CR) { //TODO: test this on eclipse linux
+		if (keysTyped == console.getMaxCharInput() || keyEvent.character == SWT.CR) {
 			handleInputReadyListeners();
 			keysTyped = 0;
 			keyInput = "";

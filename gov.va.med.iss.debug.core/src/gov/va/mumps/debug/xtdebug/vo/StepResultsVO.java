@@ -92,7 +92,7 @@ public class StepResultsVO {
 		return readresults;
 	}
 	
-	public enum ResultReasonType { //TODO: move to outer class
+	public enum ResultReasonType {
 		START, STEP, BREAKPOINT, WATCHPOINT, WRITE, READ;
 	}
 

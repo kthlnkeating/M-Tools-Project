@@ -80,7 +80,6 @@ public class MLineBreakpointAdapter implements IToggleBreakpointsTarget {
 		return false;
 	}
 
-	//TODO: how to implement this?
 	@Override
 	public void toggleWatchpoints(IWorkbenchPart part, ISelection selection) throws CoreException {
 	}

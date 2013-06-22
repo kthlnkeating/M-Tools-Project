@@ -20,7 +20,7 @@ public class MDebugUIPlugin extends AbstractUIPlugin implements
 	Map<MDebugTarget,MDevConsole> consoles;
 	
 	@Override
-	public void start(BundleContext context) throws Exception { //TODO: what if this is started after launches were already added? is that possible? Can a launch be created without activating this UI plugin?
+	public void start(BundleContext context) throws Exception {
 		super.start(context);	
 		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this);
 		consoles = new HashMap<MDebugTarget,MDevConsole>(5);

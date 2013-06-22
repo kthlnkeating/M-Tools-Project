@@ -11,10 +11,9 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.examples.core.pda.model.PDADebugTarget;
 
-public class MThread extends MDebugElement implements IThread { //TODO: in the future perhaps this can be used to repsent a JOB on the server
+public class MThread extends MDebugElement implements IThread { //in the future perhaps this can be used to represent a JOB on the server
 
 	private IBreakpoint[] breakpoints;
-	private boolean stepping = false; //TODO: move to constructor?
 	private String name;
 	private boolean debug;
 
@@ -51,19 +50,17 @@ public class MThread extends MDebugElement implements IThread { //TODO: in the f
 
 	@Override
 	public boolean canStepInto() {
-		return !isTerminated() && !isStepping() && this.debug; //TODO: this will take some lexical analysis of the nextCommand to see if it is a fanout
+		return !isTerminated() && !isStepping() && this.debug;
 	}
 
 	@Override
 	public boolean canStepOver() {
-		//return true; //I think any command can be stepped over, but if nextCommand is null perhaps that is a validcheck
 		return false; ////disabling until the KIDs package actually implements this
 	}
 
 	@Override
 	public boolean canStepReturn() {
-		//return true; //TODO: check if there is anything on the stack?
-		return this.debug; ////disabling until the KIDs package actually implements this
+		return false; //disabling until the KIDs package actually implements this
 	}
 
 	@Override
@@ -76,22 +73,18 @@ public class MThread extends MDebugElement implements IThread { //TODO: in the f
 	public void stepInto() throws DebugException {
 		fireResumeEvent(DebugEvent.STEP_INTO);
 		((MDebugTarget)getDebugTarget()).stepInto();
-		fireSuspendEvent(DebugEvent.STEP_END); //TODO: cannot assume this is step_end. need to have the MDebugTarget invoke this MThread to call the right suspend event (breakpoint, watchpoint or step end)
 	}
 
 	@Override
 	public void stepOver() throws DebugException {
 		fireResumeEvent(DebugEvent.STEP_OVER);
 		((MDebugTarget)getDebugTarget()).stepOver();
-		fireSuspendEvent(DebugEvent.STEP_END);
 	}
 
 	@Override
 	public void stepReturn() throws DebugException {
 //		fireResumeEvent(DebugEvent.STEP_RETURN);
 //		((MDebugTarget)getDebugTarget()).stepOut();
-//		fireSuspendEvent(DebugEvent.STEP_END); //TODO: move out, just for testing
-		((MDebugRpcProcess)((MDebugTarget)getDebugTarget()).getProcess()).sendReadInput("TEST INPUT!!");
 	}
 
 	@Override

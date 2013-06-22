@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IBreakpoint;
 
-//TODO: idea, this could extend linebreakpoint or be replaced with linebreakpoint. merely convert (and sync) the linelabel with the linelocation
 public class MTagBreakpoint extends AbstractMBreakpoint {
 	
 	private final String TAG = "gov.va.mumps.debug.core.model.MTag";

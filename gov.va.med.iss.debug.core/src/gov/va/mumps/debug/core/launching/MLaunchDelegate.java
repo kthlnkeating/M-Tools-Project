@@ -41,7 +41,6 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 	 * @throws CoreException
 	 */
 	private void abort(String message, Throwable e) throws CoreException {
-		// TODO: the plug-in code should be the example plug-in, not Perl debug model id
 		throw new CoreException(new Status(IStatus.ERROR, MDebugConstants.M_DEBUG_MODEL, 0, message, e));
 	}
 

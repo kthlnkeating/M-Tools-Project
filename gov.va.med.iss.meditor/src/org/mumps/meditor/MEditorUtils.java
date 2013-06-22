@@ -135,7 +135,6 @@ public class MEditorUtils {
 		try {
 			createOrReplace(backupFile, serverCode);
 		} catch (UnsupportedEncodingException | CoreException e) {
-			// TODO throw exception so handler can display error or not
 			e.printStackTrace();
 		}
 	}

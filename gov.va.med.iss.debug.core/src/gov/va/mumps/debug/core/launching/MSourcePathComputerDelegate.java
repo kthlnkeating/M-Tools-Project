@@ -31,7 +31,7 @@ public class MSourcePathComputerDelegate implements ISourcePathComputerDelegate 
 		 * What is really being debugged is a routine on the server, so that
 		 * routine may not be loaded into the the workspace at all. For this
 		 * case we'll just fail the lookup, in the future it could support
-		 * loading the missing routine.
+		 * loading the missing routine. TODO
 		 * 
 		 * Anyway, as for finding the "correct" one, the right workspace
 		 * will either be 'mcode' if the current connection does not have
@@ -61,11 +61,12 @@ public class MSourcePathComputerDelegate implements ISourcePathComputerDelegate 
 //		URI uri = resource.getLocationURI();
 //		System.out.println(uri.toString());
 		
-		//TODO: if project is null, the substitute 'mcode', and add all directories except for [connName]/backup
+		//if project is null, the substitute 'mcode', and add all directories except for [connName]/backup
 		//what about letting the user configure the source container in the tab? maybe a better idea for now
 		
 		if (currentPojrect == null || currentPojrect.isEmpty())
-			return new ISourceContainer[]{new WorkspaceSourceContainer()};
+			//return new ISourceContainer[]{new WorkspaceSourceContainer()};
+			currentPojrect = "mcode";
 		
 		ISourceContainer sourceContainer = null;
 		IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(currentPojrect));
