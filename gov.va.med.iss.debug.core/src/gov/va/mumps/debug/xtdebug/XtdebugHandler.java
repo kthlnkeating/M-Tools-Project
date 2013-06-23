@@ -107,7 +107,7 @@ public class XtdebugHandler {
 				rpcName.equals(XTDEBUG_READ_INPUT);
 		
 		if (connection == null) {
-			throw new RuntimeException("Not connected to VistaServer"); //TODO: throw core exception? I think throw a not connected exception so that it can retry connecting.
+			throw new RuntimeException("Not connected to VistaServer");
 		}
 
 		String strResults = "";
