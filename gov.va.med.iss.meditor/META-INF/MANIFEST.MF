@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MEditor Plug-in
 Bundle-SymbolicName: gov.va.med.iss.meditor;singleton:=true
-Bundle-Version: 0.1.007
+Bundle-Version: 0.1.008
 Bundle-Activator: gov.va.med.iss.meditor.MEditorPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

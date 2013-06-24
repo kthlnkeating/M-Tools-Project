@@ -3,7 +3,7 @@
 <plugin
    id="gov.va.med.iss.mdebugger"
    name="MDebugger Plug-in"
-   version="1.0.7.5"
+   version="1.0.7.6"
    provider-name="Dept. Veteran Affairs"
    class="gov.va.med.iss.mdebugger.MDebuggerPlugin">
 
