@@ -19,6 +19,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.ILaunchShortcut;
@@ -30,27 +32,21 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
+@SuppressWarnings("restriction")
 public class MLaunchShortcut implements ILaunchShortcut {
+
+	private final String CONFIG_TYPE = "gov.va.mumps.debug.core.launchConfigurationType";
 
 	@Override
 	public void launch(ISelection selection, final String mode) {
 		if (selection != null && selection instanceof TreeSelection) {
-			final MLaunchShortcut this1 = this;
 			TreeSelection ts = (TreeSelection) selection;
 			TreePath[] paths = ts.getPaths();
 			TreePath path = paths[paths.length - 1];
 			Object lastSegment = path.getLastSegment();
 			if (lastSegment instanceof IFile) {
 				final IFile file = (IFile) lastSegment;
-				Job job = new Job("Start M Debug") {
-					@Override
-					protected IStatus run(IProgressMonitor arg0) {
-						this1.run(file, mode);
-						return Status.OK_STATUS;
-					}
-
-				};
-				job.schedule();
+				scheduleLaunch(file, mode);
 			}
 		}
 	}
@@ -59,35 +55,80 @@ public class MLaunchShortcut implements ILaunchShortcut {
 	public void launch(IEditorPart editor, final String mode) {
 		Object adaptor = editor.getEditorInput().getAdapter(IFile.class);
 		if (adaptor instanceof IFile) {
-			final MLaunchShortcut this1 = this;
 			final IFile file = (IFile) adaptor;
-			Job job = new Job("Start M Debug") {
-				@Override
-				protected IStatus run(IProgressMonitor arg0) {
-					this1.run(file, mode);
-					return Status.OK_STATUS;
-				}
-			};
-			job.schedule();
+			scheduleLaunch(file, mode);
 		}
 	}
 
+	private void scheduleLaunch(final IFile file, final String mode) {
+		Job job = new Job("Start M Debug") {
+			@Override
+			protected IStatus run(IProgressMonitor arg0) {
+				MLaunchShortcut.this.run(file, mode);
+				return Status.OK_STATUS;
+			}
+		};
+		job.schedule();		
+	}
+	
+	private ILaunchConfiguration[] getConfigurations(IFile file) throws CoreException {
+		LaunchConfigurationManager lcm = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
+		ILaunchConfiguration[] configs = lcm.getApplicableLaunchConfigurations(new String[]{CONFIG_TYPE}, file);
+		return configs;
+	}
+	
+	private void launchFromConfigurations(ILaunchConfiguration[] configs, String mode) throws CoreException {
+		ILaunchConfiguration config = (configs.length == 1) ? configs[0] : this.selectConfiguration(configs, mode);
+		if (config != null) {
+			config.launch(mode, null);
+		}		
+	}
+	
+	private ILaunchConfiguration selectConfiguration(final ILaunchConfiguration[] configs, final String mode) {
+		final IDebugModelPresentation renderer = DebugUITools.newDebugModelPresentation();
+		final ElementListSelectionDialog dialog = new ElementListSelectionDialog(null, renderer);
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				dialog.setElements(configs);
+				dialog.setTitle("M " + mode + " configurations");
+				dialog.setMessage("Select an M " + mode + " configuration");
+				dialog.setMultipleSelection(false);
+				dialog.open();
+				renderer.dispose();
+			}
+		});
+		if (dialog.getReturnCode() == Window.OK) {
+			return (ILaunchConfiguration) dialog.getFirstResult();
+		}
+		return null;	
+	}
+		
 	public void run(IFile file, String mode) {
-		Vector<String> tags = null;
 		try {
-			tags = getTags(file);
+			ILaunchConfiguration[] configs = this.getConfigurations(file);
+			if ((configs != null) && (configs.length > 0)) {
+				this.launchFromConfigurations(configs, mode);
+				return;
+			}
+			
+			Vector<String> tags = null;
+			try {
+				tags = getTags(file);
+			} catch (CoreException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			String tag = selectTag(tags, mode);
+			if (tag == null) {
+				return;
+			} else {
+				String fileName = file.getName().split("\\.")[0];
+				run(fileName, tag, mode);
+				return;
+			}
 		} catch (CoreException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		String tag = selectTag(tags, mode);
-		if (tag == null) {
-			return;
-		} else {
-			String fileName = file.getName().split("\\.")[0];
-			run(fileName, tag, mode);
-			return;
 		}
 	}
 
@@ -116,24 +157,13 @@ public class MLaunchShortcut implements ILaunchShortcut {
 		if (null == routine || null == tag)
 			return;
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-		ILaunchConfigurationType configType = manager.getLaunchConfigurationType("gov.va.mumps.debug.core.launchConfigurationType");
+		ILaunchConfigurationType configType = manager.getLaunchConfigurationType(CONFIG_TYPE);
 		ILaunchConfigurationWorkingCopy wc;
 		try {
-			ILaunchConfiguration[] configs = manager
-					.getLaunchConfigurations(configType);
-			ILaunchConfiguration config = null;
 			String command = "D " + tag + "^" + routine;
-			for (int i = 0; i < configs.length - 1; i++) {
-				String att = configs[i].getAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, "");
-				if (att.equals(command))
-					config = configs[i];
-			}
-			if (null == config) {
-				wc = configType.newInstance(null,
-						manager.generateLaunchConfigurationName(tag + "^" + routine));
-				wc.setAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, command);
-				config = wc.doSave();
-			}
+			wc = configType.newInstance(null, manager.generateLaunchConfigurationName(routine));
+			wc.setAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, command);
+			ILaunchConfiguration config = wc.doSave();
 			config.launch(mode, null);
 		} catch (CoreException e) {
 			e.printStackTrace();

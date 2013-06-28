@@ -158,18 +158,18 @@
 	<!-- Add a shortcut to execute the launch configuration type. Handy for just clicking the debug/run icon while an M file is open.-->
 	<extension point="org.eclipse.debug.ui.launchShortcuts">
 	  <shortcut
-	    label="MUMPS"
+	    label="M Application"
 	    icon="$nl$/icons/full/cview16/meditor.gif"
 	    modes="run, debug"
 	    class="gov.va.mumps.debug.ui.launching.MLaunchShortcut"
-	    description="Launch a remote MUMPS routine"
+	    description="Launch a remote M routine"
 	    id="gov.va.mumps.debug.ui.remoteMShortcut">
 	    <description
-	     description="Runs a remote MUMPS Routine"
+	     description="Runs a remote M Routine"
 	     mode="run">
 	    </description>
 	    <description
-	     description="Debugs a remote MUMPS Routine"
+	     description="Debugs a remote M Routine"
 	     mode="debug">
 	    </description>
 	  <contextualLaunch>

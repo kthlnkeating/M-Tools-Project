@@ -5,7 +5,7 @@ Bundle-SymbolicName: gov.va.med.iss.debug.ui;singleton:=true
 Bundle-Version: 0.1.005
 Bundle-Activator: gov.va.mumps.debug.ui.MDebugUIPlugin
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Dept. Veteran Affairs
 Bundle-ClassPath: .
 Require-Bundle: 

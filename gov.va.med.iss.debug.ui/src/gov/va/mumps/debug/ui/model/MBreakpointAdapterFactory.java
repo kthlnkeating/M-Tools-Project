@@ -8,23 +8,16 @@ import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
 public class MBreakpointAdapterFactory implements IAdapterFactory {
 
 	@Override
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if (adaptableObject instanceof MEditor) {
 			return new MLineBreakpointAdapter();
-//			ITextEditor editorPart = (ITextEditor) adaptableObject;
-//			IResource resource = (IResource) editorPart.getEditorInput().getAdapter(IResource.class);
-//			if (resource != null) {
-//				String extension = resource.getFileExtension();
-//				System.out.println("extension: "+ extension);
-//				if (extension != null && extension.equals("pda")) {
-//					return new PDALineBreakpointAdapter();
-//				}
-//			}			
 		}
 		return null;
 	}
 
 	@Override
+	@SuppressWarnings("rawtypes")
 	public Class[] getAdapterList() {
 		return new Class[]{IToggleBreakpointsTarget.class};
 	}
