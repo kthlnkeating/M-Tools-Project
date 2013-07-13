@@ -32,6 +32,7 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	 */
 	
 	private ILaunch launch;
+	@SuppressWarnings("unused")
 	private ProcessMonitorThread monitor;
 	//private IStreamsProxy streamsProxy = new MConsoleStreamProxy();
 	private String name;

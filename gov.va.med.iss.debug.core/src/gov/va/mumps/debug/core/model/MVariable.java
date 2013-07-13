@@ -7,6 +7,7 @@ import org.eclipse.debug.core.model.IVariable;
 public class MVariable extends MDebugElement implements IVariable {
 	
 	private String name;
+	@SuppressWarnings("unused")
 	private MStackFrame stackFrame;
 	private MValue value;
 

@@ -1,67 +1,50 @@
-/*******************************************************************************
- * Copyright (c) 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the Common Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/cpl-v10.html
- * 
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *     Bjorn Freeman-Benson - initial API and implementation
- *******************************************************************************/
+//---------------------------------------------------------------------------
+// Copyright 2013 PwC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//---------------------------------------------------------------------------
+
 package gov.va.mumps.debug.core;
 
 import org.eclipse.core.runtime.Plugin;
-import org.osgi.framework.BundleContext;
+import org.osgi.framework.Bundle;
 
 /**
- * Plug-in class for debug examples
+ * Implements M language debugger.
  */
 public class MDebugCorePlugin extends Plugin {
 	
-	private static MDebugCorePlugin fgDefault = null;
+	private static MDebugCorePlugin instance = null;
 	
 	public MDebugCorePlugin() {
 		super();
-		fgDefault = this;
+		MDebugCorePlugin.instance = this;
 	}
 	
 	/**
-	 * Returns the singleton Debug Examples plug-in.
-	 *  
-	 * @return the singleton Debug Examples plug-in
+	 * Returns the current instance of the plug-in.
 	 */
-	public static MDebugCorePlugin getDefault() {
-		return fgDefault;
+	public static MDebugCorePlugin getInstance() {
+		return MDebugCorePlugin.instance;
 	}
 	
-	/**
-	 * Return a <code>java.io.File</code> object that corresponds to the specified
-	 * <code>IPath</code> in the plugin directory, or <code>null</code> if none.
-	 */
-//	public static File getFileInPlugin(IPath path) {
-//		try {
-//			URL installURL =
-//				new URL(getDefault().getDescriptor().getInstallURL(), path.toString());
-//			URL localURL = Platform.asLocalURL(installURL);
-//			return new File(localURL.getFile());
-//		} catch (IOException ioe) {
-//			return null;
-//		}
-//	}
-//	
-	/**
-	 * This method is called upon plug-in activation
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
+	public String getPluginId() {
+		Bundle bundle = this.getBundle();
+		if (bundle != null) {
+			String result = bundle.getSymbolicName();
+			if (result != null) return result;
+		}
+		return "gov.va.med.iss.debug.core";
 	}
-
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-	}
-
+	
 }

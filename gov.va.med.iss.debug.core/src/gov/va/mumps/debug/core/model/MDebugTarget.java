@@ -461,6 +461,7 @@ public class MDebugTarget extends MDebugElement implements IDebugTarget, InputRe
 	 *            name of the breakpoint, either a tag or a variable name for watch
 	 *            points
 	 */
+	@SuppressWarnings("unused")
 	private void breakpointHit(String breakpointName) {
 		// determine which breakpoint was hit, and set the thread's breakpoint
 		

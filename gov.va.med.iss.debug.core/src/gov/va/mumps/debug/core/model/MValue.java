@@ -6,6 +6,7 @@ import org.eclipse.debug.core.model.IVariable;
 
 public class MValue extends MDebugElement implements IValue {
 
+	@SuppressWarnings("unused")
 	private MVariable variable;
 	private String value;
 	

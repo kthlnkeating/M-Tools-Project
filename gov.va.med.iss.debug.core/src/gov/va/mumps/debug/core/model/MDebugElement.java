@@ -57,7 +57,7 @@ public abstract class MDebugElement extends PlatformObject implements IDebugElem
 	}
 
 	protected void abort(String message, Throwable e) throws DebugException {
-		throw new DebugException(new Status(IStatus.ERROR, MDebugCorePlugin.getDefault().getDescriptor().getUniqueIdentifier(), 
+		throw new DebugException(new Status(IStatus.ERROR, MDebugCorePlugin.getInstance().getPluginId(), 
 				DebugPlugin.INTERNAL_ERROR, message, e));
 	}
 	

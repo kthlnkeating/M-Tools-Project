@@ -73,9 +73,11 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 
 	private IThread debugThread;
 	private String stackName;
+	@SuppressWarnings("unused")
 	private String callerTag;
 	private String routineName;
 	private int lineLocation;
+	@SuppressWarnings("unused")
 	private String nextCommand;
 	
 	public MStackFrame(IThread debugThread, String stackName, String callerTag, 
