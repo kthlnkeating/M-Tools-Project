@@ -9,6 +9,11 @@ package gov.va.med.foundations.net;
 public class VistaSocketTimeOutException extends VistaSocketException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	/**
 	 * Constructor for VistaSocketTimeOutException.
 	 */

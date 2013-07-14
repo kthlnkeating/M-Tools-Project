@@ -6,8 +6,8 @@ import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionEvent;
 import javax.resource.spi.ConnectionEventListener;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**
  * This class represents the default(J2SE) ConnectionEventListener
@@ -44,7 +44,7 @@ public class VistaLinkManagedConnectionEventListener
 			((VistaLinkManagedConnection) ce.getSource()).destroy();
 		} catch (ResourceException e) {
 
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = (new StringBuffer())
 					.append(
 					"Error occured while handling managedConnection close() event")
@@ -90,7 +90,7 @@ public class VistaLinkManagedConnectionEventListener
 			mc.destroy();
 
 		} catch (ResourceException e) {
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 
 				String errMsg = (new StringBuffer())
 					.append(

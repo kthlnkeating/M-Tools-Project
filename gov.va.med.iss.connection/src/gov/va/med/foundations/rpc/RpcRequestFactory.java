@@ -5,8 +5,8 @@ import gov.va.med.foundations.utilities.ExceptionUtils;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.foundations.xml.XmlUtilities;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -139,7 +139,7 @@ public class RpcRequestFactory implements VistaLinkRequestFactory {
 
 			return rpcRequest;
 		} catch (FoundationsException e) {
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(
 					(new StringBuffer())
 						.append("Can not create RpcRequest.")

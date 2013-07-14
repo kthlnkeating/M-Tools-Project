@@ -63,12 +63,5 @@
             name="Sample Category"
             id="gov.va.med.iss.connection">
       </category>
-      <view
-            name="LaunchPoint"
-            icon="icons/sample.gif"
-            category="gov.va.med.iss.connection"
-            class="gov.va.med.iss.connection.actions.LaunchPoint"
-            id="gov.va.med.iss.connection.actions.LaunchPoint">
-      </view>
    </extension>
 </plugin>

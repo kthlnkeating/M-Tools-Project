@@ -9,6 +9,11 @@ import gov.va.med.foundations.utilities.FoundationsException;
  */
 public class VistaSocketException extends FoundationsException {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor for VistaSocketException.
 	 */
 	public VistaSocketException() {

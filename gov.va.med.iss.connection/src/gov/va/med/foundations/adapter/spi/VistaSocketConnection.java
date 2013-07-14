@@ -11,8 +11,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**
  * @author Application Modernization - Foundations Team
@@ -22,6 +22,11 @@ import org.apache.log4j.Priority;
  *
  */
 public class VistaSocketConnection extends SocketManager {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The logger used by this class
@@ -72,7 +77,7 @@ public class VistaSocketConnection extends SocketManager {
 		} catch (IOException e) {
 
 			String errStr = "Can not create TCP/IP socket.";
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 
 				String errMsg = (new StringBuffer())
 					.append(errStr)
@@ -132,7 +137,7 @@ public class VistaSocketConnection extends SocketManager {
 				getSoc().close();
 			} catch (IOException e) {
 				String errStr = "Can not close socket connection.";
-				if(logger.isEnabledFor(Priority.ERROR)){
+				if(logger.isEnabledFor(Level.ERROR)){
 
 					String errMsg = (new StringBuffer())
 						.append(errStr)
@@ -163,7 +168,7 @@ public class VistaSocketConnection extends SocketManager {
 				getSoc().close();
 			} catch (IOException e) {
 				String errStr = "Can not close socket connection.";
-				if(logger.isEnabledFor(Priority.ERROR)){
+				if(logger.isEnabledFor(Level.ERROR)){
 
 					String errMsg = (new StringBuffer())
 						.append(errStr)
@@ -208,7 +213,7 @@ public class VistaSocketConnection extends SocketManager {
 			getSoc().setSoTimeout(timeout);
 		} catch (SocketException e) {
 			String errStr = "Can not set socket timeout.";
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 
 				String errMsg = (new StringBuffer())
 					.append(errStr)

@@ -8,8 +8,8 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 
 /**
@@ -64,10 +64,15 @@ import org.apache.log4j.Priority;
  * @author Application Modernization - Foundations Team
  * @version 1.0.0.193
  */
+@SuppressWarnings("rawtypes")
 public final class VistaKernelPrincipalImpl implements java.io.Serializable, VistaKernelPrincipal {
 
 	// see http://java.sun.com/j2se/1.4/docs/guide/security/jaas/tutorials/SamplePrincipal.java
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Hashtable userDemographicsHashTable;
 	private transient VistaLinkConnection authenticatedConnection;
 
@@ -78,6 +83,7 @@ public final class VistaKernelPrincipalImpl implements java.io.Serializable, Vis
 	 * @param nameNewPerson01 the value to set as the name of the logged-on user.
 	 * @throws FoundationsException thrown if an error encountered.
 	 */
+	@SuppressWarnings("unchecked")
 	VistaKernelPrincipalImpl(String nameNewPerson01) throws FoundationsException {
 		if (nameNewPerson01 == null) {
 			throw new FoundationsException("VistaAVPrincipalImpl constructor: nameNewPerson01 cannot be null");
@@ -125,6 +131,7 @@ public final class VistaKernelPrincipalImpl implements java.io.Serializable, Vis
 	 * @param key key under which to store the user demographic value
 	 * @param value value to set
 	 */
+	@SuppressWarnings("unchecked")
 	void setUserDemographicValue(String key, String value) {
 		userDemographicsHashTable.put(key, value);
 	}
@@ -199,14 +206,14 @@ public final class VistaKernelPrincipalImpl implements java.io.Serializable, Vis
 		} else if (setPrincipals.size() == 0) {
 			String errMsg = "Error getting Kernel Principal: No Kernel Principals Found";
 			FoundationsException e = new FoundationsException(errMsg);
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(errMsg, e);
 			}
 			throw e;
 		} else {
 			String errMsg = "Error getting Kernel Principal: Multiple Kernel Principals Found";
 			FoundationsException e = new FoundationsException(errMsg);
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(errMsg, e);
 			}
 			throw e;

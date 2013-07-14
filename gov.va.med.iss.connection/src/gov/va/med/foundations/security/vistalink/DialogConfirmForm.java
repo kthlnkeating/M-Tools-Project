@@ -30,32 +30,42 @@ import org.eclipse.ui.PlatformUI;
 final class DialogConfirmForm extends Dialog {
 
 	private static final String OK_BUTTON_LABEL = "&OK";
+	@SuppressWarnings("unused")
 	private static final char OK_BUTTON_MNEMONIC = 'O';
 	private static final String OK_BUTTON_TOOLTIP = "Sends OK confirmation to server";
 
 	private static final String MESSAGE_AREA_TOOLTIP = "Message displayed by this dialog.";
 
 	private static final String CANCEL_BUTTON_LABEL = "&Cancel";
+	@SuppressWarnings("unused")
 	private static final char CANCEL_BUTTON_MNEMONIC = 'C';
 	private static final String CANCEL_BUTTON_TOOLTIP = "Sends cancel request to server";
 
 	private static final String ERROR_LABEL = "&Error:";
+	@SuppressWarnings("unused")
 	private static final char ERROR_MNEMONIC = 'E';
+	@SuppressWarnings("unused")
 	private static final String ERROR_LOGO = "./images/error.gif";
 	private static final String ERROR_LOGO_TOOLTIP = "Error logo";
 
 	private static final String POST_TEXT_LABEL = "&Post-sign-in messages:";
+	@SuppressWarnings("unused")
 	private static final char POST_TEXT_MNEMONIC = 'P';
+	@SuppressWarnings("unused")
 	private static final String POST_TEXT_LOGO = "./images/yes1a.gif";
 	private static final String POST_TEXT_LOGO_TOOLTIP = "Informational logo";
 
 	private static final String SUCCESS_LABEL = "&Information:";
+	@SuppressWarnings("unused")
 	private static final char SUCCESS_MNEMONIC = 'I';
+	@SuppressWarnings("unused")
 	private static final String SUCCESS_LOGO = "./images/yes1a.gif";
 	private static final String SUCCESS_LOGO_TOOLTIP = "Informational logo";
 
 	private static final String HELP_LABEL = "&Help:";
+	@SuppressWarnings("unused")
 	private static final char HELP_MNEMONIC = 'H';
+	@SuppressWarnings("unused")
 	private static final String HELP_LOGO = "./images/helpbook07.gif";
 	private static final String HELP_LOGO_TOOLTIP = "Help logo";
 
@@ -232,6 +242,7 @@ final class DialogConfirmForm extends Dialog {
 		
 		// create the text
 		StringBuffer sb = new StringBuffer();
+		@SuppressWarnings("rawtypes")
 		Vector vectorMsgText = ccCbh.getDisplayMessages();
 
 		for (int i = 0; i < vectorMsgText.size(); i++) {
@@ -338,15 +349,15 @@ final class DialogConfirmForm extends Dialog {
 	}
 	
 	private void okBtnSelected() {
-		ccCbh.setSelectedOption(ccCbh.KEYPRESS_OK);
+		ccCbh.setSelectedOption(CallbackConfirm.KEYPRESS_OK);
 	}
 	
 	private void cancelBtnSelected() {
-		ccCbh.setSelectedOption(ccCbh.KEYPRESS_CANCEL);
+		ccCbh.setSelectedOption(CallbackConfirm.KEYPRESS_CANCEL);
 	}
 	
 	private void otherExit() {
-		ccCbh.setSelectedOption(ccCbh.KEYPRESS_TIMEOUT);
+		ccCbh.setSelectedOption(CallbackConfirm.KEYPRESS_TIMEOUT);
 	}
 
 }

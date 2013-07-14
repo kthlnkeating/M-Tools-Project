@@ -4,8 +4,8 @@ import gov.va.med.foundations.utilities.ExceptionUtils;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.foundations.xml.XmlUtilities;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 import org.jaxen.dom.DOMXPath;
@@ -84,7 +84,7 @@ public class VistaLinkResponseFactoryImpl implements VistaLinkResponseFactory {
 			throw e;
 		} catch (FoundationsException e) {
 
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 
 				String errMsg =
 					(new StringBuffer())
@@ -137,7 +137,8 @@ public class VistaLinkResponseFactoryImpl implements VistaLinkResponseFactory {
 			.equals(VISTALINK_ROOT_ELEMENT)) {
 			throw new FoundationsException("Root element of response is not VistaLink.");
 		}
-
+		
+		@SuppressWarnings("unused")
 		String version =
 			((Attr) (doc.getDocumentElement().getAttributes())
 				.getNamedItem("version"))

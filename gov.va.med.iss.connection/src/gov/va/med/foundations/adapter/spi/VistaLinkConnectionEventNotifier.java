@@ -25,7 +25,7 @@ public class VistaLinkConnectionEventNotifier {
 	/**
 	 * A vector of event listeners to whom this class will send events
 	 */
-	private Vector listeners; //a vector of event listeners
+	private Vector<ConnectionEventListener> listeners; //a vector of event listeners
 
 	/**
 	 * Constructor for event notifier
@@ -34,7 +34,7 @@ public class VistaLinkConnectionEventNotifier {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Constructing");
 		}
-		listeners = new Vector();
+		listeners = new Vector<ConnectionEventListener>();
 	}
 
 	/**

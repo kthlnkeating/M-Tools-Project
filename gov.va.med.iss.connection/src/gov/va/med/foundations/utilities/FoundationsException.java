@@ -20,6 +20,10 @@ public class FoundationsException
 	implements FoundationsExceptionInterface {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * The nested exception, uses throwable so we can encapsulate even 
 	 * Error exceptions.
 	 */

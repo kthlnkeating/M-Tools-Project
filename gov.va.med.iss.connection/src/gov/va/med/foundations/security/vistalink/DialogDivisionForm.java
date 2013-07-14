@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
-import java.util.Vector;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -33,23 +32,30 @@ final class DialogDivisionForm extends Dialog {
 	private static final String OK_BUTTON_LABEL = "&OK";
 	private static final String OK_BUTTON_TOOLTIP = "Submit your division choice to the server";
 
+	@SuppressWarnings("unused")
 	private static final String HELP_BUTTON_LABEL = "&Help";
+	@SuppressWarnings("unused")
 	private static final String HELP_BUTTON_TOOLTIP = "Ask for help on this dialog";
 	
 	private static final String CANCEL_BUTTON_LABEL = "&Cancel";
 	private static final String CANCEL_BUTTON_TOOLTIP = "Cancel the login";
 
 	private static final String DEFAULT_LABEL = "Must Select Division to Continue Sign On!";
+	@SuppressWarnings("unused")
 	private static final String DEFAULT_LABEL_TOOLTIP = "You must select a division for this sign on";
 
+	@SuppressWarnings("unused")
 	private static final String LIST_TOOLTIP = "List of Valid Divisions to select for Sign On";
 //	private static final char LIST_MNEMONIC = KeyEvent.VK_D;
 	
+	@SuppressWarnings("unused")
 	private static final String HELP_MSG_1 = "Select a division from the list and click OK.";
+	@SuppressWarnings("unused")
 	private static final String HELP_MSG_2 = "To abort the logon click Cancel, but sign on will not be completed.";
 
 	private List listDivisions;
 	private Label mainLabel;
+	@SuppressWarnings("unused")
 	private Button helpButton;
 	private Button okButton;
 	private Button cancelButton;
@@ -80,6 +86,7 @@ final class DialogDivisionForm extends Dialog {
 
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private void open() {
 		final Shell shell = new Shell(getParent(), SWT.DIALOG_TRIM |
 				SWT.APPLICATION_MODAL);
@@ -98,7 +105,6 @@ final class DialogDivisionForm extends Dialog {
 		listDivisions.setSize(235,120);
 		
 		TreeMap divisionList = (TreeMap) this.divCbh.getDivisionList();
-		Vector divisionListData = new Vector();
 		int defaultListString = -1;
 
 		int count = -1;
@@ -180,6 +186,7 @@ final class DialogDivisionForm extends Dialog {
 		this.divCbh.setSelectedOption(CallbackSelectDivision.KEYPRESS_OK);
 	}
 
+	@SuppressWarnings("rawtypes")
 	/**
 	 * Parse the selected value, match it with division value passed in the callback handler
 	 * @param selectedIndex currently selected index in listbox
@@ -218,7 +225,7 @@ final class DialogDivisionForm extends Dialog {
 	}
 	
 	private void otherExit() {
-		divCbh.setSelectedOption(divCbh.KEYPRESS_TIMEOUT);
+		divCbh.setSelectedOption(CallbackSelectDivision.KEYPRESS_TIMEOUT);
 	}
 
 }

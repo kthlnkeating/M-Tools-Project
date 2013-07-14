@@ -12,6 +12,11 @@ public class VistaKernelHashCountLimitExceededException
 	extends FoundationsException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor for VistaKernelHashCountLimitExceededException.
 	 */
 	public VistaKernelHashCountLimitExceededException() {

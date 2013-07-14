@@ -25,6 +25,7 @@ public class VistaDisconnect  implements IWorkbenchWindowActionDelegate {
 	 * The constructor.
 	 */
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VistaConnection.class);
 
 	public VistaDisconnect() {

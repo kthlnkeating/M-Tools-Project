@@ -36,6 +36,7 @@ public class VistaPreferencePage
  * Sets the default values of the preferences.
  */
 	private void initializeDefaults() {
+		@SuppressWarnings("unused")
 		IPreferenceStore store = getPreferenceStore();
 	}
 	

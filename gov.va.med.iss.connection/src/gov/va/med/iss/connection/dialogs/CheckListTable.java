@@ -24,7 +24,9 @@ public class CheckListTable {
 	
 	static private Composite theParent;
 	static private int theStyle;
+	@SuppressWarnings("unused")
 	static private Table theTable;
+	@SuppressWarnings("unused")
 	static private int currentIndex;
 	static private int arrayLength;
 	static private int widthLength;
@@ -46,6 +48,7 @@ public class CheckListTable {
 		super();
 	}
 	
+	@SuppressWarnings("unused")
 	private Table setTable(Composite parent, int style) {
 		return new Table(parent, style | SWT.VIRTUAL | SWT.CHECK);
 	}

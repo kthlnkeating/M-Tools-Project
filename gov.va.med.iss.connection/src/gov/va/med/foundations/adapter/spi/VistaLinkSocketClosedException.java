@@ -14,6 +14,11 @@ public class VistaLinkSocketClosedException
 	extends VistaLinkResourceException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor for VistaLinkSocketClosedException.
 	 * @param reason
 	 */

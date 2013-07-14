@@ -6,8 +6,8 @@ import gov.va.med.foundations.utilities.ExceptionUtils;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.foundations.xml.XmlUtilities;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**
  * This class represents a heart beat request.
@@ -40,7 +40,7 @@ public class VistaHeartBeatTimerRequest extends VistaLinkRequestVOImpl {
 				XmlUtilities.getDocumentForXmlString(HEARTBEAT_REQUEST);
 		} catch (FoundationsException e) {
 
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				
 				String errMsg = (new StringBuffer())
 					.append(

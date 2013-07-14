@@ -32,6 +32,7 @@ public class ExceptionUtils {
 		return new String(byteOutStr.toByteArray());
 	}
 	
+	@SuppressWarnings("rawtypes")
 	/**
 	 * Method getNestedExceptionByClass.
 	 * <br>Gets the nested exception if exception is an instance of the exceptionClass or

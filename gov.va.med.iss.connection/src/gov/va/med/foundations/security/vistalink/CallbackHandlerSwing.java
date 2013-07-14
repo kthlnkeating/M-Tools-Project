@@ -6,8 +6,8 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 
 /**
@@ -44,6 +44,7 @@ import org.apache.log4j.Priority;
 public final class CallbackHandlerSwing implements CallbackHandler {
 
 	private static final Logger LOGGER = Logger.getLogger(CallbackHandlerSwing.class);
+	@SuppressWarnings("unused")
 	private Frame windowParent;
 
 	/**
@@ -95,7 +96,7 @@ public final class CallbackHandlerSwing implements CallbackHandler {
 			} else {
 				String errMsg = "Unsupported callback: '" + callbacks[i].getClass() + "'";
 				UnsupportedCallbackException e = new UnsupportedCallbackException(callbacks[i], errMsg);
-				if (LOGGER.isEnabledFor(Priority.ERROR)) {
+				if (LOGGER.isEnabledFor(Level.ERROR)) {
 					LOGGER.error(errMsg, e);
 				}
 				throw e;

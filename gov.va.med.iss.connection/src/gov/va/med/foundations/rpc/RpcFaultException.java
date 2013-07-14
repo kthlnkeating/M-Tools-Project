@@ -16,6 +16,11 @@ import gov.va.med.foundations.adapter.record.VistaLinkFaultException;
 public class RpcFaultException extends VistaLinkFaultException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor for NoRpcContextFaultException. 
 	 * @see gov.va.med.foundations.adapter.record.VistaLinkFaultException#VistaLinkFaultException(VistaLinkFaultException)
 	 * @param vistaLinkFaultException the exception to copy into a new exception type

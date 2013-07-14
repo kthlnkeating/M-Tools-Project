@@ -12,6 +12,7 @@ import javax.security.auth.callback.Callback;
  */
 final class CallbackSelectDivision implements Callback {
 
+	@SuppressWarnings("rawtypes")
 	private Map divisionList;
 	private String selectedDivisionIen = "-1";
 	private int selectedOption;
@@ -30,6 +31,7 @@ final class CallbackSelectDivision implements Callback {
 
 	private int timeoutInSeconds;
 
+	@SuppressWarnings("rawtypes")
 	/**
 	 * Creates a callback to display a list of divisions to the user, and collect the user's 
 	 * response
@@ -41,6 +43,7 @@ final class CallbackSelectDivision implements Callback {
 		initialize(divisionList, timeoutInSeconds);
 	}
 
+	@SuppressWarnings("rawtypes")
 	/**
 	 * Creates a callback to display a list of divisions to the user, and collect the user's 
 	 * response
@@ -72,6 +75,7 @@ final class CallbackSelectDivision implements Callback {
 		return selectedOption;
 	}
 
+	@SuppressWarnings("rawtypes")
 	/**
 	 * returns the list of divisions to display to the user
 	 * @return Map the list of divisions to display to the user

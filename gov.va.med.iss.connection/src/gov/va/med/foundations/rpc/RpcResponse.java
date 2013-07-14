@@ -5,8 +5,8 @@ import gov.va.med.foundations.utilities.ExceptionUtils;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.foundations.xml.XmlUtilities;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.w3c.dom.Document;
 
 // import x.gov.va.med.iss.log4j.*;
@@ -97,6 +97,7 @@ public class RpcResponse extends VistaLinkResponseVOImpl {
 	protected static final String GOV_VA_MED_FOUNDATIONS_SECURITY_FAULT =
 		"gov.va.med.foundations.security.fault";
 
+	@SuppressWarnings("unused")
 	/**
 	 * Represents the string that idenitifies if a Foundations fault has
 	 * <br>occurred
@@ -111,6 +112,7 @@ public class RpcResponse extends VistaLinkResponseVOImpl {
 	 * Represents the string that idenitifies if a RPC fault has
 	 * <br>occurred
 	 */
+	@SuppressWarnings("unused")
 	private static final String ERROR_MSG_RPC =
 		XmlUtilities.XML_HEADER
 			+ "<VistaLink messageType=\""
@@ -121,6 +123,7 @@ public class RpcResponse extends VistaLinkResponseVOImpl {
 	 * Represents the string that idenitifies if a Security fault has
 	 * <br>occurred
 	 */
+	@SuppressWarnings("unused")
 	private static final String ERROR_MSG_SEC =
 		XmlUtilities.XML_HEADER
 			+ "<VistaLink messagetype=\""
@@ -132,16 +135,19 @@ public class RpcResponse extends VistaLinkResponseVOImpl {
 	 */
 	private static final String SUFFIX = "</Response></VistaLink>";
 
+	@SuppressWarnings("unused")
 	/**
 	 * Represents the beginning of the CDATA section
 	 */
 	private static final String CDATA_BEG = "<![CDATA[";
 
+	@SuppressWarnings("unused")
 	/**
 	 * Represents the end of the CDATA section with the SUFFIX
 	 */
 	private static final String CDATA_END = "]]>" + SUFFIX;
 
+	@SuppressWarnings("unused")
 	/**
 	 * Represents the results returned in the response
 	 */
@@ -250,7 +256,7 @@ public class RpcResponse extends VistaLinkResponseVOImpl {
 			}
 		} catch (FoundationsException e) {
 
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(
 					(new StringBuffer())
 						.append("Can not get results Document.")

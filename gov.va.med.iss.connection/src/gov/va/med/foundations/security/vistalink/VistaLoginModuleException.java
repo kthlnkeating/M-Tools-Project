@@ -19,6 +19,10 @@ import javax.security.auth.login.LoginException;
 public class VistaLoginModuleException extends LoginException implements FoundationsExceptionInterface {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * The nested exception, uses throwable so we can encapsulate even 
 	 * <br>Error exceptions
 	 */

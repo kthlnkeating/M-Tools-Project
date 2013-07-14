@@ -30,10 +30,11 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 
+@SuppressWarnings("rawtypes")
 /**
  * @author vhaisfiveyj
  *
@@ -76,6 +77,7 @@ public class EclipseLoginModule {
 	 */
 	private CallbackHandler callbackHandler;
 
+	@SuppressWarnings("unused")
 	/** 
 	 * keep track of JAAS shared state (not used so far)
 	 */
@@ -213,7 +215,7 @@ public class EclipseLoginModule {
 		} catch (Exception e) { //(ResourceException e) {
 
 			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
@@ -240,6 +242,7 @@ public class EclipseLoginModule {
 	 * @throws VistaLoginModuleUserTimedOutException thrown if user times out of the login
 	 */
 
+	@SuppressWarnings("unchecked")
 	private void doLogon(VistaLinkConnection myConnection, SecurityResponseFactory securityResponseFactory)
 		throws
 			VistaLoginModuleException,
@@ -370,7 +373,7 @@ public class EclipseLoginModule {
 				} while (true);
 			} catch (ParserConfigurationException e) {
 				logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-				if (logger.isEnabledFor(Priority.ERROR)) {
+				if (logger.isEnabledFor(Level.ERROR)) {
 					logger.error(exceptionMessage, e);
 				}
 				throw new VistaLoginModuleException(exceptionMessage, e);
@@ -380,13 +383,13 @@ public class EclipseLoginModule {
 				throw new VistaLoginModuleException(exceptionMessage, e);
 			} catch (IOException e) {
 				logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-				if (logger.isEnabledFor(Priority.ERROR)) {
+				if (logger.isEnabledFor(Level.ERROR)) {
 					logger.error(exceptionMessage, e);
 				}
 				throw new VistaLoginModuleException(exceptionMessage, e);
 			} catch (VistaKernelHashCountLimitExceededException e) {
 				logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-				if (logger.isEnabledFor(Priority.ERROR)) {
+				if (logger.isEnabledFor(Level.ERROR)) {
 					logger.error(exceptionMessage, e);
 				}
 				throw new VistaLoginModuleException(exceptionMessage, e);
@@ -489,14 +492,14 @@ public class EclipseLoginModule {
 						+ SecurityRequestFactory.MSG_ACTION_SETUP_AND_INTRO_TEXT
 						+ " request: "
 						+ responseDataObj.getClass().getName();
-				if (logger.isEnabledFor(Priority.ERROR)) {
+				if (logger.isEnabledFor(Level.ERROR)) {
 					logger.error(errMessage);
 				}
 				throw new VistaLoginModuleException(errMessage);
 			}
 		} catch (ParserConfigurationException e) {
 			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
@@ -580,6 +583,7 @@ public class EclipseLoginModule {
 	 * @throws VistaLoginModuleUserTimedOutException thrown if user times out of the login
 	 */
 
+	@SuppressWarnings("unchecked")
 	private void doChangeVC(
 		VistaLinkConnection myConnection,
 		String changeVCMessage,
@@ -705,13 +709,13 @@ public class EclipseLoginModule {
 			throw new VistaLoginModuleException(exceptionMessage, e);
 		} catch (IOException e) {
 			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
 		} catch (ParserConfigurationException e) {
 			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
@@ -747,6 +751,7 @@ public class EclipseLoginModule {
 	 * @throws VistaLoginModuleUserTimedOutException thrown if user times out of the login
 	 */
 
+	@SuppressWarnings("unchecked")
 	private void doSelectDivision(
 		TreeMap divisionList,
 		VistaLinkConnection myConnection,
@@ -827,7 +832,7 @@ public class EclipseLoginModule {
 				} while (true);
 			} catch (ParserConfigurationException e) {
 				logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-				if (logger.isEnabledFor(Priority.ERROR)) {
+				if (logger.isEnabledFor(Level.ERROR)) {
 					logger.error(exceptionMessage, e);
 				}
 				throw new VistaLoginModuleException(exceptionMessage, e);
@@ -837,7 +842,7 @@ public class EclipseLoginModule {
 				throw new VistaLoginModuleException(exceptionMessage, e);
 			} catch (IOException e) {
 				logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-				if (logger.isEnabledFor(Priority.ERROR)) {
+				if (logger.isEnabledFor(Level.ERROR)) {
 					logger.error(exceptionMessage, e);
 				}
 				throw new VistaLoginModuleException(exceptionMessage, e);
@@ -871,6 +876,7 @@ public class EclipseLoginModule {
 	 * @throws VistaLoginModuleUserTimedOutException thrown if user times out of the login
 	 */
 
+	@SuppressWarnings("unchecked")
 	private void doCvcConfirm(VistaLinkConnection myConnection, SecurityResponseFactory securityResponseFactory)
 		throws VistaLoginModuleException, VistaLoginModuleUserCancelledException, VistaLoginModuleUserTimedOutException {
 
@@ -929,7 +935,7 @@ public class EclipseLoginModule {
 			throw new VistaLoginModuleException(exceptionMessage, e);
 		} catch (IOException e) {
 			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
@@ -972,7 +978,7 @@ public class EclipseLoginModule {
 			}
 		} catch (ParserConfigurationException e) {
 			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
@@ -1003,6 +1009,7 @@ public class EclipseLoginModule {
 	 * @throws LoginException this is never thrown by this implementation of commit().
 	 * @return this implementation of commit() always returns true.
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean commit() throws LoginException {
 		// Now it's time to add the principal to the subject
 		if (!subject.getPrincipals().contains(userPrincipal)) {
@@ -1020,12 +1027,12 @@ public class EclipseLoginModule {
 		try {
 			callbackHandler.handle(calls);
 		} catch (IOException e) {
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
 		} catch (UnsupportedCallbackException e) {
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
@@ -1081,14 +1088,14 @@ public class EclipseLoginModule {
 					logger.debug("Result: " + responseData.getResultType());
 				}
 				if (responseData.getResultType() != SecurityResponse.RESULT_SUCCESS) {
-					if (logger.isEnabledFor(Priority.ERROR)) {
+					if (logger.isEnabledFor(Level.ERROR)) {
 						logger.error("Logout failure: " + responseData.getResultMessage());
 					}
 				}
 			}
 		} catch (ParserConfigurationException e) {
 			// other than logging, swallow this exception
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(exceptionMessage, e);
 			}
 		} catch (FoundationsException e) {
@@ -1101,7 +1108,7 @@ public class EclipseLoginModule {
 				disposeConnection(myConnection);
 			} catch (Exception err) {//(ResourceException err) {
 				// other than logging, swallow this exception
-				if (logger.isEnabledFor(Priority.ERROR)) {
+				if (logger.isEnabledFor(Level.ERROR)) {
 					logger.error(exceptionMessage, err);
 				}
 			}
@@ -1168,7 +1175,7 @@ public class EclipseLoginModule {
 				disposeConnection(myConnection);
 			} catch (Exception err) { //(ResourceException err) {
 				// other than logging, swallow this exception
-				if (logger.isEnabledFor(Priority.ERROR)) {
+				if (logger.isEnabledFor(Level.ERROR)) {
 					logger.error(exceptionMessage, err);
 				}
 			}

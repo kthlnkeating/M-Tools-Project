@@ -41,26 +41,33 @@ public class DialogLogonForm extends Dialog {
 	private static final String DEFAULT_TITLE = "VistA Sign On";
 
 	private static final String ACCESS_LABEL = "&Access Code: ";
+	@SuppressWarnings("unused")
 	private static final char ACCESS_MNEMONIC = KeyEvent.VK_A;
 	private static final String ACCESS_TOOLTIP = "Enter your VistA access code";
 
 	private static final String VERIFY_LABEL = "&Verify Code: ";
+	@SuppressWarnings("unused")
 	private static final char VERIFY_MNEMONIC = KeyEvent.VK_V;
 	private static final String VERIFY_TOOLTIP = "Enter your VistA Verify code";
 
 	private static final String OK_BUTTON_LABEL = "&OK";
+	@SuppressWarnings("unused")
 	private static final char OK_BUTTON_MNEMONIC = KeyEvent.VK_O;
 	private static final String OK_BUTTON_TOOLTIP = "Submits your login request to the server";
 
 	private static final String CANCEL_BUTTON_LABEL = "&Cancel";
+	@SuppressWarnings("unused")
 	private static final char CANCEL_BUTTON_MNEMONIC = KeyEvent.VK_C;
 	private static final String CANCEL_BUTTON_TOOLTIP = "Cancels your login request";
 
 	private static final String CVC_CHECKBOX_LABEL = "Chang&e Verify Code";
+	@SuppressWarnings("unused")
 	private static final char CVC_CHECKBOX_MNEMONIC = KeyEvent.VK_E;
 	private static final String CVC_CHECKBOX_TOOLTIP = "Ask to change your verify code";
 
+	@SuppressWarnings("unused")
 	private static final String VA_LOGO = "./images/VAlogo.gif";
+	@SuppressWarnings("unused")
 	private static final String VA_LOGO_TOOLTIP = "VA Logo";
 
 	private static final String SERVER_LABEL = "Server: ";
@@ -69,12 +76,16 @@ public class DialogLogonForm extends Dialog {
 	private static final String DEVICE_LABEL = "Device: ";
 
 	private static final String SERVER_INFO_LABEL = "&Server Information: ";
+	@SuppressWarnings("unused")
 	private static final String SERVER_INFO_TOOLTIP = "Information about the M server in use for the current connection";
+	@SuppressWarnings("unused")
 	private static final char SERVER_INFO_MNEMONIC = KeyEvent.VK_S;
 
 	private static final String BUTTON_508_TEXT = "Section &508 Information";
 	private static final String BUTTON_508_TOOLTIP = "Display Section 508 compliance information for this application";
+	@SuppressWarnings("unused")
 	private static final int BUTTON_508_MNEMONIC = KeyEvent.VK_5;
+	@SuppressWarnings("unused")
 	private static final String[] TEXT_508_DISCLAIMER =
 		{
 			"V H A’s Office of Information, Health System Design & Development staff have made every",
@@ -83,12 +94,16 @@ public class DialogLogonForm extends Dialog {
 			"amended. Please send any comments, questions or concerns regarding the accessibility of this",
 			"login module to s d d migration @ m e d dot v a dot gov [sddmigration@med.va.gov]." };
 
+	@SuppressWarnings("unused")
 	private static final String JTEXTAREA_TOOLTIP = "System Announcements";
 	private static final String JTEXTAREA_LABEL = "System A&nnouncements:";
+	@SuppressWarnings("unused")
 	private static final char JTEXTAREA_MNEMONIC = KeyEvent.VK_N;
 
+	@SuppressWarnings("unused")
 	private static final int CODE_FIELD_COLUMNS = 13;
 	
+	@SuppressWarnings("unused")
 	private CallbackLogon callbackAV = null;
 
 
@@ -290,18 +305,18 @@ public class DialogLogonForm extends Dialog {
 	}
 	
 	private static void okBtnSelected() {
-		avCbh.setSelectedOption(avCbh.KEYPRESS_OK);
+		avCbh.setSelectedOption(CallbackLogon.KEYPRESS_OK);
 		avCbh.setAccessCode(txtAccessCode.getText().toCharArray());
 		avCbh.setVerifyCode(txtVerifyCode.getText().toCharArray());
 		avCbh.setRequestCvc(btnChangeVerify.getSelection());
 	}
 	
 	private static void cancelBtnSelected() {
-		avCbh.setSelectedOption(avCbh.KEYPRESS_CANCEL);
+		avCbh.setSelectedOption(CallbackLogon.KEYPRESS_CANCEL);
 	}
 	
 	private static void otherExit() {
-		avCbh.setSelectedOption(avCbh.KEYPRESS_TIMEOUT);
+		avCbh.setSelectedOption(CallbackLogon.KEYPRESS_TIMEOUT);
 	}
 	
 	private static void doTimeout() {

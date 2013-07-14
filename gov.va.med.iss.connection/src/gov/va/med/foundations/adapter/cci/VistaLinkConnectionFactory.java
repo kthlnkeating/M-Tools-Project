@@ -20,9 +20,8 @@ import javax.resource.spi.ConnectionManager;
 import javax.resource.spi.ManagedConnectionFactory;
 import javax.resource.spi.ResourceAdapterInternalException;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
-
 /**
  * This implementation class provides provides an inteface for getting
  * connection to an EIS instance.  For each type of adapter derived from this
@@ -34,6 +33,11 @@ import org.apache.log4j.Priority;
  */
 public class VistaLinkConnectionFactory
 	implements ConnectionFactory, Serializable, Referenceable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The logger used by this class
@@ -180,7 +184,7 @@ public class VistaLinkConnectionFactory
 		try {
 			return allocateConnection();
 		} catch (ResourceException e) {
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = (new StringBuffer())
 					.append(
 					"Can not allocate VistaLinkConnection.")
@@ -228,7 +232,7 @@ public class VistaLinkConnectionFactory
 			mcf.setHostPort(hostPort);
 			return (VistaLinkConnectionFactory) mcf.createConnectionFactory();
 		} catch (ResourceException e) {
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = (new StringBuffer())
 					.append(
 					"Can not create VistaLinkConnectionFactory.")

@@ -10,6 +10,11 @@ package gov.va.med.foundations.adapter.record;
 public class LoginsDisabledFaultException extends VistaLinkFaultException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6389422262230367528L;
+
+	/**
 	 * Constructor for LoginsDisabledFaultException.
 	 * @param vistaLinkFaultException
 	 */

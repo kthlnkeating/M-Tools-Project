@@ -10,6 +10,11 @@ package gov.va.med.foundations.security.vistalink;
 public final class VistaLoginModuleUserCancelledException extends VistaLoginModuleException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor for VistaLoginModuleUserCancelledException.
 	 * @param msg String describing exception.
 	 */

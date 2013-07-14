@@ -11,8 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 import org.jaxen.dom.DOMXPath;
@@ -89,6 +89,7 @@ public class RpcRequest extends VistaLinkRequestVOImpl {
 	protected static final String GOV_VA_MED_RPC_REQUEST =
 		"gov.va.med.foundations.rpc.request";
 
+	@SuppressWarnings("unused")
 	/**
 	 * String representing a line feed
 	 */
@@ -199,6 +200,7 @@ public class RpcRequest extends VistaLinkRequestVOImpl {
 		return params;
 	}
 
+	@SuppressWarnings("rawtypes")
 	/**
 	 * Method setParams.
 	 * <br>Sets all the paramters for a RPC call at once using a List.
@@ -285,11 +287,8 @@ public class RpcRequest extends VistaLinkRequestVOImpl {
 				node.removeChild(currentRpcContextNode);
 			}
 			node.appendChild(cdata);
-
-			int i = 0;
-
 		} catch (FoundationsException e) {
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(
 					(new StringBuffer())
 						.append("Can not set RpcContext.")
@@ -337,7 +336,7 @@ public class RpcRequest extends VistaLinkRequestVOImpl {
 			}
 			return reqStr;
 		} catch (FoundationsException e) {
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(
 					(new StringBuffer())
 						.append("Can not get Request String from RpcRequestObject.")
@@ -349,6 +348,7 @@ public class RpcRequest extends VistaLinkRequestVOImpl {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	/**
 	 * Method getFormatterSinkStr.
 	 * <br>Gets the proprietary request string
@@ -402,7 +402,7 @@ public class RpcRequest extends VistaLinkRequestVOImpl {
 		} catch (FoundationsException e) {
 			String errStr = "Can not encrypt rpcContext to be set to RCX.";
 
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(
 					(new StringBuffer())
 						.append(errStr)
@@ -443,7 +443,7 @@ public class RpcRequest extends VistaLinkRequestVOImpl {
 				} catch (JaxenException e) {
 					String errStr =
 						"Can not send items for array parameter or value.";
-					if (logger.isEnabledFor(Priority.ERROR)) {
+					if (logger.isEnabledFor(Level.ERROR)) {
 						logger.error(
 							(new StringBuffer())
 								.append(errStr)

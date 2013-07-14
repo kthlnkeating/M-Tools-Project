@@ -11,8 +11,8 @@ import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionFactory;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**
  * The default ConnectionManager implementation for the non-managed(J2SE)
@@ -24,6 +24,11 @@ import org.apache.log4j.Priority;
  */
 public class VistaLinkConnectionManager
 	implements ConnectionManager, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The event listener this connection manager will use to 
@@ -75,7 +80,7 @@ public class VistaLinkConnectionManager
 			return managedConn.getConnection(null, info);
 		} catch (VistaLinkResourceException e) {
 
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 
 				String errMsg = (new StringBuffer())
 					.append(

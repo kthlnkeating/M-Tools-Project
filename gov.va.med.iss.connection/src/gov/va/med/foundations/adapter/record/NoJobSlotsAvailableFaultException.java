@@ -11,6 +11,11 @@ public class NoJobSlotsAvailableFaultException
 	extends VistaLinkFaultException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor for NoJobSlotsAvailableFaultException.
 	 * @param msg
 	 * @param nestedException

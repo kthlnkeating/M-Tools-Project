@@ -15,6 +15,10 @@ import gov.va.med.foundations.utilities.FoundationsException;
 
 public class VistaLinkFaultException extends FoundationsException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// !!! CAUTION !!!
 	// If adding new members, make sure to update
 	// COPY constructor	

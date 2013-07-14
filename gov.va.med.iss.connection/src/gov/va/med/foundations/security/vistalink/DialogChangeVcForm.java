@@ -31,29 +31,36 @@ final class DialogChangeVcForm extends Dialog {
 	private static final String DEFAULT_TITLE = "Change VISTA Verify Code";
 
 	private static final String PANEL_TITLE = "You need to enter a new verify code.";
+	@SuppressWarnings("unused")
 	private static final String PANEL_ACCESSIBLE_DESCRIPTION = "This dialog is prompting you to change your verify code.";
 
 	private static final String OLD_VERIFY_LABEL = "Ol&d Verify Code: ";
+	@SuppressWarnings("unused")
 	private static final char OLD_VERIFY_MNEMONIC = 'D';
 	private static final String OLD_VERIFY_TOOLTIP = "Enter Current (Old) Verify Code";
 
 	private static final String NEW_VERIFY_LABEL = "&New Verify Code: ";
+	@SuppressWarnings("unused")
 	private static final char NEW_VERIFY_MNEMONIC = 'N';
 	private static final String NEW_VERIFY_TOOLTIP = "Enter New Verify Code";
 
 	private static final String NEW_VERIFY_CHECK_LABEL = "Confirm New Veri&fy Code: ";
+	@SuppressWarnings("unused")
 	private static final char NEW_VERIFY_CHECK_MNEMONIC = 'F';
 	private static final String NEW_VERIFY_CHECK_TOOLTIP = "Re-Enter New Verify Code";
 
 	private static final String OK_BUTTON_LABEL = "&OK";
+	@SuppressWarnings("unused")
 	private static final char OK_BUTTON_MNEMONIC = 'O';
 	private static final String OK_BUTTON_TOOLTIP = "Submits Request to Server to Change Verify Code";
 
 	private static final String CANCEL_BUTTON_LABEL = "&Cancel";
+	@SuppressWarnings("unused")
 	private static final char CANCEL_BUTTON_MNEMONIC = 'C';
 	private static final String CANCEL_BUTTON_TOOLTIP = "Cancels the Change Verify Code request";
 
 	private static final String HELP_BUTTON_LABEL = "&Help";
+	@SuppressWarnings("unused")
 	private static final char HELP_BUTTON_MNEMONIC = 'H';
 	private static final String HELP_BUTTON_TOOLTIP = "Get Help on Changing Verify Code";
 
@@ -65,14 +72,18 @@ final class DialogChangeVcForm extends Dialog {
 	private Button help;
 	private Button ok;
 	private Button cancel;
+	@SuppressWarnings("unused")
 	private List lstDivisions;
+	@SuppressWarnings("unused")
 	private Label lblList;
 	private Label oldVerifyLabel;
 	private Label newVerifyLabel;
 	private Label newVerifyCheckLabel;
 	private CallbackChangeVc cvcCbh;
+	@SuppressWarnings("unused")
 	private Frame parentFrame;
 	private Shell thisShell;
+	@SuppressWarnings("unused")
 	private Font font;
 	private Timer timer;
 	
@@ -94,6 +105,7 @@ final class DialogChangeVcForm extends Dialog {
 	}
 	
 	public static void main(String[] args) {
+		@SuppressWarnings("unused")
 		Display display = new Display();
 		CallbackChangeVc cbCVc = new CallbackChangeVc("String Message","String Help",600,false);
 		DialogChangeVcForm.showVistaAVChangeVC(cbCVc);
@@ -330,6 +342,7 @@ final class DialogChangeVcForm extends Dialog {
 		cancel.addListener(SWT.Selection, listener);
 		
 		Listener helpListener = new Listener() {
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void handleEvent(Event event) {
 				Vector messageVector = new Vector();
 				messageVector.add(HELP_MSG_1);
@@ -368,17 +381,17 @@ final class DialogChangeVcForm extends Dialog {
 	}
 	
 	private void okBtnSelected() {
-		cvcCbh.setSelectedOption(cvcCbh.KEYPRESS_OK);
+		cvcCbh.setSelectedOption(CallbackChangeVc.KEYPRESS_OK);
 		cvcCbh.setOldVerifyCode(oldVerify.getText().toCharArray());
 		cvcCbh.setNewVerifyCode(newVerify.getText().toCharArray());
 		cvcCbh.setNewVerifyCodeCheck(newVerifyCheck.getText().toCharArray());
 	}
 	
 	private void cancelBtnSelected() {
-		cvcCbh.setSelectedOption(cvcCbh.KEYPRESS_CANCEL);
+		cvcCbh.setSelectedOption(CallbackChangeVc.KEYPRESS_CANCEL);
 	}
 	
 	private void otherExit() {
-		cvcCbh.setSelectedOption(cvcCbh.KEYPRESS_TIMEOUT);
+		cvcCbh.setSelectedOption(CallbackChangeVc.KEYPRESS_TIMEOUT);
 	}
 }

@@ -3,6 +3,7 @@ package gov.va.med.foundations.security.vistalink;
 import java.util.Map;
 import java.util.Vector;
 
+@SuppressWarnings("rawtypes")
 /**
  * Implements response-specific fields for an AV.Logon security message 
  * @see SecurityResponse

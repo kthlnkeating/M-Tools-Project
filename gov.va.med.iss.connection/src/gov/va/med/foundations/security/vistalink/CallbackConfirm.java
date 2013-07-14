@@ -15,6 +15,7 @@ import javax.security.auth.callback.Callback;
  */
 final class CallbackConfirm implements Callback {
 
+	@SuppressWarnings("rawtypes")
 	private Vector displayMessages;
 	private int selectedOption;
 	private int timeoutInSeconds;
@@ -54,6 +55,7 @@ final class CallbackConfirm implements Callback {
 	 */
 	static final int KEYPRESS_TIMEOUT = 2;
 
+	@SuppressWarnings("rawtypes")
 	/**
 	 * Creates this callback.
 	 * @param displayMessages The messages to display
@@ -69,6 +71,7 @@ final class CallbackConfirm implements Callback {
 		this.windowTitle = windowTitle;
 	}
 
+	@SuppressWarnings("rawtypes")
 	/**
 	 * returns the error messages set into the callback
 	 * @return Vector the error message set into the callback

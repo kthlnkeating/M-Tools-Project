@@ -20,8 +20,8 @@ import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionFactory;
 import javax.security.auth.Subject;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**
  * An object of this class is a factory of both ManagedConnection 
@@ -33,6 +33,11 @@ import org.apache.log4j.Priority;
  */
 public class VistaLinkManagedConnectionFactory
 	implements ManagedConnectionFactory, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public static final String ADAPTER_VERSION = "1.0";
 
@@ -168,7 +173,7 @@ public class VistaLinkManagedConnectionFactory
 
 			String errStr = "Unknown Host";
 
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = 
 					getLoggerFormattedStringWStackTrace(
 						errStr, e);					
@@ -181,7 +186,7 @@ public class VistaLinkManagedConnectionFactory
 
 		} catch (VistaLinkResourceException e) {
 
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = 
 					getLoggerFormattedStringWStackTrace(	
 					"Resource exception in creatingManagedConnection", 
@@ -195,6 +200,7 @@ public class VistaLinkManagedConnectionFactory
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	/**
 	 * <br>Returns a matched connection from the candidate set of connections.
 	 *<br>This method returns a ManagedConnection instance that is the best 
@@ -277,7 +283,7 @@ public class VistaLinkManagedConnectionFactory
 			return null;
 		} catch (VistaLinkResourceException e) {
 	
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = 
 					getLoggerFormattedStringWStackTrace(	
 					"Error matching connections", e);					
@@ -390,6 +396,7 @@ public class VistaLinkManagedConnectionFactory
 	}
 
 
+	@SuppressWarnings("unused")
 	/**
 	 * Method logError.
 	 * @param method
@@ -404,6 +411,7 @@ public class VistaLinkManagedConnectionFactory
 	 * Method logDebug.
 	 * @param debug
 	 */
+	@SuppressWarnings("unused")
 	private void logDebug(String debug) {
 //
 	}
@@ -421,6 +429,7 @@ public class VistaLinkManagedConnectionFactory
 			.toString();
 	}
 
+	@SuppressWarnings("unused")
 	/**
 	 * Method getLoggerFormattedStringWStackTrace.
 	 * @param e

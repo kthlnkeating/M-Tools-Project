@@ -12,6 +12,11 @@ public class HeartBeatInitializationFailedException
 	extends HeartBeatFailedException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor for HeartBeatInitializationFailedException.
 	 * @param reason
 	 */

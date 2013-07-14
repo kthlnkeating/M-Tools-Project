@@ -9,8 +9,8 @@ import gov.va.med.foundations.utilities.FoundationsException;
 import java.util.ArrayList;
 import java.util.TimerTask;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**
  * This class represents the TimerTask used to run the heart beat
@@ -26,7 +26,7 @@ public class VistaHeartbeatTimerTask extends TimerTask {
 	 * An array list to hold the managed connections that this 
 	 * <br>TimerTask will execute heart beats on
 	 */
-	private ArrayList managedConnections;
+	private ArrayList<VistaLinkManagedConnection> managedConnections;
 
 	/**
 	 * The rate at which the heart beat is scheduled
@@ -44,7 +44,7 @@ public class VistaHeartbeatTimerTask extends TimerTask {
 	 */
 	public VistaHeartbeatTimerTask() {
 		super();
-		managedConnections = new ArrayList();
+		managedConnections = new ArrayList<VistaLinkManagedConnection>();
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class VistaHeartbeatTimerTask extends TimerTask {
 			req = new VistaHeartBeatTimerRequest();
 		} catch (FoundationsException e) {
 
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = (new StringBuffer())
 					.append(
 					"could not create VistaHeartBeatTimerRequest")
@@ -131,7 +131,7 @@ public class VistaHeartbeatTimerTask extends TimerTask {
 						HeartBeatFailedException e =
 							new HeartBeatFailedException(errMsg);
 
-						if(logger.isEnabledFor(Priority.ERROR)){
+						if(logger.isEnabledFor(Level.ERROR)){
 							
 							errMsg = (new StringBuffer())
 								.append(
@@ -149,7 +149,7 @@ public class VistaHeartbeatTimerTask extends TimerTask {
 				}
 			} catch (VistaLinkFaultException e) {
 					
-				if(logger.isEnabledFor(Priority.ERROR)){
+				if(logger.isEnabledFor(Level.ERROR)){
 					String errMsg = (new StringBuffer())
 						.append(
 						"VistaLinkFaultException occured during heartbeat.")
@@ -163,7 +163,7 @@ public class VistaHeartbeatTimerTask extends TimerTask {
 					
 			} catch (FoundationsException e) {
 
-				if(logger.isEnabledFor(Priority.ERROR)){
+				if(logger.isEnabledFor(Level.ERROR)){
 					String errMsg = (new StringBuffer())
 						.append(
 						"FoundationsException occured during heartbeat.")

@@ -16,7 +16,8 @@ import gov.va.med.iss.connection.utilities.MPiece;
 import java.util.ArrayList;
 
 import org.apache.log4j.BasicConfigurator;
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -47,6 +48,7 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 	private static EclipseConnection eclipseConnection = null;
 	private static VistaKernelPrincipalImpl userPrincipal = null;
 	private static VistaKernelPrincipalImpl primaryPrincipal = null;
+	@SuppressWarnings("rawtypes")
 	private static ArrayList connectionList = new ArrayList(20);
 	private static String primaryServerName = "";
 	private static String primaryServerAddress = "";
@@ -174,6 +176,7 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 		if (result) {
 			vReq.setUseProprietaryMessageFormat(false);
 			try {
+				@SuppressWarnings("unused")
 				RpcResponse vResp = connection.executeRPC(vReq);
 			} catch (Exception e) {
 				result = false;
@@ -198,7 +201,8 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
         return getConnection(serverName, serverAddress, serverPort, "");
     }
     
-    public static VistaLinkConnection getConnection(String serverName, String serverAddress, String serverPort, String serverProject) {
+    @SuppressWarnings("unchecked")
+	public static VistaLinkConnection getConnection(String serverName, String serverAddress, String serverPort, String serverProject) {
 		currConnection = null;
 		for (int i=0; i<connectionList.size(); i++) {
 			if (! (connectionList.get(i) == null) ) {
@@ -254,6 +258,7 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 		return userPrincipal;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static void disconnect() {
  		if (connectionList.size() == 0) {
  			// nothing to disconnect
@@ -277,10 +282,12 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 				String[] servers = SecondaryServerSelectionDialogData.getAllServers();
 				int totCount = 0;
 				for (int i=0; i<servers.length; i++) {
+					@SuppressWarnings("unused")
 					String name = MPiece.getPiece(servers[i],";",2);
 					String port = MPiece.getPiece(servers[i],";",4);
 					String url = MPiece.getPiece(servers[i],";",3);
-                    String project = MPiece.getPiece(servers[i],";",5);
+                    @SuppressWarnings("unused")
+					String project = MPiece.getPiece(servers[i],";",5);
 					//ConnectionData connData = getMatchingConnection(name,port,url);
                     //ConnectionData connData = getMatchingConnection(name,port,url,project);
 // JLI 110914                    ConnectionData connData = getMatchingConnection(port,url); // JLI 100226 changed for change in method, since connection depends only on port and url
@@ -292,10 +299,12 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 				String[] activeServers = new String[totCount];
 				totCount = 0;
 				for (int i=0; i<servers.length; i++) {
+					@SuppressWarnings("unused")
 					String name = MPiece.getPiece(servers[i],";",2);
 					String port = MPiece.getPiece(servers[i],";",4);
 					String url = MPiece.getPiece(servers[i],";",3);
-                    String project = MPiece.getPiece(servers[i],";",5); // JLI 090908 added for Source Code Version Control
+                    @SuppressWarnings("unused")
+					String project = MPiece.getPiece(servers[i],";",5); // JLI 090908 added for Source Code Version Control
                     //ConnectionData connData = getMatchingConnection(name,port,url);
 //                    ConnectionData connData = getMatchingConnection(name,port,url,project); // JLI 090908 added for Source Code Version Control);
                     ConnectionData connData = getMatchingConnection(port,url); // JLI 100226
@@ -307,10 +316,12 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 				SecondaryServerSelectionDialogData data = secondary.open("DISCONNECT",activeServers);
 				checkedServers = data.getCheckedList();
 				for (int i=0; i<checkedServers.length; i++) {
+					@SuppressWarnings("unused")
 					String name = MPiece.getPiece(checkedServers[i],";",1);
 					String port = MPiece.getPiece(checkedServers[i],";",3);
 					String url = MPiece.getPiece(checkedServers[i],";",2);
-                    String project = MPiece.getPiece(checkedServers[i],";",4); // JLI 090908 added for Source Code Version Control
+                    @SuppressWarnings("unused")
+					String project = MPiece.getPiece(checkedServers[i],";",4); // JLI 090908 added for Source Code Version Control
                     //ConnectionData connData = getMatchingConnection(name,port,url);
 //                    ConnectionData connData = getMatchingConnection(name,port,url,project); // JLI 090908 added for Source Code Version Control);
 // JLI 110914                    ConnectionData connData = getMatchingConnection(port,url); // JLI 100226 changed for change in method, since connection depends only on port and url
@@ -326,7 +337,9 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 	static private void removeConnection(ConnectionData connData) {
 		EclipseConnection econnect = connData.getEclipseConnection();
 		econnect.logout();
+		@SuppressWarnings("unused")
 		VistaKernelPrincipalImpl principal = connData.getPrincipal();
+		@SuppressWarnings("unused")
 		VistaLinkConnection vlConnection = connData.getConnection();
 		econnect = null;
 		principal = null;
@@ -444,8 +457,8 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 	}
 	
 	static public void getDefaultPrefs() throws Exception {
-		Preferences prefs = VLConnectionPlugin.getDefault().getPluginPreferences();
-		defaultName = prefs.getString(ConnectionPreferencePage.P_SERVER_NAME);
+		IPreferencesService prefService = Platform.getPreferencesService();
+		defaultName = prefService.getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_SERVER_NAME, "", null);
 		// JLI 110127 if default name is empty, show message and then exit
 		if (defaultName == "") {
 			ShowConnectionServerMsg();
@@ -462,11 +475,11 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 	            clearPrimary();
 			}
 		}
-		defaultURL = prefs.getString(ConnectionPreferencePage.P_SERVER);
+		defaultURL = prefService.getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_SERVER, "", null);
 		currServerAddress = defaultURL;
-		defaultPort = MPiece.getPiece(prefs.getString(ConnectionPreferencePage.P_PORT),";");
+		defaultPort = MPiece.getPiece(prefService.getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_PORT, "", null),";");
 		currPort = defaultPort;
-		defaultProject = prefs.getString(ConnectionPreferencePage.P_PORT);
+		defaultProject = prefService.getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_PORT, "", null);
 		defaultProject = MPiece.getPiece(defaultProject,";",2);
 		currServerProject = defaultProject;
 		setPrimaryServer();
@@ -554,6 +567,7 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 		primaryServerName = connData.getServerName();
 		setServer(connData);
 	}
+	@SuppressWarnings("unchecked")
 	static public void setPrimaryServer() {
 		primaryConnection = currConnection;
 		primaryPrincipal = userPrincipal;
@@ -687,7 +701,9 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 		for (int i=0; i<connectionList.size(); i++) {
 			if (! (connectionList.get(i) == null) ) {
 				ConnectionData connData = (ConnectionData)connectionList.get(i);
+				@SuppressWarnings("unused")
 				String serverPort = connData.getServerPort();
+				@SuppressWarnings("unused")
 				String serverAddress = connData.getServerAddress();
 				if (connData.getServerPort().equalsIgnoreCase(portValue)
 						&& connData.getServerAddress().equalsIgnoreCase(serverURL)){ // JLI 090908 added for Source Code Version Control

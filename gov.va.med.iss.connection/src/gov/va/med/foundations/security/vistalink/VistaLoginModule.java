@@ -26,8 +26,8 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**
  * A JAAS-compliant LoginModule to log users on to a Vista system. An application never needs to access the
@@ -96,6 +96,7 @@ public final class VistaLoginModule implements LoginModule {
 	/**
 	 * keep track of JAAS options passed in
 	 */
+	@SuppressWarnings("rawtypes")
 	private Map options;
 
 	/**
@@ -106,6 +107,7 @@ public final class VistaLoginModule implements LoginModule {
 	/** 
 	 * keep track of JAAS shared state (not used so far)
 	 */
+	@SuppressWarnings({ "rawtypes", "unused" })
 	private Map sharedState;
 
 	// Initialize Logger instance to be used by this class
@@ -143,6 +145,7 @@ public final class VistaLoginModule implements LoginModule {
 	 * @param options This is where the configuration options passed to the LoginContext are 
 	 * then passed to the LoginModule.
 	 */
+	@SuppressWarnings("rawtypes")
 	public void initialize(Subject subject, CallbackHandler callbackHandler, Map sharedState, Map options) {
 		// jli test
 		this.subject = subject;
@@ -218,7 +221,7 @@ public final class VistaLoginModule implements LoginModule {
 		} catch (ResourceException e) {
 
 			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
@@ -242,6 +245,7 @@ public final class VistaLoginModule implements LoginModule {
 	 * @throws VistaLoginModuleUserCancelledException thrown if user cancels the login
 	 * @throws VistaLoginModuleUserTimedOutException thrown if user times out of the login
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void doLogon(VistaLinkConnection myConnection, SecurityResponseFactory securityResponseFactory)
 		throws
 			VistaLoginModuleException,
@@ -369,7 +373,7 @@ public final class VistaLoginModule implements LoginModule {
 				} while (true);
 			} catch (ParserConfigurationException e) {
 				logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-				if (LOGGER.isEnabledFor(Priority.ERROR)) {
+				if (LOGGER.isEnabledFor(Level.ERROR)) {
 					LOGGER.error(exceptionMessage, e);
 				}
 				throw new VistaLoginModuleException(exceptionMessage, e);
@@ -379,13 +383,13 @@ public final class VistaLoginModule implements LoginModule {
 				throw new VistaLoginModuleException(exceptionMessage, e);
 			} catch (IOException e) {
 				logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-				if (LOGGER.isEnabledFor(Priority.ERROR)) {
+				if (LOGGER.isEnabledFor(Level.ERROR)) {
 					LOGGER.error(exceptionMessage, e);
 				}
 				throw new VistaLoginModuleException(exceptionMessage, e);
 			} catch (VistaKernelHashCountLimitExceededException e) {
 				logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-				if (LOGGER.isEnabledFor(Priority.ERROR)) {
+				if (LOGGER.isEnabledFor(Level.ERROR)) {
 					LOGGER.error(exceptionMessage, e);
 				}
 				throw new VistaLoginModuleException(exceptionMessage, e);
@@ -488,14 +492,14 @@ public final class VistaLoginModule implements LoginModule {
 						+ SecurityRequestFactory.MSG_ACTION_SETUP_AND_INTRO_TEXT
 						+ " request: "
 						+ responseDataObj.getClass().getName();
-				if (LOGGER.isEnabledFor(Priority.ERROR)) {
+				if (LOGGER.isEnabledFor(Level.ERROR)) {
 					LOGGER.error(errMessage);
 				}
 				throw new VistaLoginModuleException(errMessage);
 			}
 		} catch (ParserConfigurationException e) {
 			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
@@ -526,6 +530,7 @@ public final class VistaLoginModule implements LoginModule {
 	 * @param securityResponseFactory factory to create response objects from
 	 * @throws VistaLoginModuleException
 	 */
+	@SuppressWarnings("rawtypes")
 	private void doSelectDivisionAndOrChangeVc(
 		VistaLinkConnection myConnection,
 		SecurityDataLogonResponse responseData,
@@ -577,6 +582,7 @@ public final class VistaLoginModule implements LoginModule {
 	 * @throws VistaLoginModuleUserCancelledException thrown if user cancels the login
 	 * @throws VistaLoginModuleUserTimedOutException thrown if user times out of the login
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void doChangeVC(
 		VistaLinkConnection myConnection,
 		String changeVCMessage,
@@ -702,13 +708,13 @@ public final class VistaLoginModule implements LoginModule {
 			throw new VistaLoginModuleException(exceptionMessage, e);
 		} catch (IOException e) {
 			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
 		} catch (ParserConfigurationException e) {
 			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
@@ -743,6 +749,7 @@ public final class VistaLoginModule implements LoginModule {
 	 * @throws VistaLoginModuleUserCancelledException thrown if user cancels the login
 	 * @throws VistaLoginModuleUserTimedOutException thrown if user times out of the login
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void doSelectDivision(
 		TreeMap divisionList,
 		VistaLinkConnection myConnection,
@@ -823,7 +830,7 @@ public final class VistaLoginModule implements LoginModule {
 				} while (true);
 			} catch (ParserConfigurationException e) {
 				logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-				if (LOGGER.isEnabledFor(Priority.ERROR)) {
+				if (LOGGER.isEnabledFor(Level.ERROR)) {
 					LOGGER.error(exceptionMessage, e);
 				}
 				throw new VistaLoginModuleException(exceptionMessage, e);
@@ -833,7 +840,7 @@ public final class VistaLoginModule implements LoginModule {
 				throw new VistaLoginModuleException(exceptionMessage, e);
 			} catch (IOException e) {
 				logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-				if (LOGGER.isEnabledFor(Priority.ERROR)) {
+				if (LOGGER.isEnabledFor(Level.ERROR)) {
 					LOGGER.error(exceptionMessage, e);
 				}
 				throw new VistaLoginModuleException(exceptionMessage, e);
@@ -866,6 +873,7 @@ public final class VistaLoginModule implements LoginModule {
 	 * @throws VistaLoginModuleUserCancelledException thrown if user cancels the login
 	 * @throws VistaLoginModuleUserTimedOutException thrown if user times out of the login
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void doCvcConfirm(VistaLinkConnection myConnection, SecurityResponseFactory securityResponseFactory)
 		throws VistaLoginModuleException, VistaLoginModuleUserCancelledException, VistaLoginModuleUserTimedOutException {
 
@@ -892,6 +900,7 @@ public final class VistaLoginModule implements LoginModule {
 	 * @throws VistaLoginModuleUserCancelledException thrown if user cancels the login
 	 * @throws VistaLoginModuleUserTimedOutException thrown if user times out of the login
 	 */
+	@SuppressWarnings("rawtypes")
 	private void doCallbackConfirm(
 		VistaLinkConnection myConnection,
 		SecurityResponseFactory securityResponseFactory,
@@ -923,7 +932,7 @@ public final class VistaLoginModule implements LoginModule {
 			throw new VistaLoginModuleException(exceptionMessage, e);
 		} catch (IOException e) {
 			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
@@ -965,7 +974,7 @@ public final class VistaLoginModule implements LoginModule {
 			}
 		} catch (ParserConfigurationException e) {
 			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
@@ -996,6 +1005,7 @@ public final class VistaLoginModule implements LoginModule {
 	 * @throws LoginException this is never thrown by this implementation of commit().
 	 * @return this implementation of commit() always returns true.
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean commit() throws LoginException {
 		// Now it's time to add the principal to the subject
 		if (!subject.getPrincipals().contains(userPrincipal)) {
@@ -1013,12 +1023,12 @@ public final class VistaLoginModule implements LoginModule {
 		try {
 			callbackHandler.handle(calls);
 		} catch (IOException e) {
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
 		} catch (UnsupportedCallbackException e) {
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(exceptionMessage, e);
 			}
 			throw new VistaLoginModuleException(exceptionMessage, e);
@@ -1074,14 +1084,14 @@ public final class VistaLoginModule implements LoginModule {
 					LOGGER.debug("Result: " + responseData.getResultType());
 				}
 				if (responseData.getResultType() != SecurityResponse.RESULT_SUCCESS) {
-					if (LOGGER.isEnabledFor(Priority.ERROR)) {
+					if (LOGGER.isEnabledFor(Level.ERROR)) {
 						LOGGER.error("Logout failure: " + responseData.getResultMessage());
 					}
 				}
 			}
 		} catch (ParserConfigurationException e) {
 			// other than logging, swallow this exception
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(exceptionMessage, e);
 			}
 		} catch (FoundationsException e) {
@@ -1094,7 +1104,7 @@ public final class VistaLoginModule implements LoginModule {
 				disposeConnection(myConnection);
 			} catch (ResourceException err) {
 				// other than logging, swallow this exception
-				if (LOGGER.isEnabledFor(Priority.ERROR)) {
+				if (LOGGER.isEnabledFor(Level.ERROR)) {
 					LOGGER.error(exceptionMessage, err);
 				}
 			}
@@ -1161,7 +1171,7 @@ public final class VistaLoginModule implements LoginModule {
 				disposeConnection(myConnection);
 			} catch (ResourceException err) {
 				// other than logging, swallow this exception
-				if (LOGGER.isEnabledFor(Priority.ERROR)) {
+				if (LOGGER.isEnabledFor(Level.ERROR)) {
 					LOGGER.error(exceptionMessage, err);
 				}
 			}

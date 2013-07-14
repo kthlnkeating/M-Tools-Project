@@ -13,6 +13,11 @@ import gov.va.med.foundations.adapter.record.VistaLinkFaultException;
 final class SecurityTooManyInvalidLoginAttemptsFaultException extends SecurityFaultException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor for LoginsDisabledFaultException.
 	 * @param vistaLinkFaultException the exception to copy into a new exception type
 	 */

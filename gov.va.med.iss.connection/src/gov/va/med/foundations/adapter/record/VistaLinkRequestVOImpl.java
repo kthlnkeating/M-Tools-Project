@@ -4,8 +4,8 @@ import gov.va.med.foundations.utilities.ExceptionUtils;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.foundations.xml.XmlUtilities;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.w3c.dom.Document;
 
 // import x.gov.va.med.iss.log4j.*;
@@ -65,7 +65,7 @@ public class VistaLinkRequestVOImpl implements VistaLinkRequestVO {
 				"Can not return request String as requestDoc == null. Make sure to initialize Request appropriately.";
 			FoundationsException e = new FoundationsException(errStr);
 
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 
 				String errMsg = ExceptionUtils.getFullStackTrace(e);
 
@@ -78,7 +78,7 @@ public class VistaLinkRequestVOImpl implements VistaLinkRequestVO {
 			xmlString = XmlUtilities.convertXmlToStr(requestDoc);
 		} catch (FoundationsException e) {
 
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 
 				String errMsg =
 					(new StringBuffer())

@@ -159,6 +159,7 @@ final class VistaSetupAndIntroTextInfo {
 	 * from the M system. The Strings are stored in the Vector in the order returned from the M system.
 	 * @return Vector
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Vector getIntroductoryTextLines() {
 
 		String introText = introductoryText;

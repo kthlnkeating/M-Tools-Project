@@ -7,29 +7,17 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Text;
 
 public class SecondaryServerSelectionDialogForm extends Dialog {
 
-		private Label lblQuestion;
-		private Text txtResponse;
 		private Button btnOK;
 		private Button btnCancel;
 		private Button btnDontAsk;
-		private Button btnUpperCase;
-		private Button btnReadOnly;
-		private Label lblServer;
-		private Label lblPort;
-		private Text txtServer;
-		private Text txtPort;
-		private Label lblDirectory;
-		private Text txtDirectory;
-		private boolean isShowReadOnly = false;
-		private boolean isShowDirectory = false;
+
+
 		private SecondaryServerSelectionDialogData data = null;
 
 		public SecondaryServerSelectionDialogForm(Shell parent, int style) {
@@ -55,6 +43,7 @@ public class SecondaryServerSelectionDialogForm extends Dialog {
 			functionValue = function;
 			final Shell shell = new Shell(getParent(), SWT.DIALOG_TRIM |
 					SWT.APPLICATION_MODAL);
+			@SuppressWarnings("unused")
 			Display d = shell.getDisplay();
 			if (function.compareTo("SAVE") == 0)
 				shell.setText("Select Secondary Servers to SAVE TO:");

@@ -11,8 +11,8 @@ import java.util.Hashtable;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 import org.jaxen.dom.DOMXPath;
@@ -91,6 +91,7 @@ final class SecurityResponseFactory extends VistaLinkResponseFactoryImpl {
 		throws FoundationsException {
 
 		String securityMsgRequestType = null;
+		@SuppressWarnings("unused")
 		String securityVersion = null;
 
 		if ((messageType.equals(GOV_VA_MED_SECURITY_ERROR)) || (messageType.equals(GOV_VA_MED_SECURITY_RESPONSE))) {
@@ -175,6 +176,7 @@ final class SecurityResponseFactory extends VistaLinkResponseFactoryImpl {
 	/**
 	 * Do message parsing for Logon responses
 	 */
+	@SuppressWarnings("rawtypes")
 	private SecurityDataLogonResponse getLogonData(String rawXml, Document xdoc)
 		throws JaxenException, FoundationsException {
 
@@ -275,6 +277,7 @@ final class SecurityResponseFactory extends VistaLinkResponseFactoryImpl {
 	/**
 	 * Do message parsing for Update Verify Code responses
 	 */
+	@SuppressWarnings("rawtypes")
 	private SecurityDataChangeVcResponse getUpdateVerifyCodeData(String rawXml, Document xdoc)
 		throws JaxenException, FoundationsException {
 
@@ -312,6 +315,7 @@ final class SecurityResponseFactory extends VistaLinkResponseFactoryImpl {
 		return new SecurityDataChangeVcResponse(needDivisionSelection, divisionList, responseData);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Vector subGetPostSignInTextLines(Document xdoc) throws JaxenException {
 
 		Vector postSignInTextList = new Vector();
@@ -405,6 +409,7 @@ final class SecurityResponseFactory extends VistaLinkResponseFactoryImpl {
 		return returnValue;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private TreeMap subGetDivisionList(Document xdoc) throws JaxenException {
 		TreeMap divisionList = new TreeMap();
 
@@ -442,6 +447,7 @@ final class SecurityResponseFactory extends VistaLinkResponseFactoryImpl {
 	/**
 	 * Do message parsing for Get User Demographics responses
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private SecurityDataUserDemographicsResponse getUserDemographicsData(String rawXml, Document xdoc)
 		throws JaxenException, FoundationsException {
 
@@ -557,7 +563,7 @@ final class SecurityResponseFactory extends VistaLinkResponseFactoryImpl {
 				Integer.valueOf((String) XmlUtilities.getAttr(setupInfoNode, "dtime").getValue()).intValue());
 		} catch (java.lang.NumberFormatException e) {
 			String errMsg = "No timeout value was returned from the M server.";
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(errMsg, e);
 			}
 			throw new FoundationsException(errMsg, e);
@@ -569,7 +575,7 @@ final class SecurityResponseFactory extends VistaLinkResponseFactoryImpl {
 				Integer.valueOf((String) XmlUtilities.getAttr(setupInfoNode, "numberAttempts").getValue()).intValue());
 		} catch (java.lang.NumberFormatException e) {
 			String errMsg = "No login retry count was returned from the M server.";
-			if (LOGGER.isEnabledFor(Priority.ERROR)) {
+			if (LOGGER.isEnabledFor(Level.ERROR)) {
 				LOGGER.error(errMsg, e);
 			}
 			throw new FoundationsException(errMsg, e);

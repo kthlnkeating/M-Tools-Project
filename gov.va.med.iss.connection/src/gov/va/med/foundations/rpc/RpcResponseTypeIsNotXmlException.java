@@ -10,6 +10,11 @@ import gov.va.med.foundations.utilities.FoundationsException;
 public class RpcResponseTypeIsNotXmlException extends FoundationsException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor for RpcResponseTypeIsNotXmlException.
 	 */
 	public RpcResponseTypeIsNotXmlException() {

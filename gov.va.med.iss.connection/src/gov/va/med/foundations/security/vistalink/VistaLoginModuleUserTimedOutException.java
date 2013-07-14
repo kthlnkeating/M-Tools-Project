@@ -11,6 +11,11 @@ package gov.va.med.foundations.security.vistalink;
 public final class VistaLoginModuleUserTimedOutException extends VistaLoginModuleException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor for VistaLoginModuleUserTimedOutException.
 	 * @param msg String describing exception.
 	 */

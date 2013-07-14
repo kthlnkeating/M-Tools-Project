@@ -10,6 +10,11 @@ package gov.va.med.foundations.security.vistalink;
 public final class VistaLoginModuleLoginsDisabledException extends VistaLoginModuleException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * @param msg Exception message
 	 * @see java.lang.Throwable#Throwable(String)
 	 */

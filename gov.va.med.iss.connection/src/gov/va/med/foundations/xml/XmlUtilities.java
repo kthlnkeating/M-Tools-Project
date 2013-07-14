@@ -21,8 +21,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 import org.jaxen.dom.DOMXPath;
@@ -129,7 +129,7 @@ public class XmlUtilities {
 			String errStr =
 				"Can not get DocumentBuilder from DocumentBuilderFactory - check JAXP configuration/classpaths.";
 
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				documentBuilderInitExceptionLogString =
 					(new StringBuffer())
 						.append(errStr)
@@ -156,7 +156,7 @@ public class XmlUtilities {
 			transformer = transformerFactory.newTransformer();
 		} catch (TransformerConfigurationException e) {
 			String errStr = "Exception occured trying to create Transformer.";
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				transformerInitExceptionLogString =
 					(new StringBuffer())
 						.append(errStr)
@@ -230,7 +230,7 @@ public class XmlUtilities {
 			}
 		} catch (TransformerException e) {
 			String errStr = "Exception occured transforming DOM to String.";
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(
 					(new StringBuffer())
 						.append(errStr)
@@ -281,6 +281,7 @@ public class XmlUtilities {
 	 * @param node - Node to search
 	 * @return Node - first node found
 	 */
+	@SuppressWarnings("rawtypes")
 	public static Node getNode(String xpathStr, Node node) {
 		try {
 			XPath xpath = new DOMXPath(xpathStr);
@@ -304,7 +305,7 @@ public class XmlUtilities {
 				return (Node) list.get(0);
 			}
 		} catch (JaxenException e) {
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(
 					(new StringBuffer())
 						.append("Exception occured.")
@@ -382,7 +383,7 @@ public class XmlUtilities {
 		} catch (SAXException e) {
 			String errStr = "Can not parse xml into a Document - SAXException.";
 
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(
 					(new StringBuffer())
 						.append(errStr)
@@ -393,7 +394,7 @@ public class XmlUtilities {
 			throw new FoundationsException(errStr, e);
 		} catch (IOException e) {
 			String errStr = "Can not parse xml into a Document - IOException.";
-			if (logger.isEnabledFor(Priority.ERROR)) {
+			if (logger.isEnabledFor(Level.ERROR)) {
 				logger.error(
 					(new StringBuffer())
 						.append(errStr)

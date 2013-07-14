@@ -6,8 +6,8 @@ import gov.va.med.foundations.adapter.record.VistaLinkResponseVO;
 import gov.va.med.foundations.utilities.ExceptionUtils;
 import gov.va.med.foundations.utilities.FoundationsException;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 import org.jaxen.dom.DOMXPath;
@@ -110,7 +110,7 @@ public class VistaHeartBeatTimerResponseFactory
 
 			String errStr = "could not parse xml";
 
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 
 				String errMsg = (new StringBuffer())
 					.append(errStr)

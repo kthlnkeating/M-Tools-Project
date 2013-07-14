@@ -7,8 +7,8 @@ import gov.va.med.foundations.utilities.FoundationsException;
 
 import java.util.Timer;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**
  *<br>This class manages the VistaHeartBeatTimerTask to 
@@ -86,7 +86,7 @@ public class VistaHeartBeatTimerManager {
 
 				} catch (HeartBeatInitializationFailedException e) {
 						
-					if(logger.isEnabledFor(Priority.ERROR)){
+					if(logger.isEnabledFor(Level.ERROR)){
 
 						String errMsg = (new StringBuffer())
 							.append(

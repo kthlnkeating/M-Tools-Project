@@ -18,6 +18,7 @@ public class ConnectionData {
 	private String serverAddress = "";
 	private String serverPort = "";
 	private String serverName = "";
+	@SuppressWarnings("unused")
 	private String serverProject = "";
 	private VistaLinkConnection connection = null;
 	private VistaKernelPrincipalImpl principal = null;

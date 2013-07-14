@@ -1,5 +1,7 @@
 package gov.va.med.iss.connection.utilities;
 
+import org.eclipse.core.runtime.Platform;
+
 import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.med.iss.connection.preferences.ConnectionPreferencePage;
 
@@ -24,7 +26,7 @@ public class ConnectionUtilities {
 	 * @return String related to the Vista Server specified in the Preferences.
 	 */
 	public static String getServer() {
-		return VLConnectionPlugin.getDefault().getPluginPreferences().getString(ConnectionPreferencePage.P_SERVER);
+		return Platform.getPreferencesService().getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_SERVER, "", null);
 	}
 	
 	/**
@@ -35,10 +37,10 @@ public class ConnectionUtilities {
 	 */
     public static String getPort() {
 //      return VLConnectionPlugin.getDefault().getPluginPreferences().getString(ConnectionPreferencePage.P_PORT);
-        return MPiece.getPiece(VLConnectionPlugin.getDefault().getPluginPreferences().getString(ConnectionPreferencePage.P_SERVER_NUM+1),";",3);  // JLI 090908 added for Source Code Version Control
+        return MPiece.getPiece(Platform.getPreferencesService().getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_SERVER_NUM+1, "", null),";",3);  // JLI 090908 added for Source Code Version Control
     }
     
     public static String getProject() {
-        return MPiece.getPiece(VLConnectionPlugin.getDefault().getPluginPreferences().getString(ConnectionPreferencePage.P_SERVER_NUM+1),";",4); // JLI 090915 added for Source Code Version Control
+        return MPiece.getPiece(Platform.getPreferencesService().getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_SERVER_NUM+1, "", null),";",4); // JLI 090915 added for Source Code Version Control
     }
 }

@@ -2,6 +2,7 @@ package gov.va.med.foundations.security.vistalink;
 
 import java.util.Hashtable;
 
+@SuppressWarnings("rawtypes")
 /**
  * Implements response-specific fields for an AV.GetUserDemographics security message 
  * @see SecurityResponse

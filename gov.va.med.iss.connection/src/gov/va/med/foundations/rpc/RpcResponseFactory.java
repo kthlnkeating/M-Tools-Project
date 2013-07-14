@@ -8,8 +8,8 @@ import gov.va.med.foundations.utilities.ExceptionUtils;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.foundations.xml.XmlUtilities;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 import org.jaxen.dom.DOMXPath;
@@ -85,6 +85,7 @@ public class RpcResponseFactory extends VistaLinkResponseFactoryImpl {
 	 * 
 	 * @see gov.va.med.foundations.adapter.record.VistaLinkResponseFactoryImpl#parseMessageBody(java.lang.String, java.lang.String, org.w3c.dom.Document, java.lang.String, gov.va.med.foundations.adapter.record.VistaLinkRequestVO)
 	 */
+	@SuppressWarnings("deprecation")
 	protected VistaLinkResponseVO parseMessageBody(
 		String rawXml,
 		String filteredXml,
@@ -108,7 +109,7 @@ public class RpcResponseFactory extends VistaLinkResponseFactoryImpl {
 				String errStr =
 					"Exception occured getting Response DOM node from response XML document.";
 
-				if (logger.isEnabledFor(Priority.ERROR)) {
+				if (logger.isEnabledFor(Level.ERROR)) {
 					logger.error(
 						(new StringBuffer())
 							.append(errStr)

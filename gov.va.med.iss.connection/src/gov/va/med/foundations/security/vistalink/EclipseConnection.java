@@ -48,13 +48,16 @@ import org.eclipse.ui.PlatformUI;
  */
 public class EclipseConnection {
 	
+	@SuppressWarnings("unused")
 	private static Logger logger;
 //	private JFrame topFrame;
 	private Frame topFrame;
 	private VistaKernelPrincipalImpl userPrincipal;
 	private EclipseLoginModule eclipseLoginModule;
+	@SuppressWarnings("unused")
 	private IWorkbenchWindow window;
 	
+	@SuppressWarnings("unused")
 	private class BasicDialog extends Dialog {
 		
 		protected Composite basicComposite = null; 
@@ -73,6 +76,7 @@ public class EclipseConnection {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public VistaKernelPrincipalImpl getConnection(String server, String port, IWorkbenchWindow window) {
 		this.window = window;
 /*
@@ -144,7 +148,9 @@ public class EclipseConnection {
 				throw new RuntimeException("Error in eclipseLoginModule.initialize "+e.getMessage());
 
 			}
+			@SuppressWarnings("unused")
 			boolean loggedin = eclipseLoginModule.login();
+			@SuppressWarnings("unused")
 			boolean committed = eclipseLoginModule.commit();
 	
 		// get principal
@@ -196,8 +202,10 @@ public class EclipseConnection {
 	}
 
 	
+	@SuppressWarnings("rawtypes")
 	Map optionMap = new HashMap();
 	
+	@SuppressWarnings("unchecked")
 	private AppConfigurationEntry getAppConfigurationEntry(String ip, String port) {
 
 		// Map optionMap = new HashMap();
@@ -246,7 +254,7 @@ public class EclipseConnection {
 	 * create all components for the window
 	 * @return Component
 	 */
-
+	@SuppressWarnings("unused")
 	private Component createComponents() {
 
 		try {
@@ -296,6 +304,7 @@ public class EclipseConnection {
 	UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 
 	// get border from current LaF
+	@SuppressWarnings("unused")
 	Border defaultBorder = UIManager.getBorder("TextField.border");
 /*
 	focusBorder =

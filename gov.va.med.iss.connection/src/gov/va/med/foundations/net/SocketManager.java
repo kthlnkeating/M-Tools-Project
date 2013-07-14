@@ -7,8 +7,8 @@ import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.net.Socket;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**
  * Represents a socket that can be used to communicate with IP end points
@@ -16,6 +16,11 @@ import org.apache.log4j.Priority;
  * @version 1.0.0.193
  */
 public class SocketManager implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The logger used for this class
@@ -39,6 +44,7 @@ public class SocketManager implements Serializable {
 	 */
 	private static final char EOT = '\u0004';
 
+	@SuppressWarnings("unused")
 	/**
 	 * Represents UTF8 encoding
 	 */
@@ -202,7 +208,7 @@ public class SocketManager implements Serializable {
 			// Can not catch a specific exception since jdk 1.3 and 1.4 throws different exceptions
 		} catch (Exception e) {
 
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 
 				logger.error((new StringBuffer())
 					.append("recieving data exception->")

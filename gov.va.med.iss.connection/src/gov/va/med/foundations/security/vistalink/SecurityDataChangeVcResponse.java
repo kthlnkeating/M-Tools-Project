@@ -2,6 +2,7 @@ package gov.va.med.foundations.security.vistalink;
 
 import java.util.Map;
 
+@SuppressWarnings("rawtypes")
 /**
  * Implements response-specific fields for an AV.UpdateVC security message 
  * @see SecurityResponse

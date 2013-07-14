@@ -24,6 +24,7 @@ public class AddServerDialog {
 	private String serverName = "";
 	private String serverAddress = "";
 	private String serverPort = "";
+	@SuppressWarnings("unused")
     private boolean isCMS = false;
     private String cmsProjectName = "";
 	private boolean result = false;
@@ -83,15 +84,21 @@ public class AddServerDialog {
 	
 
 	
+	@SuppressWarnings("unused")
 	private static final int TEXT_FIELD_COLUMNS = 60;
+	@SuppressWarnings("unused")
 	private static final int UNIT_TEST_FIELD_COLUMNS = 8;
+	@SuppressWarnings("unused")
 	private static final String GLOBALNAME_TEXTFIELD_TOOLTIP1 = "Enter the first part of the global name(s) that are to be listed ";
+	@SuppressWarnings("unused")
 	private static final String GLOBALNAME_TEXTFIELD_TOOLTIP2 = "Enter the beginning of the nodes to be displayed [must have name and '(' at least]";
+	@SuppressWarnings("unused")
 	private static final String NO_ROUTINE_TEXT = "The specified routine was not found---Fill in the fields below to create a new routine";
 	private static final String GLOBALNAME_BUTTON_TEXT = "OK";
 	private static final String GLOBALNAME_TOOLTIP = "Press after entering the requested information to add a new server";
 	private static final String GLOBALSAVE_BUTTON_TEXT = "Cancel";
 	private static final String GLOBALSAVE_TOOLTIP = "Press to cancel the operation";
+	@SuppressWarnings("unused")
     private static final String CMSBUTTON_TOOLTIP = "Check this box if the routines for this server are to be maintained in a version control system (e.g., ClearCase)";
 	Text serverNameTextField;
 	Text serverAddressTextField;

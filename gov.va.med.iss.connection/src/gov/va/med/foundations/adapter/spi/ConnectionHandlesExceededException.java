@@ -13,6 +13,11 @@ public class ConnectionHandlesExceededException
 	extends VistaLinkResourceException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor for ConnectionHandlesExceededException.
 	 * @param reason
 	 */

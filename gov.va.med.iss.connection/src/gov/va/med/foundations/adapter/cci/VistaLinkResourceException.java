@@ -23,6 +23,11 @@ public class VistaLinkResourceException
 	implements FoundationsExceptionInterface {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor.
 	 * @param reason application level reason why this exception occured
 	 */

@@ -33,8 +33,8 @@ import javax.resource.spi.ManagedConnectionMetaData;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAResource;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**  
  * This class represents a managed connection to M
@@ -93,7 +93,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 	/**
 	 * A set to contain all allocated connection handles
 	 */
-	private HashSet conSet;
+	private HashSet<VistaLinkConnection> conSet;
 
 	/**
 	 * The raw socket connection to the host M Server
@@ -122,6 +122,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 	 */
 	private long lastInteractionTimeMillis;
 
+	@SuppressWarnings("unused")
 	/**
 	 * The JAAS subject - not used
 	 */
@@ -190,7 +191,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 
 		}
 		setManagedConnectionFactory(mcf);
-		conSet = new HashSet();
+		conSet = new HashSet<VistaLinkConnection>();
 		connectionEventNotifer = new VistaLinkConnectionEventNotifier();
 		setMaxConnectionHandles(maxConnectionHandles);
 
@@ -383,7 +384,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 				mc = con.getManagedConnection();
 			} catch (FoundationsException e) {
 				
-				if (logger.isEnabledFor(Priority.ERROR)) {
+				if (logger.isEnabledFor(Level.ERROR)) {
 					String errMsg =
 						getLoggerFormattedStringWStackTrace(
 							"The managed connection is null and cannot be disassociated, but the operation will continue",
@@ -403,7 +404,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 			this.addConHandle(con);
 		} catch (VistaLinkResourceException e) {
 			
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = 
 					getLoggerFormattedStringWStackTrace(
 						"Error associating connection handle", 
@@ -459,9 +460,9 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 		}
 //		logDebug(debugMsg);
 
-		Iterator it = conSet.iterator();
+		Iterator<VistaLinkConnection> it = conSet.iterator();
 		while (it.hasNext()) {
-			VistaLinkConnection con = (VistaLinkConnection) it.next();
+			VistaLinkConnection con = it.next();
 			this.removeConHandle(con);
 			con.setManagedConnection(null);
 		}
@@ -506,7 +507,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 			}
 		} catch (VistaLinkResourceException e) {
 
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = 
 					getLoggerFormattedStringWStackTrace(
 						"Can not perform destroy on managed connection", 
@@ -600,7 +601,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 			}
 		} catch (VistaLinkResourceException e) {
 
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = 
 					getLoggerFormattedStringWStackTrace(
 						"Error getting connection", 
@@ -789,7 +790,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 			String errStr = 
 			"Can not send/receive data from socket (getResponseFromSocket)";
 			
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = 
 					getLoggerFormattedStringWStackTrace(
 						errStr, 
@@ -803,7 +804,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 
 		} catch (FoundationsException e) {
 
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = 
 					getLoggerFormattedStringWStackTrace(
 						"Can not send/receive data from socket (getResponseFromSocket)", 
@@ -869,7 +870,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 				String errStr = 
 				"Socket timeout or some other VistaSocketException has occurred";
 
-				if(logger.isEnabledFor(Priority.ERROR)){
+				if(logger.isEnabledFor(Level.ERROR)){
 					String errMsg = 
 						getLoggerFormattedStringWStackTrace(
 							errStr, 
@@ -890,7 +891,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 				 VistaLinkSocketClosedException(
 				"This managed connection is closed. ");
 			
-			if(logger.isEnabledFor(Priority.ERROR)){
+			if(logger.isEnabledFor(Level.ERROR)){
 				String errMsg = getLoggerFormattedString(
 					"Error accessing socket");
 				
@@ -909,7 +910,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 	 */
 	public void notifyErrorOccurred(Exception e) {
 
-		if(logger.isEnabledFor(Priority.FATAL)){
+		if(logger.isEnabledFor(Level.FATAL)){
 			String errMsg = 
 				getLoggerFormattedStringWStackTrace(
 					"Fatal Error has occurred, notifying event listeners", 
@@ -1028,6 +1029,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 		this.valid = valid;
 	}
 
+	@SuppressWarnings("unused")
 	/**
 	 * Method logError.To be implemented for App server
 	 * @param method
@@ -1037,6 +1039,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 //
 	}
 
+	@SuppressWarnings("unused")
 	/**
 	 * Method logError. To be implemented for App server
 	 * @param error
@@ -1046,6 +1049,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 	}
 
 
+	@SuppressWarnings("unused")
 	/**
 	 * Method logDebug. To be implemented for App server
 	 * @param debug
@@ -1069,6 +1073,7 @@ public class VistaLinkManagedConnection implements ManagedConnection {
 			.toString();
 	}
 
+	@SuppressWarnings("unused")
 	/**
 	 * Method getLoggerFormattedStringWStackTrace.
 	 * @param e

@@ -23,6 +23,11 @@ class SecurityFaultException extends VistaLinkFaultException {
 
 	/**
 	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
 	 * @see gov.va.med.foundations.adapter.record.VistaLinkFaultException#VistaLinkFaultException(VistaLinkFaultException)
 	 */
 	SecurityFaultException(VistaLinkFaultException vistaLinkFaultException) {

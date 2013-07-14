@@ -86,6 +86,7 @@ public class ConnectionPreferencePage
 	public void init(IWorkbench workbench) {
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	/***
 	 * 
 	 * @return ArrayList containing strings indicating 

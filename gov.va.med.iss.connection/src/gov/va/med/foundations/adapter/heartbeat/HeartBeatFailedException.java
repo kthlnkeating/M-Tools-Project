@@ -12,6 +12,11 @@ import gov.va.med.foundations.adapter.cci.VistaLinkResourceException;
 public class HeartBeatFailedException extends VistaLinkResourceException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructor for HeartBeatFailedException.
 	 * @param reason
 	 */

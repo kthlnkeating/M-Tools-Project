@@ -8,8 +8,8 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**
  * Implements the JAAS CallbackHandler interface. Use with the <code>VistaLoginModule</code> to invoke a silent signon.
@@ -69,6 +69,7 @@ public final class CallbackHandlerUnitTest implements CallbackHandler {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	/**
 	 * The LoginModule calls this method to process callbacks
 	 * @see javax.security.auth.callback.CallbackHandler#handle(Callback[])
@@ -131,7 +132,7 @@ public final class CallbackHandlerUnitTest implements CallbackHandler {
 
 				String errMsg = "Unsupported callback: '" + callbacks[i].getClass() + "'";
 				UnsupportedCallbackException e = new UnsupportedCallbackException(callbacks[i], errMsg);
-				if (LOGGER.isEnabledFor(Priority.ERROR)) {
+				if (LOGGER.isEnabledFor(Level.ERROR)) {
 					LOGGER.error(errMsg, e);
 				}
 				throw e;

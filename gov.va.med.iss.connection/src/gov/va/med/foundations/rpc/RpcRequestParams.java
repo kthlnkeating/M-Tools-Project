@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 import org.jaxen.dom.DOMXPath;
@@ -113,6 +113,7 @@ public class RpcRequestParams {
 		return params;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	/**
 	 * Method getParam.
 	 * <br>Gets the value for a parameter associated with a specified 
@@ -153,7 +154,7 @@ public class RpcRequestParams {
 				String errStr =
 					"Can not get parameter Indices Node from request DOM document.";
 
-				if (logger.isEnabledFor(Priority.ERROR)) {
+				if (logger.isEnabledFor(Level.ERROR)) {
 					logger.error(
 						(new StringBuffer())
 							.append(errStr)
@@ -202,6 +203,7 @@ public class RpcRequestParams {
 	 * @param type		type of parameter corresponding to valid M RPC types
 	 * @param value	value of parameter
 	 */
+	@SuppressWarnings("rawtypes")
 	public void setParam(int position, String type, Object value) {
 		Element param, indices, index;
 		Attr attr;
@@ -262,6 +264,7 @@ public class RpcRequestParams {
 	 * @param position
 	 * @param it
 	 */
+	@SuppressWarnings("rawtypes")
 	private void setIndices(int position, Iterator it) {
 		Element param, indices, index;
 		Attr attr;
