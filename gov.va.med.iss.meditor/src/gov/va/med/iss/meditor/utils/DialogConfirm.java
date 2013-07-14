@@ -238,6 +238,7 @@ final class DialogConfirm extends Dialog {
 		
 		// create the text
 		StringBuffer sb = new StringBuffer();
+		@SuppressWarnings("rawtypes")
 		Vector vectorMsgText = ccCbh.getDisplayMessages();
 
 		for (int i = 0; i < vectorMsgText.size(); i++) {

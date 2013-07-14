@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
+@SuppressWarnings("restriction")
 public class MEditorUtils {
 
 	private static final String SEP = FileSystems.getDefault().getSeparator();

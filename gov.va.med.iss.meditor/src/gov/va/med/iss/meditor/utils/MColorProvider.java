@@ -45,15 +45,15 @@ public class MColorProvider {
 	public static final RGB VARS = new RGB(243, 150, 24);
 	public static final RGB COMMAND = new RGB(255, 255, 0);
 */
-	protected static Map fColorTable = new HashMap(20);
+	protected static Map<RGB, Color> fColorTable = new HashMap<RGB, Color>(20);
 
 	/**
 	 * Method disposes of the colors.
 	 */
 	public void dispose() {
-		Iterator e= fColorTable.values().iterator();
+		Iterator<Color> e= fColorTable.values().iterator();
 		while (e.hasNext())
-			((Color) e.next()).dispose();
+			e.next().dispose();
 	}
 	/**
 	 * A getter method that returns a color.

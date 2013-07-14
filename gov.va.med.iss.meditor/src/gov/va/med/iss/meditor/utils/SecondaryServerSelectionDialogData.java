@@ -6,11 +6,13 @@ import java.util.ArrayList;
 
 public class SecondaryServerSelectionDialogData {
 	
+	@SuppressWarnings("rawtypes")
 	static private ArrayList arrayList = null;
 	static private String[] serverList;
 	static private String[] checkedList;
 //	static private boolean buttonResponse = false;
 	
+	@SuppressWarnings("rawtypes")
 	static public void setArrayList(ArrayList array) {
 		arrayList = array;
 		serverList = new String[array.size()-1];
@@ -35,6 +37,7 @@ public class SecondaryServerSelectionDialogData {
 		}
 	}
 	
+	@SuppressWarnings("rawtypes")
 	static public ArrayList getArrayList() {
 		return arrayList;
 	}

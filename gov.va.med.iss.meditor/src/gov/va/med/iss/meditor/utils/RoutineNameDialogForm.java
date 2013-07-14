@@ -39,7 +39,7 @@ public class RoutineNameDialogForm extends Dialog {
 	private boolean isShowDirectory = false;
 	private boolean isMultSave = false;
 	private RoutineNameDialogData data;
-	private static ArrayList dropList = null;
+	private static ArrayList<String> dropList = null;
 	private Button btnDirectory = null;
 
 
@@ -176,7 +176,7 @@ public class RoutineNameDialogForm extends Dialog {
 			comboDirectory.setLocation(80,95);
 			comboDirectory.setSize(450,25);
 			if (dropList == null) {
-				dropList = new ArrayList();
+				dropList = new ArrayList<String>();
 			}
 			for (int i=0 ; i<dropList.size(); i++ ) {
 				comboDirectory.add((String) dropList.get(i));

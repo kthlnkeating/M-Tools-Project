@@ -38,7 +38,7 @@ public class WarningDialog {
 		dialog.getContentPane().add(component);
 		dialog.setSize(600,200);
 		dialog.getRootPane().setDefaultButton(routineNameCancelButton);
-		dialog.show();
+		dialog.setVisible(true);
 		return returnValue;
 	}
 /*

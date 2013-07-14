@@ -56,7 +56,7 @@ public class NewRoutineDialog implements KeyListener {
 		dialog.getContentPane().add(component);
 		dialog.setSize(700,400);
 		dialog.getRootPane().setDefaultButton(cancelButton);
-		dialog.show();
+		dialog.setVisible(true);
 		
 		return resultStr;
 	}

@@ -44,6 +44,7 @@ public class MWordStrategy implements IFormattingStrategy, IMSyntax {
 		StringTokenizer st = new StringTokenizer(content, " \n", true);
 		String token = "";
 		String newContent = "";
+		@SuppressWarnings("unused")
 		boolean done;
 		while (st.hasMoreTokens()) {
 			token = st.nextToken();

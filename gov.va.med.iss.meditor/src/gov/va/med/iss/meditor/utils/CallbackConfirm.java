@@ -14,6 +14,7 @@ import java.util.Vector;
  */
 final class CallbackConfirm {
 
+	@SuppressWarnings("rawtypes")
 	private Vector displayMessages;
 	private int selectedOption;
 	private int timeoutInSeconds;
@@ -60,6 +61,7 @@ final class CallbackConfirm {
 	 * @param windowTitle title to use for confirmation window
 	 * @param timeoutInSeconds The timeout the callback should honor.
 	 */
+	@SuppressWarnings("rawtypes")
 	CallbackConfirm(Vector displayMessages, int messageMode, String windowTitle, int timeoutInSeconds) {
 		this.displayMessages = displayMessages;
 		this.timeoutInSeconds = timeoutInSeconds;
@@ -72,6 +74,7 @@ final class CallbackConfirm {
 	 * returns the error messages set into the callback
 	 * @return Vector the error message set into the callback
 	 */
+	@SuppressWarnings("rawtypes")
 	Vector getDisplayMessages() {
 		return displayMessages;
 	}

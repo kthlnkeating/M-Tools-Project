@@ -57,7 +57,7 @@ public class RoutineNameDialog implements KeyListener {
 		dialog.getContentPane().add(component);
 		dialog.setSize(500,200);
 		dialog.getRootPane().setDefaultButton(routineNameCancelButton);
-		dialog.show();
+		dialog.setVisible(true);
 		return selectedRoutineName;
 	}
 

@@ -34,7 +34,7 @@ public class MCompletionProcessor
 	/**
 	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeCompletionProposals(ITextViewer, int)
 	 */
-	protected Vector proposalList = new Vector();
+	protected Vector<String> proposalList = new Vector<String>();
 	protected IContextInformationValidator fValidator = new Validator();
 /**
  * This method returns a list of completion proposals as ICompletionProposal 
@@ -77,7 +77,7 @@ public class MCompletionProcessor
 
 		int index = 0;
 
-		for (Iterator i = proposalList.iterator(); i.hasNext();) {
+		for (Iterator<String> i = proposalList.iterator(); i.hasNext();) {
 			String keyWord = (String) i.next();
 
 			IContextInformation info =
@@ -127,6 +127,7 @@ public class MCompletionProcessor
 	public IContextInformation[] computeContextInformation(
 		ITextViewer viewer,
 		int documentOffset) {
+		@SuppressWarnings("unused")
 		WordPartDetector wordPart =
 			new WordPartDetector(viewer, documentOffset);
 

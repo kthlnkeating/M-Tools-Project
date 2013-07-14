@@ -8,7 +8,7 @@ package gov.va.med.iss.meditor.preferences;
 
 import gov.va.med.iss.meditor.MEditorPlugin;
 
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * @author vhaisfiveyj
@@ -20,15 +20,11 @@ public class MEditorPrefs {
 	
 	private static MEditorPreferencesPage mepp = null;
 	
-	public static String getPrefs(String PrefName) {
+	public static String getPrefs(String prefName) {
 		if (mepp == null) {
 			mepp = new MEditorPreferencesPage();
 		}
-		Preferences prefs = MEditorPlugin.getDefault().getPluginPreferences();
-		String prefValue = prefs.getString(PrefName);
-
+		String prefValue = Platform.getPreferencesService().getString(MEditorPlugin.PLUGIN_ID, prefName, "", null);
 		return prefValue;
 	}
-
-
 }

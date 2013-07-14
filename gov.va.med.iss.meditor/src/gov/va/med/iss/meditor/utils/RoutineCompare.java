@@ -66,6 +66,7 @@ public class RoutineCompare {
 // JLI 110913			String location = "fileComparison.html";
 			SimpleDateFormat dateFormat = new SimpleDateFormat(" yyMMdd_HHmmss");
 			Date date = new Date();
+			@SuppressWarnings("unused")
 			String fileName = "";
 			String dtString1;
 			GregorianCalendar gc = new GregorianCalendar();
@@ -182,6 +183,7 @@ public class RoutineCompare {
 		String outString ="<HTML>\n<HEAD>\n<title>"+routineName+" Routine Comparison for M-Editor in Eclipse from server '"+serverName+"'</title>\n<STYLE type=text/css>\n.removed {\n color: red;\n}\n.new {\n color: green;\n}\n.same {\n	color: navy;\n}\n.unexpected {\n	color: purple;\n}\n</STYLE>\n</HEAD>\n<BODY style=\"font-family:courier new\" style=\"font-size:small\">\n\n" +
 				"Lines are indicated as <span class=\"removed\">NOT PRESENT</span>, <span class=\"new\">PRESENT IN</span> or <span class=\"same\">UNCHANGED</span> in the version of "+routineName+" CURRENTLY on the server '"+serverName+"' when compared to "+comparedToString+".<pre><code>\n";
 		// finish any lines not already processed
+		@SuppressWarnings("unused")
 		boolean found = false;
 		String type = "";
 		String line = "";

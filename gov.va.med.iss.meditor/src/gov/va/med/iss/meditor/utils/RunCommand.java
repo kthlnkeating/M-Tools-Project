@@ -8,7 +8,8 @@ public class RunCommand {
 
     public static void main(String args[]) {
 
-        String s = null;
+        @SuppressWarnings("unused")
+		String s = null;
 
 	    // run the Unix "ps -ef" command
             // using the Runtime exec method:
@@ -17,7 +18,8 @@ public class RunCommand {
         	runCommand(filename);
     }
     
-    static void runCommand(String filename) {
+    @SuppressWarnings("unused")
+	static void runCommand(String filename) {
     	try {
             Process p = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+filename);
             

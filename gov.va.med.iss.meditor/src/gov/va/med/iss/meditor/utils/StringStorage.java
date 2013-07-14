@@ -62,6 +62,7 @@ public class StringStorage extends PlatformObject implements IStorage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		// TODO Auto-generated method stub
 		return null;

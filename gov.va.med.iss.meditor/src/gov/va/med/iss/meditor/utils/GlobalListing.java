@@ -49,6 +49,7 @@ public class GlobalListing {
 		getGlobalListing(globalName, isForCopy, isDataOnly, "", searchText, isSearchDataOnly, isSearchCaseSensitive);
 	}
 	
+	@SuppressWarnings("unused")
 	public static void getGlobalListing(String globalName, boolean isForCopy, boolean isDataOnly, String lastLine, String searchText, boolean isSearchDataOnly, boolean isSearchCaseSensitive) {
 		if (lastLine.compareTo("") == 0) {
 			totalListing = "";

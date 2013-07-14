@@ -40,6 +40,7 @@ public class MEditorContributor extends TextEditorActionContributor {
 	 */
 	public MEditorContributor() {
 		super();
+		@SuppressWarnings("unused")
 		ResourceBundle bundle =
 			MEditorPlugin.getDefault().getResourceBundle();
 /*
@@ -80,6 +81,7 @@ public class MEditorContributor extends TextEditorActionContributor {
 
 		super.setActiveEditor(part);
 
+		@SuppressWarnings("unused")
 		ITextEditor editor = null;
 		if (part instanceof ITextEditor)
 			editor = (ITextEditor) part;

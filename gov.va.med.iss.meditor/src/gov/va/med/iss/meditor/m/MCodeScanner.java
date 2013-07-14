@@ -61,7 +61,7 @@ public class MCodeScanner extends RuleBasedScanner implements IMSyntax{
 
 		setDefaultReturnToken(other);
 
-		List rules = new ArrayList();
+		List<IRule> rules = new ArrayList<IRule>();
 		
 		// check for actual commands on line
 //		rules.add(new )

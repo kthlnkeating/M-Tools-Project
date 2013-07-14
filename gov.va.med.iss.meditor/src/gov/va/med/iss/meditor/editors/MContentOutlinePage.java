@@ -82,7 +82,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 
 		protected final static String SEGMENTS= "__M_segments"; //$NON-NLS-1$
 		protected IPositionUpdater fPositionUpdater= new DefaultPositionUpdater(SEGMENTS);
-		protected List fContent= new ArrayList(100);
+		protected List<Segment> fContent= new ArrayList<Segment>(100);
 		
 		protected void parse(IDocument document) {
 			int lines= document.getNumberOfLines();

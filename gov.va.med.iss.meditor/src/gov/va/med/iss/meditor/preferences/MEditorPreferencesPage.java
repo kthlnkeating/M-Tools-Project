@@ -13,8 +13,8 @@ import gov.va.med.iss.meditor.m.MCodeScanner;
 import gov.va.med.iss.meditor.utils.MColorProvider;
 import gov.va.med.iss.meditor.utils.MEditorUtilities;
 
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -52,7 +52,7 @@ public class MEditorPreferencesPage
 		setPreferenceStore(MEditorPlugin.getDefault().getPreferenceStore());
 		setDescription("MEditor Preferences");
 		initializeDefaults();
-		MEditorPlugin.getDefault().getPluginPreferences().addPropertyChangeListener(preferenceChangeListener);
+		MEditorPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(preferenceChangeListener);
 	}
 
 	/**
@@ -87,64 +87,6 @@ public class MEditorPreferencesPage
 		store.setDefault(MEditorPlugin.P_CONDITIONS_COLOR,"0,0,0");
 	}
 	
-	//--jspivey this logic has all been re-implemented and moved to RoutineEditAction
-//	public static String getDirectoryPreference(String projectName, String serverName, String routineName) {
-//		if (serverName.compareTo("") == 0) {
-//			String currServer = VistaConnection.getCurrentServer();
-//			if (currServer.compareTo(";;;") == 0) {
-//				//currServer = VistaConnection.getPrimaryServer();
-//				VistaConnection.getPrimaryServer();
-//				currServer = VistaConnection.getCurrentServer();
-//			}
-//			serverName = MPiece.getPiece(currServer,";");
-//		}
-//		IResource resource = null;
-//		if (MEditorPrefs.isPrefsActive()) {
-//			try {
-//				resource = MEditorUtilities.getProject(projectName); //force it to auto discover the correct projectName or use the passed in projectName
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		String str = "";
-//		if (!(resource == null)) { //why does it return malformed locations? Before the project pref is active, it returns a relative path, but afterwards it returns a complete path
-//			str = resource.getLocation().toString();
-//		}
-//		IPreferenceStore store = MEditorPlugin.getDefault().getPreferenceStore();
-//		//VistaConnection.getPrimaryServer(); //must force the properties to load...
-//		boolean vcPorject = !MPiece.getPiece(VistaConnection.getCurrentServer(), ";", 4).equals("");	
-//		boolean saveByServer = store.getBoolean(MEditorPlugin.P_SAVE_BY_SERVER);
-//		String val = store.getString(MEditorPlugin.P_SAVE_BY_NAMESPACE);
-//		int saveByNamespaceCnt = val != null && ! val.equals("") ? Integer.parseInt(val) : 0;
-//		
-//		if (vcPorject) {
-//			if (str.equals("") || !str.contains("/"))
-//				try {
-//					str = MEditorUtilities.getProject(MPiece.getPiece(VistaConnection.getCurrentServer(), ";", 4)).getLocation().toString();
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			
-//			File projectPath = new File(str);
-//			//RoutinePathResolver routinePathResolver = RoutinePathResolverFactory.getInstance().getRoutinePathResolver(projectPath);
-//			return str +"/"; //+routinePathResolver.getRelativePath(routineName);
-//		}
-//
-//		
-//		if (saveByServer) {
-//			str += "/"+serverName;
-//		}
-//		str += "/"+ routineName.substring(0, saveByNamespaceCnt);
-//
-//		
-//		if (! ((serverName.compareTo("Server") == 0) && (routineName.compareTo("ROUTINE") == 0) )) {
-//			if (! (new File(str).exists())) {
-//				new File(str).mkdirs();
-//			}
-//		}
-//		return str;
-//	}
-
 	/**
 	 * Creates the field editors. Field editors are abstractions of the common
 	 * GUI blocks needed to manipulate various types of preferences. Each field
@@ -154,26 +96,12 @@ public class MEditorPreferencesPage
 		
 		Composite parent = getFieldEditorParent();
 		
-//		Group saveGroup = new Group(parent, SWT.SHADOW_ETCHED_IN);
-//		loadGroup.setText("Routing Save Options");
-		
-//		FieldEditor saveLabel = new LabelFieldEditor();
-//		saveLabel.setLabelText("Save Routine Options");
-//		addField(saveLabel);
-		
 		addField(new BooleanFieldEditor(MEditorPlugin.P_AUTO_SAVE_TO_SERVER, "Automatically save files onto server", parent));
 		addField(
 			new BooleanFieldEditor(
 					MEditorPlugin.P_DEFAULT_UPDATE,
 				"Update routine header on server save",
 				parent));
-		
-		
-		
-		//getFieldEditorParent().setLayout(new GridLayout(1, true));
-		
-//		Group loadGroup = new Group(parent, SWT.SHADOW_ETCHED_IN);
-//		loadGroup.setText("Routing Load Options");
 		
 		addField(new BooleanFieldEditor(MEditorPlugin.P_SAVE_BY_SERVER,
 				"Load Routines into directy with their server's name", parent));
@@ -183,21 +111,6 @@ public class MEditorPreferencesPage
 		nameSpaceField.setEmptyStringAllowed(false);
 		nameSpaceField.setErrorMessage("Namespace must be between 0 (disbled) and 3.");
 		addField(nameSpaceField);
-
-//		StringFieldEditor strFldEdtr = new StringFieldEditor(MEditorPlugin.P_SAVE_DIR_EXAMPLE,
-//				"Sample Directory for routine 'ROUTINE'",getFieldEditorParent());
-//		strFldEdtr.setEnabled(false, getFieldEditorParent());
-//		String project = VistaConnection.getPrimaryProject();
-//		
-//		MEditorPlugin
-//				.getDefault()
-//				.getPreferenceStore()
-//				.setValue(
-//						MEditorPlugin.P_SAVE_DIR_EXAMPLE,
-//						VistaConnection.getPrimaryServerName()
-//								+ FileSystems.getDefault().getSeparator());
-//		addField(strFldEdtr);
-		
 
 		addField(new BooleanFieldEditor(MEditorPlugin.P_WRAP_LINES,"&Wrap lines",parent));
 		addField(new ColorFieldEditor(MEditorPlugin.P_VARS_COLOR,"Variables",parent));
@@ -209,10 +122,6 @@ public class MEditorPreferencesPage
 		addField(new ColorFieldEditor(MEditorPlugin.P_TAGS_COLOR,"Tags && Routines",parent));
 		
 		adjustGridLayout();
-				
-		//removed:
-		//addField(new StringFieldEditor(MEditorPlugin.P_PROJECT_NAME,"Enter the desired project for saving routines: ",getFieldEditorParent()));
-		//jspivey, it is too buggy to support this. If they change it from "mcode" to something else, the existing files and projects need to be moved to
 	}
 
 	public void init(IWorkbench workbench) {

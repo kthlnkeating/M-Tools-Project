@@ -35,7 +35,7 @@ public class GlobalNameDialogForm {
 	private static final String GLOBALSAVE_TOOLTIP = "Press to cancel the operation";
 */
 	private static final String GLOBALCOPY_TOOLTIP = "Check to have the list presented in a form that can be copied and pasted into another account.";
-	private static ArrayList dropList = null;
+	private static ArrayList<String> dropList = null;
 
 	private Label lblQuestion;
 	private Combo comboResponse;
@@ -67,7 +67,7 @@ public class GlobalNameDialogForm {
 	public GlobalNameDialogForm() {
 		super ();
 		if (dropList == null) {
-			dropList = new ArrayList();
+			dropList = new ArrayList<String>();
 		}
 
 	}

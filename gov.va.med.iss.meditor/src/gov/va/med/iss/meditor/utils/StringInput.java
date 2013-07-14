@@ -69,6 +69,7 @@ public class StringInput extends PlatformObject implements IStorageEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		// TODO Auto-generated method stub
 		return null;

@@ -310,6 +310,7 @@ public class MEditor extends /* AbstractDecoratedTextEditor { // */ TextEditor {
 	}
 */
 	
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class key) {
 		if (key.equals(IContentOutlinePage.class)) {
 			if (outlinePage == null) {

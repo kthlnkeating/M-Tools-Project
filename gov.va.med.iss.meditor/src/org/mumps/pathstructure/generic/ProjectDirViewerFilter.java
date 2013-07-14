@@ -15,6 +15,7 @@ public class ProjectDirViewerFilter extends ViewerFilter {
 	@Override
 	public boolean select(Viewer viewer, Object parent, Object element) {
 		IResource eRes = (IResource) element;
+		@SuppressWarnings("unused")
 		IResource pRes = (IResource) element;
 		
 		String elemProjName = eRes.getProject().getLocation().lastSegment();

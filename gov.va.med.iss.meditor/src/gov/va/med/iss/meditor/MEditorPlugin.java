@@ -35,12 +35,12 @@ public class MEditorPlugin extends AbstractUIPlugin {
 	
 	private static final String SEP = FileSystems.getDefault().getSeparator();
 	
-	private static String PluginId = "gov.va.med.iss.meditor";
-	public static ImageDescriptor IMG_ERROR = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons"+SEP+"error.gif");
-	public static ImageDescriptor IMG_SUCCESS = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons"+SEP+"yes1a.gif");
-	public static ImageDescriptor IMG_POST_TEXT = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons"+SEP+"yes1a.gif");
-	public static ImageDescriptor IMG_HELP = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons"+SEP+"helpbook07.gif");
-	public static ImageDescriptor IMG_VA_LOGO = AbstractUIPlugin.imageDescriptorFromPlugin(PluginId,"icons"+SEP+"VAlogo.gif");
+	public static String PLUGIN_ID = "gov.va.med.iss.meditor";
+	public static ImageDescriptor IMG_ERROR = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons"+SEP+"error.gif");
+	public static ImageDescriptor IMG_SUCCESS = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons"+SEP+"yes1a.gif");
+	public static ImageDescriptor IMG_POST_TEXT = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons"+SEP+"yes1a.gif");
+	public static ImageDescriptor IMG_HELP = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons"+SEP+"helpbook07.gif");
+	public static ImageDescriptor IMG_VA_LOGO = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons"+SEP+"VAlogo.gif");
 
 	public static final String P_AUTO_SAVE_TO_SERVER = "autoToSaveServer";
 	public static final String P_BACKGROUND_COLOR = "BackgroundColor";

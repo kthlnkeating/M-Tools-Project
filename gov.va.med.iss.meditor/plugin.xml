@@ -87,7 +87,6 @@
       </actionSet>
        <actionSet
             label="Multiple Routine Load From Server"
-            icon="icons/meditor.gif"
             visible="true"
             id="gov.va.med.iss.meditor.multipleRoutineLoad">
          <menu
@@ -153,13 +152,17 @@
          name="M-Editor"
          point="org.eclipse.ui.propertyPages">
       <page
-            objectClass="org.eclipse.core.resources.IResource"
-            adaptable="false"
             class="gov.va.med.iss.meditor.preferences.MEditorPropertyPage1"
-            icon="meditor.gif"
-            nameFilter="*.m"
+            icon="icons/meditor.gif"
+            id="gov.va.med.iss.meditor.page1"
             name="M-Editor"
-            id="gov.va.med.iss.meditor.page1"/>
+            nameFilter="*.m">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IFile">
+            </instanceof>
+         </enabledWhen>
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">

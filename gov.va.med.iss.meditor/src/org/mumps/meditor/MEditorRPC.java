@@ -52,7 +52,7 @@ public class MEditorRPC {
 		
 		contents = MEditorUtils.cleanSource(contents);
 		
-		HashMap hm = new HashMap();
+		HashMap<String, String> hm = new HashMap<String, String>();
 		// convert to array by line
 		String stra= "";
 		while (!(contents.compareTo("") == 0)) {
@@ -175,6 +175,7 @@ public class MEditorRPC {
 		String currentServerName = MPiece.getPiece(currentServer,";");
 		String currentServerAddress = MPiece.getPiece(currentServer,";",2);
 		String currentServerPort = MPiece.getPiece(currentServer,";",3);
+		@SuppressWarnings("unused")
 		String currentServerProject = MPiece.getPiece(currentServer,";",4);
 		return routineName +" saved to: "
 			+ currentServerName + " ("+currentServerAddress+", "+currentServerPort+")\n\n";
