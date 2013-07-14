@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MUMPS Right-Click Tools
 Bundle-SymbolicName: us.pwc.vista.eclipse.tools;singleton:=true
-Bundle-Version: 1.0.01
+Bundle-Version: 1.0.02
 Bundle-Activator: us.pwc.eclipse.vista.Activator
 Bundle-Vendor: PwC US Public Sector Practice
 Require-Bundle: org.eclipse.ui,
