@@ -2,27 +2,32 @@ package gov.va.med.iss.meditor.actions;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 import gov.va.med.iss.meditor.editors.MEditor;
-import gov.va.med.iss.meditor.utils.MEditorUtilities;
-import gov.va.med.iss.meditor.utils.RoutineNameDialogData;
-import gov.va.med.iss.meditor.utils.RoutineNameDialogForm;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceProxy;
+import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
@@ -32,7 +37,6 @@ import org.mumps.meditor.MEditorRPC;
 import org.mumps.meditor.MEditorUtils;
 import org.mumps.meditor.RoutineNotFoundException;
 import org.mumps.meditor.dialogs.RoutineDiffersDialog;
-import org.mumps.pathstructure.generic.PathFileSearchVisitor;
 import org.mumps.pathstructure.vista.RoutinePathResolver;
 import org.mumps.pathstructure.vista.RoutinePathResolverFactory;
 
@@ -48,61 +52,206 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 	
 	private static final String SEP = FileSystems.getDefault().getSeparator();
 
-	public RoutineEditAction() {
+	private static class RoutineNameValidator implements IInputValidator {
+		@Override
+		public String isValid(String newText) {
+			if ((newText == null) || newText.isEmpty()) {
+				return "Routine name is required.";
+			}
+			if (! newText.matches("[%A-Z][A-Z0-9]{0,7}")) {
+				return "Invalid routine name.";
+			}
+			return null;			
+		}
+	}
+	
+	private static class RoutineVisitor implements IResourceProxyVisitor {
+		private IFile file;
+		private String fileName;
+		
+		public RoutineVisitor(String routineName) {
+			this.fileName = routineName + ".m";
+		}
+		
+		@Override
+		public boolean visit (IResourceProxy proxy) { 
+			if (this.file != null) {
+				return false;
+			}
+			String name = proxy.getName();
+			if (! name.equals(this.fileName)) {
+				return true;
+			}
+			if (proxy.getType() != IResource.FILE) {
+				return true;
+			}
+			this.file = (IFile) proxy.requestResource();
+			return false;
+        } 
+		
+		public IFile getFile() {
+			return this.file;
+		}
 	}
 		
-	public void run(IAction action) {
-		//Resolve object dependencies (calculate dependencies at the entry point up front)
-		VistaLinkConnection connection = VistaConnection.getConnection();
-		MEditorRPC rpc = new MEditorRPC(connection);
-		String projectName = VistaConnection.getPrimaryProject();
-		RoutineNameDialogForm dialogForm = new RoutineNameDialogForm(MEditorUtilities.getIWorkbenchWindow().getShell());
-		
-		//Collect input
-		RoutineNameDialogData dialogInput = dialogForm.open();
-		if (dialogInput.getButtonResponse() == false)
-			return;
-		String routineName = dialogInput.getTextResponse().trim().toUpperCase();
-		//Validations on input
-		validateInput(dialogInput, routineName);
-		
-		String serverCode;
-		try { //attempt Load routine into a string, if not found show error
-			serverCode = rpc.getRoutineFromServer(routineName);
-		} catch (RoutineNotFoundException e) {
-			//show error message about routine not existing on server
-			MessageDialog.openInformation(PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getShell(), "MEditor",
-					"Routine " +routineName+ " does not exist on server.");
-			return;
+	public RoutineEditAction() {
+	}
+	
+	private String getRoutineName() {
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		String title = "Load Routine (from " + ConnectionUtilities.getServer() + ";" + ConnectionUtilities.getPort() + " to " + ConnectionUtilities.getProject() + ")";
+		String msg  = "Please enter routine name:";
+		final InputDialog dialog = new InputDialog(shell, title, msg, "", new RoutineNameValidator());
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				dialog.open();
+			}
+		});
+		if (dialog.getReturnCode() == Window.OK) {
+			String routineName = dialog.getValue();
+			return routineName;
+		} else {
+			return  null;
 		}
-		//Collect additional input from user (note: this should be moved into a new, redesign routine load dialog which calculates all the input needed up front
-		String relRoutinePath;
+	}
+	
+	private String getRoutineCodeFromServer(VistaLinkConnection connection, String routineName) {
+		MEditorRPC rpc = new MEditorRPC(connection);
+		try {
+			String serverCode = rpc.getRoutineFromServer(routineName);
+			return serverCode;
+		} catch (RoutineNotFoundException e) {
+			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+			String msg = "Routine " + routineName + " does not exist on the server.";
+			MessageDialog.openInformation(shell, "MEditor", msg);
+			return null;
+		}		
+	}
+	
+	private IProject getProject(String projectName) {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		try {
-			if (!project.exists())
-				project.create(null);
-			if (!project.isOpen())
-				project.open(null);
-		} catch (CoreException e1) {
+			if (! project.exists()) {
+				project.create(new NullProgressMonitor());
+			}
+			if (! project.isOpen()) {
+				project.open(new NullProgressMonitor());
+			}
+		} catch (CoreException e) {
+			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+			String msg = "Cannot open project " + projectName;
+			MessageDialog.openError(shell, "MEditor", msg);
+			return null;
+		}
+		return project;
+	}
+	
+	private IFile getExistingRoutine(IProject project, String routineName) {
+		RoutineVisitor visitor = new RoutineVisitor(routineName);
+		try {
+			project.accept(visitor, 0);
+		} catch (CoreException e) {
+			return null;
+		}
+		return visitor.getFile();
+	}
+	
+	private Boolean compareStreams(InputStream clientStream, InputStream serverStream) {
+		try {
+			while (true) {
+				int c = clientStream.read();
+				int s = serverStream.read();
+
+				if (c != s) {
+					return false;
+				}
+		    
+				if (s == -1) {
+					return true;
+				}
+		    } 
+		} catch (IOException e) {
+			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+			String msg = "IO Error during camparing server and client versions of the routine.";
+			MessageDialog.openError(shell, "MEditor", msg);
+			return null;
+		}
+	}
+	
+	private void runForExistingFile(IFile clientRoutine, String serverCode) {
+		try {
+			InputStream clientStream = clientRoutine.getContents();
+			InputStream serverStream = new ByteArrayInputStream(serverCode.getBytes());		
+			Boolean areTheSame = this.compareStreams(clientStream, serverStream);
+			clientStream.close();
+			serverStream.close();
+			if (areTheSame != null) {
+				if (! areTheSame.booleanValue()) {
+					InputStream source = new ByteArrayInputStream(serverCode.getBytes());		
+					clientRoutine.setContents(source, true, true, null);
+				}
+				this.openEditor(clientRoutine);
+				if (! areTheSame.booleanValue()) {
+					Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+					String msg = "Project file " + clientRoutine.getName() + " is updated.";
+					msg += "\n" + "You can use local history to see the changes."; 
+					MessageDialog.openError(shell, "MEditor", msg);
+				}
+			}		
+		} catch (CoreException | IOException e) {
+			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+			String msg = "Unable to open existing file " + clientRoutine.getName() + " does not exist on the server";
+			MessageDialog.openError(shell, "MEditor", msg);
+		}
+	}
+	
+	private void openEditor(IFile file) {
+		try {
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new FileEditorInput(file), MEditor.M_EDITOR_ID);		
+		} catch (PartInitException e) {
+			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+			String msg = "Unable to open editor for file " + file.getName();
+			MessageDialog.openError(shell, "MEditor", msg);			
+		}
+	}
+	
+	public void run(IAction action) {
+		VistaLinkConnection connection = VistaConnection.getConnection();
+		if (connection == null) {
+			return;
 		}
 		
-		//Look into project for file first, always use the existing location if it is found
-		Path foundPath = searchForFile(Paths.get(project.getLocationURI()), routineName+ ".m");
-		if (foundPath != null) {
-			relRoutinePath = foundPath.toString().substring(
-					project.getLocation().toOSString().length() + 1,
-					foundPath.toString().length() - routineName.length() - 2);
-		} else { //else get the default path
-			RoutinePathResolver routinePathResolver = RoutinePathResolverFactory
+		String routineName = this.getRoutineName();
+		if (routineName == null) {
+			return;
+		}
+		
+		String serverCode = this.getRoutineCodeFromServer(connection, routineName);
+		if (serverCode == null) {
+			return;
+		}
+		
+		String projectName = VistaConnection.getPrimaryProject();
+		IProject project = this.getProject(projectName);
+		if (project == null) {
+			return;
+		}
+		
+		IFile existingRoutine = this.getExistingRoutine(project, routineName);
+		if (existingRoutine != null) {
+			runForExistingFile(existingRoutine, serverCode);
+			return;
+		}
+				
+		String relRoutinePath;
+		RoutinePathResolver routinePathResolver = RoutinePathResolverFactory
 					.getInstance()
 					.getRoutinePathResolver(
 							project.getLocation().toFile());
-			relRoutinePath = routinePathResolver.getRelativePath(routineName);
+		relRoutinePath = routinePathResolver.getRelativePath(routineName);
 			
-			//make sure that this relative path exists
-			createFolders(relRoutinePath, project);
-		}
+		//make sure that this relative path exists
+		createFolders(relRoutinePath, project);
 		
 		//check to see if a routine is already loaded here. Are we syncing or are we loading it in new?
 		IFile routineFile = project.getFile(relRoutinePath +SEP+ routineName + ".m");
@@ -145,12 +294,7 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 			return;
 		}
 		
-		//Open the file in Eclipse
-		try {
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new FileEditorInput(routineFile), MEditor.M_EDITOR_ID);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
+		this.openEditor(routineFile);
 		
 		//Save backup file(s)
 		try {
@@ -187,45 +331,6 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	private Path searchForFile(Path path, final String fileName) {
-		
-		if (fileName == null)
-			return null;
-		
-		PathFileSearchVisitor fv = new PathFileSearchVisitor(fileName);
-	      try {
-	        Files.walkFileTree(path, fv);
-	      } catch (IOException e) {
-	        e.printStackTrace();
-	      }
-		
-//		for (Path file : directory.) {
-//			if (file.isDirectory())
-//				return searchForFile(directory, fileName);
-//			else {
-//				if (file.getName().equals(fileName))
-//					return Paths.get(file.toURI());
-//			}
-//		}
-		
-		return fv.getResult();		
-	}
-	
-	private boolean validateInput(RoutineNameDialogData dialogInput, String routineName) {
-		if (!dialogInput.getButtonResponse())
-			return false;
-		
-		if (!routineName.matches("%?[A-Z][A-Z0-9]+")) {
-			//TODO: put validations into (redesigned) dialog class so the user sees this input immediately before they close the dialog
-			return false;
-		} else if (routineName.length() > 8) {
-			//TODO: put validations into (redesigned) dialog class so the user sees this input immediately before they close the dialog
-			return false;
-		}
-		
-		return true;
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
