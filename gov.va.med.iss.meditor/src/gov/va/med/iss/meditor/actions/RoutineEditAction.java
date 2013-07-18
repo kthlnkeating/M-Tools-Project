@@ -215,6 +215,32 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 		}
 	}
 	
+	private void runForNewFile(IProject project, String routineName, String serverCode) {
+		String relRoutinePath;
+		RoutinePathResolver routinePathResolver = RoutinePathResolverFactory
+					.getInstance()
+					.getRoutinePathResolver(
+							project.getLocation().toFile());
+		relRoutinePath = routinePathResolver.getRelativePath(routineName);
+			
+		//make sure that this relative path exists
+		createFolders(relRoutinePath, project);
+		
+		IFile routineFile = project.getFile(relRoutinePath +SEP+ routineName + ".m");
+		try {
+			MEditorUtils.createOrReplace(routineFile, serverCode);
+		} catch (UnsupportedEncodingException | CoreException e) {
+			e.printStackTrace();
+			//show error
+			MessageDialog.openError(PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell(), "MEditor",
+					"Failed to load routine. Error occured while writing the local file: " +e.getMessage());
+			return;
+		}
+		
+		this.openEditor(routineFile);		
+	}
+	
 	public void run(IAction action) {
 		VistaLinkConnection connection = VistaConnection.getConnection();
 		if (connection == null) {
@@ -240,68 +266,16 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 		IFile existingRoutine = this.getExistingRoutine(project, routineName);
 		if (existingRoutine != null) {
 			runForExistingFile(existingRoutine, serverCode);
-			return;
+		} else {
+			runForNewFile(project, routineName, serverCode);
 		}
 				
-		String relRoutinePath;
-		RoutinePathResolver routinePathResolver = RoutinePathResolverFactory
-					.getInstance()
-					.getRoutinePathResolver(
-							project.getLocation().toFile());
-		relRoutinePath = routinePathResolver.getRelativePath(routineName);
-			
-		//make sure that this relative path exists
-		createFolders(relRoutinePath, project);
-		
-		//check to see if a routine is already loaded here. Are we syncing or are we loading it in new?
-		IFile routineFile = project.getFile(relRoutinePath +SEP+ routineName + ".m");
-		if (routineFile.exists()) {
-			String fileCode;
-			try {
-				fileCode = MEditorUtils.readFile(routineFile);
-			} catch (CoreException | IOException e) {
-				e.printStackTrace();
-				//show error
-				MessageDialog.openError(PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow().getShell(), "MEditor",
-						"Failed to load routine. Error occured while loading the local code for compairson to the server: " +e.getMessage());
-				return;
-			}
-						
-			//if cannot figure out how to load changes into an editor but not save them, show a warning ask what to do with a diff option
-			if (!MEditorUtils.compareRoutines(serverCode, fileCode)) {
-				//replace the local contents with latest from server but do not save the actual file
-				RoutineDiffersDialog dialog = new RoutineDiffersDialog(Display
-						.getDefault().getActiveShell(),
-						"Routine " +routineName+ " found on server and locally in the project " +projectName+". Would you like to overwrite the local version with the server version?",
-						" the project version (" +routineFile.getFullPath().toOSString()+ ")",
-						routineName, MEditorUtils.cleanSource(fileCode),
-						MEditorUtils.cleanSource(serverCode));
-				if (dialog.open() != Dialog.OK)
-					return;
-			}
-		}
-
-		//simply save the file
-		try {
-			MEditorUtils.createOrReplace(routineFile, serverCode);
-		} catch (UnsupportedEncodingException | CoreException e) {
-			e.printStackTrace();
-			//show error
-			MessageDialog.openError(PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getShell(), "MEditor",
-					"Failed to load routine. Error occured while writing the local file: " +e.getMessage());
-			return;
-		}
-		
-		this.openEditor(routineFile);
 		
 		//Save backup file(s)
 		try {
 			MEditorUtils.syncBackup(projectName, routineName, serverCode);
 		} catch (CoreException e) {
 			// show warning only
-			e.printStackTrace();
 			e.printStackTrace();
 			MessageDialog.openWarning(PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getShell(), "MEditor",
