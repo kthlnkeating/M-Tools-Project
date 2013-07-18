@@ -20,7 +20,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -36,7 +35,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.mumps.meditor.MEditorRPC;
 import org.mumps.meditor.MEditorUtils;
 import org.mumps.meditor.RoutineNotFoundException;
-import org.mumps.meditor.dialogs.RoutineDiffersDialog;
 import org.mumps.pathstructure.vista.RoutinePathResolver;
 import org.mumps.pathstructure.vista.RoutinePathResolverFactory;
 
