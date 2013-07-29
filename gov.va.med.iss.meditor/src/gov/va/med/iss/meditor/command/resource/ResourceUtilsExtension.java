@@ -92,6 +92,15 @@ public class ResourceUtilsExtension {
 		}
 	}
 	
+	public static IFolder getFolder(TreePath path) {
+		Object lastSegment = path.getLastSegment();			
+		if (lastSegment instanceof IFolder) {
+			return (IFolder) lastSegment;
+		} else {
+			return null;
+		}
+	}
+	
 	public static FileFillState getSelectedFiles(TreePath[] selections, IResourceFilter filter) throws CoreException {
 		FileFillState result = new FileFillState(filter);
 		for (TreePath path : selections) {

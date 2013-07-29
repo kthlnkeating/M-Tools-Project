@@ -85,8 +85,7 @@ public class CommandCommon {
 		}		
 	}
 	
-	private static List<IFile> getMFiles(TreeSelection treeSelection, String projectName) throws CoreException {
-		TreePath[] selections = treeSelection.getPaths();
+	private static List<IFile> getMFiles(TreePath[] selections, String projectName) throws CoreException {
 		IResourceFilter filter = new SelectedMFileFilter(projectName);
 		FileFillState result = ResourceUtilsExtension.getSelectedFiles(selections, filter);
 		String invalids = result.getInvalidResourcesAsString(4, "\n");
@@ -103,17 +102,27 @@ public class CommandCommon {
 		}
 		return files;
 	}
-
-	public static List<IFile> getSelectedMFiles(ExecutionEvent event, String projectName) {
+	
+	public static TreePath[] getTreePaths(ExecutionEvent event) {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		if ((selection == null) || (! (selection instanceof TreeSelection))) {
 			MessageDialogHelper.showError(Messages.NOT_SUPPORTED_SELECTION_LIST);
 			return null;
 		}
+		TreeSelection ts = (TreeSelection) selection;
+		TreePath[] selections = ts.getPaths();
+		return selections;	
+	}
+
+	public static List<IFile> getSelectedMFiles(ExecutionEvent event, String projectName) {
 		try {
-			TreeSelection ts = (TreeSelection) selection;
-			List<IFile> files = getMFiles(ts, projectName);
-			return files;
+			TreePath[] paths = getTreePaths(event);
+			if (paths == null) {
+				return null;
+			} else {
+				List<IFile> files = getMFiles(paths, projectName);
+				return files;				
+			}
 		} catch (Throwable t) {
 			MessageDialogHelper.logAndShowUnexpected(t);
 			return null;

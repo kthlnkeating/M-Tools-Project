@@ -31,7 +31,7 @@ public class InputDialogHelper {
 	private static String getRequiredEntity(String title, String entityName, String regex) {
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		String inputMessage  = Messages.bind(Messages.INPUT_DLG_INPUT_MSG, entityName);
-		String requiredMessage = Messages.INPUT_DLG_INPUT_MSG; 
+		String requiredMessage = Messages.INPUT_DLG_REQUIRED_MSG; 
 		String invalidMessage = Messages.bind(Messages.INPUT_DLG_INVALID_MSG, entityName);
 		
 		IInputValidator validator = new BasicRequiredValidator(requiredMessage, invalidMessage, regex);

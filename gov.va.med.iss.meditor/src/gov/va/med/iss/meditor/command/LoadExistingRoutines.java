@@ -22,27 +22,13 @@ import java.util.List;
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.meditor.command.utils.MServerRoutine;
-import gov.va.med.iss.meditor.command.utils.StatusHelper;
-import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 
-public class LoadExistingRoutines extends AbstractHandler {
-	private static String getTopMessage(int overallSeverity) {
-		if (overallSeverity == IStatus.ERROR) {
-			return "Some file could not be loaded due to errors.";
-		} else if (overallSeverity == IStatus.WARNING) {
-			return "All files are loaded but some with warnings";			
-		} else {
-			return "All files are loaded successfully.";
-		}
-	}
-	
+public class LoadExistingRoutines extends LoadMultipleRoutines {
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		VistaLinkConnection connection = VistaConnection.getConnection();
@@ -60,22 +46,12 @@ public class LoadExistingRoutines extends AbstractHandler {
 		List<IStatus> statuses = new ArrayList<>();
 		for (IFile file : selectedFiles) {
 			CommandResult<MServerRoutine> r = CommandEngine.loadRoutine(connection, file);
-			String filePathPrefix = file.getFullPath().toString() + " -- ";
+			String prefixForFile = file.getFullPath().toString() + " -- ";
 			IStatus status = r.getStatus();
-			if (status.getSeverity() == IStatus.OK) {
-				IStatus newStatus = StatusHelper.getStatus(IStatus.INFO, filePathPrefix + "no issues");
-				statuses.add(newStatus);
-			} else {
-				IStatus newStatus = StatusHelper.getStatus(status, filePathPrefix + status.getMessage() + "\n");
-				statuses.add(newStatus);
-				int severity = status.getSeverity();
-				overallSeverity = StatusHelper.updateOverallSeverity(overallSeverity, severity);				
-			}
+			overallSeverity = this.updateStatuses(status, prefixForFile, overallSeverity, statuses);
 		}
 		
-		String message = getTopMessage(overallSeverity);
-		MultiStatus multiStatus = StatusHelper.getMultiStatus(overallSeverity, message, statuses);
-		MessageDialogHelper.showMulti(multiStatus);
+		this.showFinalMessage(overallSeverity, statuses);
 		return null;
 	}
 }
