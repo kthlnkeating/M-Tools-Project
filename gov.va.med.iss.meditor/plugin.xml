@@ -70,90 +70,6 @@
    </extension>
 
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="Sample Action Set"
-            visible="true"
-            id="gov.va.med.iss.meditor.actionSet">
-         <menu
-               label="&amp;VistA"
-               id="vistaMenu">
-            <separator
-                  name="editGroup">
-            </separator>
-         </menu>
-         <action
-               label="&amp;Load M routine"
-               icon="icons/meditor.gif"
-               class="gov.va.med.iss.meditor.actions.RoutineEditAction"
-               tooltip="Load M routine"
-               menubarPath="vistaMenu/editGroup"
-               toolbarPath="vistaGroup"
-               id="gov.va.med.iss.meditor.actions.RoutineEditAction">
-         </action>
-      </actionSet>
-      <actionSet
-            label="Global Directory"
-            visible="true"
-            id="gov.va.med.iss.meditor.globalDirectory">
-         <menu
-               label="&amp;VistA"
-               id="vistaMenu">
-            <separator
-                  name="toolsGroup">
-            </separator>
-         </menu>
-         <action
-               label="Global &amp;Directory"
-               icon="icons/meditor.gif"
-               class="gov.va.med.iss.meditor.actions.GlobalDirectoryAction"
-               tooltip="List of Global Names"
-               menubarPath="vistaMenu/toolGroup"
-               id="gov.va.med.iss.meditor.actions.GlobalDirectoryAction">
-         </action>
-      </actionSet>
-      <actionSet
-            label="Global Listing"
-            visible="true"
-            id="gov.va.med.iss.meditor.globalListing">
-         <menu
-               label="&amp;VistA"
-               id="vistaMenu">
-            <separator
-                  name="toolsGroup">
-            </separator>
-         </menu>
-         <action
-               label="&amp;Global Listing"
-               icon="icons/meditor.gif"
-               class="gov.va.med.iss.meditor.actions.GlobalListingAction"
-               tooltip="List of Global Contents"
-               menubarPath="vistaMenu/toolGroup"
-               id="gov.va.med.iss.meditor.actions.GlobalListingAction">
-         </action>
-      </actionSet>
-      <actionSet
-            label="Routine Directory"
-            visible="true"
-            id="gov.va.med.iss.meditor.routineDirectory">
-         <menu
-               label="VistA"
-               id="vistaMenu">
-            <separator
-                  name="toolsGroup">
-            </separator>
-         </menu>
-         <action
-               label="&amp;Routine Directory"
-               icon="icons/meditor.gif"
-               class="gov.va.med.iss.meditor.actions.RoutineDirectoryAction"
-               tooltip="List of Routine Names"
-               menubarPath="vistaMenu/toolGroup"
-               id="gov.va.med.iss.meditor.actions.RoutineDirectoryAction">
-         </action>
-      </actionSet>
-   </extension>
-   <extension
          id="gov.va.med.iss.meditor.meditor"
          name="gov.va.med.iss.meditor.meditor"
          point="org.eclipse.ui.editors">
@@ -249,6 +165,51 @@
             </command>
          </menu>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:gov.va.med.iss.connection.vista?after=additions">
+         <command
+               commandId="gov.va.med.iss.meditor.command.loadMRoutine"
+               icon="icons/meditor.gif"
+               label="&amp;Load M Routine"
+               style="push">
+         </command>
+         <separator
+               name="gov.va.med.iss.meditor.seperator1"
+               visible="true">
+         </separator>
+         <command
+               commandId="gov.va.med.iss.meditor.command.reportGlobalDirectory"
+               icon="icons/meditor.gif"
+               label="Global Directory"
+               style="push">
+         </command>
+         <command
+               commandId="gov.va.med.iss.meditor.command.reportGlobalListing"
+               icon="icons/meditor.gif"
+               label="Global Listing"
+               style="push">
+         </command>
+         <command
+               commandId="gov.va.med.iss.meditor.command.reportRoutineDirectory"
+               icon="icons/meditor.gif"
+               label="Routine Directory"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="gov.va.med.iss.meditor.toolbar1">
+            <command
+                  commandId="gov.va.med.iss.meditor.command.loadMRoutine"
+                  icon="icons/meditor.gif"
+                  label="Load M Routine"
+                  style="push">
+            </command>
+         </toolbar>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -271,6 +232,26 @@
             defaultHandler="gov.va.med.iss.meditor.command.LoadRoutinesIntoDirectory"
             id="gov.va.med.iss.meditor.command.loadRoutinesIntoDirectory"
             name="Load Routines Into Directory">
+      </command>
+      <command
+            defaultHandler="gov.va.med.iss.meditor.command.LoadMRoutine"
+            id="gov.va.med.iss.meditor.command.loadMRoutine"
+            name="Load M Routine">
+      </command>
+      <command
+            defaultHandler="gov.va.med.iss.meditor.command.ReportGlobalDirectory"
+            id="gov.va.med.iss.meditor.command.reportGlobalDirectory"
+            name="Global Directory">
+      </command>
+      <command
+            defaultHandler="gov.va.med.iss.meditor.command.ReportGlobalListing"
+            id="gov.va.med.iss.meditor.command.reportGlobalListing"
+            name="Global Listing">
+      </command>
+      <command
+            defaultHandler="gov.va.med.iss.meditor.command.ReportRoutineDirectory"
+            id="gov.va.med.iss.meditor.command.reportRoutineDirectory"
+            name="Routine Directory">
       </command>
    </extension>
 </plugin>

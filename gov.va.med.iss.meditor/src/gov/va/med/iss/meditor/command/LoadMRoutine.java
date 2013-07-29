@@ -1,44 +1,32 @@
-package gov.va.med.iss.meditor.actions;
+package gov.va.med.iss.meditor.command;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 import gov.va.med.iss.meditor.StatusHelper;
-import gov.va.med.iss.meditor.command.CommandEngine;
-import gov.va.med.iss.meditor.command.CommandResult;
 import gov.va.med.iss.meditor.command.utils.MServerRoutine;
 import gov.va.med.iss.meditor.editors.MEditor;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 
-/**
- * Our sample action implements workbench action delegate.
- * The action proxy will be created by the workbench and
- * shown in the UI. When the user tries to use the action,
- * this delegate will be created and execution will be 
- * delegated to it.
- * @see IWorkbenchWindowActionDelegate
- */
-public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
-	
+public class LoadMRoutine extends AbstractHandler {
 	private static class RoutineNameValidator implements IInputValidator {
 		@Override
 		public String isValid(String newText) {
@@ -50,9 +38,6 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 			}
 			return null;			
 		}
-	}
-	
-	public RoutineEditAction() {
 	}
 	
 	private String getRoutineName() {
@@ -100,22 +85,23 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 			MessageDialog.openError(shell, "MEditor", msg);			
 		}
 	}
-	
-	public void run(IAction action) {
+
+	@Override
+	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		VistaLinkConnection connection = VistaConnection.getConnection();
 		if (connection == null) {
-			return;
+			return null;
 		}
 		
 		String routineName = this.getRoutineName();
 		if (routineName == null) {
-			return;
+			return null;
 		}
 		
 		String projectName = VistaConnection.getPrimaryProject();
 		IProject project = this.getProject(projectName);
 		if (project == null) {
-			return;
+			return null;
 		}
 		
 		CommandResult<MServerRoutine> result = CommandEngine.loadRoutine(connection, project, routineName);
@@ -123,19 +109,10 @@ public class RoutineEditAction implements IWorkbenchWindowActionDelegate {
 		if (status.getSeverity() != IStatus.OK) {
 			StatusHelper.logAndShow(status);			
 		}
-		if (status.isOK()) {
+		if (status.getSeverity() != IStatus.ERROR) {
 			IFile file = result.getResultObject().getFileHandle();
 			this.openEditor(file);
 		}
-	}
-		
-	public void selectionChanged(IAction action, ISelection selection) {
-	}
-
-
-	public void dispose() {
-	}
-
-	public void init(IWorkbenchWindow window) {
+		return null;
 	}
 }

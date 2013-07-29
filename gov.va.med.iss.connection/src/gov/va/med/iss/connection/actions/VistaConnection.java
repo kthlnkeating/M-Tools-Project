@@ -93,6 +93,13 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 		run();
 	}
 	
+	public static void run(IWorkbenchWindow window) {
+		VistaConnection vistaConnection = new VistaConnection();
+		vistaConnection.window = window;
+		windowx = window;
+		vistaConnection.run();
+	}
+	
 	/***
 	 * Used without arguments to get the primary connection
 	 * 
@@ -678,6 +685,12 @@ public class VistaConnection implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#dispose
 	 */
 	public void dispose() {
+		if (! (currConnection == null)) {
+			disconnect();
+		}
+	}
+
+	public static void doDispose() {
 		if (! (currConnection == null)) {
 			disconnect();
 		}

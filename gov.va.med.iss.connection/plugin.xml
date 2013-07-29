@@ -2,49 +2,6 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="VL Connection"
-            visible="true"
-            id="gov.va.med.iss.connection.actionSet">
-         <menu
-               label="&amp;VistA"
-               id="vistaMenu">
-            <separator
-                  name="connectionGroup">
-            </separator>
-         </menu>
-         <action
-               label="&amp;Connect to VistA"
-               icon="icons/vistaconnect.gif"
-               class="gov.va.med.iss.connection.actions.VistaConnection"
-               tooltip="Connect to VistA Server"
-               menubarPath="vistaMenu/connectionGroup"
-               id="gov.va.med.iss.connection.actions.VistaConnection">
-         </action>
-      </actionSet>
-     <actionSet
-            label="VL Disconnect"
-            visible="true"
-            id="gov.va.med.iss.connection.actionSet1">
-         <menu
-               label="&amp;VistA"
-               id="vistaMenu">
-            <separator
-                  name="connectionGroup">
-            </separator>
-         </menu>
-         <action
-               label="&amp;Disconnect from VistA"
-               icon="icons/vistadisconnect.gif"
-               class="gov.va.med.iss.connection.actions.VistaDisconnect"
-               tooltip="Disconnect from VistA Server"
-               menubarPath="vistaMenu/connectionGroup"
-                id="gov.va.med.iss.connection.actions.VistaDisconnect">
-         </action>
-      </actionSet>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             name="Connection"
@@ -63,5 +20,50 @@
             name="Sample Category"
             id="gov.va.med.iss.connection">
       </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="gov.va.med.iss.connection.vista"
+               label="&amp;VistA">
+            <command
+                  commandId="gov.va.med.iss.connection.command.connectToVistA"
+                  icon="icons/vistaconnect.gif"
+                  label="&amp;Connect to VistA"
+                  style="push">
+            </command>
+            <command
+                  commandId="gov.va.med.iss.connection.command.disconnectFromVistA"
+                  icon="icons/vistadisconnect.gif"
+                  label="&amp;Disconnect from VistA"
+                  style="push">
+            </command>
+            <separator
+                  name="gov.va.med.iss.connection.separator1"
+                  visible="true">
+            </separator>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="gov.va.med.iss.connection.command.ConnectToVistA"
+            id="gov.va.med.iss.connection.command.connectToVistA"
+            name="Connect to VistA">
+         <commandParameter
+               id="gov.va.med.iss.meditor.command.saveRoutines.specifyNamespace"
+               name="Specify Namespace"
+               optional="false">
+         </commandParameter>
+      </command>
+      <command
+            defaultHandler="gov.va.med.iss.connection.command.DisconnectFromVistA"
+            id="gov.va.med.iss.connection.command.disconnectFromVistA"
+            name="Disconnect From VistA">
+      </command>
    </extension>
 </plugin>
