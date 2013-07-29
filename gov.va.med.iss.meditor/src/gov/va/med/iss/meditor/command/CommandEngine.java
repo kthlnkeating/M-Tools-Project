@@ -16,38 +16,64 @@
 
 package gov.va.med.iss.meditor.command;
 
+import java.io.UnsupportedEncodingException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.text.BadLocationException;
 import org.mumps.meditor.MEditorException;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
-import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.Messages;
 import gov.va.med.iss.meditor.command.utils.MServerRoutine;
+import gov.va.med.iss.meditor.command.utils.StatusHelper;
+import gov.va.med.iss.meditor.command.utils.UpdateFileResult;
 
 public class CommandEngine {
+	private static CommandResult<MServerRoutine> loadRoutine(MServerRoutine serverRoutine) throws CoreException, BadLocationException, UnsupportedEncodingException {
+		String routineName = serverRoutine.getRoutineName();
+		if (! serverRoutine.isLoaded()) {
+			IStatus status = StatusHelper.getStatus(IStatus.ERROR, Messages.ROUTINE_NOT_ON_SERVER, routineName);
+			return new CommandResult<MServerRoutine>(serverRoutine, status);
+		}		
+		UpdateFileResult result = serverRoutine.updateClient();
+		IFile file = serverRoutine.getFileHandle();
+		IStatus status = result.toStatus(file);
+		return new CommandResult<MServerRoutine>(serverRoutine, status);
+	}
+	
+	private static CommandResult<MServerRoutine> getKnownExceptionResult(MEditorException exception) {
+		IStatus status = StatusHelper.getStatus(exception);
+		return new CommandResult<MServerRoutine>(null, status);					
+	}
+	
+	private static CommandResult<MServerRoutine> getUnknownExceptionResult(Throwable t) {
+		String message = Messages.bind(Messages.UNEXPECTED_INTERNAL, t.getMessage());
+		IStatus status = StatusHelper.getStatus(message, t);
+		return new CommandResult<MServerRoutine>(null, status);			
+	}
+	
 	public static CommandResult<MServerRoutine> loadRoutine(VistaLinkConnection connection, IProject project, String routineName) {
-		try {
+		try {			
 			MServerRoutine serverRoutine = MServerRoutine.load(connection, project, routineName);
-			if (! serverRoutine.isLoaded()) {
-				IStatus status = MEditorPlugin.getDefault().getStatus(IStatus.ERROR, Messages.ROUTINE_NOT_ON_SERVER, routineName);
-				return new CommandResult<MServerRoutine>(serverRoutine, status);
-			}		
-			boolean updated = serverRoutine.updateClient();
-			IFile file = serverRoutine.getFileHandle();
-			if (updated) {
-				IStatus status = MEditorPlugin.getDefault().getStatus(IStatus.INFO, Messages.ROUTINE_UPDATED_IN_PROJECT, file.getFullPath().toString());
-				return new CommandResult<MServerRoutine>(serverRoutine, status);
-			}
-			return new CommandResult<MServerRoutine>(serverRoutine, MEditorPlugin.getDefault().getOKStatus());
+			return loadRoutine(serverRoutine);
 		} catch(MEditorException mee) {
-			IStatus status = MEditorPlugin.getDefault().getStatus(mee);
-			return new CommandResult<MServerRoutine>(null, status);			
+			return getKnownExceptionResult(mee);
 		} catch (Throwable t) {
-			String message = Messages.bind(Messages.UNEXPECTED_INTERNAL, t.getMessage());
-			IStatus status = MEditorPlugin.getDefault().getStatus(message, t);
-			return new CommandResult<MServerRoutine>(null, status);			
+			return getUnknownExceptionResult(t);
+		}	
+	}
+
+	public static CommandResult<MServerRoutine> loadRoutine(VistaLinkConnection connection, IFile file) {
+		try {			
+			MServerRoutine serverRoutine = MServerRoutine.load(connection, file);
+			return loadRoutine(serverRoutine);
+		} catch(MEditorException mee) {
+			return getKnownExceptionResult(mee);
+		} catch (Throwable t) {
+			return getUnknownExceptionResult(t);
 		}	
 	}
 }

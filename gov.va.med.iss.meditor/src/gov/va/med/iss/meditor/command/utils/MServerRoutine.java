@@ -135,13 +135,18 @@ public class MServerRoutine {
 		return true;
 	}
 	
-	public boolean updateClient() throws CoreException, BadLocationException, UnsupportedEncodingException {
-		boolean exists = this.clientFileHandle.exists();
-		if (exists && this.compareTo(this.clientFileHandle)) {
-			return false;
-		} 
-		this.copyTo(this.clientFileHandle);
-		return exists;
+	public UpdateFileResult updateClient() throws CoreException, BadLocationException, UnsupportedEncodingException {
+		if (this.clientFileHandle.exists()) {
+			if (this.compareTo(this.clientFileHandle)) {
+				return UpdateFileResult.IDENTICAL;
+			} else {
+				this.copyTo(this.clientFileHandle);
+				return UpdateFileResult.UPDATED;
+			}
+		} else {
+			this.copyTo(this.clientFileHandle);
+			return UpdateFileResult.CREATED;
+		}
 	}
 	
 	public static boolean updateFile(IFile file, String content) throws CoreException, BadLocationException, UnsupportedEncodingException {

@@ -2,6 +2,7 @@ package gov.va.med.iss.meditor.dialog;
 
 import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.Messages;
+import gov.va.med.iss.meditor.command.utils.StatusHelper;
 
 import java.util.List;
 
@@ -31,20 +32,6 @@ public class MessageDialogHelper {
 		show(Status.ERROR, msgKey, bindings, t, MessageDialog.ERROR);
 	}
 	
-	public static void showError(String message) {
-		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		MessageDialog.open(MessageDialog.ERROR, shell, Messages.DEFAULT_MSG_TITLE, message, SWT.NONE);
-	}
-	
-	public static void showWarning(String message) {
-		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		MessageDialog.open(MessageDialog.WARNING, shell, Messages.DEFAULT_MSG_TITLE, message, SWT.NONE);
-	}
-	
-	public static void showInformation(String msgKey, String... bindings) {
-		show(Status.INFO, msgKey, bindings, null, MessageDialog.INFORMATION);
-	}
-
 	public static void showInformation(List<String> msgKeyList, List<String[]> bindingsList) {
 		int n = msgKeyList.size();
 		if (n > 0) {
@@ -72,6 +59,20 @@ public class MessageDialogHelper {
 		ErrorDialog.openError(shell, Messages.DEFAULT_MSG_TITLE, null, statuses);
 	}
 	
+	public static void showError(String message) {
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		MessageDialog.open(MessageDialog.ERROR, shell, Messages.DEFAULT_MSG_TITLE, message, SWT.NONE);
+	}
+	
+	public static void showWarning(String message) {
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		MessageDialog.open(MessageDialog.WARNING, shell, Messages.DEFAULT_MSG_TITLE, message, SWT.NONE);
+	}
+	
+	public static void showInformation(String msgKey, String... bindings) {
+		show(Status.INFO, msgKey, bindings, null, MessageDialog.INFORMATION);
+	}
+
 	private static int getDialogSeverity(int severity) {
 		switch (severity) {
 		case IStatus.ERROR:
@@ -100,13 +101,13 @@ public class MessageDialogHelper {
 	}
 	
 	public static void logAndShow(String message, Throwable t) {
-		IStatus status = MEditorPlugin.getDefault().getStatus(message, t);
+		IStatus status = StatusHelper.getStatus(message, t);
 		logAndShow(status);
 	}
 	
 	public static void logAndShowUnexpected(Throwable t) {
 		String message = Messages.bind(Messages.UNEXPECTED_INTERNAL, t.getMessage());
-		IStatus status = MEditorPlugin.getDefault().getStatus(message, t);
+		IStatus status = StatusHelper.getStatus(message, t);
 		logAndShow(status);
 	}
 }

@@ -9,19 +9,23 @@ public class Messages extends NLS {
 	public static String ERRORS_FOUND_FOR_FILES;
 	public static String INPUT_DLG_INPUT_MSG;
 	public static String INPUT_DLG_INVALID_MSG;
-	public static String INPUT_DLG_REQUIRED_MSG;
+	public static String INPUT_DLG_REQUIRED_MSG;	
 	public static String FILE_NOT_SAVED;
 	public static String FILE_SAVED;
 	public static String LOAD_M_RTN_DLG_TITLE;
+	public static String LOAD_M_RTNS_DLG_TITLE;
 	public static String LOAD_BACKUP_SYNCH_ERROR;
 	public static String NO_FILES;
 	public static String NOT_SUPPORTED_MFILE_CONTENT;
 	public static String NOT_SUPPORTED_SELECTION_LIST;
 	public static String NOT_SUPPORTED_SELECTION;
+	public static String NOT_SUPPORTED_RESOURCES;
 	public static String ROUTINE_NAME;
 	public static String ROUTINE_NAMESPACE;	
 	public static String ROUTINE_NOT_ON_SERVER;
+	public static String ROUTINE_CREATED_IN_PROJECT;
 	public static String ROUTINE_UPDATED_IN_PROJECT;
+	public static String ROUTINE_IDENTICAL_IN_PROJECT;
 	public static String ROUTINE_SAVED_W_WARNINGS;
 	public static String SAVE_BACKUP_PRE_SERVER;
 	public static String SAVE_BACKUP_SYNCH_ERROR;
@@ -37,6 +41,7 @@ public class Messages extends NLS {
 	public static String UNEXPECTED_EDITOR_FILE_NULL;
 	public static String UNEXPECTED_EDITOR_FILE_NOTM;
 	public static String UNEXPECTED_INTERNAL;
+	public static String UNEXPECTED_OBJECT;
 	public static String WRITE_TO_CONSOLE_ERROR;
 	public static String XINDEX_IN_CONSOLE;
 	static {

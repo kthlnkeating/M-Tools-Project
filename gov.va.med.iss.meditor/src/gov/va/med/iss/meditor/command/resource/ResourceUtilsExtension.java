@@ -16,6 +16,9 @@
 
 package gov.va.med.iss.meditor.command.resource;
 
+import gov.va.med.iss.meditor.Messages;
+import gov.va.med.iss.meditor.command.utils.StatusHelper;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -24,11 +27,14 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
@@ -84,5 +90,20 @@ public class ResourceUtilsExtension {
 			prepareFolders(file.getParent());
 			file.create(source, true, null);
 		}
+	}
+	
+	public static FileFillState getSelectedFiles(TreePath[] selections, IResourceFilter filter) throws CoreException {
+		FileFillState result = new FileFillState(filter);
+		for (TreePath path : selections) {
+			Object lastSegment = path.getLastSegment();			
+			if (lastSegment instanceof IResource) {
+				IResource selected = (IResource) lastSegment;
+				result.add(selected);
+			} else {
+				IStatus status = StatusHelper.getStatus(IStatus.ERROR, Messages.UNEXPECTED_OBJECT, lastSegment.getClass().getName());				
+				throw new CoreException(status);
+			}
+		}
+		return result;
 	}
 }

@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -163,30 +162,5 @@ public class MEditorPlugin extends AbstractUIPlugin {
 		String pluginId =  this.getPluginId();
 		Status status = new Status(severity, pluginId, message, t);
 		this.getLog().log(status);
-	}
-	
-	public IStatus getStatus(int severity, String msgKey, String... msgBindings) {
-		String message = Messages.bind(msgKey, msgBindings);
-		String pid = this.getPluginId();
-		IStatus status = new Status(severity, pid, message);
-		return status;
-	}
-
-	public IStatus getStatus(Throwable t) {
-		String pid = this.getPluginId();
-		IStatus status = new Status(IStatus.ERROR, pid, t.getMessage(), t);
-		return status;
-	}
-
-	public IStatus getStatus(String message, Throwable t) {
-		String pid = this.getPluginId();
-		IStatus status = new Status(IStatus.ERROR, pid, message, t);
-		return status;
-	}
-
-	public IStatus getOKStatus() {
-		String pid = this.getPluginId();
-		IStatus status = new Status(IStatus.OK, pid, "");
-		return status;
 	}
 }
