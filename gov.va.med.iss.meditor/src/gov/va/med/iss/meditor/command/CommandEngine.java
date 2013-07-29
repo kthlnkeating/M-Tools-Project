@@ -18,31 +18,15 @@ package gov.va.med.iss.meditor.command;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.mumps.meditor.MEditorException;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
-import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.command.resource.ResourceUtilsExtension;
 import gov.va.med.iss.meditor.command.utils.MServerRoutine;
 
 public class CommandEngine {
-	public static CommandResult<IProject> getProject() {
-		String projectName = VistaConnection.getPrimaryProject();
-		try {
-			IProject project = ResourceUtilsExtension.getProject(projectName);
-			IStatus status = MEditorPlugin.getDefault().getOKStatus();
-			return new CommandResult<IProject>(project, status);
-		} catch (CoreException e) {
-			String message = Messages.bind( Messages.UNABLE_GET_PROJECT, projectName, e.getMessage());
-			IStatus status =  MEditorPlugin.getDefault().getStatus(message, e);
-			return new CommandResult<IProject>(null, status);
-		}
-	}
-
 	public static CommandResult<MServerRoutine> loadRoutine(VistaLinkConnection connection, IProject project, String routineName) {
 		try {
 			MServerRoutine serverRoutine = MServerRoutine.load(connection, project, routineName);

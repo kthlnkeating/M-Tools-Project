@@ -5,8 +5,8 @@ import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.meditor.MEditorDocumentProvider;
 import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.MEditorSourceViewerConfiguration;
-import gov.va.med.iss.meditor.StatusHelper;
 import gov.va.med.iss.meditor.Messages;
+import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 import gov.va.med.iss.meditor.m.MCodeScanner;
 import gov.va.med.iss.meditor.preferences.MEditorPreferencesPage;
 import gov.va.med.iss.meditor.preferences.MEditorPrefs;
@@ -135,7 +135,7 @@ public class MEditor extends TextEditor {
 		IEditorInput input = this.getEditorInput();
 		IFile file =  ResourceUtil.getFile(input);
 		if (file == null) {
-			StatusHelper.showError(Messages.UNEXPECTED_EDITOR_FILE_NULL);
+			MessageDialogHelper.showError(Messages.UNEXPECTED_EDITOR_FILE_NULL);
 			return null;
 		}
 		return file;
@@ -156,7 +156,7 @@ public class MEditor extends TextEditor {
 		try {
 			this.updateCode(document);			
 		} catch (BadLocationException e) {
-			StatusHelper.showError(e, Messages.UNEXPECTED_INTERNAL, e.getMessage());
+			MessageDialogHelper.showError(e, Messages.UNEXPECTED_INTERNAL, e.getMessage());
 			return false;
 		}
 		return true;

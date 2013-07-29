@@ -24,12 +24,8 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.jface.text.IDocument;
@@ -88,18 +84,5 @@ public class ResourceUtilsExtension {
 			prepareFolders(file.getParent());
 			file.create(source, true, null);
 		}
-	}
-	
-	public static IProject getProject(String projectName) throws CoreException {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
-		IProject project = root.getProject(projectName);
-		if (! project.exists()) {
-			project.create(new NullProgressMonitor());
-		}
-		if (! project.isOpen()) {
-			project.open(new NullProgressMonitor());
-		}
-		return project;
 	}
 }

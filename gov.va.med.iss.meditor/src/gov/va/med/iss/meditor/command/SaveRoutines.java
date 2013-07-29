@@ -3,8 +3,8 @@ package gov.va.med.iss.meditor.command;
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.meditor.MEditorPlugin;
-import gov.va.med.iss.meditor.StatusHelper;
 import gov.va.med.iss.meditor.Messages;
+import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,11 +55,11 @@ public class SaveRoutines extends AbstractHandler {
 		TreePath[] selections = treeSelection.getPaths();
 		boolean invalidExists = ! this.fillSelectedFiles(selections, files);
 		if (invalidExists) {
-			StatusHelper.showError(Messages.NOT_SUPPORTED_SELECTION);
+			MessageDialogHelper.showError(Messages.NOT_SUPPORTED_SELECTION);
 			return null;
 		}
 		if (files.size() == 0) {
-			StatusHelper.showError(Messages.NO_FILES);
+			MessageDialogHelper.showError(Messages.NO_FILES);
 			return null;			
 		}
 		return files;
@@ -120,7 +120,7 @@ public class SaveRoutines extends AbstractHandler {
 		String pid = MEditorPlugin.getDefault().getPluginId();
 		IStatus[] details = getDetails(statusList, pid);
 		MultiStatus info = new MultiStatus(pid, 1, details, topMessage, null);
-		StatusHelper.showMulti(info);		
+		MessageDialogHelper.showMulti(info);		
 	}
 	
 	@Override
@@ -131,7 +131,7 @@ public class SaveRoutines extends AbstractHandler {
 		
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		if ((selection == null) || (! (selection instanceof TreeSelection))) {
-			StatusHelper.showError(Messages.NOT_SUPPORTED_SELECTION_LIST);
+			MessageDialogHelper.showError(Messages.NOT_SUPPORTED_SELECTION_LIST);
 			return null;
 		}
 		List<IFile> files = this.getFiles((TreeSelection) selection);

@@ -1,4 +1,7 @@
-package gov.va.med.iss.meditor;
+package gov.va.med.iss.meditor.dialog;
+
+import gov.va.med.iss.meditor.MEditorPlugin;
+import gov.va.med.iss.meditor.Messages;
 
 import java.util.List;
 
@@ -12,7 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
-public class StatusHelper {
+public class MessageDialogHelper {
 	private static void show(int severity, String msgKey, String[] bindings, Throwable t, int dialogSeverity) {
 		String message = (bindings.length == 0) ? msgKey : NLS.bind(msgKey, bindings);
 		if (t != null) MEditorPlugin.getDefault().log(severity, message, t);
@@ -31,11 +34,6 @@ public class StatusHelper {
 	public static void showError(String message) {
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		MessageDialog.open(MessageDialog.ERROR, shell, Messages.DEFAULT_MSG_TITLE, message, SWT.NONE);
-	}
-	
-	public static void showInformation(String message) {
-		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		MessageDialog.open(MessageDialog.INFORMATION, shell, Messages.DEFAULT_MSG_TITLE, message, SWT.NONE);
 	}
 	
 	public static void showWarning(String message) {
@@ -99,5 +97,16 @@ public class StatusHelper {
 			Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 			MessageDialog.open(dialogSeverity, shell, Messages.DEFAULT_MSG_TITLE, message, SWT.NONE);
 		}
+	}
+	
+	public static void logAndShow(String message, Throwable t) {
+		IStatus status = MEditorPlugin.getDefault().getStatus(message, t);
+		logAndShow(status);
+	}
+	
+	public static void logAndShowUnexpected(Throwable t) {
+		String message = Messages.bind(Messages.UNEXPECTED_INTERNAL, t.getMessage());
+		IStatus status = MEditorPlugin.getDefault().getStatus(message, t);
+		logAndShow(status);
 	}
 }

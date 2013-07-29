@@ -7,13 +7,19 @@ public class Messages extends NLS {
 	public static String DEFAULT_MSG_TITLE;
 	public static String EDITOR_FILE_WRONG_PROJECT;
 	public static String ERRORS_FOUND_FOR_FILES;
+	public static String INPUT_DLG_INPUT_MSG;
+	public static String INPUT_DLG_INVALID_MSG;
+	public static String INPUT_DLG_REQUIRED_MSG;
 	public static String FILE_NOT_SAVED;
 	public static String FILE_SAVED;
+	public static String LOAD_M_RTN_DLG_TITLE;
 	public static String LOAD_BACKUP_SYNCH_ERROR;
 	public static String NO_FILES;
 	public static String NOT_SUPPORTED_MFILE_CONTENT;
 	public static String NOT_SUPPORTED_SELECTION_LIST;
 	public static String NOT_SUPPORTED_SELECTION;
+	public static String ROUTINE_NAME;
+	public static String ROUTINE_NAMESPACE;	
 	public static String ROUTINE_NOT_ON_SERVER;
 	public static String ROUTINE_UPDATED_IN_PROJECT;
 	public static String ROUTINE_SAVED_W_WARNINGS;
@@ -25,6 +31,7 @@ public class Messages extends NLS {
 	public static String SERVER_DELETED;
 	public static String UNABLE_BKUP_LOAD;
 	public static String UNABLE_GET_PROJECT;
+	public static String UNABLE_OPEN_EDITOR;
 	public static String UNABLE_RTN_LOAD;
 	public static String UNABLE_RTN_SAVE;
 	public static String UNEXPECTED_EDITOR_FILE_NULL;
@@ -38,5 +45,9 @@ public class Messages extends NLS {
 	}
 
 	private Messages() {
+	}
+
+	public static String bind2(String message, Object... bindings) {
+		return bind(message, bindings);
 	}
 }
