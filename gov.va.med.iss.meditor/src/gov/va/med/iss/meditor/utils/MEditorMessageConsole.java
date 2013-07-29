@@ -6,6 +6,9 @@
  */
 package gov.va.med.iss.meditor.utils;
 
+import gov.va.med.iss.meditor.MEditorPlugin;
+import gov.va.med.iss.meditor.Messages;
+
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
@@ -23,7 +26,7 @@ import org.eclipse.ui.console.MessageConsoleStream;
  */
 public class MEditorMessageConsole {
 	
-	public static void writeToConsole(String text) throws Exception {
+	private static void auxWriteToConsole(String text) throws Exception {
 		MessageConsole msgConsole;
 		try {
 			msgConsole = findConsole("MEditorConsole");
@@ -60,5 +63,15 @@ public class MEditorMessageConsole {
 		MessageConsole myConsole = new MessageConsole(name, null);
 		conMan.addConsoles(new IConsole[] {myConsole});
 		return myConsole;
+	}
+
+	public static void writeToConsole(String text) {
+		try {
+			MEditorMessageConsole.auxWriteToConsole(text);
+		} catch (Throwable t) {
+			String message = Messages.bind(Messages.WRITE_TO_CONSOLE_ERROR, t.getMessage());
+			MEditorPlugin.getDefault().logError(message);
+			MEditorPlugin.getDefault().logInfo(text);
+		}		
 	}
 }

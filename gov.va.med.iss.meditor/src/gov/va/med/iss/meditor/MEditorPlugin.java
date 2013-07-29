@@ -1,15 +1,5 @@
 package gov.va.med.iss.meditor;
-/*
- * "The Java Developer's Guide to Eclipse"
- *   by Shavor, D'Anjou, Fairbrother, Kehn, Kellerman, McCarthy
- * 
- * (C) Copyright International Business Machines Corporation, 2003. 
- * All Rights Reserved.
- * 
- * Code or samples provided herein are provided without warranty of any kind.
- */
 
-//import org.eclipse.swt.graphics.RGB;
 import gov.va.med.iss.meditor.utils.MColorProvider;
 
 import java.nio.file.FileSystems;
@@ -18,9 +8,11 @@ import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
+import org.osgi.framework.Bundle;
 
 /**
  * The main plugin class.
@@ -86,40 +78,6 @@ public class MEditorPlugin extends AbstractUIPlugin {
 		}
 		colorProvider = new MColorProvider();
 	}
-/*
-//	/**
-//	 * The constructor.
-//	 * /
-//	public MEditorPlugin(IPluginDescriptor descriptor) { //deprecated
-	public MEditorPlugin() {
-//		super(descriptor);
-		super(bundle);
-		plugin = this;
-		try {
-			resourceBundle =
-				ResourceBundle.getBundle(
-					"gov.va.med.iss.meditor.MEditorPluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
-		colorProvider = new MColorProvider();
-
-	}
-*/
-	/**
-	 * This method is called upon plug-in activation
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-	}
-
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-	}
-
 
 	/**
 	 * Returns the shared instance of the Plugin.
@@ -168,4 +126,67 @@ public class MEditorPlugin extends AbstractUIPlugin {
 		return colorProvider;
 	}
 
+	public String getPluginId() {
+		Bundle bundle = this.getBundle();
+		if (bundle != null) {
+			String result = bundle.getSymbolicName();
+			if (result != null) return result;
+		}
+		return PLUGIN_ID;
+	}
+
+	public void logError(String message) {
+		this.logError(message, null);
+	}
+	
+	public void logError(String message, Throwable t) {
+		this.log(Status.ERROR, message, t);
+	}
+	
+	public void logWarning(String message) {
+		this.logWarning(message, null);
+	}
+	
+	public void logWarning(String message, Throwable t) {		
+		this.log(Status.WARNING, message, t);
+	}
+	
+	public void logInfo(String message) {
+		this.logError(message, null);
+	}
+	
+	public void logInfo(String message, Throwable t) {		
+		this.log(Status.INFO, message, t);
+	}
+	
+	public void log(int severity, String message, Throwable t) {
+		String pluginId =  this.getPluginId();
+		Status status = new Status(severity, pluginId, message, t);
+		this.getLog().log(status);
+	}
+	
+	public IStatus getStatus(int severity, String msgKey, String... msgBindings) {
+		String message = Messages.bind(msgKey, msgBindings);
+		String pid = this.getPluginId();
+		IStatus status = new Status(severity, pid, message);
+		return status;
+	}
+
+	public IStatus getStatus(Throwable t) {
+		String pid = this.getPluginId();
+		IStatus status = new Status(IStatus.ERROR, pid, t.getMessage(), t);
+		return status;
+	}
+
+	public IStatus getStatus(String message, Throwable t) {
+		String pid = this.getPluginId();
+		IStatus status = new Status(IStatus.ERROR, pid, message, t);
+		return status;
+	}
+
+	public IStatus getOKStatus() {
+		String pid = this.getPluginId();
+		IStatus status = new Status(IStatus.OK, pid, "");
+		return status;
+	}
 }

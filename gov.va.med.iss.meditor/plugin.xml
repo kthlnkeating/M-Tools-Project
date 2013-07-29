@@ -1,6 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="gov.va.med.iss.meditor.treemresources">
+         <iterate
+               ifEmpty="false"
+               operator="and">
+            <or>
+               <instanceof
+                     value="org.eclipse.core.resources.IFolder">
+               </instanceof>
+               <instanceof
+                     value="org.eclipse.core.resources.IProject">
+               </instanceof>
+               <and>
+                  <instanceof
+                        value="org.eclipse.core.resources.IFile">
+                  </instanceof>
+                  <test
+                        property="org.eclipse.core.resources.extension"
+                        value="m">
+                  </test>
+               </and>
+            </or>
+         </iterate>
+      </definition>
+      <definition
+            id="gov.va.med.iss.meditor.treemresourceswithfolders">
+         <and>
+            <iterate
+                  ifEmpty="false"
+                  operator="or">
+               <or>
+                  <instanceof
+                        value="org.eclipse.core.resources.IProject">
+                  </instanceof>
+                  <instanceof
+                        value="org.eclipse.core.resources.IFolder">
+                  </instanceof>
+               </or>
+            </iterate>
+            <reference
+                  definitionId="gov.va.med.iss.meditor.treemresources">
+            </reference>
+         </and>
+      </definition>
+      <definition
+            id="gov.va.med.iss.meditor.onlyfolder">
+         <and>
+            <iterate
+                  ifEmpty="false"
+                  operator="and">
+               <or>
+                  <instanceof
+                        value="org.eclipse.core.resources.IFolder">
+                  </instanceof>
+                  <instanceof
+                        value="org.eclipse.core.resources.IProject">
+                  </instanceof>
+               </or>
+            </iterate>
+            <count
+                  value="1">
+            </count>
+         </and>
+      </definition>
+   </extension>
 
    <extension
          point="org.eclipse.ui.actionSets">
@@ -85,46 +152,6 @@
                id="gov.va.med.iss.meditor.actions.RoutineDirectoryAction">
          </action>
       </actionSet>
-       <actionSet
-            label="Multiple Routine Load From Server"
-            visible="true"
-            id="gov.va.med.iss.meditor.multipleRoutineLoad">
-         <menu
-               label="VistA"
-               id="vistaMenu">
-            <separator
-                  name="toolsGroup">
-            </separator>
-         </menu>
-         <action
-               label="&amp;Multiple Routine Load From Server"
-               icon="icons/meditor.gif"
-               class="gov.va.med.iss.meditor.actions.MultRoutineLoadAction"
-               tooltip="Loads and Saves Multiple Routines FROM Server"
-               menubarPath="vistaMenu/toolGroup"
-               id="gov.va.med.iss.meditor.actions.MultRoutineLoadAction">
-         </action>
-      </actionSet>
-       <actionSet
-            label="Multiple Routine Save To Server"
-            visible="true"
-            id="gov.va.med.iss.meditor.multipleRoutineSave">
-         <menu
-               label="VistA"
-               id="vistaMenu">
-            <separator
-                  name="toolsGroup">
-            </separator>
-         </menu>
-         <action
-               label="Multiple Routine &amp;Save To Server"
-               icon="icons/meditor.gif"
-               class="gov.va.med.iss.meditor.actions.MultRoutineSaveAction"
-               tooltip="Saves Multiple Routines to Server from specified directory"
-               menubarPath="vistaMenu/toolGroup"
-               id="gov.va.med.iss.meditor.actions.MultRoutineSaveAction">
-         </action>
-      </actionSet>
    </extension>
    <extension
          id="gov.va.med.iss.meditor.meditor"
@@ -165,25 +192,85 @@
       </page>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="gov.va.med.iss.meditor.mserverutil"
-            objectClass="org.eclipse.core.resources.IFile">
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
          <menu
-               id="gov.va.med.iss.meditor.mserverutil.topmenu"
-               label="M Server Util"
                icon="icons/meditor.gif"
-               path="additions">
-            <separator
-                  name="seperator1">
-            </separator>
+               label="M Server Util">
+            <command
+                  commandId="gov.va.med.iss.meditor.command.saveRoutines"
+                  label="Save Routines"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="gov.va.med.iss.meditor.treemresources">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="gov.va.med.iss.meditor.command.saveRoutines"
+                  label="Save Routines in Namespace"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="gov.va.med.iss.meditor.treemresourceswithfolders">
+                  </reference>
+               </visibleWhen>
+               <parameter
+                     name="gov.va.med.iss.meditor.command.saveRoutines.specifyNamespace"
+                     value="true">
+               </parameter>
+            </command>
+            <command
+                  commandId="gov.va.med.iss.meditor.command.loadExistingRoutines"
+                  label="Load Routines"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="gov.va.med.iss.meditor.treemresources">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="gov.va.med.iss.meditor.command.loadRoutinesIntoDirectory"
+                  label="Load Routines in Namespace"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="gov.va.med.iss.meditor.onlyfolder">
+                  </reference>
+               </visibleWhen>
+            </command>
          </menu>
-         <action
-               class="gov.va.med.iss.meditor.actions.SaveToServer"
-               id="gov.va.med.iss.meditor.actions.SaveToServer"
-               label="Save to Server"
-               menubarPath="gov.va.med.iss.meditor.mserverutil.topmenu/seperator1">
-         </action>
-      </objectContribution>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="gov.va.med.iss.meditor.command.SaveRoutines"
+            id="gov.va.med.iss.meditor.command.saveRoutines"
+            name="Save Routines">
+         <commandParameter
+               id="gov.va.med.iss.meditor.command.saveRoutines.specifyNamespace"
+               name="Specify Namespace"
+               optional="false">
+         </commandParameter>
+      </command>
+      <command
+            defaultHandler="gov.va.med.iss.meditor.command.LoadExistingRoutines"
+            id="gov.va.med.iss.meditor.command.loadExistingRoutines"
+            name="Load Existing Routines">
+      </command>
+      <command
+            defaultHandler="gov.va.med.iss.meditor.command.LoadRoutinesIntoDirectory"
+            id="gov.va.med.iss.meditor.command.loadRoutinesIntoDirectory"
+            name="Load Routines Into Directory">
+      </command>
    </extension>
 </plugin>
