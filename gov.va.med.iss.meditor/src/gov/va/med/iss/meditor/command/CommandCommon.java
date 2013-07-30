@@ -16,14 +16,18 @@
 
 package gov.va.med.iss.meditor.command;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import gov.va.med.iss.meditor.Messages;
 import gov.va.med.iss.meditor.command.resource.FileFillState;
+import gov.va.med.iss.meditor.command.resource.FileSetSearchVisitor;
 import gov.va.med.iss.meditor.command.resource.IResourceFilter;
 import gov.va.med.iss.meditor.command.resource.ResourceUtilsExtension;
+import gov.va.med.iss.meditor.command.utils.StatusHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 import gov.va.med.iss.meditor.editors.MEditor;
+import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
@@ -31,6 +35,8 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
@@ -125,6 +131,29 @@ public class CommandCommon {
 			}
 		} catch (Throwable t) {
 			MessageDialogHelper.logAndShowUnexpected(t);
+			return null;
+		}
+	}
+
+	public static void showMultiStatus(int overallSeverity, String message, List<IStatus> statuses) {
+		MultiStatus multiStatus = StatusHelper.getMultiStatus(overallSeverity, message, statuses);
+		MessageDialogHelper.showMulti(multiStatus);		
+	}
+	
+	public static List<IFile> getFileHandles(IFolder defaultFolder, String[] routineNames) {
+		List<String> fileNames = new ArrayList<String>();
+		for (String routineName : routineNames) {
+			String fileName = routineName + ".m";
+			fileNames.add(fileName);
+		}		
+		try {
+			String backupDirectory = MEditorPrefs.getServerBackupFolderName();
+			FileSetSearchVisitor visitor = new FileSetSearchVisitor(fileNames, backupDirectory);
+			IProject project = defaultFolder.getProject();
+			project.accept(visitor, 0);
+			return visitor.getFiles(defaultFolder);
+		} catch (Throwable t) {
+			MessageDialogHelper.logAndShow(t);
 			return null;
 		}
 	}

@@ -16,14 +16,8 @@
 
 package gov.va.med.iss.meditor.command;
 
-import java.util.List;
-
-import gov.va.med.iss.meditor.command.utils.StatusHelper;
-import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 
 abstract class LoadMultipleRoutines extends AbstractHandler {
 	protected String getTopMessage(int overallSeverity) {
@@ -34,24 +28,5 @@ abstract class LoadMultipleRoutines extends AbstractHandler {
 		} else {
 			return "All files are loaded successfully.";
 		}
-	}
-	
-	protected void showFinalMessage(int overallSeverity, List<IStatus> statuses) {
-		String message = this.getTopMessage(overallSeverity);
-		MultiStatus multiStatus = StatusHelper.getMultiStatus(overallSeverity, message, statuses);
-		MessageDialogHelper.showMulti(multiStatus);		
-	}
-	
-	protected int updateStatuses(IStatus status, String prefixForFile, int overallSeverity, List<IStatus> statuses) {
-		if (status.getSeverity() == IStatus.OK) {
-			IStatus newStatus = StatusHelper.getStatus(IStatus.INFO, prefixForFile + "no issues");
-			statuses.add(newStatus);
-			return IStatus.INFO;
-		} else {
-			IStatus newStatus = StatusHelper.getStatus(status, prefixForFile + status.getMessage() + "\n");
-			statuses.add(newStatus);
-			int severity = status.getSeverity();
-			return StatusHelper.updateOverallSeverity(overallSeverity, severity);				
-		}	
 	}
 }

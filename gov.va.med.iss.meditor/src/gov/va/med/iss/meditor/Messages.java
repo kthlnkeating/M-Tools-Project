@@ -16,6 +16,7 @@ public class Messages extends NLS {
 	public static String LOAD_M_RTNS_DLG_TITLE;
 	public static String LOAD_BACKUP_SYNCH_ERROR;
 	public static String NO_FILES;
+	public static String NO_FILES_IN_NAMESPACE;
 	public static String NOT_SUPPORTED_MFILE_CONTENT;
 	public static String NOT_SUPPORTED_SELECTION_LIST;
 	public static String NOT_SUPPORTED_SELECTION;
@@ -29,6 +30,7 @@ public class Messages extends NLS {
 	public static String ROUTINE_SAVED_W_WARNINGS;
 	public static String SAVE_BACKUP_PRE_SERVER;
 	public static String SAVE_BACKUP_SYNCH_ERROR;
+	public static String SAVE_M_RTNS_DLG_TITLE;
 	public static String SERVER_BACKUP_CONFLICT;
 	public static String SERVER_CLIENT_EQUAL;
 	public static String SERVER_FIRST_SAVE;

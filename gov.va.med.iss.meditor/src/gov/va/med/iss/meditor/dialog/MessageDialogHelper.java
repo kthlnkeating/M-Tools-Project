@@ -105,6 +105,11 @@ public class MessageDialogHelper {
 		logAndShow(status);
 	}
 	
+	public static void logAndShow(Throwable t) {
+		IStatus status = StatusHelper.getStatus(t);
+		logAndShow(status);
+	}
+	
 	public static void logAndShowUnexpected(Throwable t) {
 		String message = Messages.bind(Messages.UNEXPECTED_INTERNAL, t.getMessage());
 		IStatus status = StatusHelper.getStatus(message, t);

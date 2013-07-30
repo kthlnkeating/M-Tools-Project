@@ -81,4 +81,17 @@ public class StatusHelper {
 		MultiStatus result = new MultiStatus(pid, IStatus.OK, statusesAsArray, message, null);
 		return result;
 	}
+		
+	public static int updateStatuses(IStatus status, String prefixForFile, int overallSeverity, List<IStatus> statuses) {
+		if (status.getSeverity() == IStatus.OK) {
+			IStatus newStatus = StatusHelper.getStatus(IStatus.INFO, prefixForFile + "no issues");
+			statuses.add(newStatus);
+			return IStatus.INFO;
+		} else {
+			IStatus newStatus = StatusHelper.getStatus(status, prefixForFile + status.getMessage() + "\n");
+			statuses.add(newStatus);
+			int severity = status.getSeverity();
+			return StatusHelper.updateOverallSeverity(overallSeverity, severity);				
+		}	
+	}
 }

@@ -25,6 +25,7 @@ import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 import gov.va.med.iss.meditor.Messages;
 import gov.va.med.iss.meditor.command.resource.ResourceUtilsExtension;
 import gov.va.med.iss.meditor.command.utils.MServerRoutine;
+import gov.va.med.iss.meditor.command.utils.StatusHelper;
 import gov.va.med.iss.meditor.dialog.InputDialogHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 import gov.va.med.iss.meditor.utils.RoutineDirectory;
@@ -75,25 +76,28 @@ public class LoadRoutinesIntoDirectory extends LoadMultipleRoutines {
 		
 		String routines = RoutineDirectory.getRoutineList(routineNamespace);
 		if (routines.isEmpty() || (routines.indexOf("<") >= 0)) {
-			String message = "NO routine in the namespace" + routineNamespace + " is found.";
+			String message = "No routine in the namespace " + routineNamespace + " is found.";
 			MessageDialogHelper.showError(message);
 			return null;						
 			
 		}
 		
 		String[] routineArray = routines.split("\n");
-			
-		int overallSeverity = IStatus.OK;
-		List<IStatus> statuses = new ArrayList<>();
-		for (String routineName : routineArray) {
-			CommandResult<MServerRoutine> r = CommandEngine.loadRoutine(connection, folder.getProject(), routineName);
-			IFile file = r.getResultObject().getFileHandle();			
-			String prefixForFile = (file == null) ? routineName + " -- ": file.getFullPath().toString() + " -- ";
-			IStatus status = r.getStatus();
-			overallSeverity = this.updateStatuses(status, prefixForFile, overallSeverity, statuses);
+		List<IFile> files = CommandCommon.getFileHandles(folder, routineArray);
+		if (files == null) {
+			return null;
 		}
 		
-		this.showFinalMessage(overallSeverity, statuses);
+		int overallSeverity = IStatus.OK;
+		List<IStatus> statuses = new ArrayList<>();
+		for (IFile file : files) {
+			CommandResult<MServerRoutine> r = CommandEngine.loadRoutine(connection, file);
+			String prefixForFile = file.getFullPath().toString() + " -- ";
+			IStatus status = r.getStatus();
+			overallSeverity = StatusHelper.updateStatuses(status, prefixForFile, overallSeverity, statuses);
+		}
+		
+		CommandCommon.showMultiStatus(overallSeverity, this.getTopMessage(overallSeverity), statuses);
 		return null;
 	}
 }

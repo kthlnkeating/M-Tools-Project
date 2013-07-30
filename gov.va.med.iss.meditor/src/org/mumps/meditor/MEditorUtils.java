@@ -11,12 +11,11 @@ import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.Messages;
 import gov.va.med.iss.meditor.command.resource.ResourceUtilsExtension;
 import gov.va.med.iss.meditor.command.utils.MServerRoutine;
+import gov.va.med.iss.meditor.command.utils.StatusHelper;
 import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 import gov.va.med.iss.meditor.utils.MEditorMessageConsole;
 import gov.va.med.iss.meditor.utils.StringUtil;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -25,6 +24,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -74,32 +74,9 @@ public class MEditorUtils {
 	}
 
 	/**
-	 * Save the backup file. Create it if one doesn't exist. Also change the
-	 * filename to end on todays date in the case a file already exists.
-	 * 
-	 * @param projectName
-	 * @param routineName
-	 * @param serverCode
-	 * @throws CoreException
-	 */
-	public static void syncBackup(IFile file, String serverCode) throws CoreException, IOException {		
-		IFile backupFile = getBackupFile(file);
-		InputStream stream = new ByteArrayInputStream(serverCode.getBytes("UTF-8"));
-		if (! backupFile.exists()) {
-			ResourceUtilsExtension.prepareFolders((IFolder) backupFile.getParent());			
-			backupFile.create(stream, true, null);
-		} else {
-			backupFile.setContents(stream, true, true, null);
-		}
-		stream.close();
-	}
-		
-	/**
 	 * Converts all tabs to space, removes all control characters, and removes
 	 * all empty lines.  This method also makes sure that all the end of line
 	 * characters are consistent. 
-	 * does not Cleans M code from control characters inlcud
-	 * filename to end on todays date in the case a file already exists.
 	 * 
 	 * @param source M code.
 	 * @param target updated M code.
@@ -149,15 +126,15 @@ public class MEditorUtils {
 		return target;
 	}
 	
-	private static MEditorStatus saveRoutineToServer(VistaLinkConnection connection, String routineName, ListRoutineBuilder builder, IFile backupFile, StringBuilder consoleMessage) {
+	private static IStatus saveRoutineToServer(VistaLinkConnection connection, String routineName, ListRoutineBuilder builder, IFile backupFile, StringBuilder consoleMessage) {
 		String warningMessage = "";
 		try {
 			List<String> contents = builder.getRoutineLines();
-			MEditorStatus result = saveRoutineToServer(connection, routineName, contents, consoleMessage);
-			if (result.getSeverity() == MEditorStatusSeverity.ERROR) {
+			IStatus result = saveRoutineToServer(connection, routineName, contents, consoleMessage);
+			if (result.getSeverity() == IStatus.ERROR) {
 				return result;
 			}
-			if (result.hasMessage()) {
+			if (result.getSeverity() != IStatus.OK) {
 				String message = result.getMessage();
 				warningMessage += "\n" + message;
 			}
@@ -172,15 +149,14 @@ public class MEditorUtils {
 			warningMessage += "\n" + message;
 		} catch (Throwable t) {
 			String message = Messages.bind(Messages.UNABLE_RTN_SAVE, routineName);
-			MEditorPlugin.getDefault().logError(message, t);
-			return new MEditorStatus(MEditorStatusSeverity.ERROR, message);
+			return StatusHelper.getStatus(message, t);
 		}		
 
 		if (warningMessage.length() > 0) {
 			warningMessage = Messages.bind(Messages.ROUTINE_SAVED_W_WARNINGS, routineName) + warningMessage;
-			return new MEditorStatus(MEditorStatusSeverity.WARNING, warningMessage); 
+			return StatusHelper.getStatus(IStatus.WARNING, warningMessage); 
 		} else {
-			return new MEditorStatus();
+			return StatusHelper.getOKStatus();
 		}
 	}
 	
@@ -205,7 +181,7 @@ public class MEditorUtils {
 		return result;
 	}
 
-	private static MEditorStatus synchBackupFile(IFile backupFile, String routine) throws BackupSynchException {
+	private static IStatus synchBackupFile(IFile backupFile, String routine) throws BackupSynchException {
 		try {
 			InputStream stream = StringUtil.stringToStream(routine); 
 			if (backupFile.exists()) {
@@ -215,7 +191,7 @@ public class MEditorUtils {
 				backupFile.create(stream, true, null);
 			}
 			stream.close();
-			return new MEditorStatus();
+			return StatusHelper.getOKStatus();
 		} catch (Throwable t) {
 			String message = Messages.bind(Messages.SAVE_BACKUP_SYNCH_ERROR, backupFile.getName());
 			throw new BackupSynchException(message, t);
@@ -275,7 +251,7 @@ public class MEditorUtils {
 		return isErrorsOrWarnings;
 	}
 	
-	public static MEditorStatus saveRoutineToServer(VistaLinkConnection connection, String routineName, List<String> contents, StringBuilder consoleMessage) throws FoundationsException {
+	public static IStatus saveRoutineToServer(VistaLinkConnection connection, String routineName, List<String> contents, StringBuilder consoleMessage) throws FoundationsException {
 		RpcRequest vReq = RpcRequestFactory.getRpcRequest("", "XT ECLIPSE M EDITOR");
 		vReq.setUseProprietaryMessageFormat(true);
 		vReq.getParams().setParam(1, "string", "RS");  // RD  RL  GD  GL  RS
@@ -295,25 +271,25 @@ public class MEditorUtils {
 			String line1 = vResp.getResults().substring(0, index);
 			if (line1.indexOf("-1") == 0) {
 				String message = MPiece.getPiece(line1,"^",2);
-				MEditorStatus r = new MEditorStatus(MEditorStatusSeverity.ERROR, message);
+				IStatus r = StatusHelper.getStatus(IStatus.ERROR, message);
 				return r;
 			}
 			String doc = vResp.getResults().substring(vResp.getResults().indexOf('\n'));
 			boolean isErrorsOrWarnings = updateConsoleMessage(doc, consoleMessage);
 			if (isErrorsOrWarnings) {
-				MEditorStatus r = new MEditorStatus(MEditorStatusSeverity.WARNING, Messages.XINDEX_IN_CONSOLE);
+				IStatus r = StatusHelper.getStatus(IStatus.WARNING, Messages.XINDEX_IN_CONSOLE);
 				return r;
 			}			
 		}
-		return new MEditorStatus();
+		return StatusHelper.getOKStatus();
 	}
 	
-	public static MEditorStatus save(VistaLinkConnection connection, IFile file) {
+	public static IStatus save(VistaLinkConnection connection, IFile file) {
 		try {
 			String projectName = VistaConnection.getPrimaryProject();
 			if (! file.getProject().getName().equals(projectName)) {
-				String message = Messages.bind(Messages.EDITOR_FILE_WRONG_PROJECT, file.getName(), projectName);
-				return new MEditorStatus(MEditorStatusSeverity.ERROR, message);
+				IStatus status = StatusHelper.getStatus(IStatus.ERROR, Messages.EDITOR_FILE_WRONG_PROJECT, file.getName(), projectName);
+				return status;
 			}
 
 			ListRoutineBuilder routineContent = getListRoutineBuilder(file);
@@ -322,20 +298,20 @@ public class MEditorUtils {
 			String routineName = serverRoutine.getRoutineName();
 			BackupSynchResult synchResult = serverRoutine.getLastSynchResult();
 			if (synchResult == BackupSynchResult.UPDATED) {
-				String message = Messages.bind(Messages.SERVER_BACKUP_CONFLICT, getBackupFile(file).getFullPath().toString());
-				return new MEditorStatus(MEditorStatusSeverity.ERROR, message);				
+				IStatus status = StatusHelper.getStatus(IStatus.ERROR, Messages.SERVER_BACKUP_CONFLICT, getBackupFile(file).getFullPath().toString());
+				return status;
 			}
 			
 			if (serverRoutine.isLoaded() && serverRoutine.compareTo(file)) {
-				MEditorStatus r = new MEditorStatus(MEditorStatusSeverity.ERROR, Messages.SERVER_CLIENT_EQUAL);				
-				return r;
+				IStatus status = StatusHelper.getStatus(IStatus.ERROR, Messages.SERVER_CLIENT_EQUAL);
+				return status;
 			}
 			
 			IFile backupFile = getBackupFile(file);
 			StringBuilder consoleMessage = startConsoleMessage(routineName, synchResult, backupFile);			
 			return saveRoutineToServer(connection, routineName, routineContent, backupFile, consoleMessage);
 		} catch (Throwable t) {
-			return MEditorStatus.getInstance(t);
+			return StatusHelper.getStatus(t);
 		}
 	}	
 }

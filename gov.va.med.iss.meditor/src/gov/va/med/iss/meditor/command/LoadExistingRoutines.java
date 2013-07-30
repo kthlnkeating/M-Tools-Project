@@ -22,6 +22,7 @@ import java.util.List;
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.meditor.command.utils.MServerRoutine;
+import gov.va.med.iss.meditor.command.utils.StatusHelper;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -48,10 +49,10 @@ public class LoadExistingRoutines extends LoadMultipleRoutines {
 			CommandResult<MServerRoutine> r = CommandEngine.loadRoutine(connection, file);
 			String prefixForFile = file.getFullPath().toString() + " -- ";
 			IStatus status = r.getStatus();
-			overallSeverity = this.updateStatuses(status, prefixForFile, overallSeverity, statuses);
+			overallSeverity = StatusHelper.updateStatuses(status, prefixForFile, overallSeverity, statuses);
 		}
 		
-		this.showFinalMessage(overallSeverity, statuses);
+		CommandCommon.showMultiStatus(overallSeverity, this.getTopMessage(overallSeverity), statuses);
 		return null;
 	}
 }

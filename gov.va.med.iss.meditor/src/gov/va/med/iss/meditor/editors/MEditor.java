@@ -13,6 +13,7 @@ import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -24,7 +25,6 @@ import org.eclipse.ui.texteditor.DefaultRangeIndicator;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.mumps.meditor.MEditorUtils;
-import org.mumps.meditor.MEditorStatus;
 import org.mumps.meditor.StringRoutineBuilder;
 
 /**
@@ -194,8 +194,8 @@ public class MEditor extends TextEditor {
 			return;
 		}
 		
-		MEditorStatus result = MEditorUtils.save(connection, file);
-		result.showMessage();		
+		IStatus result = MEditorUtils.save(connection, file);
+		MessageDialogHelper.logAndShow(result);
 	}
 
 	@SuppressWarnings("rawtypes")
