@@ -14,7 +14,7 @@
 // limitations under the License.
 //---------------------------------------------------------------------------
 
-package gov.va.med.iss.meditor.command.utils;
+package gov.va.med.iss.meditor.core;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;

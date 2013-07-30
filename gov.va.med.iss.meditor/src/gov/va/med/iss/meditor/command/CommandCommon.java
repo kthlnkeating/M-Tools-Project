@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.command.resource.FileFillState;
-import gov.va.med.iss.meditor.command.resource.FileSetSearchVisitor;
-import gov.va.med.iss.meditor.command.resource.IResourceFilter;
-import gov.va.med.iss.meditor.command.resource.ResourceUtilsExtension;
-import gov.va.med.iss.meditor.command.utils.StatusHelper;
+import gov.va.med.iss.meditor.core.StatusHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 import gov.va.med.iss.meditor.editors.MEditor;
 import gov.va.med.iss.meditor.preferences.MEditorPrefs;
+import gov.va.med.iss.meditor.resource.FileFillState;
+import gov.va.med.iss.meditor.resource.FileSetSearchVisitor;
+import gov.va.med.iss.meditor.resource.IResourceFilter;
+import gov.va.med.iss.meditor.resource.ResourceUtilsExtension;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;

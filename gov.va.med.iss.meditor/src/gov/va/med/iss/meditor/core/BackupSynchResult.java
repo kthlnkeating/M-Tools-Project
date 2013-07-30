@@ -1,4 +1,4 @@
-package org.mumps.meditor;
+package gov.va.med.iss.meditor.core;
 
 public enum BackupSynchResult {
 	NO_CHANGE_SERVER_DELETED,

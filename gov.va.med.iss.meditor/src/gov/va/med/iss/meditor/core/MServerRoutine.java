@@ -14,7 +14,7 @@
 // limitations under the License.
 //---------------------------------------------------------------------------
 
-package gov.va.med.iss.meditor.command.utils;
+package gov.va.med.iss.meditor.core;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
@@ -22,9 +22,12 @@ import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.command.resource.FileSearchVisitor;
-import gov.va.med.iss.meditor.command.resource.ResourceUtilsExtension;
+import gov.va.med.iss.meditor.error.BackupSynchException;
+import gov.va.med.iss.meditor.error.InvalidFileException;
+import gov.va.med.iss.meditor.error.LoadRoutineException;
 import gov.va.med.iss.meditor.preferences.MEditorPrefs;
+import gov.va.med.iss.meditor.resource.FileSearchVisitor;
+import gov.va.med.iss.meditor.resource.ResourceUtilsExtension;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.file.FileSystems;
@@ -37,11 +40,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-import org.mumps.meditor.BackupSynchException;
-import org.mumps.meditor.BackupSynchResult;
-import org.mumps.meditor.InvalidFileException;
-import org.mumps.meditor.LoadRoutineException;
-import org.mumps.meditor.MEditorUtils;
 import org.mumps.pathstructure.vista.RoutinePathResolver;
 import org.mumps.pathstructure.vista.RoutinePathResolverFactory;
 
@@ -208,7 +206,7 @@ public class MServerRoutine {
 	
 	private static BackupSynchResult synchBackupFile(IFile file, String content) throws BackupSynchException {
 		try {
-			IFile backupFile = MEditorUtils.getBackupFile(file);
+			IFile backupFile = SaveRoutineEngine.getBackupFile(file);
 			if (backupFile.exists()) {
 				if (content != null) {
 					boolean updated = updateFile(backupFile, content);
@@ -243,7 +241,7 @@ public class MServerRoutine {
 	}	
 
 	public static MServerRoutine load(VistaLinkConnection connection, IFile file) throws InvalidFileException, LoadRoutineException, BackupSynchException {
-		String routineName = MEditorUtils.getRoutineName(file);
+		String routineName = SaveRoutineEngine.getRoutineName(file);
 		return load(connection, file, routineName);
 	}
 }

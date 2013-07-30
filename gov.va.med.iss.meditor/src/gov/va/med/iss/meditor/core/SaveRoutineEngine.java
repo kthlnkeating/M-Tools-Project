@@ -1,4 +1,4 @@
-package org.mumps.meditor;
+package gov.va.med.iss.meditor.core;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
@@ -9,10 +9,11 @@ import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.MPiece;
 import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.command.resource.ResourceUtilsExtension;
-import gov.va.med.iss.meditor.command.utils.MServerRoutine;
-import gov.va.med.iss.meditor.command.utils.StatusHelper;
+import gov.va.med.iss.meditor.error.BackupSynchException;
+import gov.va.med.iss.meditor.error.InvalidFileException;
+import gov.va.med.iss.meditor.error.MEditorException;
 import gov.va.med.iss.meditor.preferences.MEditorPrefs;
+import gov.va.med.iss.meditor.resource.ResourceUtilsExtension;
 import gov.va.med.iss.meditor.utils.MEditorMessageConsole;
 import gov.va.med.iss.meditor.utils.StringUtil;
 
@@ -31,7 +32,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension4;
 import org.eclipse.jface.text.IRegion;
 
-public class MEditorUtils {
+public class SaveRoutineEngine {
 	/** Returns the handle for the backup file for a file in a project. Backup  
 	 *  files store the M server versions whenever they are loaded to client. 
 	 *  Backup files are stored in a preference determined project directory.  

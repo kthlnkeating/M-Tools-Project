@@ -6,6 +6,8 @@ import gov.va.med.iss.meditor.MEditorDocumentProvider;
 import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.MEditorSourceViewerConfiguration;
 import gov.va.med.iss.meditor.Messages;
+import gov.va.med.iss.meditor.core.SaveRoutineEngine;
+import gov.va.med.iss.meditor.core.StringRoutineBuilder;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 import gov.va.med.iss.meditor.m.MCodeScanner;
 import gov.va.med.iss.meditor.preferences.MEditorPreferencesPage;
@@ -24,8 +26,6 @@ import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.DefaultRangeIndicator;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.mumps.meditor.MEditorUtils;
-import org.mumps.meditor.StringRoutineBuilder;
 
 /**
  *	This class is responsible for configuring the M editor.
@@ -143,7 +143,7 @@ public class MEditor extends TextEditor {
 	
 	private void updateCode(IDocument document) throws BadLocationException {
 		StringRoutineBuilder srb = new StringRoutineBuilder();
-		boolean updated = MEditorUtils.cleanMCode(document, srb);
+		boolean updated = SaveRoutineEngine.cleanMCode(document, srb);
 		if (updated) {
         	document.set(srb.getRoutine()); 
         }         
@@ -194,7 +194,7 @@ public class MEditor extends TextEditor {
 			return;
 		}
 		
-		IStatus result = MEditorUtils.save(connection, file);
+		IStatus result = SaveRoutineEngine.save(connection, file);
 		MessageDialogHelper.logAndShow(result);
 	}
 

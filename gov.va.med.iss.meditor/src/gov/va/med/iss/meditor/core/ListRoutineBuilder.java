@@ -1,4 +1,5 @@
-package org.mumps.meditor;
+package gov.va.med.iss.meditor.core;
+
 
 import java.util.ArrayList;
 import java.util.List;

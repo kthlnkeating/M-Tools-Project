@@ -1,4 +1,5 @@
-package org.mumps.meditor;
+package gov.va.med.iss.meditor.error;
+
 
 public class BackupSynchException extends MEditorException {
 	private static final long serialVersionUID = 1L;

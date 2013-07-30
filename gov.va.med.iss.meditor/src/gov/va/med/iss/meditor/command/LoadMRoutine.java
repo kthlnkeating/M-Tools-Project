@@ -20,7 +20,9 @@ import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.command.utils.MServerRoutine;
+import gov.va.med.iss.meditor.core.LoadRoutineEngine;
+import gov.va.med.iss.meditor.core.CommandResult;
+import gov.va.med.iss.meditor.core.MServerRoutine;
 import gov.va.med.iss.meditor.dialog.InputDialogHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 
@@ -78,7 +80,7 @@ public class LoadMRoutine extends AbstractHandler {
 			return null;
 		}
 		
-		CommandResult<MServerRoutine> result = CommandEngine.loadRoutine(connection, project, routineName);
+		CommandResult<MServerRoutine> result = LoadRoutineEngine.loadRoutine(connection, project, routineName);
 		IStatus status = result.getStatus();		
 		if (status.getSeverity() != IStatus.OK) {
 			MessageDialogHelper.logAndShow(status);			

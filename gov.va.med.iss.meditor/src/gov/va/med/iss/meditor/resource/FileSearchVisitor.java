@@ -14,64 +14,41 @@
 // limitations under the License.
 //---------------------------------------------------------------------------
 
-package gov.va.med.iss.meditor.command.resource;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package gov.va.med.iss.meditor.resource;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 
-public class FileSetSearchVisitor implements IResourceProxyVisitor {
-	private Map<String, IFile> files = new HashMap<String, IFile>();
-	private Set<String> fileNames;
+public class FileSearchVisitor implements IResourceProxyVisitor {
+	private IFile file;
+	private String fileName;
 	private String excludeDirectory;
-	private Set<String> multiples = new HashSet<String>();
 	
-	public FileSetSearchVisitor(Collection<String> fileNames, String excludeDirectory) {
-		this.fileNames = new HashSet<String>(fileNames);
+	public FileSearchVisitor(String fileName, String excludeDirectory) {
+		this.fileName = fileName;
 		this.excludeDirectory = excludeDirectory;
 	}
 	
 	@Override
 	public boolean visit(IResourceProxy proxy) { 
+		if (this.file != null) {
+			return false;
+		}
 		String name = proxy.getName();
 		if (proxy.getType() != IResource.FILE) {
 			return ! name.equals(this.excludeDirectory);
 		}
-		if (! fileNames.contains(name)) {
+		if (! name.equals(this.fileName)) {
 			return true;
 		}
-		if (this.files.containsKey(name)) {
-			multiples.add(name);
-		} else {
-			IFile file = (IFile) proxy.requestResource();
-			this.files.put(name, file);
-		}
+		this.file = (IFile) proxy.requestResource();
 		return false;
     } 
 	
-	public Set<String> getMultiplyExists() {
-		return this.multiples;
-	}
-	
-	public List<IFile> getFiles(IFolder defaultFolder) {
-		List<IFile> result = new ArrayList<IFile>();
-		for (String name : this.fileNames) {
-			IFile file = this.files.get(name);
-			if (file == null) {
-				file = defaultFolder.getFile(name);
-			}
-			result.add(file);
-		}
-		return result;
+	public IFile getFile() {
+		return this.file;
 	}
 }
+

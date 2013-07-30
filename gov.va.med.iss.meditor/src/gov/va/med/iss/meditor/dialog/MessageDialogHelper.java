@@ -2,7 +2,7 @@ package gov.va.med.iss.meditor.dialog;
 
 import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.command.utils.StatusHelper;
+import gov.va.med.iss.meditor.core.StatusHelper;
 
 import java.util.List;
 

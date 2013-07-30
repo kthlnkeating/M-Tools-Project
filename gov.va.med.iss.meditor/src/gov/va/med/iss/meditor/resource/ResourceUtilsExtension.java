@@ -14,10 +14,10 @@
 // limitations under the License.
 //---------------------------------------------------------------------------
 
-package gov.va.med.iss.meditor.command.resource;
+package gov.va.med.iss.meditor.resource;
 
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.command.utils.StatusHelper;
+import gov.va.med.iss.meditor.core.StatusHelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

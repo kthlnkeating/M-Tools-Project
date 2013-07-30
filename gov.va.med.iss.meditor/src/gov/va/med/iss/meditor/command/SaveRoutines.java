@@ -4,7 +4,8 @@ import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.command.utils.StatusHelper;
+import gov.va.med.iss.meditor.core.SaveRoutineEngine;
+import gov.va.med.iss.meditor.core.StatusHelper;
 import gov.va.med.iss.meditor.dialog.InputDialogHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 
@@ -16,7 +17,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
-import org.mumps.meditor.MEditorUtils;
 
 public class SaveRoutines extends AbstractHandler {
 	protected String getTopMessage(int overallSeverity) {
@@ -70,7 +70,7 @@ public class SaveRoutines extends AbstractHandler {
 		int overallSeverity = IStatus.OK;
 		List<IStatus> statuses = new ArrayList<>();
 		for (IFile file : selectedFiles) {
-			IStatus status = MEditorUtils.save(connection, file);
+			IStatus status = SaveRoutineEngine.save(connection, file);
 			String prefixForFile = file.getFullPath().toString() + " -- ";
 			overallSeverity = StatusHelper.updateStatuses(status, prefixForFile, overallSeverity, statuses);
 		}

@@ -1,4 +1,5 @@
-package org.mumps.meditor;
+package gov.va.med.iss.meditor.core;
+
 
 public class StringRoutineBuilder implements IRoutineBuilder {
 	private StringBuilder builder = new StringBuilder();

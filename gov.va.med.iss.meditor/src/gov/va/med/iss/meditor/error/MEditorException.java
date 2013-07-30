@@ -1,4 +1,4 @@
-package org.mumps.meditor;
+package gov.va.med.iss.meditor.error;
 
 public class MEditorException extends Exception {
 	private static final long serialVersionUID = 1L;

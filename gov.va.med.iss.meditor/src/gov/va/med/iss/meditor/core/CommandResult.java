@@ -1,4 +1,4 @@
-package gov.va.med.iss.meditor.command;
+package gov.va.med.iss.meditor.core;
 
 import org.eclipse.core.runtime.IStatus;
 

@@ -14,7 +14,7 @@
 // limitations under the License.
 //---------------------------------------------------------------------------
 
-package gov.va.med.iss.meditor.command.resource;
+package gov.va.med.iss.meditor.resource;
 
 import java.util.ArrayList;
 import java.util.HashSet;

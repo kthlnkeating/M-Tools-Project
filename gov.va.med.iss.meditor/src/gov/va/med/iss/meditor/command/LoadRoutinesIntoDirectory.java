@@ -23,11 +23,13 @@ import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.command.resource.ResourceUtilsExtension;
-import gov.va.med.iss.meditor.command.utils.MServerRoutine;
-import gov.va.med.iss.meditor.command.utils.StatusHelper;
+import gov.va.med.iss.meditor.core.LoadRoutineEngine;
+import gov.va.med.iss.meditor.core.CommandResult;
+import gov.va.med.iss.meditor.core.MServerRoutine;
+import gov.va.med.iss.meditor.core.StatusHelper;
 import gov.va.med.iss.meditor.dialog.InputDialogHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
+import gov.va.med.iss.meditor.resource.ResourceUtilsExtension;
 import gov.va.med.iss.meditor.utils.RoutineDirectory;
 
 import org.eclipse.core.commands.ExecutionEvent;
@@ -91,7 +93,7 @@ public class LoadRoutinesIntoDirectory extends LoadMultipleRoutines {
 		int overallSeverity = IStatus.OK;
 		List<IStatus> statuses = new ArrayList<>();
 		for (IFile file : files) {
-			CommandResult<MServerRoutine> r = CommandEngine.loadRoutine(connection, file);
+			CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connection, file);
 			String prefixForFile = file.getFullPath().toString() + " -- ";
 			IStatus status = r.getStatus();
 			overallSeverity = StatusHelper.updateStatuses(status, prefixForFile, overallSeverity, statuses);

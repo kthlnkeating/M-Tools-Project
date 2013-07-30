@@ -14,7 +14,7 @@
 // limitations under the License.
 //---------------------------------------------------------------------------
 
-package gov.va.med.iss.meditor.command;
+package gov.va.med.iss.meditor.core;
 
 import java.io.UnsupportedEncodingException;
 
@@ -23,15 +23,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.text.BadLocationException;
-import org.mumps.meditor.MEditorException;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.command.utils.MServerRoutine;
-import gov.va.med.iss.meditor.command.utils.StatusHelper;
-import gov.va.med.iss.meditor.command.utils.UpdateFileResult;
+import gov.va.med.iss.meditor.error.MEditorException;
 
-public class CommandEngine {
+public class LoadRoutineEngine {
 	private static CommandResult<MServerRoutine> loadRoutine(MServerRoutine serverRoutine) throws CoreException, BadLocationException, UnsupportedEncodingException {
 		String routineName = serverRoutine.getRoutineName();
 		if (! serverRoutine.isLoaded()) {

@@ -21,8 +21,10 @@ import java.util.List;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.meditor.command.utils.MServerRoutine;
-import gov.va.med.iss.meditor.command.utils.StatusHelper;
+import gov.va.med.iss.meditor.core.LoadRoutineEngine;
+import gov.va.med.iss.meditor.core.CommandResult;
+import gov.va.med.iss.meditor.core.MServerRoutine;
+import gov.va.med.iss.meditor.core.StatusHelper;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -46,7 +48,7 @@ public class LoadExistingRoutines extends LoadMultipleRoutines {
 		int overallSeverity = IStatus.OK;
 		List<IStatus> statuses = new ArrayList<>();
 		for (IFile file : selectedFiles) {
-			CommandResult<MServerRoutine> r = CommandEngine.loadRoutine(connection, file);
+			CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connection, file);
 			String prefixForFile = file.getFullPath().toString() + " -- ";
 			IStatus status = r.getStatus();
 			overallSeverity = StatusHelper.updateStatuses(status, prefixForFile, overallSeverity, statuses);
