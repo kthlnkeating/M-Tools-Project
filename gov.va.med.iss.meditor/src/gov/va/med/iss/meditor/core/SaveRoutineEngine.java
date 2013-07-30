@@ -9,12 +9,12 @@ import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.MPiece;
 import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.Messages;
+import gov.va.med.iss.meditor.dialog.MessageConsoleHelper;
 import gov.va.med.iss.meditor.error.BackupSynchException;
 import gov.va.med.iss.meditor.error.InvalidFileException;
 import gov.va.med.iss.meditor.error.MEditorException;
 import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 import gov.va.med.iss.meditor.resource.ResourceUtilsExtension;
-import gov.va.med.iss.meditor.utils.MEditorMessageConsole;
 import gov.va.med.iss.meditor.utils.StringUtil;
 
 import java.io.InputStream;
@@ -140,7 +140,7 @@ public class SaveRoutineEngine {
 				warningMessage += "\n" + message;
 			}
 			
-			MEditorMessageConsole.writeToConsole(consoleMessage.toString());
+			MessageConsoleHelper.writeToConsole(consoleMessage.toString());
 			
 			String routine = builder.getRoutine();
 			synchBackupFile(backupFile, routine);

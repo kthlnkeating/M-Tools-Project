@@ -4,18 +4,16 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package gov.va.med.iss.meditor.utils;
+package gov.va.med.iss.meditor.core;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.meditor.utils.MEditorUtilities;
 
-import org.eclipse.core.resources.IStorage;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.IStorageEditorInput;
-import org.eclipse.ui.IWorkbenchPage;
 
 /**
  * @author vhaisfiveyj
@@ -24,19 +22,6 @@ import org.eclipse.ui.IWorkbenchPage;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class RoutineDirectory {
-
-	/**
-	 * getRoutineDirectory generates a list of the routine
-	 * names which begin with the input argument routineName.
-	 * This list is displayed in a window.
-	 * 
-	 * @param routineName
-	 */
-	public static void getRoutineDirectory(String routineName) {
-		String str = getRoutineNames(routineName);
-		setupRoutineDirWindow(routineName,str);
-	}
-	
 	/**
 	 * 
 	 * @param routineName - the routine name for which a list of 
@@ -60,7 +45,7 @@ public class RoutineDirectory {
 	 * 
 	 * @return
 	 */
-	private static String getRoutineNames(String routineName) {
+	public static String getRoutineNames(String routineName) {
 		str = "";
 		if ( ! (routineName.compareTo("") == 0)) {
 			VistaLinkConnection myConnection = VistaConnection.getConnection();
@@ -97,22 +82,5 @@ public class RoutineDirectory {
 			}
 		}
 		return str;
-	}
-	
-	
-	private static void setupRoutineDirWindow(String routineName,String routineData) {
-		char bChar = routineName.charAt(routineName.length()-1);
-		if (bChar != '*') {
-			routineName = routineName + "*";
-		}
-		IStorage storage = new StringStorage("RD "+routineName, routineData);
-		IStorageEditorInput input = new StringInput(storage);
-		IWorkbenchPage page = MEditorUtilities.getIWorkbenchPage();
-		try {
-			if (page != null)
-				page.openEditor(input, "org.eclipse.ui.DefaultTextEditor");
-		} catch (Exception e) {
-			
-		}
 	}
 }

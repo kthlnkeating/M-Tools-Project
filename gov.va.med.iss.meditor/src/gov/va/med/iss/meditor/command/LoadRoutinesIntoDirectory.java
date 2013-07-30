@@ -26,11 +26,11 @@ import gov.va.med.iss.meditor.Messages;
 import gov.va.med.iss.meditor.core.LoadRoutineEngine;
 import gov.va.med.iss.meditor.core.CommandResult;
 import gov.va.med.iss.meditor.core.MServerRoutine;
+import gov.va.med.iss.meditor.core.RoutineDirectory;
 import gov.va.med.iss.meditor.core.StatusHelper;
 import gov.va.med.iss.meditor.dialog.InputDialogHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 import gov.va.med.iss.meditor.resource.ResourceUtilsExtension;
-import gov.va.med.iss.meditor.utils.RoutineDirectory;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

@@ -14,6 +14,7 @@ public class Messages extends NLS {
 	public static String FILE_SAVED;
 	public static String LOAD_M_RTN_DLG_TITLE;
 	public static String LOAD_M_RTNS_DLG_TITLE;
+	public static String LOAD_RTNDIR_DLG_TITLE;
 	public static String LOAD_BACKUP_SYNCH_ERROR;
 	public static String NO_FILES;
 	public static String NO_FILES_IN_NAMESPACE;

@@ -1,10 +1,12 @@
 package gov.va.med.iss.meditor.command;
 
+import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.meditor.utils.MEditorUtilities;
-import gov.va.med.iss.meditor.utils.RoutineDirectory;
-import gov.va.med.iss.meditor.utils.RoutineNameDialogData;
-import gov.va.med.iss.meditor.utils.RoutineNameDialogForm;
+import gov.va.med.iss.connection.utilities.ConnectionUtilities;
+import gov.va.med.iss.meditor.Messages;
+import gov.va.med.iss.meditor.core.RoutineDirectory;
+import gov.va.med.iss.meditor.dialog.InputDialogHelper;
+import gov.va.med.iss.meditor.dialog.MessageConsoleHelper;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -13,20 +15,19 @@ import org.eclipse.core.commands.ExecutionException;
 public class ReportRoutineDirectory extends AbstractHandler {
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		RoutineNameDialogForm dialogForm = new RoutineNameDialogForm(MEditorUtilities.getIWorkbenchWindow().getShell());
-		RoutineNameDialogData data = dialogForm.open();
-		if (data.getButtonResponse()) {
-			String routineName = data.getTextResponse();
-			if (data.getUpperCase()) {
-				routineName = routineName.toUpperCase();
-			}
-			if (! (routineName.compareTo("") == 0)) {
-				//VistaConnection.getPrimaryServer(); //091029 to make check for change in servers
-				if (VistaConnection.getPrimaryServer()) {
-					RoutineDirectory.getRoutineDirectory(routineName);
-				}
-			}
+		VistaLinkConnection connection = VistaConnection.getConnection();
+		if (connection == null) {
+			return null;
 		}
+		
+		String title = Messages.bind(Messages.LOAD_RTNDIR_DLG_TITLE, ConnectionUtilities.getServer(), ConnectionUtilities.getPort());
+		String namespace = InputDialogHelper.getRoutineNamespace(title);
+		if (namespace == null) {
+			return null;
+		}
+		
+		String result = RoutineDirectory.getRoutineNames(namespace);
+		MessageConsoleHelper.writeToConsole(result);
 		return null;
 	}
 }
