@@ -25,12 +25,9 @@ import gov.va.med.iss.meditor.Messages;
 import gov.va.med.iss.meditor.error.BackupSynchException;
 import gov.va.med.iss.meditor.error.InvalidFileException;
 import gov.va.med.iss.meditor.error.LoadRoutineException;
-import gov.va.med.iss.meditor.preferences.MEditorPrefs;
-import gov.va.med.iss.meditor.resource.FileSearchVisitor;
 import gov.va.med.iss.meditor.resource.ResourceUtilsExtension;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.file.FileSystems;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IFile;
@@ -40,8 +37,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-import org.mumps.pathstructure.vista.RoutinePathResolver;
-import org.mumps.pathstructure.vista.RoutinePathResolverFactory;
 
 /**
  * This class represents an M routine that is loaded from server.  Due to 
@@ -176,34 +171,6 @@ public class MServerRoutine {
 		}
 	}
 	
-	public static IFile getNewFileHandle(IProject project, String routineName) {
-		RoutinePathResolverFactory prf = RoutinePathResolverFactory.getInstance();
-		RoutinePathResolver routinePathResolver = prf.getRoutinePathResolver(project.getLocation().toFile());
-		String relRoutinePath = routinePathResolver.getRelativePath(routineName);
-		String fullRealtivePath = relRoutinePath + FileSystems.getDefault().getSeparator() + routineName + ".m";
-		IFile result = project.getFile(fullRealtivePath);
-		return result;
-	}
-	
-	private static IFile getExistingFileHandle(IProject project, String routineName) {
-		String backupDirectory = MEditorPrefs.getServerBackupFolderName();
-		FileSearchVisitor visitor = new FileSearchVisitor(routineName + ".m", backupDirectory);
-		try {
-			project.accept(visitor, 0);
-		} catch (CoreException e) {
-			return null;
-		}
-		return visitor.getFile();
-	}
-	
-	private static IFile getFileHandle(IProject project, String routineName) {
-		IFile fileHandle = getExistingFileHandle(project, routineName);
-		if (fileHandle == null) {
-			fileHandle = getNewFileHandle(project, routineName);
-		}
-		return fileHandle;
-	}
-	
 	private static BackupSynchResult synchBackupFile(IFile file, String content) throws BackupSynchException {
 		try {
 			IFile backupFile = SaveRoutineEngine.getBackupFile(file);
@@ -223,7 +190,11 @@ public class MServerRoutine {
 					return BackupSynchResult.NO_CHANGE_BOTH_ABSENT;
 				}
 			}
-		} catch (CoreException | UnsupportedEncodingException | BadLocationException t) {
+		} catch (CoreException t) {
+			throw new BackupSynchException(t);
+		}catch (UnsupportedEncodingException t) {
+			throw new BackupSynchException(t);
+		}catch (BadLocationException t) {
 			throw new BackupSynchException(t);
 		}
 	}
@@ -233,11 +204,6 @@ public class MServerRoutine {
 		BackupSynchResult synchBackupResult = synchBackupFile(file, content);
 		MServerRoutine result = new MServerRoutine(routineName, content, file, synchBackupResult);
 		return result;
-	}	
-
-	public static MServerRoutine load(VistaLinkConnection connection, IProject project, String routineName) throws LoadRoutineException, BackupSynchException {
-		IFile fileHandle = getFileHandle(project, routineName);
-		return load(connection, fileHandle, routineName);
 	}	
 
 	public static MServerRoutine load(VistaLinkConnection connection, IFile file) throws InvalidFileException, LoadRoutineException, BackupSynchException {

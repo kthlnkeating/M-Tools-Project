@@ -2,14 +2,12 @@ package gov.va.med.iss.meditor;
 
 import gov.va.med.iss.meditor.utils.MColorProvider;
 
-import java.nio.file.FileSystems;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 
@@ -24,14 +22,7 @@ public class MEditorPlugin extends AbstractUIPlugin {
 
 	MColorProvider colorProvider;
 	
-	private static final String SEP = FileSystems.getDefault().getSeparator();
-	
 	public static String PLUGIN_ID = "gov.va.med.iss.meditor";
-	public static ImageDescriptor IMG_ERROR = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons"+SEP+"error.gif");
-	public static ImageDescriptor IMG_SUCCESS = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons"+SEP+"yes1a.gif");
-	public static ImageDescriptor IMG_POST_TEXT = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons"+SEP+"yes1a.gif");
-	public static ImageDescriptor IMG_HELP = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons"+SEP+"helpbook07.gif");
-	public static ImageDescriptor IMG_VA_LOGO = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons"+SEP+"VAlogo.gif");
 
 	public static final String P_AUTO_SAVE_TO_SERVER = "autoToSaveServer";
 	public static final String P_BACKGROUND_COLOR = "BackgroundColor";

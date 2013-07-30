@@ -68,7 +68,7 @@ public class SaveRoutines extends AbstractHandler {
 		}
 				
 		int overallSeverity = IStatus.OK;
-		List<IStatus> statuses = new ArrayList<>();
+		List<IStatus> statuses = new ArrayList<IStatus>();
 		for (IFile file : selectedFiles) {
 			IStatus status = SaveRoutineEngine.save(connection, file);
 			String prefixForFile = file.getFullPath().toString() + " -- ";

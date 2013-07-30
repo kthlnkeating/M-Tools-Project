@@ -19,7 +19,6 @@ package gov.va.med.iss.meditor.core;
 import java.io.UnsupportedEncodingException;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.text.BadLocationException;
@@ -52,17 +51,6 @@ public class LoadRoutineEngine {
 		return new CommandResult<MServerRoutine>(null, status);			
 	}
 		
-	public static CommandResult<MServerRoutine> loadRoutine(VistaLinkConnection connection, IProject project, String routineName) {
-		try {			
-			MServerRoutine serverRoutine = MServerRoutine.load(connection, project, routineName);
-			return loadRoutine(serverRoutine);
-		} catch(MEditorException mee) {
-			return getKnownExceptionResult(mee);
-		} catch (Throwable t) {
-			return getUnknownExceptionResult(t);
-		}	
-	}
-
 	public static CommandResult<MServerRoutine> loadRoutine(VistaLinkConnection connection, IFile file) {
 		try {			
 			MServerRoutine serverRoutine = MServerRoutine.load(connection, file);

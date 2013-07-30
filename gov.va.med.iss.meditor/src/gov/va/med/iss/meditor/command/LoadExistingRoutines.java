@@ -46,7 +46,7 @@ public class LoadExistingRoutines extends LoadMultipleRoutines {
 		}
 				
 		int overallSeverity = IStatus.OK;
-		List<IStatus> statuses = new ArrayList<>();
+		List<IStatus> statuses = new ArrayList<IStatus>();
 		for (IFile file : selectedFiles) {
 			CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connection, file);
 			String prefixForFile = file.getFullPath().toString() + " -- ";
