@@ -140,7 +140,7 @@ public class SaveRoutineEngine {
 				warningMessage += "\n" + message;
 			}
 			
-			MessageConsoleHelper.writeToConsole(consoleMessage.toString());
+			MessageConsoleHelper.writeToConsole(MessageConsoleHelper.MEDITOR, consoleMessage.toString(), true);
 			
 			String routine = builder.getRoutine();
 			synchBackupFile(backupFile, routine);

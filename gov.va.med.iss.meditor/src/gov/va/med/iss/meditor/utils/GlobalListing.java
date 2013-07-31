@@ -14,16 +14,12 @@ import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.MPiece;
+import gov.va.med.iss.meditor.dialog.MessageConsoleHelper;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.resources.IStorage;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IStorageEditorInput;
-import org.eclipse.ui.IWorkbenchPage;
 
 /**
  * @author vhaisfiveyj
@@ -36,7 +32,7 @@ public class GlobalListing {
 	static private String totalListing = "";
 	static private boolean killTempGlobal = false;
 //	static private boolean gettingMore = false;
-	static private IEditorPart mainEditor = null;
+	static private boolean continueInconsole;
 	
 	public static void getGlobalListing(String globalName) {
 		getGlobalListing(globalName, false, false, "", true, true);
@@ -45,7 +41,7 @@ public class GlobalListing {
 	public static void getGlobalListing(String globalName, boolean isForCopy, boolean isDataOnly, String searchText, boolean isSearchDataOnly, boolean isSearchCaseSensitive) {
 //		gettingMore = false;
 		killTempGlobal = false;
-		mainEditor = null;
+		continueInconsole = false;
 		getGlobalListing(globalName, isForCopy, isDataOnly, "", searchText, isSearchDataOnly, isSearchCaseSensitive);
 	}
 	
@@ -161,7 +157,10 @@ public class GlobalListing {
 							header = header + "\nwith matches to '"+searchText+"' (case "+casetype+")";
 							
 						}
-						setupGlobalDirWindow(globalName, header+"\n\n"+totalListing);
+						
+						boolean clearConsole = ! continueInconsole;
+						MessageConsoleHelper.writeToConsole(globalName, header+"\n\n"+totalListing, clearConsole);
+						continueInconsole = true;
 						
 						if (more.compareTo("1") == 0) {
 							YesNoDialog ynDialog = new YesNoDialog();
@@ -188,42 +187,4 @@ public class GlobalListing {
 			
 		}
 	}
-	/*
-	 * returns the input string with each double quote character
-	 * expanded to be two double quotes.
-	 * 
-	 * @param	str  the input string
-	 * @return	the string with two double quote characters for 
-	 * 			each double quote character in the input string.
-	 */
-/*
-	private static String doubleEachQuote(String str) {
-		String str1 = "";
-		while (str.indexOf('"') > -1) {
-			str1 = str1 + str.substring(0,str.indexOf('"')+1)+"\"";
-			str = str.substring(str.indexOf('"')+1);
-		}
-		str1 = str1 + str;
-		return str1;
-	}
-*/	
-	private static void setupGlobalDirWindow(String name, String globalData) {
-		IStorage storage = new StringStorage(name, globalData);
-		IStorageEditorInput input = new StringInput(storage);
-		try {
-			if (mainEditor == null) {
-				IWorkbenchPage page = MEditorUtilities.getIWorkbenchPage();
-					if (page != null)
-						mainEditor = page.openEditor(input, "org.eclipse.ui.DefaultTextEditor");
-			}
-			else {  // update current page
-				IEditorSite editorSite = mainEditor.getEditorSite();
-				mainEditor.init(editorSite, input);
-			}
-		} catch (Exception e) {
-			
-		}
-	}
-
- 
 }

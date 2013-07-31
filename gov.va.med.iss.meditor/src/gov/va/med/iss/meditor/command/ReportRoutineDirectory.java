@@ -27,7 +27,7 @@ public class ReportRoutineDirectory extends AbstractHandler {
 		}
 		
 		String result = RoutineDirectory.getRoutineNames(namespace);
-		MessageConsoleHelper.writeToConsole(result);
+		MessageConsoleHelper.writeToConsole(MessageConsoleHelper.MEDITOR, result, true);
 		return null;
 	}
 }
