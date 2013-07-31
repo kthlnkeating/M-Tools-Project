@@ -47,6 +47,23 @@ public class Messages extends NLS {
 	public static String UNEXPECTED_OBJECT;
 	public static String WRITE_TO_CONSOLE_ERROR;
 	public static String XINDEX_IN_CONSOLE;
+	
+	public static String DLG_GLOBAL_LISTING_TITLE;
+	public static String DLG_GLOBAL_LISTING_GLNAME;
+	public static String DLG_GLOBAL_LISTING_RTNTYP;	
+	public static String DLG_GLOBAL_LISTING_RTNTYP_0;
+	public static String DLG_GLOBAL_LISTING_RTNTYP_1;
+	public static String DLG_GLOBAL_LISTING_RTNTYP_2;
+	public static String DLG_GLOBAL_LISTING_RTNTYP_0_TT;
+	public static String DLG_GLOBAL_LISTING_RTNTYP_1_TT;
+	public static String DLG_GLOBAL_LISTING_RTNTYP_2_TT;
+	public static String DLG_GLOBAL_LISTING_TXTSRC;
+	public static String DLG_GLOBAL_LISTING_TXTSRC_TT;
+	public static String DLG_GLOBAL_LISTING_TXTSRC_T;
+	public static String DLG_GLOBAL_LISTING_TXTSRC_0;
+	public static String DLG_GLOBAL_LISTING_TXTSRC_1;
+	public static String DLG_GLOBAL_LISTING_TXTSRC_2;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
