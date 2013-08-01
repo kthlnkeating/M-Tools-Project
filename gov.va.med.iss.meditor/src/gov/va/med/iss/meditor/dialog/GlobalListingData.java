@@ -23,4 +23,11 @@ public class GlobalListingData {
 	public String searchText;
 	public boolean isSearchDataOnly;
 	public boolean isCaseSensitive;
+	
+	public static GlobalListingData getEmptyInstance() {
+		GlobalListingData result = new GlobalListingData();
+		result.globalName = "";
+		result.searchText = "";
+		return result;
+	}
 }

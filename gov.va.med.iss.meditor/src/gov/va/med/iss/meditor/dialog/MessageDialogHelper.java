@@ -33,6 +33,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 public class MessageDialogHelper {
+	public static boolean question(String msgKey, String... bindings) {
+		String message = (bindings.length == 0) ? msgKey : NLS.bind(msgKey, bindings);
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		boolean result = MessageDialog.openQuestion(shell, Messages.DEFAULT_MSG_TITLE, message);
+		return result;
+	}
+		
 	private static void show(int severity, String msgKey, String[] bindings, Throwable t, int dialogSeverity) {
 		String message = (bindings.length == 0) ? msgKey : NLS.bind(msgKey, bindings);
 		if (t != null) MEditorPlugin.getDefault().log(severity, message, t);

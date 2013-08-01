@@ -63,6 +63,9 @@ public class Messages extends NLS {
 	public static String DLG_GLOBAL_LISTING_TXTSRC_0;
 	public static String DLG_GLOBAL_LISTING_TXTSRC_1;
 	public static String DLG_GLOBAL_LISTING_TXTSRC_2;
+
+	public static String GLOBAL_LISTING_UNEXPECTED;
+	public static String GLOBAL_LISTING_MORE;
 	
 	static {
 		// initialize resource bundle
