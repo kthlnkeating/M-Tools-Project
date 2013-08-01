@@ -29,6 +29,8 @@ import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 import gov.va.med.iss.connection.utilities.MPiece;
 import gov.va.med.iss.meditor.Messages;
+import gov.va.med.iss.meditor.core.CommandResult;
+import gov.va.med.iss.meditor.core.StatusHelper;
 import gov.va.med.iss.meditor.dialog.GlobalListingData;
 import gov.va.med.iss.meditor.dialog.GlobalListingDialog;
 import gov.va.med.iss.meditor.dialog.MessageConsoleHelper;
@@ -37,6 +39,11 @@ import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -185,16 +192,53 @@ public class ReportGlobalListing extends AbstractHandler {
 		}		
 	}
 	
-	private static String getGlobals(VistaLinkConnection connection, GlobalListingData data, String lastLine, boolean continuation) {
+	private static CommandResult<GlobalListResult> getGlobals(VistaLinkConnection connection, GlobalListingData data, String lastLine, boolean continuation) {
 		try {
 			GlobalListResult result = getGlobalListing(connection, data, lastLine, continuation);
-			MessageConsoleHelper.writeToConsole(data.globalName, result.consoleOutput, ! continuation);
-			return result.currCount;
+			IStatus status = StatusHelper.getOKStatus();
+			return new CommandResult<GlobalListResult>(result, status);
 		} catch (Throwable t) {
-			String message = Messages.bind2(Messages.GLOBAL_LISTING_UNEXPECTED, t.getMessage());
-			MessageDialogHelper.logAndShow(message, t);
-			return null;
+			String message = Messages.bind(Messages.GLOBAL_LISTING_UNEXPECTED, t.getMessage());
+			IStatus status = StatusHelper.getStatus(message, t);
+			return new CommandResult<GlobalListResult>(null, status);
 		}
+	}
+	
+	private void handleGlobalListing(final VistaLinkConnection connection, final GlobalListingData data, final String currentCount, final int page) {
+		Job job = new Job("Global Listing") {			
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				monitor.beginTask("Loading globals from server", IProgressMonitor.UNKNOWN);
+				final CommandResult<GlobalListResult> result = getGlobals(connection, data, currentCount, page > 0);
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						IStatus status = result.getStatus();
+						if (status.getSeverity() != IStatus.OK) {
+							MessageDialogHelper.logAndShow(status);
+						} else {
+							GlobalListResult glResult =  result.getResultObject();
+							MessageConsoleHelper.writeToConsole(data.globalName, glResult.consoleOutput, page == 0);
+							boolean killGlobal = page > 0;
+							if (glResult.currCount != null) {
+								boolean moreWanted = MessageDialogHelper.question(Messages.GLOBAL_LISTING_MORE, glResult.currCount);
+								if (moreWanted) {
+									handleGlobalListing(connection, data, glResult.currCount, page+1);
+									killGlobal = false;
+								} else {
+									killGlobal = true;
+								}
+							}
+							if (killGlobal) {
+								killTemporaryLastLocationGlobal(connection);	
+							}								
+						}
+					}
+				});
+				return Status.OK_STATUS;
+			}
+		};
+		job.setUser(true);
+		job.schedule();
 	}
 	
 	@Override
@@ -210,20 +254,8 @@ public class ReportGlobalListing extends AbstractHandler {
 		int result = dialog.open();
 		if (result == GlobalListingDialog.OK) {
 			GlobalListingData data = dialog.getData();
-			String currCount = getGlobals(connection, data, "", false);
-			boolean continued = false;
-			while (currCount != null) {
-				continued = true;
-				boolean moreWanted = MessageDialogHelper.question(Messages.GLOBAL_LISTING_MORE, currCount);
-				if (moreWanted) {
-					currCount = getGlobals(connection, data, currCount, true);
-				} else {
-					break;
-				}
-			}
-			if (continued) {
-				killTemporaryLastLocationGlobal(connection);	
-			}			
+			MessageConsoleHelper.writeToConsole(data.globalName, "", true);
+			this.handleGlobalListing(connection, data, "", 0);
 		}
 		return null;
 	}
