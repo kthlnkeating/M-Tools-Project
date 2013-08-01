@@ -57,4 +57,8 @@ public class InputDialogHelper {
 	public static String getRoutineNamespace(String title) {
 		return getRequiredEntity(title, Messages.ROUTINE_NAMESPACE, M_ROUTINE_NAME_REGEX);
 	}
+
+	public static String getGlobalNamespace(String title) {
+		return getRequiredEntity(title, Messages.GLOBAL_NAMESPACE, null);
+	}
 }

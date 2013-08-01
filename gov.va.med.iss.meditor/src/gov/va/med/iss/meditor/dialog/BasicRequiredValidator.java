@@ -35,8 +35,10 @@ class BasicRequiredValidator implements IInputValidator {
 		if ((newText == null) || newText.isEmpty()) {
 			return this.requiredMessage;
 		}
-		if (! newText.matches(this.regex)) {
-			return this.invalidMessage;
+		if (this.regex != null) {
+			if (! newText.matches(this.regex)) {
+				return this.invalidMessage;
+			}
 		}
 		return null;			
 	}

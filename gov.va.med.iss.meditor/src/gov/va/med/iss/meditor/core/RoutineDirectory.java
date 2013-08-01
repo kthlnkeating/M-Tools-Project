@@ -11,9 +11,7 @@ import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.meditor.utils.MEditorUtilities;
-
-import org.eclipse.jface.dialogs.MessageDialog;
+import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 
 /**
  * @author vhaisfiveyj
@@ -72,11 +70,9 @@ public class RoutineDirectory {
 					if (str.length() == 0)
 						str = "<no matches found>\n";
 					str = "Routines beginning with "+routineName+"\n\n"+ str;
-				} catch (Exception e) {
-					MessageDialog.openInformation(
-							MEditorUtilities.getIWorkbenchWindow().getShell(),
-							"Meditor Plug-in",
-							"Error encountered while executing RPC "+e.getMessage());
+				} catch (Throwable t) {
+					String message = "Error encountered while executing RPC " + t.getMessage();
+					MessageDialogHelper.logAndShow(message, t);
 					str = "";
 				}
 			}

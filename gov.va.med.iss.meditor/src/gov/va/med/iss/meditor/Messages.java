@@ -22,8 +22,11 @@ public class Messages extends NLS {
 	public static String NOT_SUPPORTED_SELECTION_LIST;
 	public static String NOT_SUPPORTED_SELECTION;
 	public static String NOT_SUPPORTED_RESOURCES;
+	
 	public static String ROUTINE_NAME;
 	public static String ROUTINE_NAMESPACE;	
+	public static String GLOBAL_NAMESPACE;	
+		
 	public static String ROUTINE_NOT_ON_SERVER;
 	public static String ROUTINE_CREATED_IN_PROJECT;
 	public static String ROUTINE_UPDATED_IN_PROJECT;
@@ -47,6 +50,9 @@ public class Messages extends NLS {
 	public static String UNEXPECTED_OBJECT;
 	public static String WRITE_TO_CONSOLE_ERROR;
 	public static String XINDEX_IN_CONSOLE;
+	
+	public static String DLG_GLOBAL_DIR_TITLE;
+	public static String DLG_GLOBAL_DIR_UNEXPECTED;
 	
 	public static String DLG_GLOBAL_LISTING_TITLE;
 	public static String DLG_GLOBAL_LISTING_GLNAME;

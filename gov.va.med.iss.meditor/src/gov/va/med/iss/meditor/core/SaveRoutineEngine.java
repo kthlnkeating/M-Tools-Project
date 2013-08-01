@@ -15,8 +15,8 @@ import gov.va.med.iss.meditor.error.InvalidFileException;
 import gov.va.med.iss.meditor.error.MEditorException;
 import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 import gov.va.med.iss.meditor.resource.ResourceUtilsExtension;
-import gov.va.med.iss.meditor.utils.StringUtil;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
@@ -184,7 +184,7 @@ public class SaveRoutineEngine {
 
 	private static IStatus synchBackupFile(IFile backupFile, String routine) throws BackupSynchException {
 		try {
-			InputStream stream = StringUtil.stringToStream(routine); 
+			InputStream stream = new ByteArrayInputStream(routine.getBytes("UTF-8"));
 			if (backupFile.exists()) {
 				backupFile.setContents(stream, true, true, null);
 			} else {
