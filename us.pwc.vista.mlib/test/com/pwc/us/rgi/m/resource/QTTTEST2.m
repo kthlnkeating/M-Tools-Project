@@ -1,0 +1,10 @@
+QTTTEST2 ; AU - QUIT TYPE TEST ; MAY 420, 2013
+ ;;1.0;TESTING;; MAY 4, 2013
+ ;
+ Q
+ ;
+EXTR(A)
+ S A=A+1
+ W A
+ Q A
+ ;
