@@ -73,7 +73,21 @@ public class Messages extends NLS {
 	public static String GLOBAL_LISTING_UNEXPECTED;
 	public static String GLOBAL_LISTING_MORE;
 	
-	static {
+	public static String MULTI_LOAD_RTN_ERRR;
+	public static String MULTI_LOAD_RTN_WARN;
+	public static String MULTI_LOAD_RTN_INFO;
+	
+	public static String MULTI_SAVE_RTN_ERRR;
+	public static String MULTI_SAVE_RTN_WARN;
+	public static String MULTI_SAVE_RTN_INFO;
+	
+	public static String MULTI_LOAD_RTN_FOLDER_SINGLE;
+	public static String MULTI_LOAD_RTN_FOLDER_ONLY;
+	public static String MULTI_LOAD_RTN_NONE_IN_NAMESPC;
+
+	public static String CONNECTION_INVALID_PROJECT;
+
+			static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}

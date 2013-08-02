@@ -19,16 +19,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
 
 public class SaveRoutines extends AbstractHandler {
-	protected String getTopMessage(int overallSeverity) {
-		if (overallSeverity == IStatus.ERROR) {
-			return "Some file could not be saved due to errors.";
-		} else if (overallSeverity == IStatus.WARNING) {
-			return "All files are saved but some with warnings.";			
-		} else {
-			return "All files are saved successfully.";
-		}
-	}
-
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		String parameter = event.getParameter("gov.va.med.iss.meditor.command.saveRoutines.specifyNamespace");
@@ -75,7 +65,9 @@ public class SaveRoutines extends AbstractHandler {
 			overallSeverity = StatusHelper.updateStatuses(status, prefixForFile, overallSeverity, statuses);
 		}
 		
-		CommandCommon.showMultiStatus(overallSeverity, this.getTopMessage(overallSeverity), statuses);
+		String[] topMessages = new String[]{Messages.MULTI_SAVE_RTN_ERRR, Messages.MULTI_SAVE_RTN_WARN, Messages.MULTI_SAVE_RTN_INFO};
+		String topMessage = CommandCommon.selectMessageOnStatus(overallSeverity, topMessages);
+		CommandCommon.showMultiStatus(overallSeverity, topMessage, statuses);
 		return null;		
 	}
 }

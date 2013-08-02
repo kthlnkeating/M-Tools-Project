@@ -16,10 +16,15 @@
 
 package gov.va.med.iss.meditor.command;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.meditor.Messages;
+import gov.va.med.iss.meditor.core.CommandResult;
+import gov.va.med.iss.meditor.core.LoadRoutineEngine;
+import gov.va.med.iss.meditor.core.MServerRoutine;
 import gov.va.med.iss.meditor.core.StatusHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 import gov.va.med.iss.meditor.editors.MEditor;
@@ -35,13 +40,18 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -155,6 +165,64 @@ public class CommandCommon {
 		} catch (Throwable t) {
 			MessageDialogHelper.logAndShow(t);
 			return null;
+		}
+	}
+	
+	public static String selectMessageOnStatus(int severity, String[] messages) {
+		if (severity == IStatus.ERROR) {
+			return messages[0];
+		} else if (severity == IStatus.WARNING) {
+			return messages[1];			
+		} else {
+			return messages[2];
+		}
+		
+	}
+	
+	private static class MultipleRoutineLoad extends WorkspaceModifyOperation {
+		private VistaLinkConnection connection;
+		private List<IFile> files;
+ 		
+		private List<IStatus> statuses;
+		private int overallSeverity;
+		
+		public MultipleRoutineLoad(VistaLinkConnection connection, List<IFile> files) {
+			super();
+			this.connection = connection;
+			this.files = files;
+		}
+
+		@Override
+		protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException	{
+			this.overallSeverity = IStatus.OK;
+			this.statuses = new ArrayList<IStatus>();
+			monitor.beginTask("Load Routines", this.files.size());
+			int i = 0;
+			for (IFile file : this.files) {
+				CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(this.connection, file);
+				String prefixForFile = file.getFullPath().toString() + " -- ";
+				IStatus status = r.getStatus();
+				this.overallSeverity = StatusHelper.updateStatuses(status, prefixForFile, this.overallSeverity, this.statuses);
+				i = i + 1;
+				if (monitor.isCanceled()) break;
+				monitor.worked(i);
+			}
+			monitor.done();
+		}
+	}
+	
+	public static void loadRoutines(final VistaLinkConnection connection, final List<IFile> files) {
+		try {
+			Shell shell = Display.getDefault().getActiveShell();
+			ProgressMonitorDialog pmd = new ProgressMonitorDialog(shell);
+			MultipleRoutineLoad mrl = new MultipleRoutineLoad(connection, files);
+			pmd.run(true, true, mrl);
+	
+			String[] topMessages = new String[]{Messages.MULTI_LOAD_RTN_ERRR, Messages.MULTI_LOAD_RTN_WARN, Messages.MULTI_LOAD_RTN_INFO};
+			String topMessage = CommandCommon.selectMessageOnStatus(mrl.overallSeverity, topMessages);
+			CommandCommon.showMultiStatus(mrl.overallSeverity, topMessage, mrl.statuses);		
+		} catch (Throwable t) {
+			MessageDialogHelper.logAndShow(t);
 		}
 	}
 }

@@ -16,22 +16,18 @@
 
 package gov.va.med.iss.meditor.command;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.meditor.core.LoadRoutineEngine;
-import gov.va.med.iss.meditor.core.CommandResult;
-import gov.va.med.iss.meditor.core.MServerRoutine;
-import gov.va.med.iss.meditor.core.StatusHelper;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IStatus;
 
-public class LoadExistingRoutines extends LoadMultipleRoutines {
+public class LoadExistingRoutines extends AbstractHandler {
+	
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		VistaLinkConnection connection = VistaConnection.getConnection();
@@ -45,16 +41,7 @@ public class LoadExistingRoutines extends LoadMultipleRoutines {
 			return null;
 		}
 				
-		int overallSeverity = IStatus.OK;
-		List<IStatus> statuses = new ArrayList<IStatus>();
-		for (IFile file : selectedFiles) {
-			CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connection, file);
-			String prefixForFile = file.getFullPath().toString() + " -- ";
-			IStatus status = r.getStatus();
-			overallSeverity = StatusHelper.updateStatuses(status, prefixForFile, overallSeverity, statuses);
-		}
-		
-		CommandCommon.showMultiStatus(overallSeverity, this.getTopMessage(overallSeverity), statuses);
+		CommandCommon.loadRoutines(connection, selectedFiles);
 		return null;
 	}
 }

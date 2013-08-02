@@ -16,30 +16,25 @@
 
 package gov.va.med.iss.meditor.command;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.core.LoadRoutineEngine;
-import gov.va.med.iss.meditor.core.CommandResult;
-import gov.va.med.iss.meditor.core.MServerRoutine;
 import gov.va.med.iss.meditor.core.RoutineDirectory;
-import gov.va.med.iss.meditor.core.StatusHelper;
 import gov.va.med.iss.meditor.dialog.InputDialogHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 import gov.va.med.iss.meditor.resource.ResourceUtilsExtension;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.TreePath;
 
-public class LoadRoutinesIntoDirectory extends LoadMultipleRoutines {
+public class LoadRoutinesIntoDirectory extends AbstractHandler {
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		VistaLinkConnection connection = VistaConnection.getConnection();
@@ -52,20 +47,18 @@ public class LoadRoutinesIntoDirectory extends LoadMultipleRoutines {
 			return null;
 		}
 		if (paths.length != 1) {
-			String message = "This operation is supported only when a single folder is selected.";
-			MessageDialogHelper.showError(message);
+			MessageDialogHelper.showError(Messages.MULTI_LOAD_RTN_FOLDER_SINGLE);
 			return null;
 		}		
 		IFolder folder = ResourceUtilsExtension.getFolder(paths[0]);
 		if (folder == null) {
-			String message = "Only folders are supported for this operation.";
-			MessageDialogHelper.showError(message);
+			MessageDialogHelper.showError(Messages.MULTI_LOAD_RTN_FOLDER_ONLY);
 			return null;			
 		}
 		
 		String projectName = VistaConnection.getPrimaryProject();
 		if (! folder.getProject().getName().equals(projectName)) {
-			String message = "Connection is only valid for project" + projectName + ".";
+			String message = Messages.bind(Messages.CONNECTION_INVALID_PROJECT, projectName);
 			MessageDialogHelper.showError(message);
 			return null;						
 		}
@@ -78,7 +71,7 @@ public class LoadRoutinesIntoDirectory extends LoadMultipleRoutines {
 		
 		String routines = RoutineDirectory.getRoutineList(routineNamespace);
 		if (routines.isEmpty() || (routines.indexOf("<") >= 0)) {
-			String message = "No routine in the namespace " + routineNamespace + " is found.";
+			String message = Messages.bind(Messages.MULTI_LOAD_RTN_NONE_IN_NAMESPC, routineNamespace);
 			MessageDialogHelper.showError(message);
 			return null;						
 			
@@ -90,16 +83,7 @@ public class LoadRoutinesIntoDirectory extends LoadMultipleRoutines {
 			return null;
 		}
 		
-		int overallSeverity = IStatus.OK;
-		List<IStatus> statuses = new ArrayList<IStatus>();
-		for (IFile file : files) {
-			CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connection, file);
-			String prefixForFile = file.getFullPath().toString() + " -- ";
-			IStatus status = r.getStatus();
-			overallSeverity = StatusHelper.updateStatuses(status, prefixForFile, overallSeverity, statuses);
-		}
-		
-		CommandCommon.showMultiStatus(overallSeverity, this.getTopMessage(overallSeverity), statuses);
+		CommandCommon.loadRoutines(connection, files);
 		return null;
 	}
 }
