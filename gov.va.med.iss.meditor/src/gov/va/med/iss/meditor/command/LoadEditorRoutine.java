@@ -16,32 +16,50 @@
 
 package gov.va.med.iss.meditor.command;
 
-import java.util.List;
-
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.meditor.Messages;
+import gov.va.med.iss.meditor.core.CommandResult;
+import gov.va.med.iss.meditor.core.LoadRoutineEngine;
+import gov.va.med.iss.meditor.core.MServerRoutine;
+import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-public class LoadExistingRoutines extends AbstractHandler {
-	
+/**
+ * This implementation of <code>AbstractHandler</code> updates the M file 
+ * in the active Editor from M server.
+ *
+ * @see org.eclipse.core.commands.AbstractHandler
+ */
+public class LoadEditorRoutine extends AbstractHandler {
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
+		IEditorInput input = HandlerUtil.getActiveEditorInput(event);
+		IFile file = (IFile) input.getAdapter(IFile.class);
+		if (file == null) {
+			return null;
+		}
+		
 		VistaLinkConnection connection = VistaConnection.getConnection();
 		if (connection == null) {
 			return null;
 		}
 
 		String projectName = VistaConnection.getPrimaryProject();
-		List<IFile> selectedFiles = CommandCommon.getSelectedMFiles(event, projectName);
-		if (selectedFiles == null) {
+		if (! file.getProject().getName().equals(projectName)) {
+			String message = Messages.bind2(Messages.PROJECT_INVALID_FILE, projectName, file.getName(), file.getProject().getName());
+			MessageDialogHelper.showError(message);
 			return null;
 		}
-				
-		CommandCommon.loadRoutines(connection, selectedFiles);
+		
+		CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connection, file);
+		MessageDialogHelper.logAndShow(r.getStatus());
 		return null;
 	}
 }

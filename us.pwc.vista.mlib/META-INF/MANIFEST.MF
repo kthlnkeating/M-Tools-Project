@@ -1,12 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MLib
-Bundle-SymbolicName: us.pwc.vista.mlib
+Bundle-SymbolicName: us.pwc.vista.mlib;singleton:=true
 Bundle-Version: 1.0.0.0
-Bundle-Activator: us.pwc.vista.mlib.Activator
+Bundle-Activator: us.pwc.vista.mlib.MLibPlugin
 Bundle-Vendor: PwC
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.core.expressions;bundle-version="3.4.300",
+ org.eclipse.core.resources;bundle-version="3.7.101"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: com.pwc.us.rgi,
@@ -22,5 +24,6 @@ Export-Package: com.pwc.us.rgi,
  com.pwc.us.rgi.m.tool.routine.occurance,
  com.pwc.us.rgi.output,
  com.pwc.us.rgi.parser,
- us.pwc.vista.mlib
+ us.pwc.vista.mlib,
+ us.pwc.vista.mlib.command
 Bundle-ClassPath: .

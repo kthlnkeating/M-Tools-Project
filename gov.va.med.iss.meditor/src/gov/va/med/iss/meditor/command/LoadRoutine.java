@@ -22,6 +22,9 @@ import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 import gov.va.med.iss.meditor.Messages;
+import gov.va.med.iss.meditor.core.CommandResult;
+import gov.va.med.iss.meditor.core.LoadRoutineEngine;
+import gov.va.med.iss.meditor.core.MServerRoutine;
 import gov.va.med.iss.meditor.core.RoutineDirectory;
 import gov.va.med.iss.meditor.dialog.InputDialogHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
@@ -34,14 +37,15 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.jface.viewers.TreePath;
 
-public class LoadRoutinesIntoDirectory extends AbstractHandler {
-	@Override
-	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		VistaLinkConnection connection = VistaConnection.getConnection();
-		if (connection == null) {
-			return null;
-		}
-
+/**
+ * This implementation of <code>AbstractHandler</code> loads the selected M 
+ * files (routines), or the specified routine or all the routines in the specified 
+ * namespace from the M server.
+ *
+ * @see org.eclipse.core.commands.AbstractHandler
+ */
+public class LoadRoutine extends AbstractHandler {
+	private IFolder getFolder(final ExecutionEvent event) {
 		TreePath[] paths = CommandCommon.getTreePaths(event);
 		if (paths == null) {
 			return null;
@@ -62,7 +66,11 @@ public class LoadRoutinesIntoDirectory extends AbstractHandler {
 			MessageDialogHelper.showError(message);
 			return null;						
 		}
-
+	
+		return folder;
+	}
+	
+	private String[] getRoutinesInNamespace() {
 		String title = Messages.bind2(Messages.LOAD_M_RTNS_DLG_TITLE, ConnectionUtilities.getServer(), ConnectionUtilities.getPort(), ConnectionUtilities.getProject());
 		String routineNamespace = InputDialogHelper.getRoutineNamespace(title);
 		if (routineNamespace == null) {
@@ -78,12 +86,63 @@ public class LoadRoutinesIntoDirectory extends AbstractHandler {
 		}
 		
 		String[] routineArray = routines.split("\n");
-		List<IFile> files = CommandCommon.getFileHandles(folder, routineArray);
-		if (files == null) {
+		return routineArray;
+	}
+	
+	private String[] getRoutine() {
+		String title = Messages.bind2(Messages.LOAD_M_RTN_DLG_TITLE, ConnectionUtilities.getServer(), ConnectionUtilities.getPort(), ConnectionUtilities.getProject());
+		String routineName = InputDialogHelper.getRoutineName(title);
+		if (routineName == null) {
 			return null;
 		}
+		return new String[]{routineName};
+	}
+	
+	private List<IFile> getFiles(final ExecutionEvent event, String projectName, boolean namespaceFlag, boolean folderFlag) {
+		if (folderFlag) {
+			IFolder folder = this.getFolder(event);
+			if (folder == null) {
+				return null;
+			}
+			if (! folder.getProject().getName().equals(projectName)) {
+				String message = Messages.bind2(Messages.PROJECT_INVALID_FILE, projectName, folder.getName(), folder.getProject().getName());
+				MessageDialogHelper.showError(message);
+				return null;
+			}
 		
-		CommandCommon.loadRoutines(connection, files);
+			String[] routines = namespaceFlag ? this.getRoutinesInNamespace() : this.getRoutine();
+			if (routines == null) {
+				return null;
+			}
+			
+			return CommandCommon.getFileHandles(folder, routines);
+		} else {
+			List<IFile> selectedFiles = CommandCommon.getSelectedMFiles(event, projectName);
+			return selectedFiles;
+		}		
+	}
+		
+	@Override
+	public Object execute(final ExecutionEvent event) throws ExecutionException {
+		Object namespaceParam = event.getObjectParameterForExecution("gov.va.med.iss.meditor.command.loadRoutine.namespace");
+		boolean namespaceFlag = ((Boolean) namespaceParam).booleanValue();
+		
+		Object folderParam = event.getObjectParameterForExecution("gov.va.med.iss.meditor.command.loadRoutine.folder");
+		boolean folderFlag = ((Boolean) folderParam).booleanValue();
+
+		VistaLinkConnection connection = VistaConnection.getConnection();
+		if (connection == null) {
+			return null;
+		}
+
+		String projectName = VistaConnection.getPrimaryProject();
+		List<IFile> files = getFiles(event, projectName, namespaceFlag, folderFlag);
+		if (files.size() == 1) {
+			CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connection, files.get(0));
+			MessageDialogHelper.logAndShow(r.getStatus());
+		} else {
+			CommandCommon.loadRoutines(connection, files);
+		}
 		return null;
 	}
 }

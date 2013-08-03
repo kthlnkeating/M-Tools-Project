@@ -86,8 +86,9 @@ public class Messages extends NLS {
 	public static String MULTI_LOAD_RTN_NONE_IN_NAMESPC;
 
 	public static String CONNECTION_INVALID_PROJECT;
-
-			static {
+	public static String PROJECT_INVALID_FILE;
+	
+	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
