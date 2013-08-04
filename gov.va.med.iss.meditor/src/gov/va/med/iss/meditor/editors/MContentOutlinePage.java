@@ -22,8 +22,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DefaultPositionUpdater;
@@ -45,6 +47,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
@@ -55,25 +58,6 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
  * 10 lines between TAGS segments.
  */
 public class MContentOutlinePage extends ContentOutlinePage implements IDocumentListener {
-	private static final String CONTEXT_MENU_ID = "gov.va.med.iss.meditor.editors.outline.contextmenu"; 
-
-	/**
-	 * A segment element.
-	 */
-	protected static class Segment {
-		public String name;
-		public Position position;
-
-		public Segment(String name, Position position) {
-			this.name= name;
-			this.position= position;
-		}
-
-		public String toString() {
-			return name;
-		}
-	}
-
 	/**
 	 * Divides the editor's document into segments based on tags and intervals of 10 lines 
 	 * between them and provides elements for them.
@@ -82,7 +66,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 
 		protected final static String SEGMENTS= "__M_segments"; //$NON-NLS-1$
 		protected IPositionUpdater fPositionUpdater= new DefaultPositionUpdater(SEGMENTS);
-		protected List<Segment> fContent= new ArrayList<Segment>(100);
+		protected List<SegmentAsTag> fContent= new ArrayList<SegmentAsTag>(100);
 		
 		protected void parse(IDocument document) {
 			int lines= document.getNumberOfLines();
@@ -109,7 +93,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 					if (! (str1.compareTo("") == 0)) {
 						Position p= new Position(offset, end - offset);
 						document.addPosition(SEGMENTS, p);
-						fContent.add(new Segment(str1, p)); //MessageFormat.format(MEditorMessages.getString("OutlinePage.segment.title_pattern"), new Object[] { new Integer(offset) }), p)); //$NON-NLS-1$
+						fContent.add(new SegmentAsTag(str1, p, true));
 						lineNum = 0;
 						tagName = str1;
 					} else {
@@ -117,7 +101,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 						if ((lineNum % 10) == 0) {
 							Position p= new Position(offset, end-offset);
 							document.addPosition(SEGMENTS, p);
-							fContent.add(new Segment("      "+tagName+"+"+lineNum, p)); //MessageFormat.format(MEditorMessages.getString("OutlinePage.segment.title_pattern"), new Object[] { new Integer(offset) }), p)); //$NON-NLS-1$
+							fContent.add(new SegmentAsTag("      "+tagName+"+"+lineNum, p, false));
 						}
 					}
 
@@ -129,7 +113,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 				int val1 = document.getLength();
 				Position p = new Position(val1, 0);
 				document.addPosition(SEGMENTS, p);
-				fContent.add(new Segment("<<END>>", p));
+				fContent.add(new SegmentAsTag("<<END>>", p, false));
 			} catch (Exception e) {
 			}
 		}
@@ -197,7 +181,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 		 * @see ITreeContentProvider#getParent(Object)
 		 */
 		public Object getParent(Object element) {
-			if (element instanceof Segment)
+			if (element instanceof SegmentAsTag)
 				return fInput;
 			return null;
 		}
@@ -232,14 +216,25 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 	}
 	
 	private void createContextMenuFor(StructuredViewer viewer) {
-		MenuManager contextMenu = new MenuManager("#PopUpMenu", CONTEXT_MENU_ID);
-		contextMenu.add(new Separator("additions"));
+		final MenuManager contextMenu = new MenuManager();
 		contextMenu.setRemoveAllWhenShown(true);
+		contextMenu.addMenuListener(new IMenuListener() {			
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				fillContextMenu(contextMenu);				
+			}
+		});
 		Menu menu = contextMenu.createContextMenu(viewer.getControl());
 		viewer.getControl().setMenu(menu);
-		this.mEditor.getEditorSite().registerContextMenu(CONTEXT_MENU_ID, contextMenu, this.mEditor.getEditorSite().getSelectionProvider());
+		
+		this.mEditor.getEditorSite().registerContextMenu(contextMenu, viewer);
 	}
 
+	private void fillContextMenu(IMenuManager mgr) {
+        mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));		
+	}
+	
+	
 	/* (non-Javadoc)
 	 * Method declared on ContentOutlinePage
 	 */
@@ -268,9 +263,9 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 		if (selection.isEmpty())
 			fTextEditor.resetHighlightRange();
 		else {
-			Segment segment= (Segment) ((IStructuredSelection) selection).getFirstElement();
-			int start= segment.position.getOffset();
-			int length= segment.position.getLength();
+			SegmentAsTag segment= (SegmentAsTag) ((IStructuredSelection) selection).getFirstElement();
+			int start= segment.getPosition().getOffset();
+			int length= segment.getPosition().getLength();
 			try {
 				fTextEditor.setHighlightRange(start, length, true);
 			} catch (IllegalArgumentException x) {

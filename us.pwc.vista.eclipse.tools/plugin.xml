@@ -29,6 +29,10 @@
             id="us.pwc.eclipse.vista.expandkeywords"
             name="Expand Keywords">
       </command>
+      <command
+            id="us.pwc.eclipse.vista.eclipse.tools.assumedvariables"
+            name="Report Assumed Variables">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -120,6 +124,18 @@
             </command>
          </menu>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="xxx.xxx.xxx.xxx">
+         <menu
+               icon="$nl$/icons/full/mtools16/meditor.gif"
+               label="M Tools New">
+            <command
+                  commandId="us.pwc.eclipse.vista.eclipse.tools.assumedvariables"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.propertyPages">
@@ -155,6 +171,39 @@
             </instanceof>
          </enabledWhen>
       </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="us.pwc.eclipse.vista.command.AssumedVariablesFiles"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.assumedvariables">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.mlib.exprdef.mtree">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.eclipse.vista.command.AssumedVariablesEditorFile"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.assumedvariables">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.mlib.exprdef.editor.mfile">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.eclipse.vista.command.AssumedVariablesTags"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.assumedvariables">
+         <activeWhen>
+            <iterate
+                  ifEmpty="false"
+                  operator="and">
+               <test
+                     property="gov.va.med.iss.meditor.propertyTester.tag">
+               </test>
+            </iterate></activeWhen>
+      </handler>
    </extension>
 
 </plugin>
