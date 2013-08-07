@@ -21,7 +21,7 @@ import com.pwc.us.rgi.m.tool.entry.assumedvariables.AssumedVariables;
 import com.pwc.us.rgi.m.tool.entry.assumedvariables.AssumedVariablesTool;
 import com.pwc.us.rgi.m.tool.entry.assumedvariables.AssumedVariablesToolParams;
 
-public class ReportAssumeVariables extends MToolsCommand {
+public abstract class ReportAssumeVariables extends MToolsCommand {
 	@Override
 	protected OutputFlags getOutputFlags() {
 		OutputFlags fs = new OutputFlags();
@@ -89,14 +89,14 @@ public class ReportAssumeVariables extends MToolsCommand {
 	}
 	
 	@Override
-	protected MEntryToolResult<AssumedVariables> getResult(IProject project, ParseTreeSupply pts, List<String> selectedFileNames) {
+	public MEntryToolResult<AssumedVariables> getResult(IProject project, ParseTreeSupply pts, List<String> selectedFileNames) {
 		AssumedVariablesTool tool = this.getTool(project, pts);
 		MEntryToolResult<AssumedVariables> result = tool.getResultForRoutines(selectedFileNames);
 		return result;
 	}
 
 	@Override
-	protected AssumedVariables getResult(IProject project, ParseTreeSupply pts, EntryId entryId) {
+	public AssumedVariables getResult(IProject project, ParseTreeSupply pts, EntryId entryId) {
 		AssumedVariablesTool tool = this.getTool(project, pts);
 		AssumedVariables result = tool.getResult(entryId);
 		return result;

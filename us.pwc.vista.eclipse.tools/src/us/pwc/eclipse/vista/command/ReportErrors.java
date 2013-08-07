@@ -11,7 +11,7 @@ import com.pwc.us.rgi.m.tool.routine.MRoutineToolInput;
 import com.pwc.us.rgi.m.tool.routine.RoutineToolParams;
 import com.pwc.us.rgi.m.tool.routine.error.ErrorTool;
 
-public class ReportErrors extends MToolsCommand {
+public abstract class ReportErrors extends MToolsCommand {
 	private ErrorTool getTool(ParseTreeSupply pts) {
 		RoutineToolParams p = new RoutineToolParams(pts);
 		ErrorTool tool = new ErrorTool(p);
@@ -19,7 +19,7 @@ public class ReportErrors extends MToolsCommand {
 	}
 	
 	@Override
-	protected ToolResult getResult(IProject project, ParseTreeSupply pts, List<String> selectedFileNames) {
+	public ToolResult getResult(IProject project, ParseTreeSupply pts, List<String> selectedFileNames) {
 		ErrorTool tool = this.getTool(pts);
 		MRoutineToolInput input = new MRoutineToolInput();
 		input.addRoutines(selectedFileNames);
@@ -28,7 +28,7 @@ public class ReportErrors extends MToolsCommand {
 	}
 
 	@Override
-	protected ToolResult getResult(IProject project, ParseTreeSupply pts, EntryId entryId) {
+	public ToolResult getResult(IProject project, ParseTreeSupply pts, EntryId entryId) {
 		ErrorTool tool = this.getTool(pts);
 		ToolResult result = tool.getResult(entryId);
 		return result;

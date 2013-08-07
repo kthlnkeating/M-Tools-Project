@@ -166,7 +166,7 @@ public class MServerRoutine {
 				return result.substring(result.indexOf('\n')+1);
 			}
 		} catch (FoundationsException e) {
-			String message = Messages.bind(Messages.UNABLE_RTN_LOAD, routineName);
+			String message = Messages.bind(Messages.UNABLE_RTN_LOAD, routineName, e.getMessage());
 			throw new LoadRoutineException(message, e);
 		}
 	}

@@ -19,7 +19,7 @@ package us.pwc.eclipse.vista.command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-public class AssumedVariablesEditorFile extends ReportAssumeVariables {		
+public class QuitTypesEditorFile extends ValidateQuitTypes {
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		return this.executeEditorFile(event);

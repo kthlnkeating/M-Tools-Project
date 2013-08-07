@@ -1,29 +1,22 @@
 <?xml version="1.0" encoding ="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="us.pwc.vista.eclipse.tools.tagsupply">
+         <iterate
+               ifEmpty="false"
+               operator="and">
+            <test
+                  property="gov.va.med.iss.meditor.propertyTester.tag">
+            </test>
+         </iterate>
+      </definition>
+   </extension>
 
    <extension
          point="org.eclipse.ui.commands">
-      <command
-            defaultHandler="us.pwc.eclipse.vista.command.ReportAssumeVariables"
-            id="us.pwc.eclipse.vista.assumevariable"
-            name="Report Assumed Variables">
-      </command>
-      <command
-            defaultHandler="us.pwc.eclipse.vista.command.ReportErrors"
-            id="us.pwc.eclipse.vista.error"
-            name="Report Errors">
-      </command>
-      <command
-            defaultHandler="us.pwc.eclipse.vista.command.ReportOccurances"
-            id="us.pwc.eclipse.vista.occurance"
-            name="Report Occurances">
-      </command>
-      <command
-            defaultHandler="us.pwc.eclipse.vista.command.ValidateQuitTypes"
-            id="us.pwc.eclipse.vista.quittype"
-            name="Validate Quit Types">
-      </command>
       <command
             defaultHandler="us.pwc.eclipse.vista.command.ExpandKeywords"
             id="us.pwc.eclipse.vista.expandkeywords"
@@ -33,84 +26,24 @@
             id="us.pwc.eclipse.vista.eclipse.tools.assumedvariables"
             name="Report Assumed Variables">
       </command>
+      <command
+            id="us.pwc.eclipse.vista.eclipse.tools.errors"
+            name="Report Errors">
+      </command>
+      <command
+            id="us.pwc.eclipse.vista.eclipse.tools.occurances"
+            name="Report Occurances">
+      </command>
+      <command
+            id="us.pwc.eclipse.vista.eclipse.tools.quittypes"
+            name="Validate Quit Types">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            locationURI="popup:gov.va.med.iss.meditor.editors.outline.contextmenu"> <!--?after=additions -->
-         <menu
-               label="M Tools"
-               icon="$nl$/icons/full/mtools16/meditor.gif">
-            <command
-                  commandId="us.pwc.eclipse.vista.assumevariable"
-                  style="push">
-            </command>
-            <command
-                  commandId="us.pwc.eclipse.vista.error"
-                  style="push">
-            </command>
-            <command
-                  commandId="us.pwc.eclipse.vista.occurance"
-                  style="push">
-            </command>
-            <command
-                  commandId="us.pwc.eclipse.vista.quittype"
-                  style="push">
-            </command>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu?after=additions">
-         <menu
-               label="M Tools"
-               icon="$nl$/icons/full/mtools16/meditor.gif">
-            <command
-                  commandId="us.pwc.eclipse.vista.assumevariable"
-                  style="push">
-            </command>
-            <command
-                  commandId="us.pwc.eclipse.vista.error"
-                  style="push">
-            </command>
-            <command
-                  commandId="us.pwc.eclipse.vista.occurance"
-                  style="push">
-            </command>
-            <command
-                  commandId="us.pwc.eclipse.vista.quittype"
-                  style="push">
-            </command>
-         </menu>
-      </menuContribution>
 
 
 	<!-- Adding MRA Tools to the M Editor -->
-      <menuContribution
-            allPopups="false"
-            locationURI="popup:#TextEditorContext?after=additions"> <!--TODO: add logic to only apply to M Editor -->
-         <menu
-               label="M Tools"
-               icon="$nl$/icons/full/mtools16/meditor.gif">
-            <command
-                  commandId="us.pwc.eclipse.vista.assumevariable"
-                  style="push">
-            </command>
-            <command
-                  commandId="us.pwc.eclipse.vista.error"
-                  style="push">
-            </command>
-            <command
-                  commandId="us.pwc.eclipse.vista.occurance"
-                  style="push">
-            </command>
-            <command
-                  commandId="us.pwc.eclipse.vista.quittype"
-                  style="push">
-            </command>
-         </menu>
-      </menuContribution>
       
       <menuContribution
             allPopups="false"
@@ -125,13 +58,25 @@
          </menu>
       </menuContribution>
       <menuContribution
-            allPopups="false"
-            locationURI="xxx.xxx.xxx.xxx">
+            allPopups="true"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <menu
                icon="$nl$/icons/full/mtools16/meditor.gif"
-               label="M Tools New">
+               label="M Tools">
             <command
                   commandId="us.pwc.eclipse.vista.eclipse.tools.assumedvariables"
+                  style="push">
+            </command>
+            <command
+                  commandId="us.pwc.eclipse.vista.eclipse.tools.errors"
+                  style="push">
+            </command>
+            <command
+                  commandId="us.pwc.eclipse.vista.eclipse.tools.occurances"
+                  style="push">
+            </command>
+            <command
+                  commandId="us.pwc.eclipse.vista.eclipse.tools.quittypes"
                   style="push">
             </command>
          </menu>
@@ -196,13 +141,90 @@
             class="us.pwc.eclipse.vista.command.AssumedVariablesTags"
             commandId="us.pwc.eclipse.vista.eclipse.tools.assumedvariables">
          <activeWhen>
-            <iterate
-                  ifEmpty="false"
-                  operator="and">
-               <test
-                     property="gov.va.med.iss.meditor.propertyTester.tag">
-               </test>
-            </iterate></activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.eclipse.tools.tagsupply">
+            </reference></activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.eclipse.vista.command.ErrorsFiles"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.errors">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.mlib.exprdef.mtree">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.eclipse.vista.command.ErrorsEditorFile"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.errors">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.mlib.exprdef.editor.mfile">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.eclipse.vista.command.ErrorsTags"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.errors">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.eclipse.tools.tagsupply">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.eclipse.vista.command.OccurancesTags"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.occurances">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.eclipse.tools.tagsupply">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.eclipse.vista.command.OccurancesFiles"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.occurances">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.mlib.exprdef.mtree">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.eclipse.vista.command.OccurancesEditorFile"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.occurances">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.mlib.exprdef.editor.mfile">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.eclipse.vista.command.QuitTypesTags"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.quittypes">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.eclipse.tools.tagsupply">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.eclipse.vista.command.QuitTypesFiles"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.quittypes">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.mlib.exprdef.mtree">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.eclipse.vista.command.QuitTypesEditorFile"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.quittypes">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.mlib.exprdef.editor.mfile">
+            </reference>
+         </activeWhen>
       </handler>
    </extension>
 

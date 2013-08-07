@@ -149,7 +149,7 @@ public class SaveRoutineEngine {
 			MEditorPlugin.getDefault().logError(message, bse);
 			warningMessage += "\n" + message;
 		} catch (Throwable t) {
-			String message = Messages.bind(Messages.UNABLE_RTN_SAVE, routineName);
+			String message = Messages.bind(Messages.UNABLE_RTN_SAVE, routineName, t.getMessage());
 			return StatusHelper.getStatus(message, t);
 		}		
 

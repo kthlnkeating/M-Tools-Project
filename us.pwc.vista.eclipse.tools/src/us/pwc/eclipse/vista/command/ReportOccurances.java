@@ -16,7 +16,7 @@ import com.pwc.us.rgi.m.tool.routine.occurance.OccuranceTool;
 import com.pwc.us.rgi.m.tool.routine.occurance.OccuranceToolParams;
 import com.pwc.us.rgi.m.tool.routine.occurance.OccuranceType;
 
-public class ReportOccurances extends MToolsCommand {
+public abstract class ReportOccurances extends MToolsCommand {
 	private OccuranceTool getTool(IProject project, ParseTreeSupply pts) {
 		OccuranceToolParams p = new OccuranceToolParams(pts);
 		String[] types = OccuranceTypesHandler.getTypesFromStore(project);
@@ -34,7 +34,7 @@ public class ReportOccurances extends MToolsCommand {
 	}
 	
 	@Override
-	protected ResultsByRoutine<Occurance, List<Occurance>> getResult(IProject project, ParseTreeSupply pts, List<String> selectedFileNames) {
+	public ResultsByRoutine<Occurance, List<Occurance>> getResult(IProject project, ParseTreeSupply pts, List<String> selectedFileNames) {
 		OccuranceTool tool = this.getTool(project, pts);
 		MRoutineToolInput input = new MRoutineToolInput();
 		input.addRoutines(selectedFileNames);
@@ -43,7 +43,7 @@ public class ReportOccurances extends MToolsCommand {
 	}
 
 	@Override
-	protected ToolResult getResult(IProject project, ParseTreeSupply pts, EntryId entryId) {
+	public ToolResult getResult(IProject project, ParseTreeSupply pts, EntryId entryId) {
 		OccuranceTool tool = this.getTool(project, pts);
 		ToolResult result = tool.getResult(entryId);
 		return result;
