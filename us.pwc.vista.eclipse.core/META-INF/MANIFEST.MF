@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: VistA Eclipse Core
+Bundle-SymbolicName: us.pwc.vista.eclipse.core;singleton:=true
+Bundle-Version: 1.0.0.0
+Bundle-Activator: us.pwc.vista.eclipse.core.VistACorePlugin
+Bundle-Vendor: PwC
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.console;bundle-version="3.5.100",
+ org.eclipse.core.expressions;bundle-version="3.4.300",
+ org.eclipse.core.resources;bundle-version="3.7.101"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy

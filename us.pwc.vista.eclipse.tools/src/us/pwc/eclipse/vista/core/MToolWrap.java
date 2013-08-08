@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.console.IPatternMatchListener;
 import org.eclipse.ui.console.MessageConsole;
@@ -49,15 +50,16 @@ public abstract class MToolWrap {
 		
 	public void writeResult(IProject project, IWorkbenchWindow window, ToolResult result, SourceCodeFiles scf) throws IOException {
 		OutputFlags flags = this.getOutputFlags();
-		MessageConsole console = MToolsConsoleHandler.getMessageConsole();
+		MessageConsole console = MToolsConsoleHandler.getMessageConsole(project.getName());
+		IDocument document = console.getDocument();
+		document.set("");
 		IPatternMatchListener listener = new MToolsPatternMatchListener(project, window, scf);
 		console.addPatternMatchListener(listener);
-		console.clearConsole();
 		MessageConsoleStream os = console.newMessageStream();
 		Terminal t = new OSTerminal(os);
 		this.updateFormat(t.getTerminalFormatter());
 		result.write(t, flags);	
-		MToolsConsoleHandler.displayMToolsConsole();
+		MToolsConsoleHandler.displayMToolsConsole(console, window);
 	}
 	
 	public abstract ToolResult getRoutinesResult(IProject project, ParseTreeSupply pts, List<String> routineNames);

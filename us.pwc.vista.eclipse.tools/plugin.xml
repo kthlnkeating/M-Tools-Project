@@ -7,7 +7,7 @@
             id="us.pwc.vista.eclipse.tools.tagsupply">
          <and>
             <reference
-                  definitionId="us.pwc.vista.mlib.perspective">
+                  definitionId="us.pwc.vista.eclipse.core.perspective">
             </reference>
             <iterate
                   ifEmpty="false"
@@ -21,7 +21,7 @@
                <adapt
                      type="org.eclipse.core.resources.IFile">
                   <reference
-                        definitionId="us.pwc.vista.mlib.exprdef.mfile">
+                        definitionId="us.pwc.vista.eclipse.core.exprdef.mfile">
                   </reference>
                </adapt>
             </with>
@@ -60,10 +60,10 @@
       
       <menuContribution
             allPopups="true"
-            locationURI="popup:org.eclipse.ui.popup.any?after=us.pwc.vista.mlib.menusep.m">
+            locationURI="popup:org.eclipse.ui.popup.any?after=us.pwc.vista.eclipse.core.menusep.m">
          <menu
                label="M Refactor"
-               icon="platform:/plugin/us.pwc.vista.mlib/icons/m.gif">
+               icon="platform:/plugin/us.pwc.vista.eclipse.core/icons/m.gif">
             <command
                   commandId="us.pwc.eclipse.vista.eclipse.tools.expandkeywords"
                   style="push">
@@ -75,9 +75,9 @@
       </menuContribution>
       <menuContribution
             allPopups="true"
-            locationURI="popup:org.eclipse.ui.popup.any?after=us.pwc.vista.mlib.menusep.m">
+            locationURI="popup:org.eclipse.ui.popup.any?after=us.pwc.vista.eclipse.core.menusep.m">
          <menu
-               icon="$nl$/icons/full/mtools16/meditor.gif"
+               icon="platform:/plugin/us.pwc.vista.eclipse.core/icons/m.gif"
                label="M Tools">
             <command
                   commandId="us.pwc.eclipse.vista.eclipse.tools.assumedvariables"
@@ -152,7 +152,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.assumedvariables">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.mtree">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.mtree">
             </reference>
          </activeWhen>
       </handler>
@@ -161,7 +161,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.assumedvariables">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.editor.mfile">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
             </reference>
          </activeWhen>
       </handler>
@@ -178,7 +178,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.errors">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.mtree">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.mtree">
             </reference>
          </activeWhen>
       </handler>
@@ -187,7 +187,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.errors">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.editor.mfile">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
             </reference>
          </activeWhen>
       </handler>
@@ -214,7 +214,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.occurances">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.mtree">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.mtree">
             </reference>
          </activeWhen>
       </handler>
@@ -223,7 +223,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.occurances">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.editor.mfile">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
             </reference>
          </activeWhen>
       </handler>
@@ -241,7 +241,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.quittypes">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.mtree">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.mtree">
             </reference>
          </activeWhen>
       </handler>
@@ -250,7 +250,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.quittypes">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.editor.mfile">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
             </reference>
          </activeWhen>
       </handler>
@@ -259,7 +259,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.expandkeywords">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.editor.mfile">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
             </reference>
          </activeWhen>
       </handler>

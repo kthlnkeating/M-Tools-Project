@@ -12,9 +12,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text;bundle-version="3.7.2",
  org.eclipse.ui.console;bundle-version="3.5.100",
  org.eclipse.ui.ide;bundle-version="3.7.0",
- us.pwc.vista.mlib;bundle-version="1.0.0",
  org.eclipse.core.expressions;bundle-version="3.4.300",
- gov.va.med.iss.meditor;bundle-version="0.1.11"
+ gov.va.med.iss.meditor;bundle-version="0.1.11",
+ us.pwc.vista.eclipse.core;bundle-version="1.0.0",
+ us.pwc.vista.mlib;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .

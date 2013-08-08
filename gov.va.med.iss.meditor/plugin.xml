@@ -154,7 +154,7 @@
                <visibleWhen
                      checkEnabled="false">
                   <reference
-                        definitionId="us.pwc.vista.mlib.perspective">
+                        definitionId="us.pwc.vista.eclipse.core.perspective">
                   </reference>
                </visibleWhen>
             </command>
@@ -162,7 +162,7 @@
       </menuContribution>
       <menuContribution
             allPopups="true"
-            locationURI="popup:org.eclipse.ui.popup.any?after=us.pwc.vista.mlib.menusep.m">
+            locationURI="popup:org.eclipse.ui.popup.any?after=us.pwc.vista.eclipse.core.menusep.m">
          <menu
                icon="icons/meditor.gif"
                label="M Server">
@@ -173,7 +173,7 @@
                <visibleWhen
                      checkEnabled="false">
                   <reference
-                        definitionId="us.pwc.vista.mlib.exprdef.composite.onemfileonly">
+                        definitionId="us.pwc.vista.eclipse.core.exprdef.composite.onemfileonly">
                   </reference>
                </visibleWhen>
             </command>
@@ -184,7 +184,7 @@
                <visibleWhen
                      checkEnabled="false">
                   <reference
-                        definitionId="us.pwc.vista.mlib.exprdef.mtree.multifilesorfolder">
+                        definitionId="us.pwc.vista.eclipse.core.exprdef.mtree.multifilesorfolder">
                   </reference>
                </visibleWhen>
             </command>
@@ -195,7 +195,7 @@
                <visibleWhen
                      checkEnabled="false">
                   <reference
-                        definitionId="us.pwc.vista.mlib.exprdef.mtree.onefolderonly">
+                        definitionId="us.pwc.vista.eclipse.core.exprdef.mtree.onefolderonly">
                   </reference>
                </visibleWhen>
                <parameter
@@ -210,7 +210,7 @@
                <visibleWhen
                      checkEnabled="false">
                   <reference
-                        definitionId="us.pwc.vista.mlib.exprdef.mtree.onefolderonly">
+                        definitionId="us.pwc.vista.eclipse.core.exprdef.mtree.onefolderonly">
                   </reference>
                </visibleWhen>
                <parameter
@@ -229,7 +229,7 @@
                <visibleWhen
                      checkEnabled="false">
                   <reference
-                        definitionId="us.pwc.vista.mlib.exprdef.composite.onemfileonly">
+                        definitionId="us.pwc.vista.eclipse.core.exprdef.composite.onemfileonly">
                   </reference>
                </visibleWhen>
             </command>
@@ -240,7 +240,7 @@
                <visibleWhen
                      checkEnabled="false">
                   <reference
-                        definitionId="us.pwc.vista.mlib.exprdef.mtree.multifilesorfolder">
+                        definitionId="us.pwc.vista.eclipse.core.exprdef.mtree.multifilesorfolder">
                   </reference>
                </visibleWhen>
             </command>
@@ -251,7 +251,7 @@
                <visibleWhen
                      checkEnabled="false">
                   <reference
-                        definitionId="us.pwc.vista.mlib.exprdef.mtree.folderrequired">
+                        definitionId="us.pwc.vista.eclipse.core.exprdef.mtree.folderrequired">
                   </reference>
                </visibleWhen>
                <parameter
@@ -271,13 +271,13 @@
                id="gov.va.med.iss.meditor.command.loadRoutine.namespace"
                name="Namespace"
                optional="true"
-               typeId="us.pwc.vista.mlib.cmdparamtype.boolean">
+               typeId="us.pwc.vista.eclipse.core.cmdparamtype.boolean">
          </commandParameter>
          <commandParameter
                id="gov.va.med.iss.meditor.command.loadRoutine.folder"
                name="Folder"
                optional="true"
-               typeId="us.pwc.vista.mlib.cmdparamtype.boolean">
+               typeId="us.pwc.vista.eclipse.core.cmdparamtype.boolean">
          </commandParameter>
       </command>
       <command
@@ -287,7 +287,7 @@
                id="gov.va.med.iss.meditor.command.saveRoutine.namespace"
                name="Namespace"
                optional="true"
-               typeId="us.pwc.vista.mlib.cmdparamtype.boolean">
+               typeId="us.pwc.vista.eclipse.core.cmdparamtype.boolean">
          </commandParameter>
       </command>
       <command
@@ -318,7 +318,7 @@
             commandId="gov.va.med.iss.meditor.command.loadRoutine">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.mtree">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.mtree">
             </reference>
          </activeWhen>
       </handler>
@@ -327,7 +327,7 @@
             commandId="gov.va.med.iss.meditor.command.saveRoutine">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.mtree">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.mtree">
             </reference>
          </activeWhen>
       </handler>
@@ -336,7 +336,7 @@
             commandId="gov.va.med.iss.meditor.command.loadRoutine">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.editor.mfile">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
             </reference>
          </activeWhen>
       </handler>
@@ -345,7 +345,7 @@
             commandId="gov.va.med.iss.meditor.command.saveRoutine">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.editor.mfile">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
             </reference>
          </activeWhen>
       </handler>

@@ -4,26 +4,25 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="us.pwc.vista.mlib.PerspectiveFactory"
+            class="us.pwc.vista.eclipse.core.PerspectiveFactory"
             icon="icons/m.gif"
-            id="us.pwc.vista.mlib.perspective"
+            id="us.pwc.vista.eclipse.core.perspective"
             name="M">
       </perspective>
    </extension>
    <extension
-         id="us.pwc.vista.mlib.exprdef"
          point="org.eclipse.core.expressions.definitions">
       <definition
-            id="us.pwc.vista.mlib.perspective">
+            id="us.pwc.vista.eclipse.core.perspective">
          <with
                variable="activeWorkbenchWindow.activePerspective">
             <equals
-                  value="us.pwc.vista.mlib.perspective">
+                  value="us.pwc.vista.eclipse.core.perspective">
             </equals>
          </with>
       </definition>
       <definition
-            id="us.pwc.vista.mlib.exprdef.mfile">
+            id="us.pwc.vista.eclipse.core.exprdef.mfile">
          <and>
             <instanceof
                   value="org.eclipse.core.resources.IFile">
@@ -35,7 +34,7 @@
          </and>
       </definition>
       <definition
-            id="us.pwc.vista.mlib.exprdef.mfolder">
+            id="us.pwc.vista.eclipse.core.exprdef.mfolder">
          <or>
             <instanceof
                   value="org.eclipse.core.resources.IFolder">
@@ -46,54 +45,54 @@
          </or>
       </definition>
       <definition
-            id="us.pwc.vista.mlib.exprdef.mresource">
+            id="us.pwc.vista.eclipse.core.exprdef.mresource">
          <or>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.mfile">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.mfile">
             </reference>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.mfolder">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.mfolder">
             </reference>
          </or>
       </definition>
       <definition
-            id="us.pwc.vista.mlib.exprdef.mtree">
+            id="us.pwc.vista.eclipse.core.exprdef.mtree">
          <and>
             <reference
-                  definitionId="us.pwc.vista.mlib.perspective">
+                  definitionId="us.pwc.vista.eclipse.core.perspective">
             </reference>
             <iterate
                   ifEmpty="false"
                   operator="and">
                <reference
-                     definitionId="us.pwc.vista.mlib.exprdef.mresource">
+                     definitionId="us.pwc.vista.eclipse.core.exprdef.mresource">
                </reference>
             </iterate>
          </and>
       </definition>
       <definition
-            id="us.pwc.vista.mlib.exprdef.mtree.folderrequired">
+            id="us.pwc.vista.eclipse.core.exprdef.mtree.folderrequired">
          <and>
             <reference
-                  definitionId="us.pwc.vista.mlib.perspective">
+                  definitionId="us.pwc.vista.eclipse.core.perspective">
             </reference>
             <iterate
                   ifEmpty="false"
                   operator="or">
                <reference
-                     definitionId="us.pwc.vista.mlib.exprdef.mfolder">
+                     definitionId="us.pwc.vista.eclipse.core.exprdef.mfolder">
                </reference>
             </iterate>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.mtree">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.mtree">
             </reference>
          </and>
       </definition>
       <definition
-            id="us.pwc.vista.mlib.exprdef.mtree.onefolderonly">
+            id="us.pwc.vista.eclipse.core.exprdef.mtree.onefolderonly">
          <and>
             <reference
-                  definitionId="us.pwc.vista.mlib.perspective">
+                  definitionId="us.pwc.vista.eclipse.core.perspective">
             </reference>
             <count
                   value="1">
@@ -102,16 +101,16 @@
                   ifEmpty="false"
                   operator="and">
                <reference
-                     definitionId="us.pwc.vista.mlib.exprdef.mfolder">
+                     definitionId="us.pwc.vista.eclipse.core.exprdef.mfolder">
                </reference>
             </iterate>
          </and>
       </definition>
       <definition
-            id="us.pwc.vista.mlib.exprdef.mtree.onefileonly">
+            id="us.pwc.vista.eclipse.core.exprdef.mtree.onefileonly">
          <and>
             <reference
-                  definitionId="us.pwc.vista.mlib.perspective">
+                  definitionId="us.pwc.vista.eclipse.core.perspective">
             </reference>
             <count
                   value="1">
@@ -120,39 +119,39 @@
                   ifEmpty="false"
                   operator="and">
                <reference
-                     definitionId="us.pwc.vista.mlib.exprdef.mfile">
+                     definitionId="us.pwc.vista.eclipse.core.exprdef.mfile">
                </reference>
             </iterate>
          </and>
       </definition>
       <definition
-            id="us.pwc.vista.mlib.exprdef.mtree.multifilesorfolder">
+            id="us.pwc.vista.eclipse.core.exprdef.mtree.multifilesorfolder">
          <and>
             <reference
-                  definitionId="us.pwc.vista.mlib.perspective">
+                  definitionId="us.pwc.vista.eclipse.core.perspective">
             </reference>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.mtree">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.mtree">
             </reference>
             <not>
                <reference
-                     definitionId="us.pwc.vista.mlib.exprdef.mtree.onefileonly">
+                     definitionId="us.pwc.vista.eclipse.core.exprdef.mtree.onefileonly">
                </reference>
             </not>
          </and>
       </definition>
       <definition
-            id="us.pwc.vista.mlib.exprdef.editor.mfile">
+            id="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
          <and>
             <reference
-                  definitionId="us.pwc.vista.mlib.perspective">
+                  definitionId="us.pwc.vista.eclipse.core.perspective">
             </reference>
             <with
                   variable="activeEditorInput">
                <adapt
                      type="org.eclipse.core.resources.IFile">
                   <reference
-                        definitionId="us.pwc.vista.mlib.exprdef.mfile">
+                        definitionId="us.pwc.vista.eclipse.core.exprdef.mfile">
                   </reference>
                </adapt>
             </with>
@@ -169,13 +168,13 @@
          </and>
       </definition>
       <definition
-            id="us.pwc.vista.mlib.exprdef.composite.onemfileonly">
+            id="us.pwc.vista.eclipse.core.exprdef.composite.onemfileonly">
          <or>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.mtree.onefileonly">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.mtree.onefileonly">
             </reference>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.editor.mfile">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
             </reference>
          </or>
       </definition>
@@ -183,8 +182,8 @@
    <extension
          point="org.eclipse.ui.commands">
       <commandParameterType
-            converter="us.pwc.vista.mlib.command.BooleanParameterConverter"
-            id="us.pwc.vista.mlib.cmdparamtype.boolean"
+            converter="us.pwc.vista.eclipse.core.command.BooleanParameterConverter"
+            id="us.pwc.vista.eclipse.core.cmdparamtype.boolean"
             type="java.lang.Boolean">
       </commandParameterType>
    </extension>
@@ -194,7 +193,7 @@
             allPopups="true"
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <separator
-               name="us.pwc.vista.mlib.menusep.m"
+               name="us.pwc.vista.eclipse.core.menusep.m"
                visible="false">
          </separator>
       </menuContribution>
