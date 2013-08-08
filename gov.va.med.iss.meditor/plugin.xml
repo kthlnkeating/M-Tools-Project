@@ -156,7 +156,7 @@
       </menuContribution>
       <menuContribution
             allPopups="true"
-            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+            locationURI="popup:org.eclipse.ui.popup.any?after=us.pwc.vista.mlib.menusep.m">
          <menu
                icon="icons/meditor.gif"
                label="M Server">

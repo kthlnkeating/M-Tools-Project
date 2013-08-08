@@ -150,5 +150,16 @@
             type="java.lang.Boolean">
       </commandParameterType>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <separator
+               name="us.pwc.vista.mlib.menusep.m"
+               visible="false">
+         </separator>
+      </menuContribution>
+   </extension>
 
 </plugin>
