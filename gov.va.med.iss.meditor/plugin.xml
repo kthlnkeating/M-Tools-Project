@@ -151,6 +151,12 @@
                   icon="icons/meditor.gif"
                   label="Load M Routine"
                   style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="us.pwc.vista.mlib.perspective">
+                  </reference>
+               </visibleWhen>
             </command>
          </toolbar>
       </menuContribution>

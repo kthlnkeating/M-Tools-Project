@@ -2,8 +2,26 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="us.pwc.vista.mlib.PerspectiveFactory"
+            icon="icons/m.gif"
+            id="us.pwc.vista.mlib.perspective"
+            name="M">
+      </perspective>
+   </extension>
+   <extension
          id="us.pwc.vista.mlib.exprdef"
          point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="us.pwc.vista.mlib.perspective">
+         <with
+               variable="activeWorkbenchWindow.activePerspective">
+            <equals
+                  value="us.pwc.vista.mlib.perspective">
+            </equals>
+         </with>
+      </definition>
       <definition
             id="us.pwc.vista.mlib.exprdef.mfile">
          <and>
@@ -40,17 +58,25 @@
       </definition>
       <definition
             id="us.pwc.vista.mlib.exprdef.mtree">
-         <iterate
-               ifEmpty="false"
-               operator="and">
+         <and>
             <reference
-                  definitionId="us.pwc.vista.mlib.exprdef.mresource">
+                  definitionId="us.pwc.vista.mlib.perspective">
             </reference>
-         </iterate>
+            <iterate
+                  ifEmpty="false"
+                  operator="and">
+               <reference
+                     definitionId="us.pwc.vista.mlib.exprdef.mresource">
+               </reference>
+            </iterate>
+         </and>
       </definition>
       <definition
             id="us.pwc.vista.mlib.exprdef.mtree.folderrequired">
          <and>
+            <reference
+                  definitionId="us.pwc.vista.mlib.perspective">
+            </reference>
             <iterate
                   ifEmpty="false"
                   operator="or">
@@ -66,6 +92,9 @@
       <definition
             id="us.pwc.vista.mlib.exprdef.mtree.onefolderonly">
          <and>
+            <reference
+                  definitionId="us.pwc.vista.mlib.perspective">
+            </reference>
             <count
                   value="1">
             </count>
@@ -81,6 +110,9 @@
       <definition
             id="us.pwc.vista.mlib.exprdef.mtree.onefileonly">
          <and>
+            <reference
+                  definitionId="us.pwc.vista.mlib.perspective">
+            </reference>
             <count
                   value="1">
             </count>
@@ -97,6 +129,9 @@
             id="us.pwc.vista.mlib.exprdef.mtree.multifilesorfolder">
          <and>
             <reference
+                  definitionId="us.pwc.vista.mlib.perspective">
+            </reference>
+            <reference
                   definitionId="us.pwc.vista.mlib.exprdef.mtree">
             </reference>
             <not>
@@ -109,6 +144,9 @@
       <definition
             id="us.pwc.vista.mlib.exprdef.editor.mfile">
          <and>
+            <reference
+                  definitionId="us.pwc.vista.mlib.perspective">
+            </reference>
             <with
                   variable="activeEditorInput">
                <adapt

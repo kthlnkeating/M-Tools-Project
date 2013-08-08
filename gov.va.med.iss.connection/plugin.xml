@@ -45,6 +45,12 @@
                   name="gov.va.med.iss.connection.separator1"
                   visible="true">
             </separator>
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="us.pwc.vista.mlib.perspective">
+               </reference>
+            </visibleWhen>
          </menu>
       </menuContribution>
    </extension>

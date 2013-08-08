@@ -6,6 +6,9 @@
       <definition
             id="us.pwc.vista.eclipse.tools.tagsupply">
          <and>
+            <reference
+                  definitionId="us.pwc.vista.mlib.perspective">
+            </reference>
             <iterate
                   ifEmpty="false"
                   operator="and">
@@ -60,7 +63,7 @@
             locationURI="popup:org.eclipse.ui.popup.any?after=us.pwc.vista.mlib.menusep.m">
          <menu
                label="M Refactor"
-               icon="$nl$/icons/full/mtools16/meditor.gif">
+               icon="platform:/plugin/us.pwc.vista.mlib/icons/m.gif">
             <command
                   commandId="us.pwc.eclipse.vista.eclipse.tools.expandkeywords"
                   style="push">

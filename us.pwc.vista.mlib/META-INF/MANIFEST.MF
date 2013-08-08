@@ -8,7 +8,8 @@ Bundle-Vendor: PwC
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.expressions;bundle-version="3.4.300",
- org.eclipse.core.resources;bundle-version="3.7.101"
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.ui.console;bundle-version="3.5.100"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: com.pwc.us.rgi,
