@@ -16,12 +16,17 @@
 
 package us.pwc.eclipse.vista.command;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-public class QuitTypesTags extends ValidateQuitTypes {
+import us.pwc.eclipse.vista.core.OccurancesToolWrap;
+import us.pwc.eclipse.vista.core.TagsToolExecuter;
+
+public class OccurancesTagsCmd extends AbstractHandler {
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		return this.executeTags(event);
+		TagsToolExecuter.run(event, new OccurancesToolWrap());
+		return null;
 	}
 }

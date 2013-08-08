@@ -14,14 +14,28 @@
 // limitations under the License.
 //---------------------------------------------------------------------------
 
-package us.pwc.eclipse.vista.command;
+package us.pwc.eclipse.vista.core;
+
+import java.util.List;
 
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IProject;
 
-public class OccurancesFiles extends ReportOccurances {
-	@Override
-	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		return this.executeFiles(event);
+import com.pwc.us.rgi.m.tool.ParseTreeSupply;
+import com.pwc.us.rgi.m.tool.ToolResult;
+
+
+public class RoutinesToolExecuter extends ToolExecuter {
+	private List<String> routines;
+	
+	public RoutinesToolExecuter(MToolWrap wrap, ExecutionEvent event, List<String> routines) {
+		super(wrap, event);
+		this.routines = routines;
 	}
+	
+	@Override
+	public ToolResult getResult(IProject project, ParseTreeSupply pts) {
+		MToolWrap w = this.getMToolWrap();
+		return w.getRoutinesResult(project, pts, this.routines);
+	}	
 }

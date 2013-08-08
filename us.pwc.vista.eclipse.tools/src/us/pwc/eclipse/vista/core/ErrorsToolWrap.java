@@ -18,25 +18,34 @@ package us.pwc.eclipse.vista.core;
 
 import java.util.List;
 
-import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IProject;
+
 
 import com.pwc.us.rgi.m.tool.ParseTreeSupply;
 import com.pwc.us.rgi.m.tool.ToolResult;
+import com.pwc.us.rgi.m.tool.routine.MRoutineToolInput;
+import com.pwc.us.rgi.m.tool.routine.RoutineToolParams;
+import com.pwc.us.rgi.m.tool.routine.error.ErrorTool;
 
-import us.pwc.eclipse.vista.command.MToolsCommand;
-
-public class ToolExecuterOnRoutines extends ToolExecuter {
-	private List<String> routines;
-	
-	public ToolExecuterOnRoutines(MToolsCommand command, ExecutionEvent event, List<String> routines) {
-		super(command, event);
-		this.routines = routines;
+public class ErrorsToolWrap extends MToolWrap {
+	private ErrorTool getTool(ParseTreeSupply pts) {
+		RoutineToolParams p = new RoutineToolParams(pts);
+		ErrorTool tool = new ErrorTool(p);
+		return tool;
 	}
 	
 	@Override
-	public ToolResult getResult(IProject project, ParseTreeSupply pts) {
-		MToolsCommand c = this.getCommand();
-		return c.getResult(project, pts, this.routines);
-	}	
+	public ToolResult getRoutinesResult(IProject project, ParseTreeSupply pts, List<String> routineNames) {
+		ErrorTool tool = this.getTool(pts);
+		MRoutineToolInput input = new MRoutineToolInput();
+		input.addRoutines(routineNames);
+		ToolResult result = tool.getResult(input);
+		return result;
+	}
+
+	@Override
+	public ToolResult getTagsResult(IProject project, ParseTreeSupply pts, String routineName, List<String> tags) {
+		ErrorTool tool = this.getTool(pts);
+		return tool.getResult(routineName, tags);
+	}
 }

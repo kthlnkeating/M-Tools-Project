@@ -24,6 +24,8 @@ import com.pwc.us.rgi.m.parsetree.data.EntryId;
 import com.pwc.us.rgi.m.tool.ParseTreeSupply;
 import com.pwc.us.rgi.m.tool.ResultsByLabel;
 import com.pwc.us.rgi.m.tool.ResultsByRoutine;
+import com.pwc.us.rgi.m.tool.ToolResult;
+import com.pwc.us.rgi.m.tool.ToolResultCollection;
 import com.pwc.us.rgi.m.tool.routine.CollectionAsToolResult;
 import com.pwc.us.rgi.m.tool.routine.MRoutineToolInput;
 
@@ -45,6 +47,21 @@ public class OccuranceTool {
 		ResultsByLabel<Occurance, List<Occurance>> rfs = or.getResults(routine);
 		List<Occurance> result = rfs.getResults(tag);
 		return new CollectionAsToolResult<Occurance>(entryUnderTest, result);
+	}
+	
+	public ToolResultCollection getResult(String routineName, List<String> tags) {
+		Routine routine = this.pts.getParseTree(routineName);
+		OccuranceRecorder or = new OccuranceRecorder();
+		or.setRequestedTypes(this.types);
+		ToolResultCollection r = new ToolResultCollection();
+		ResultsByLabel<Occurance, List<Occurance>> rfs = or.getResults(routine);
+		for (String tag : tags) {
+			EntryId eid = new EntryId(routineName, tag);
+			List<Occurance> lo = rfs.getResults(tag);
+			ToolResult catr = new CollectionAsToolResult<Occurance>(eid, lo);
+			r.add(catr);
+		}
+		return r;
 	}
 	
 	public ResultsByRoutine<Occurance, List<Occurance>> getResult(List<String> routineNames) {

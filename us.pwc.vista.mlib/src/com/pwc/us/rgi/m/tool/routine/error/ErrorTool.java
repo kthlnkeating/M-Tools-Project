@@ -22,6 +22,7 @@ import com.pwc.us.rgi.m.parsetree.Routine;
 import com.pwc.us.rgi.m.parsetree.data.EntryId;
 import com.pwc.us.rgi.m.tool.ParseTreeSupply;
 import com.pwc.us.rgi.m.tool.ToolResult;
+import com.pwc.us.rgi.m.tool.ToolResultCollection;
 import com.pwc.us.rgi.m.tool.routine.CollectionAsToolResult;
 import com.pwc.us.rgi.m.tool.routine.MRoutineToolInput;
 import com.pwc.us.rgi.m.tool.routine.RoutineToolParams;
@@ -41,6 +42,20 @@ public class ErrorTool {
 		String tag = entryUnderTest.getLabelOrDefault();
 		List<ErrorWithLineIndex> result = rfs.getResults(tag);
 		return new CollectionAsToolResult<ErrorWithLineIndex>(entryUnderTest, result);
+	}
+	
+	public ToolResultCollection getResult(String routineName, List<String> tags) {
+		Routine routine = this.pts.getParseTree(routineName);
+		ErrorRecorder fr = new ErrorRecorder();
+		ErrorsByLabel rfs = fr.getErrors(routine);
+		ToolResultCollection r = new ToolResultCollection();
+		for (String tag : tags) {
+			List<ErrorWithLineIndex> result = rfs.getResults(tag);
+			EntryId eid = new EntryId(routineName, tag);
+			ToolResult catr = new CollectionAsToolResult<ErrorWithLineIndex>(eid, result);
+			r.add(catr);
+		}
+		return r;
 	}
 	
 	public ErrorsByRoutine getResult(List<String> routineNames) {

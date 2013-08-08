@@ -39,7 +39,7 @@ import com.pwc.us.rgi.m.token.MTFSupply;
 import com.pwc.us.rgi.m.token.MVersion;
 import com.pwc.us.rgi.m.token.TFRoutine;
 
-public class ExpandKeywords extends AbstractHandler {
+public class ExpandKeywordsEditorCmd extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IEditorPart editorPart = HandlerUtil.getActiveEditor(event);

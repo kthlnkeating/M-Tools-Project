@@ -34,22 +34,21 @@ import com.pwc.us.rgi.m.tool.SourceCodeToParseTreeAdapter;
 import com.pwc.us.rgi.m.tool.ToolResult;
 
 import us.pwc.eclipse.vista.Activator;
-import us.pwc.eclipse.vista.command.MToolsCommand;
 import us.pwc.eclipse.vista.util.MRAParamSupply;
 
 public abstract class ToolExecuter {
 	private IWorkbenchWindow window;
 	private Shell shell;
-	private MToolsCommand command;
+	private MToolWrap wrap;
 
-	public ToolExecuter(MToolsCommand command, ExecutionEvent event) {
+	public ToolExecuter(MToolWrap command, ExecutionEvent event) {
 		this.window = HandlerUtil.getActiveWorkbenchWindow(event);
 		this.shell = HandlerUtil.getActiveShell(event);
-		this.command = command;
+		this.wrap = command;
 	}
 	
-	protected MToolsCommand getCommand() {
-		return this.command;
+	protected MToolWrap getMToolWrap() {
+		return this.wrap;
 	}
 	
 	protected abstract ToolResult getResult(IProject project, ParseTreeSupply pts);
@@ -67,14 +66,14 @@ public abstract class ToolExecuter {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {				
 				try {
-					final SourceCodeFiles scf = MRAParamSupply.getSourceCodeFiles(project);
+					final SourceCodeFiles scf = MRAParamSupply.getSourceCodeFiles(project, "backups");
 					SourceCodeToParseTreeAdapter pts = new SourceCodeToParseTreeAdapter(scf);				
 					final ToolResult result = thiz.getResult(project, pts);
 					Display.getDefault().asyncExec(new Runnable() {						
 						@Override
 						public void run() {
 							try {
-								thiz.command.writeResult(project, thiz.window, result, scf);
+								thiz.wrap.writeResult(project, thiz.window, result, scf);
 							} catch (Throwable t) {
 								handleException(thiz.shell, t);								
 							}

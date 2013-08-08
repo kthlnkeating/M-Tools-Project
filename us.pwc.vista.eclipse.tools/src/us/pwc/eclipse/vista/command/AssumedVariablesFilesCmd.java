@@ -16,12 +16,17 @@
 
 package us.pwc.eclipse.vista.command;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-public class QuitTypesFiles extends ValidateQuitTypes {
+import us.pwc.eclipse.vista.core.AssumedVariablesToolWrap;
+import us.pwc.eclipse.vista.core.FilesToolExecuter;
+
+public class AssumedVariablesFilesCmd extends AbstractHandler {
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		return this.executeFiles(event);
+		FilesToolExecuter.run(event, new AssumedVariablesToolWrap());
+		return null;
 	}
 }

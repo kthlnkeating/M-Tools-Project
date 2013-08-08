@@ -1,4 +1,20 @@
-package us.pwc.eclipse.vista.command;
+//---------------------------------------------------------------------------
+// Copyright 2013 PwC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//---------------------------------------------------------------------------
+
+package us.pwc.eclipse.vista.core;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +26,6 @@ import us.pwc.eclipse.vista.propertyPage.NameFilter;
 import us.pwc.eclipse.vista.propertyPage.NameFilterType;
 import us.pwc.eclipse.vista.propertyPage.RecursionSpecificationHandler;
 
-import com.pwc.us.rgi.m.parsetree.data.EntryId;
 import com.pwc.us.rgi.m.tool.NamespaceFilter;
 import com.pwc.us.rgi.m.tool.OutputFlags;
 import com.pwc.us.rgi.m.tool.ParseTreeSupply;
@@ -21,7 +36,7 @@ import com.pwc.us.rgi.m.tool.entry.assumedvariables.AssumedVariables;
 import com.pwc.us.rgi.m.tool.entry.assumedvariables.AssumedVariablesTool;
 import com.pwc.us.rgi.m.tool.entry.assumedvariables.AssumedVariablesToolParams;
 
-public abstract class ReportAssumeVariables extends MToolsCommand {
+public class AssumedVariablesToolWrap extends MToolWrap {
 	@Override
 	protected OutputFlags getOutputFlags() {
 		OutputFlags fs = new OutputFlags();
@@ -89,16 +104,16 @@ public abstract class ReportAssumeVariables extends MToolsCommand {
 	}
 	
 	@Override
-	public MEntryToolResult<AssumedVariables> getResult(IProject project, ParseTreeSupply pts, List<String> selectedFileNames) {
+	public MEntryToolResult<AssumedVariables> getRoutinesResult(IProject project, ParseTreeSupply pts, List<String> routineNames) {
 		AssumedVariablesTool tool = this.getTool(project, pts);
-		MEntryToolResult<AssumedVariables> result = tool.getResultForRoutines(selectedFileNames);
+		MEntryToolResult<AssumedVariables> result = tool.getResultForRoutines(routineNames);
 		return result;
 	}
 
 	@Override
-	public AssumedVariables getResult(IProject project, ParseTreeSupply pts, EntryId entryId) {
+	public MEntryToolResult<AssumedVariables> getTagsResult(IProject project, ParseTreeSupply pts, String routineName, List<String> tags) {
 		AssumedVariablesTool tool = this.getTool(project, pts);
-		AssumedVariables result = tool.getResult(entryId);
+		MEntryToolResult<AssumedVariables> result = tool.getResult(routineName, tags);
 		return result;
 	}
 }

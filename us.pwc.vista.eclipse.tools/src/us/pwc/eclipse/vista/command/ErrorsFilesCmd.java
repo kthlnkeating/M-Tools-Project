@@ -16,12 +16,17 @@
 
 package us.pwc.eclipse.vista.command;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-public class OccurancesEditorFile extends ReportOccurances {
+import us.pwc.eclipse.vista.core.ErrorsToolWrap;
+import us.pwc.eclipse.vista.core.FilesToolExecuter;
+
+public class ErrorsFilesCmd extends AbstractHandler {
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		return this.executeEditorFile(event);
+		FilesToolExecuter.run(event, new ErrorsToolWrap());
+		return null;
 	}
 }

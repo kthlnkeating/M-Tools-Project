@@ -16,12 +16,17 @@
 
 package us.pwc.eclipse.vista.command;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-public class ErrorsTags extends ReportErrors {
+import us.pwc.eclipse.vista.core.FilesToolExecuter;
+import us.pwc.eclipse.vista.core.QuitTypesToolWrap;
+
+public class QuitTypesFilesCmd extends AbstractHandler {
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		return this.executeTags(event);
+		FilesToolExecuter.run(event, new QuitTypesToolWrap());
+		return null;
 	}
 }

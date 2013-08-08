@@ -16,26 +16,32 @@
 
 package us.pwc.eclipse.vista.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-import com.pwc.us.rgi.m.parsetree.data.EntryId;
-import com.pwc.us.rgi.m.tool.ParseTreeSupply;
-import com.pwc.us.rgi.m.tool.ToolResult;
 
-import us.pwc.eclipse.vista.command.MToolsCommand;
-
-public class ToolExecuterOnTags extends ToolExecuter {
-	private EntryId entryId;
-	
-	public ToolExecuterOnTags(MToolsCommand command, ExecutionEvent event, EntryId entryId) {
-		super(command, event);
-		this.entryId = entryId;
+public class EditorToolExecuter extends RoutinesToolExecuter {
+	public EditorToolExecuter(MToolWrap wrap, ExecutionEvent event, List<String> routines) {
+		super(wrap, event, routines);
 	}
+	
+	public static void run(ExecutionEvent event, MToolWrap wrap) {
+		IEditorInput input = HandlerUtil.getActiveEditorInput(event);
+		IFile file = (IFile) input.getAdapter(IFile.class);
+		IProject project = file.getProject();
+		String fileName = file.getName();
+		String routineName = fileName.substring(0, fileName.length()-2);
+
+		List<String> routines = new ArrayList<String>();
+		routines.add(routineName);
 		
-	@Override
-	public ToolResult getResult(IProject project, ParseTreeSupply pts) {
-		MToolsCommand c = this.getCommand();
-		return c.getResult(project, pts, this.entryId);
+		ToolExecuter executer = new RoutinesToolExecuter(wrap, event, routines);
+		executer.run(project);
 	}	
 }

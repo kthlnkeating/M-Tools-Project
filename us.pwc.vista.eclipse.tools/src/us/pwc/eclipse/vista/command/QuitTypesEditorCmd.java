@@ -16,12 +16,17 @@
 
 package us.pwc.eclipse.vista.command;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-public class ErrorsEditorFile extends ReportErrors {
+import us.pwc.eclipse.vista.core.EditorToolExecuter;
+import us.pwc.eclipse.vista.core.QuitTypesToolWrap;
+
+public class QuitTypesEditorCmd extends AbstractHandler {
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		return this.executeEditorFile(event);
+		EditorToolExecuter.run(event, new QuitTypesToolWrap());
+		return null;
 	}
 }

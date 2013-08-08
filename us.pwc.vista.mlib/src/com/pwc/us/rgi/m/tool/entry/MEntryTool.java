@@ -71,6 +71,15 @@ public abstract class MEntryTool<T extends ToolResult, F extends Fanout, B exten
 		return result;
 	}
 
+	public MEntryToolResult<T> getResult(String routineName, List<String> tags) {
+		List<EntryId> entryIds = new ArrayList<EntryId>();
+		for (String tag : tags) {
+			EntryId eid = new EntryId(routineName, tag);
+			entryIds.add(eid);
+		}
+		return this.getResult(entryIds);	
+	}
+
 	public MEntryToolResult<T> getResultForRoutines(List<String> routineNames) {
 		MEntryToolResult<T> result = new MEntryToolResult<T>();
 		for (String routineName : routineNames) {
