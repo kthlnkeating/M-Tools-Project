@@ -113,17 +113,7 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="us.pwc.eclipse.vista.propertyPage.MTools"
-            id="us.pwc.eclipse.vista.propertyPage.MTools"
-            name="M Tools">
-         <enabledWhen>
-            <instanceof
-                  value="org.eclipse.core.resources.IProject">
-            </instanceof>
-         </enabledWhen>
-      </page>
-      <page
-            category="us.pwc.eclipse.vista.propertyPage.MTools"
+            category="us.pwc.vista.eclipse.core.project.propertyPage"
             class="us.pwc.eclipse.vista.propertyPage.AssumedVariables"
             id="us.pwc.eclipse.vista.propertyPage.AssumedVariables"
             name="Assumed Variables">
@@ -134,7 +124,7 @@
          </enabledWhen>
       </page>
       <page
-            category="us.pwc.eclipse.vista.propertyPage.MTools"
+            category="us.pwc.vista.eclipse.core.project.propertyPage"
             class="us.pwc.eclipse.vista.propertyPage.Occurances"
             id="us.pwc.eclipse.vista.propertyPage.Occurances"
             name="Occurances">
