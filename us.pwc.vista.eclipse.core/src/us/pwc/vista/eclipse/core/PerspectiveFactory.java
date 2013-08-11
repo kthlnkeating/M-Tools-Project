@@ -25,13 +25,13 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 	@Override 
 	public void createInitialLayout(IPageLayout layout) {
          String editorArea = layout.getEditorArea();
-         IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f, editorArea);
+         IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f, editorArea); //$NON-NLS-1$
          topLeft.addView(IPageLayout.ID_PROJECT_EXPLORER);
 
-         IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.70f, "topLeft");
+         IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.70f, "topLeft"); //$NON-NLS-1$ //$NON-NLS-2$
          bottomLeft.addView(IPageLayout.ID_OUTLINE);
 
-         IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.70f, editorArea);
+         IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.70f, editorArea); //$NON-NLS-1$
          bottom.addView(IConsoleConstants.ID_CONSOLE_VIEW);
 	}
 }
