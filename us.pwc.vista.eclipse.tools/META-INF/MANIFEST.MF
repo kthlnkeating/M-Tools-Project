@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: MUMPS Right-Click Tools
+Bundle-Name: VistA Eclipse Tools
 Bundle-SymbolicName: us.pwc.vista.eclipse.tools;singleton:=true
-Bundle-Version: 1.0.3
-Bundle-Activator: us.pwc.eclipse.vista.Activator
-Bundle-Vendor: PwC US Public Sector Practice
+Bundle-Version: 1.1.0
+Bundle-Activator: us.pwc.vista.eclipse.tools.VistAToolsPlugin
+Bundle-Vendor: PwC
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
