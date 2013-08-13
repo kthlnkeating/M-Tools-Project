@@ -6,13 +6,16 @@ import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 import gov.va.med.iss.meditor.Messages;
 import gov.va.med.iss.meditor.core.RoutineDirectory;
 import gov.va.med.iss.meditor.dialog.InputDialogHelper;
-import gov.va.med.iss.meditor.dialog.MessageConsoleHelper;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
+import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
+
 public class ReportRoutineDirectory extends AbstractHandler {
+	public static final String ROUTINE_DIRECTORY = "Routine Directory Console";
+		
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		VistaLinkConnection connection = VistaConnection.getConnection();
@@ -27,7 +30,7 @@ public class ReportRoutineDirectory extends AbstractHandler {
 		}
 		
 		String result = RoutineDirectory.getRoutineNames(namespace);
-		MessageConsoleHelper.writeToConsole(MessageConsoleHelper.MEDITOR, result, true);
+		MessageConsoleHelper.writeToConsole(ROUTINE_DIRECTORY, result, true);
 		return null;
 	}
 }

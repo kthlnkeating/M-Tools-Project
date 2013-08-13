@@ -7,6 +7,7 @@ public class Messages extends NLS {
 	public static String PPP_BKUP_DIR_LABEL;
 	public static String PPP_BKUP_DIR_MSG_1;
 	public static String PPP_BKUP_DIR_MSG_2;
+	public static String MCH_WRITE_ERROR;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

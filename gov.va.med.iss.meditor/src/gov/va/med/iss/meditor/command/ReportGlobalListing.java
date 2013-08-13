@@ -33,7 +33,6 @@ import gov.va.med.iss.meditor.core.CommandResult;
 import gov.va.med.iss.meditor.core.StatusHelper;
 import gov.va.med.iss.meditor.dialog.GlobalListingData;
 import gov.va.med.iss.meditor.dialog.GlobalListingDialog;
-import gov.va.med.iss.meditor.dialog.MessageConsoleHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -46,6 +45,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
+
+import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
 
 public class ReportGlobalListing extends AbstractHandler {
 	private static class GlobalListingRPCResult {

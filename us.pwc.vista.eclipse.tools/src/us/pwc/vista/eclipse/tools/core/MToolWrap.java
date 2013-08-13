@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IPatternMatchListener;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
@@ -34,7 +35,7 @@ import com.pwc.us.rgi.output.OSTerminal;
 import com.pwc.us.rgi.output.Terminal;
 import com.pwc.us.rgi.output.TerminalFormatter;
 
-import us.pwc.vista.eclipse.tools.toolconsole.MToolsConsoleHandler;
+import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
 import us.pwc.vista.eclipse.tools.toolconsole.MToolsPatternMatchListener;
 
 public abstract class MToolWrap {
@@ -50,7 +51,8 @@ public abstract class MToolWrap {
 		
 	public void writeResult(IProject project, IWorkbenchWindow window, ToolResult result, SourceCodeFiles scf) throws IOException {
 		OutputFlags flags = this.getOutputFlags();
-		MessageConsole console = MToolsConsoleHandler.getMessageConsole(project.getName());
+		String consoleName = "M Tools Console (" +  project.getName() + ")";
+		MessageConsole console = MessageConsoleHelper.getMessageConsole(consoleName);
 		IDocument document = console.getDocument();
 		document.set("");
 		IPatternMatchListener listener = new MToolsPatternMatchListener(project, window, scf);
@@ -58,8 +60,8 @@ public abstract class MToolWrap {
 		MessageConsoleStream os = console.newMessageStream();
 		Terminal t = new OSTerminal(os);
 		this.updateFormat(t.getTerminalFormatter());
-		result.write(t, flags);	
-		MToolsConsoleHandler.displayMToolsConsole(console, window);
+		result.write(t, flags);
+		ConsolePlugin.getDefault().getConsoleManager().showConsoleView(console);
 	}
 	
 	public abstract ToolResult getRoutinesResult(IProject project, ParseTreeSupply pts, List<String> routineNames);

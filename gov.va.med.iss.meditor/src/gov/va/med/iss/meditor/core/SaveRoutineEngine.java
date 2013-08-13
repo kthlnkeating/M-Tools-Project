@@ -9,7 +9,6 @@ import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.MPiece;
 import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.dialog.MessageConsoleHelper;
 import gov.va.med.iss.meditor.error.BackupSynchException;
 import gov.va.med.iss.meditor.error.InvalidFileException;
 import gov.va.med.iss.meditor.error.MEditorException;
@@ -32,7 +31,11 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension4;
 import org.eclipse.jface.text.IRegion;
 
+import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
+
 public class SaveRoutineEngine {
+	private static final String SAVE_ROUTINE_CONSOLE = "Save Routine Console";
+
 	/** Returns the handle for the backup file for a file in a project. Backup  
 	 *  files store the M server versions whenever they are loaded to client. 
 	 *  Backup files are stored in a preference determined project directory.  
@@ -140,7 +143,7 @@ public class SaveRoutineEngine {
 				warningMessage += "\n" + message;
 			}
 			
-			MessageConsoleHelper.writeToConsole(MessageConsoleHelper.MEDITOR, consoleMessage.toString(), true);
+			MessageConsoleHelper.writeToConsole(SAVE_ROUTINE_CONSOLE, consoleMessage.toString(), true);
 			
 			String routine = builder.getRoutine();
 			synchBackupFile(backupFile, routine);

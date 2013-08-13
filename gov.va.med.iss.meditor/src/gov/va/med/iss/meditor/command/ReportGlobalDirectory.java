@@ -8,12 +8,13 @@ import gov.va.med.iss.connection.actions.VistaConnection;
 import gov.va.med.iss.connection.utilities.ConnectionUtilities;
 import gov.va.med.iss.meditor.Messages;
 import gov.va.med.iss.meditor.dialog.InputDialogHelper;
-import gov.va.med.iss.meditor.dialog.MessageConsoleHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+
+import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
 
 public class ReportGlobalDirectory extends AbstractHandler {
 	public static void writeGlobalDirectory(VistaLinkConnection connection, String globalName) {
