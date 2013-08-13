@@ -283,14 +283,4 @@
          </activeWhen>
       </handler>
    </extension>
-   <extension
-         point="org.eclipse.core.expressions.propertyTesters">
-      <propertyTester
-            class="gov.va.med.iss.meditor.command.MRoutineTagTester"
-            id="gov.va.med.iss.meditor.propertyTester1"
-            namespace="gov.va.med.iss.meditor.propertyTester"
-            properties="tag"
-            type="gov.va.med.iss.meditor.editors.SegmentAsTag">
-      </propertyTester>
-   </extension>
 </plugin>

@@ -178,6 +178,30 @@
             </reference>
          </or>
       </definition>
+      <definition
+            id="us.pwc.vista.eclipse.core.exprdef.tagsupply">
+         <and>
+            <reference
+                  definitionId="us.pwc.vista.eclipse.core.perspective">
+            </reference>
+            <iterate
+                  ifEmpty="false"
+                  operator="and">
+               <instanceof
+                     value="us.pwc.vista.eclipse.core.command.IMTagSupply">
+               </instanceof>
+            </iterate>
+            <with
+                  variable="activeEditorInput">
+               <adapt
+                     type="org.eclipse.core.resources.IFile">
+                  <reference
+                        definitionId="us.pwc.vista.eclipse.core.exprdef.mfile">
+                  </reference>
+               </adapt>
+            </with>
+         </and>
+      </definition>
    </extension>
    <extension
          point="org.eclipse.ui.commands">

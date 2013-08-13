@@ -1,33 +1,6 @@
 <?xml version="1.0" encoding ="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.core.expressions.definitions">
-      <definition
-            id="us.pwc.vista.eclipse.tools.tagsupply">
-         <and>
-            <reference
-                  definitionId="us.pwc.vista.eclipse.core.perspective">
-            </reference>
-            <iterate
-                  ifEmpty="false"
-                  operator="and">
-               <test
-                     property="gov.va.med.iss.meditor.propertyTester.tag">
-               </test>
-            </iterate>
-            <with
-                  variable="activeEditorInput">
-               <adapt
-                     type="org.eclipse.core.resources.IFile">
-                  <reference
-                        definitionId="us.pwc.vista.eclipse.core.exprdef.mfile">
-                  </reference>
-               </adapt>
-            </with>
-         </and>
-      </definition>
-   </extension>
 
    <extension
          point="org.eclipse.ui.commands">
@@ -160,7 +133,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.assumedvariables">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.eclipse.tools.tagsupply">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.tagsupply">
             </reference></activeWhen>
       </handler>
       <handler
@@ -186,7 +159,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.errors">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.eclipse.tools.tagsupply">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.tagsupply">
             </reference>
          </activeWhen>
       </handler>
@@ -195,7 +168,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.occurances">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.eclipse.tools.tagsupply">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.tagsupply">
             </reference>
          </activeWhen>
       </handler>
@@ -222,7 +195,7 @@
             commandId="us.pwc.eclipse.vista.eclipse.tools.quittypes">
          <activeWhen>
             <reference
-                  definitionId="us.pwc.vista.eclipse.tools.tagsupply">
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.tagsupply">
             </reference>
          </activeWhen>
       </handler>

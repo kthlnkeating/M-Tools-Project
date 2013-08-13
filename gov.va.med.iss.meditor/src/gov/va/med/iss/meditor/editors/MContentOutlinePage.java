@@ -66,7 +66,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 
 		protected final static String SEGMENTS= "__M_segments"; //$NON-NLS-1$
 		protected IPositionUpdater fPositionUpdater= new DefaultPositionUpdater(SEGMENTS);
-		protected List<SegmentAsTag> fContent= new ArrayList<SegmentAsTag>(100);
+		protected List<OutlineContent> fContent= new ArrayList<OutlineContent>(100);
 		
 		protected void parse(IDocument document) {
 			int lines= document.getNumberOfLines();
@@ -93,7 +93,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 					if (! (str1.compareTo("") == 0)) {
 						Position p= new Position(offset, end - offset);
 						document.addPosition(SEGMENTS, p);
-						fContent.add(new SegmentAsTag(str1, p, true));
+						fContent.add(new TagInOutline(str1, p));
 						lineNum = 0;
 						tagName = str1;
 					} else {
@@ -101,7 +101,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 						if ((lineNum % 10) == 0) {
 							Position p= new Position(offset, end-offset);
 							document.addPosition(SEGMENTS, p);
-							fContent.add(new SegmentAsTag("      "+tagName+"+"+lineNum, p, false));
+							fContent.add(new OutlineContent("      "+tagName+"+"+lineNum, p));
 						}
 					}
 
@@ -113,7 +113,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 				int val1 = document.getLength();
 				Position p = new Position(val1, 0);
 				document.addPosition(SEGMENTS, p);
-				fContent.add(new SegmentAsTag("<<END>>", p, false));
+				fContent.add(new OutlineContent("<<END>>", p));
 			} catch (Exception e) {
 			}
 		}
@@ -181,7 +181,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 		 * @see ITreeContentProvider#getParent(Object)
 		 */
 		public Object getParent(Object element) {
-			if (element instanceof SegmentAsTag)
+			if (element instanceof OutlineContent)
 				return fInput;
 			return null;
 		}
@@ -263,7 +263,7 @@ public class MContentOutlinePage extends ContentOutlinePage implements IDocument
 		if (selection.isEmpty())
 			fTextEditor.resetHighlightRange();
 		else {
-			SegmentAsTag segment= (SegmentAsTag) ((IStructuredSelection) selection).getFirstElement();
+			OutlineContent segment= (OutlineContent) ((IStructuredSelection) selection).getFirstElement();
 			int start= segment.getPosition().getOffset();
 			int length= segment.getPosition().getLength();
 			try {

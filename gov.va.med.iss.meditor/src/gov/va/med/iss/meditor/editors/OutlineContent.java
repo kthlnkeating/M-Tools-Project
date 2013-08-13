@@ -2,26 +2,21 @@ package gov.va.med.iss.meditor.editors;
 
 import org.eclipse.jface.text.Position;
 
-public class SegmentAsTag {
+public class OutlineContent {
 	private String name;
 	private Position position;
-	private boolean tag;
 	
-	public SegmentAsTag(String name, Position position, boolean isTag) {
+	public OutlineContent(String name, Position position) {
 		this.name= name;
 		this.position= position;
-		this.tag = isTag;
 	}
 
+	@Override
 	public String toString() {
 		return name;
 	}
 	
 	public Position getPosition() {
 		return position;
-	}
-	
-	public boolean isTag() {
-		return tag;
 	}
 }
