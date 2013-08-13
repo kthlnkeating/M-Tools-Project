@@ -34,9 +34,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+
+import us.pwc.vista.eclipse.core.VistACorePrefs;
 
 /**
  * This class represents an M routine that is loaded from server.  Due to 
@@ -51,13 +55,13 @@ public class MServerRoutine {
 	private String routineName;
 	private String content;
 	private IFile clientFileHandle;
-	private BackupSynchResult lastSynchResult;
+	private BackupSynchResult synchResult;
 	
-	public MServerRoutine(String routineName, String content, IFile clientFileHandle, BackupSynchResult synchBackupResult) {
+	private MServerRoutine(String routineName, String content, IFile clientFileHandle, BackupSynchResult synchBackupResult) {
 		this.routineName = routineName;
 		this.content = content;
 		this.clientFileHandle = clientFileHandle;
-		this.lastSynchResult = synchBackupResult;
+		this.synchResult = synchBackupResult;
 	}
 	
 	public String getContent() {
@@ -68,8 +72,8 @@ public class MServerRoutine {
 		return this.clientFileHandle;
 	}
 	
-	public BackupSynchResult getLastSynchResult() {
-		return this.lastSynchResult;
+	public BackupSynchResult getSynchResult() {
+		return this.synchResult;
 	}
 	
 	public String getRoutineName() {
@@ -171,23 +175,54 @@ public class MServerRoutine {
 		}
 	}
 	
+	/** Returns the handle for the backup file for a file in a project. Backup  
+	 *  files store the M server versions whenever they are loaded to client. 
+	 *  Backup files are stored in a preference determined project directory.  
+	 *  The relative path of a specific backup file in this backup directory 
+	 *  is identical to the relative path of the actual file in the project.
+	 *  <p>
+	 *  This method does not check existence or otherwise do any validations
+	 *  on the handle.   
+	 * 
+	 * @see IFile
+	 * @param backupFolderName
+	 * @param file
+	 * @return handle to the backup file.                                                              
+	 */	
+	public static IFile getBackupFile(IFile file) throws CoreException {
+		String backupFolderName = VistACorePrefs.getServerBackupDirectory(file.getProject());
+		if (backupFolderName.isEmpty()) return null;
+		IProject project = file.getProject();
+		IPath projectPath = project.getFullPath();
+		IPath filePath = file.getFullPath();
+		IPath relativeFilePath = filePath.makeRelativeTo(projectPath);
+		Path relativeBackupFolderPath = new Path(backupFolderName);
+		IPath relativeBackupFilePath = relativeBackupFolderPath.append(relativeFilePath);
+		IFile backupFile = project.getFile(relativeBackupFilePath);
+		return backupFile;
+	}
+
 	private static BackupSynchResult synchBackupFile(IFile file, String content) throws BackupSynchException {
 		try {
-			IFile backupFile = SaveRoutineEngine.getBackupFile(file);
+			IFile backupFile = getBackupFile(file);
+			if (backupFile == null) {
+				return new BackupSynchResult(BackupSynchStatus.OFF_BY_CONFIGURATION);
+			}
 			if (backupFile.exists()) {
 				if (content != null) {
 					boolean updated = updateFile(backupFile, content);
-					return updated ? BackupSynchResult.UPDATED : BackupSynchResult.NO_CHANGE_IDENTICAL;
+					BackupSynchStatus status = updated ? BackupSynchStatus.UPDATED : BackupSynchStatus.NO_CHANGE_IDENTICAL;
+					return new BackupSynchResult(status, backupFile);
 				} else {
-					return BackupSynchResult.NO_CHANGE_SERVER_DELETED;
+					return new BackupSynchResult(BackupSynchStatus.NO_CHANGE_SERVER_DELETED, backupFile);
 				}
 			} else {
 				if (content != null) {
 					ResourceUtilsExtension.prepareFolders((IFolder) backupFile.getParent());			
 					ResourceUtilsExtension.updateFile(backupFile, content);
-					return BackupSynchResult.INITIATED;
+					return new BackupSynchResult(BackupSynchStatus.INITIATED, backupFile);
 				} else {
-					return BackupSynchResult.NO_CHANGE_BOTH_ABSENT;
+					return new BackupSynchResult(BackupSynchStatus.NO_CHANGE_BOTH_ABSENT, backupFile);
 				}
 			}
 		} catch (CoreException t) {

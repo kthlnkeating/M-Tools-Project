@@ -21,11 +21,8 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension4;
@@ -36,31 +33,6 @@ import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
 public class SaveRoutineEngine {
 	private static final String SAVE_ROUTINE_CONSOLE = "Save Routine Console";
 
-	/** Returns the handle for the backup file for a file in a project. Backup  
-	 *  files store the M server versions whenever they are loaded to client. 
-	 *  Backup files are stored in a preference determined project directory.  
-	 *  The relative path of a specific backup file in this backup directory 
-	 *  is identical to the relative path of the actual file in the project.
-	 *  <p>
-	 *  This method does not check existence or otherwise do any validations
-	 *  on the handle.   
-	 * 
-	 * @see IFile
-	 * @param file
-	 * @return handle to the backup file.                                                              
-	 */	
-	public static IFile getBackupFile(IFile file) {
-		IProject project = file.getProject();
-		IPath projectPath = project.getFullPath();
-		IPath filePath = file.getFullPath();
-		IPath relativeFilePath = filePath.makeRelativeTo(projectPath);
-		String backupFolderName = MEditorPrefs.getServerBackupFolderName();
-		Path relativeBackupFolderPath = new Path(backupFolderName);
-		IPath relativeBackupFilePath = relativeBackupFolderPath.append(relativeFilePath);
-		IFile backupFile = project.getFile(relativeBackupFilePath);
-		return backupFile;
-	}
-		
 	/** Returns the routine name for an M file. Backup  
 	 * 
 	 * @param file
@@ -145,8 +117,10 @@ public class SaveRoutineEngine {
 			
 			MessageConsoleHelper.writeToConsole(SAVE_ROUTINE_CONSOLE, consoleMessage.toString(), true);
 			
-			String routine = builder.getRoutine();
-			synchBackupFile(backupFile, routine);
+			if (backupFile != null) {
+				String routine = builder.getRoutine();
+				synchBackupFile(backupFile, routine);
+			}
 		} catch (BackupSynchException bse) {
 			String message = bse.getMessage();
 			MEditorPlugin.getDefault().logError(message, bse);
@@ -164,7 +138,7 @@ public class SaveRoutineEngine {
 		}
 	}
 	
-	private static StringBuilder startConsoleMessage(String routineName, BackupSynchResult synchResult, IFile backupFile) {
+	private static StringBuilder startConsoleMessage(String routineName, BackupSynchResult synchResult) {
 		StringBuilder result = new StringBuilder();
 		String currentServer = VistaConnection.getCurrentServer();
 		String currentServerName = MPiece.getPiece(currentServer,";");
@@ -172,12 +146,15 @@ public class SaveRoutineEngine {
 		String currentServerPort = MPiece.getPiece(currentServer,";",3);
 		String header = routineName + " saved to: " + currentServerName + " ("+currentServerAddress+", "+currentServerPort+")\n";
 		result.append(header);
-		if (synchResult == BackupSynchResult.INITIATED) {
+		
+		IFile backupFile = synchResult.getFile();
+		BackupSynchStatus status = synchResult.getStatus();
+		if (status == BackupSynchStatus.INITIATED) {
 			String message = Messages.bind(Messages.SERVER_FIRST_SAVE, backupFile.getFullPath().toString());
 			result.append(message);
 			result.append("\n");
 		}
-		if (synchResult == BackupSynchResult.NO_CHANGE_SERVER_DELETED) {
+		if (status == BackupSynchStatus.NO_CHANGE_SERVER_DELETED) {
 			result.append(Messages.SERVER_DELETED);				
 			result.append("\n");
 		}
@@ -300,9 +277,10 @@ public class SaveRoutineEngine {
 
 			MServerRoutine serverRoutine = MServerRoutine.load(connection, file);
 			String routineName = serverRoutine.getRoutineName();
-			BackupSynchResult synchResult = serverRoutine.getLastSynchResult();
-			if (synchResult == BackupSynchResult.UPDATED) {
-				IStatus status = StatusHelper.getStatus(IStatus.ERROR, Messages.SERVER_BACKUP_CONFLICT, getBackupFile(file).getFullPath().toString());
+			BackupSynchResult synchResult = serverRoutine.getSynchResult();
+			IFile backupFile = synchResult.getFile();
+			if (synchResult.getStatus() == BackupSynchStatus.UPDATED) {
+				IStatus status = StatusHelper.getStatus(IStatus.ERROR, Messages.SERVER_BACKUP_CONFLICT, backupFile.getFullPath().toString());
 				return status;
 			}
 			
@@ -311,8 +289,7 @@ public class SaveRoutineEngine {
 				return status;
 			}
 			
-			IFile backupFile = getBackupFile(file);
-			StringBuilder consoleMessage = startConsoleMessage(routineName, synchResult, backupFile);			
+			StringBuilder consoleMessage = startConsoleMessage(routineName, synchResult);
 			return saveRoutineToServer(connection, routineName, routineContent, backupFile, consoleMessage);
 		} catch (Throwable t) {
 			return StatusHelper.getStatus(t);

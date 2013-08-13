@@ -28,7 +28,6 @@ import gov.va.med.iss.meditor.core.RoutinePathResolverFactory;
 import gov.va.med.iss.meditor.dialog.CustomDialogHelper;
 import gov.va.med.iss.meditor.dialog.InputDialogHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
-import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 import gov.va.med.iss.meditor.resource.FileSearchVisitor;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -44,6 +43,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+
+import us.pwc.vista.eclipse.core.VistACorePrefs;
 
 public class LoadMRoutine extends AbstractHandler {
 	private static IProject getProject(String projectName) {
@@ -68,14 +69,10 @@ public class LoadMRoutine extends AbstractHandler {
 		}
 	}
 	
-	private static IFile getExistingFileHandle(IProject project, String routineName) {
-		String backupDirectory = MEditorPrefs.getServerBackupFolderName();
+	private static IFile getExistingFileHandle(IProject project, String routineName) throws CoreException {
+		String backupDirectory = VistACorePrefs.getServerBackupDirectory(project);
 		FileSearchVisitor visitor = new FileSearchVisitor(routineName + ".m", backupDirectory);
-		try {
-			project.accept(visitor, 0);
-		} catch (CoreException e) {
-			return null;
-		}
+		project.accept(visitor, 0);
 		return visitor.getFile();
 	}
 	
@@ -91,21 +88,26 @@ public class LoadMRoutine extends AbstractHandler {
 		return null;
 	}
 
-	private static IFile getFileHandle(IProject project, String routineName) {
-		IFile fileHandle = getExistingFileHandle(project, routineName);
-		if (fileHandle == null) {
-			fileHandle = getNewFileHandle(project, routineName);
+	private static IFile getFileHandle(IProject project, String routineName) throws ExecutionException {
+		try {
+			IFile fileHandle = getExistingFileHandle(project, routineName);
 			if (fileHandle == null) {
-				IFolder folder = CustomDialogHelper.selectWritableFolder(project);
-				if (folder != null) {
-					return folder.getFile(routineName + ".m");
-				} else {
-					return null;
-				}
-
-			}			
+				fileHandle = getNewFileHandle(project, routineName);
+				if (fileHandle == null) {
+					IFolder folder = CustomDialogHelper.selectWritableFolder(project);
+					if (folder != null) {
+						return folder.getFile(routineName + ".m");
+					} else {
+						return null;
+					}
+	
+				}			
+			}
+			return fileHandle;
+		} catch (CoreException coreException) {
+			String message = Messages.bind(Messages.UNABLE_GET_HANDLE, routineName);
+			throw new ExecutionException(message, coreException);
 		}
-		return fileHandle;
 	}
 		
 	@Override

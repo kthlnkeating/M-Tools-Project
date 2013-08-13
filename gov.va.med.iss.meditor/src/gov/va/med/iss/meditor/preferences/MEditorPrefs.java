@@ -19,8 +19,4 @@ public class MEditorPrefs {
 		String p = MEditorPrefs.getPrefs(MEditorPlugin.P_AUTO_SAVE_TO_SERVER);		
 		return Boolean.valueOf(p);		
 	}
-	
-	public static String getServerBackupFolderName() {
-		return "backups";
-	}
 }

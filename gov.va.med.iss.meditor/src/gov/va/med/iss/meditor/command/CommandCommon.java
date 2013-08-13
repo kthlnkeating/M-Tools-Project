@@ -28,7 +28,6 @@ import gov.va.med.iss.meditor.core.MServerRoutine;
 import gov.va.med.iss.meditor.core.StatusHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 import gov.va.med.iss.meditor.editors.MEditor;
-import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 import gov.va.med.iss.meditor.resource.FileFillState;
 import gov.va.med.iss.meditor.resource.FileSetSearchVisitor;
 import gov.va.med.iss.meditor.resource.IResourceFilter;
@@ -54,6 +53,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.FileEditorInput;
+
+import us.pwc.vista.eclipse.core.VistACorePrefs;
 
 public class CommandCommon {
 	public static boolean openEditor(ExecutionEvent event, IFile file) {	
@@ -157,9 +158,9 @@ public class CommandCommon {
 			fileNames.add(fileName);
 		}		
 		try {
-			String backupDirectory = MEditorPrefs.getServerBackupFolderName();
-			FileSetSearchVisitor visitor = new FileSetSearchVisitor(fileNames, backupDirectory);
 			IProject project = defaultFolder.getProject();
+			String backupDirectory = VistACorePrefs.getServerBackupDirectory(project);
+			FileSetSearchVisitor visitor = new FileSetSearchVisitor(fileNames, backupDirectory);
 			project.accept(visitor, 0);
 			return visitor.getFiles(defaultFolder);
 		} catch (Throwable t) {

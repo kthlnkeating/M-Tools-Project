@@ -35,6 +35,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreePath;
 
 /**
@@ -104,7 +105,8 @@ public class LoadRoutine extends AbstractHandler {
 			if (folder == null) {
 				return null;
 			}
-			if (! folder.getProject().getName().equals(projectName)) {
+			IProject project = folder.getProject();
+			if (! project.getName().equals(projectName)) {
 				String message = Messages.bind2(Messages.PROJECT_INVALID_FILE, projectName, folder.getName(), folder.getProject().getName());
 				MessageDialogHelper.showError(message);
 				return null;
