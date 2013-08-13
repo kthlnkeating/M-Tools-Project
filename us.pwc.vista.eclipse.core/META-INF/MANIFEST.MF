@@ -12,3 +12,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources;bundle-version="3.7.101"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
+Export-Package: us.pwc.vista.eclipse.core,
+ us.pwc.vista.eclipse.core.command

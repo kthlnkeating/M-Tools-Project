@@ -129,7 +129,7 @@ public abstract class ResultsByRoutine<T extends ToolResultPiece, U extends Coll
 			}		
 		}
 		if (! found) {
-			t.writeEOL("None found.");
+			t.writeEOL(flags.getEmptyMessage());
 		}		
 	}
 }

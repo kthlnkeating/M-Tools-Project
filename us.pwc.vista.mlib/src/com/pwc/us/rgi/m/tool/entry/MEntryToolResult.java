@@ -146,7 +146,7 @@ public class MEntryToolResult<T extends ToolResult> implements ToolResult {
 			}
 		}
 		if (! found) {
-			t.writeEOL("None found.");
+			t.writeEOL(flags.getEmptyMessage());
 		}		
 	}
  }

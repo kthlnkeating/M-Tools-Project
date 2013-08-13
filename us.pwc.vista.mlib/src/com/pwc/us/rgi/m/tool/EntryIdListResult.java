@@ -51,7 +51,7 @@ public class EntryIdListResult implements ToolResult {
 	@Override
 	public void write(Terminal t, OutputFlags flags) throws IOException {
 		if (this.toolResults.isEmpty()) {
-			t.writeEOL("None found");
+			t.writeEOL(flags.getEmptyMessage());
 			return;
 		}
 	

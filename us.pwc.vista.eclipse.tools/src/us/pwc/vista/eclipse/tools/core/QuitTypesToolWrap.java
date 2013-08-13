@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IProject;
 
 
 import com.pwc.us.rgi.m.tool.CommonToolParams;
+import com.pwc.us.rgi.m.tool.OutputFlags;
 import com.pwc.us.rgi.m.tool.ParseTreeSupply;
 import com.pwc.us.rgi.m.tool.entry.MEntryToolResult;
 import com.pwc.us.rgi.m.tool.entry.RecursionDepth;
@@ -29,6 +30,14 @@ import com.pwc.us.rgi.m.tool.entry.quittype.QuitType;
 import com.pwc.us.rgi.m.tool.entry.quittype.QuitTypeTool;
 
 public class QuitTypesToolWrap extends MToolWrap {
+	@Override
+	protected OutputFlags getOutputFlags() {
+		OutputFlags fs = new OutputFlags();
+		fs.setSkipEmpty(true);
+		fs.setEmptyMessage("No problems found.");
+		return fs;
+	}
+	
 	private QuitTypeTool getTool(ParseTreeSupply pts) {
 		CommonToolParams params = new CommonToolParams(pts);
 		params.getRecursionSpecification().setDepth(RecursionDepth.ALL);

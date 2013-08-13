@@ -19,6 +19,7 @@ package com.pwc.us.rgi.m.tool;
 public class OutputFlags {
 	private Boolean showDetail;
 	private Boolean skipEmpty;
+	private String emptyMessage = "None found.";
 	
 	public void setShowDetail(boolean b) {
 		this.showDetail = new Boolean(b);
@@ -26,6 +27,10 @@ public class OutputFlags {
 	
 	public void setSkipEmpty(boolean b) {
 		this.skipEmpty = new Boolean(b);
+	}
+	
+	public void setEmptyMessage(String message) {
+		this.emptyMessage = message;
 	}
 	
 	public boolean getShowDetail(boolean defaultValue) {
@@ -42,5 +47,9 @@ public class OutputFlags {
 		} else {
 			return this.skipEmpty.booleanValue();
 		}		
+	}
+	
+	public String getEmptyMessage() {
+		return this.emptyMessage;
 	}
 }

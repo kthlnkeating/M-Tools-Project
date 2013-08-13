@@ -22,9 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -33,17 +31,23 @@ import com.pwc.us.rgi.m.tool.SourceCodeFiles;
 import com.pwc.us.rgi.m.tool.SourceCodeToParseTreeAdapter;
 import com.pwc.us.rgi.m.tool.ToolResult;
 
+import us.pwc.vista.eclipse.core.CommonUtil;
+import us.pwc.vista.eclipse.core.VistACorePrefs;
 import us.pwc.vista.eclipse.tools.VistAToolsPlugin;
 import us.pwc.vista.eclipse.tools.util.MRAParamSupply;
 
 public abstract class ToolExecuter {
 	private IWorkbenchWindow window;
-	private Shell shell;
+	private String name;
 	private MToolWrap wrap;
 
 	public ToolExecuter(MToolWrap command, ExecutionEvent event) {
 		this.window = HandlerUtil.getActiveWorkbenchWindow(event);
-		this.shell = HandlerUtil.getActiveShell(event);
+		try {
+			this.name = event.getCommand().getName();
+		} catch (Exception e) {
+			this.name = null;
+		}
 		this.wrap = command;
 	}
 	
@@ -53,12 +57,6 @@ public abstract class ToolExecuter {
 	
 	protected abstract ToolResult getResult(IProject project, ParseTreeSupply pts);
 	
-	public static void handleException(Shell shell, Throwable t) {
-		IStatus status = new Status(IStatus.ERROR, VistAToolsPlugin.PLUGIN_ID, t.getMessage(), t);
-		VistAToolsPlugin.getDefault().getLog().log(status);
-		MessageDialog.openInformation(shell, "M Tools", t.getMessage());		
-	}
-	
 	public void run(final IProject project) {
 		final ToolExecuter thiz = this;
 
@@ -66,7 +64,8 @@ public abstract class ToolExecuter {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {				
 				try {
-					final SourceCodeFiles scf = MRAParamSupply.getSourceCodeFiles(project, "backups");
+					String backupDirectory = VistACorePrefs.getServerBackupDirectory(project);					
+					final SourceCodeFiles scf = MRAParamSupply.getSourceCodeFiles(project, backupDirectory);
 					SourceCodeToParseTreeAdapter pts = new SourceCodeToParseTreeAdapter(scf);				
 					final ToolResult result = thiz.getResult(project, pts);
 					Display.getDefault().asyncExec(new Runnable() {						
@@ -75,12 +74,12 @@ public abstract class ToolExecuter {
 							try {
 								thiz.wrap.writeResult(project, thiz.window, result, scf);
 							} catch (Throwable t) {
-								handleException(thiz.shell, t);								
+								CommonUtil.showException(VistAToolsPlugin.PLUGIN_ID, name, t);
 							}
 						}
 					});
 				} catch (final Throwable t) {
-					handleException(thiz.shell, t);
+					CommonUtil.showException(VistAToolsPlugin.PLUGIN_ID, name, t);
 				}
 				return Status.OK_STATUS;
 			}		
