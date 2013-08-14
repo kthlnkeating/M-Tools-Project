@@ -10,6 +10,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 
+import us.pwc.vista.eclipse.core.helper.SWTHelper;
+
 public class RecursionSpecificationHandlerFactory {
 	private static void createFilterTableColumns(TableViewer viewer) {
 		TableViewerColumn filterColumn = SWTHelper.createTableViewerColumn(viewer, "Name Regular Expression", 175);

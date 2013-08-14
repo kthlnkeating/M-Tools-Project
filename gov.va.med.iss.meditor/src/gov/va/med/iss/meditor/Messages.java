@@ -23,6 +23,15 @@ public class Messages extends NLS {
 	public static String NOT_SUPPORTED_SELECTION;
 	public static String NOT_SUPPORTED_RESOURCES;
 	
+	public static String RLP_ASK;
+	public static String RLP_INVALID_NUMBER;
+	public static String RLP_NAMESPACE_SPECIFIED;
+	public static String RLP_NAMESPACE_SUBFOLDER;
+	public static String RLP_NUMBER_RANGE;
+	public static String RLP_NUMBER_REQUIRED;
+	public static String RLP_PROJECT_ROOT;
+	public static String RLP_SERVER_NAME_SUBFOLDER;
+	public static String RLP_TITLE_SCHEME;
 	public static String ROUTINE_NAME;
 	public static String ROUTINE_NAMESPACE;	
 	public static String GLOBAL_NAMESPACE;	

@@ -3,7 +3,7 @@ package gov.va.med.iss.meditor.core;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-public class PreferencesPathResolver implements RoutinePathResolver {
+public class PreferencesPathResolver extends RoutinePathResolver {
 	private String serverName;
 	private int namespace;
 	
@@ -14,7 +14,7 @@ public class PreferencesPathResolver implements RoutinePathResolver {
 	}
 
 	@Override
-	public IPath getRelativePath(String routineName) {
+	protected IPath getRelativePath(String routineName) {
 		IPath path = null;
 		if (this.serverName != null) {
 			path = new Path(this.serverName);

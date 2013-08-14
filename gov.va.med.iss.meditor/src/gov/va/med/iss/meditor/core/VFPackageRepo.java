@@ -11,7 +11,7 @@ import org.eclipse.jface.text.IRegion;
 
 public class VFPackageRepo implements PackageRepository {
 	private IFile packagesCSVFile;
-	private Map<String, String> cache;
+	private static Map<String, String> cache;
 	
 	public VFPackageRepo(IFile packagesCSVFile) {
 		this.packagesCSVFile = packagesCSVFile;
@@ -46,9 +46,9 @@ public class VFPackageRepo implements PackageRepository {
 	
 	@Override
 	public String getPackageDirectory(String prefix) {
-		if (this.cache == null) {
+		if (cache == null) {
 			cache = loadPackages();
 		}
-		return this.cache.get(prefix);
+		return cache.get(prefix);
 	}
 }

@@ -11,7 +11,6 @@ import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.editors.MEditor;
 import gov.va.med.iss.meditor.m.MCodeScanner;
 import gov.va.med.iss.meditor.utils.MColorProvider;
-import gov.va.med.iss.meditor.utils.MEditorUtilities;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -19,11 +18,11 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * This class represents a preference page that
@@ -66,10 +65,6 @@ public class MEditorPreferencesPage
 		store.setDefault(MEditorPlugin.P_DEFAULT_UPDATE, true);
 		store.setDefault(MEditorPlugin.P_WRAP_LINES, false);
 		store.setDefault(MEditorPlugin.P_PROJECT_NAME,"mcode");
-		store.setDefault(MEditorPlugin.P_SAVE_BY_SERVER,true);
-		store.setDefault(MEditorPlugin.P_SAVE_BY_NAMESPACE,"0");
-//		store.setDefault(MEditorPlugin.P_SAVE_DIR_EXAMPLE,
-//				MEditorPreferencesPage.getDirectoryPreference("", "Server","ROUTINE"));
 
 		store.setDefault(MEditorPlugin.P_MULTI_LINE_COMMENT_COLOR, "64,128,128");
 		store.setDefault(MEditorPlugin.P_COMMENT_COLOR, "128,128,0");
@@ -103,15 +98,6 @@ public class MEditorPreferencesPage
 				"Update routine header on server save",
 				parent));
 		
-		addField(new BooleanFieldEditor(MEditorPlugin.P_SAVE_BY_SERVER,
-				"Load Routines into directy with their server's name", parent));
-		IntegerFieldEditor nameSpaceField = new IntegerFieldEditor(MEditorPlugin.P_SAVE_BY_NAMESPACE,
-				"Load Routines into directory containing their namespace",parent);
-		nameSpaceField.setValidRange(0, 3);
-		nameSpaceField.setEmptyStringAllowed(false);
-		nameSpaceField.setErrorMessage("Namespace must be between 0 (disbled) and 3.");
-		addField(nameSpaceField);
-
 		addField(new BooleanFieldEditor(MEditorPlugin.P_WRAP_LINES,"&Wrap lines",parent));
 		addField(new ColorFieldEditor(MEditorPlugin.P_VARS_COLOR,"Variables",parent));
 		addField(new ColorFieldEditor(MEditorPlugin.P_COMMAND_COLOR,"Commands",parent));
@@ -130,7 +116,7 @@ public class MEditorPreferencesPage
 	private final IPropertyChangeListener preferenceChangeListener = new IPropertyChangeListener() {
 		public void propertyChange(PropertyChangeEvent event) {
 			boolean seenFlag = false;
-			IEditorPart part = MEditorUtilities.getIWorkbenchPage().getActiveEditor();
+			IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 			for (int i=0; i<MEditorPlugin.preferenceColors.length; i++) {
 				if (event.getProperty().equals(MEditorPlugin.preferenceColors[i])) {
 					seenFlag = true;

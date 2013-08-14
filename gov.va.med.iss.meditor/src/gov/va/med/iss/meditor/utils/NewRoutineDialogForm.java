@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 
 /**
@@ -88,7 +89,8 @@ public class NewRoutineDialogForm {
 		mainPanel.setLayout(new BorderLayout());
 */
 	private void open() {
-		final Shell shell = new Shell(MEditorUtilities.getIWorkbenchWindow().getShell(),SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM);
+		
+		final Shell shell = new Shell(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM);
 		shell.setText("Routine "+routineName + " Not Found!!");
 		shell.setLocation(0,0);
 		shell.setSize(650,300);
@@ -166,7 +168,7 @@ public class NewRoutineDialogForm {
 		cancelButton.addListener(SWT.Selection, listener);
 		
 		shell.open();
-		Display display = MEditorUtilities.getIWorkbenchWindow().getShell().getDisplay();
+		Display display = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) display.sleep();
 		}

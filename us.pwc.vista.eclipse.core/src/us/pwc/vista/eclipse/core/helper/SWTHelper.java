@@ -1,4 +1,4 @@
-package us.pwc.vista.eclipse.tools.propertyPage;
+package us.pwc.vista.eclipse.core.helper;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.PixelConverter;
@@ -9,10 +9,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TableColumn;
 
-class SWTHelper {
+public class SWTHelper {
  	private static int getButtonWidthHint(Button button) {
  		PixelConverter pc = new PixelConverter(button);
  		int h= pc.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
@@ -34,11 +35,16 @@ class SWTHelper {
 	}	
 
 	public static Button createCheckButton(Composite parent, String text) {
+		return createCheckButton(parent, text, 1);
+	}
+	
+	public static Button createCheckButton(Composite parent, String text, int horizontalSpan) {
 		Button b = new Button(parent, SWT.CHECK);
 		b.setFont(parent.getFont());
 		b.setText(text);
 		
 		GridData gd = new GridData();		
+		gd.horizontalSpan = horizontalSpan;
 		b.setLayoutData(gd);	
 
 		return b;	
@@ -114,5 +120,13 @@ class SWTHelper {
 		label.setLayoutData(gd);
 	}
 	
-
+	public static GridData setGridData(Control component, int horizontalAlignment, boolean grabExcessHorizontalSpace, int verticalAlignment, boolean grabExcessVerticalSpace) {
+		GridData gd = new GridData();
+		gd.horizontalAlignment= horizontalAlignment;
+		gd.grabExcessHorizontalSpace= grabExcessHorizontalSpace;
+		gd.verticalAlignment= verticalAlignment;
+		gd.grabExcessVerticalSpace= grabExcessVerticalSpace;
+		component.setLayoutData(gd);
+		return gd;
+	}
 }

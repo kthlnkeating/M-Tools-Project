@@ -12,6 +12,8 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
 
+import us.pwc.vista.eclipse.core.helper.SWTHelper;
+
 public class AssumedVariables extends PropertyPage implements IWorkbenchPropertyPage {
 	private ExpectedAssumedVariablesHandler expectedAssumedVariablesHandler;
 	private RecursionSpecificationHandler recursionSpecificationHandler;

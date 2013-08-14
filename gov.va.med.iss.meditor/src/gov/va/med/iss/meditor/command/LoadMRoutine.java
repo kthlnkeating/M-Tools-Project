@@ -23,11 +23,15 @@ import gov.va.med.iss.meditor.Messages;
 import gov.va.med.iss.meditor.core.LoadRoutineEngine;
 import gov.va.med.iss.meditor.core.CommandResult;
 import gov.va.med.iss.meditor.core.MServerRoutine;
-import gov.va.med.iss.meditor.core.RoutinePathResolver;
-import gov.va.med.iss.meditor.core.RoutinePathResolverFactory;
+import gov.va.med.iss.meditor.core.PreferencesPathResolver;
+import gov.va.med.iss.meditor.core.RootPathResolver;
+import gov.va.med.iss.meditor.core.VFPackageRepo;
+import gov.va.med.iss.meditor.core.VFPathResolver;
 import gov.va.med.iss.meditor.dialog.CustomDialogHelper;
 import gov.va.med.iss.meditor.dialog.InputDialogHelper;
 import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
+import gov.va.med.iss.meditor.preferences.NewFileFolderScheme;
+import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 import gov.va.med.iss.meditor.resource.FileSearchVisitor;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -36,11 +40,11 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
@@ -76,16 +80,33 @@ public class LoadMRoutine extends AbstractHandler {
 		return visitor.getFile();
 	}
 	
-	public static IFile getNewFileHandle(IProject project, String routineName) {
-		RoutinePathResolverFactory prf = RoutinePathResolverFactory.getInstance();
-		RoutinePathResolver routinePathResolver = prf.getRoutinePathResolver(project);
-		if (routinePathResolver != null) {
-			IPath relRoutinePath = routinePathResolver.getRelativePath(routineName);
-			relRoutinePath = relRoutinePath.append(routineName + ".m");
-			IFile result = project.getFile(relRoutinePath);
-			return result;
+	public static IFile getNewFileHandle(IProject project, String routineName) throws CoreException {		
+		NewFileFolderScheme locationScheme = MEditorPrefs.getNewFileFolderScheme(project);
+		switch (locationScheme) {
+		case NAMESPACE_SPECIFIED:
+			IResource resource = project.findMember("Packages.csv");
+			if (resource != null) {
+				IFile file = (IFile) resource;
+				VFPathResolver vpr = new VFPathResolver(new VFPackageRepo(file));
+				return vpr.getFileHandle(project, routineName);
+			} else {
+				RootPathResolver rpr = new RootPathResolver();
+				rpr.getFileHandle(project, routineName);
+			}			
+		case PROJECT_ROOT:
+			boolean serverNameToFolder = MEditorPrefs.getAddServerNameSubfolder(project);
+			int namespaceDigits = MEditorPrefs.getAddNamespaceCharsSubfolder(project);
+			String serverName = serverNameToFolder ? VistaConnection.getPrimaryServerName() : null;
+			PreferencesPathResolver ppr = new PreferencesPathResolver(serverName, namespaceDigits);
+			return ppr.getFileHandle(project, routineName);
+		default:
+			IFolder folder = CustomDialogHelper.selectWritableFolder(project);
+			if (folder != null) {
+				return folder.getFile(routineName + ".m");
+			} else {
+				return null;
+			}
 		}
-		return null;
 	}
 
 	private static IFile getFileHandle(IProject project, String routineName) throws ExecutionException {
