@@ -195,6 +195,7 @@ public class MServerRoutine {
 		IProject project = file.getProject();
 		IPath projectPath = project.getFullPath();
 		IPath filePath = file.getFullPath();
+		filePath = filePath.removeFileExtension().addFileExtension("mbk");		
 		IPath relativeFilePath = filePath.makeRelativeTo(projectPath);
 		Path relativeBackupFolderPath = new Path(backupFolderName);
 		IPath relativeBackupFilePath = relativeBackupFolderPath.append(relativeFilePath);

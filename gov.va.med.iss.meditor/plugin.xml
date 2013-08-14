@@ -12,7 +12,7 @@
             contributorClass="gov.va.med.iss.meditor.editors.MEditorContributor"
             name="MEditor"
             id="gov.va.med.iss.meditor.editors.MEditor"
-            extensions="m"/>
+            extensions="m,mbk"/>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">

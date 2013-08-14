@@ -37,16 +37,18 @@ import gov.va.med.iss.meditor.resource.FileSearchVisitor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 
 import us.pwc.vista.eclipse.core.VistACorePrefs;
 
@@ -100,9 +102,10 @@ public class LoadMRoutine extends AbstractHandler {
 			PreferencesPathResolver ppr = new PreferencesPathResolver(serverName, namespaceDigits);
 			return ppr.getFileHandle(project, routineName);
 		default:
-			IFolder folder = CustomDialogHelper.selectWritableFolder(project);
-			if (folder != null) {
-				return folder.getFile(routineName + ".m");
+			IContainer container = CustomDialogHelper.selectWritableFolder(project);
+			if (container != null) {
+				IPath path = new Path(routineName + ".m");
+				return container.getFile(path);
 			} else {
 				return null;
 			}
@@ -113,16 +116,7 @@ public class LoadMRoutine extends AbstractHandler {
 		try {
 			IFile fileHandle = getExistingFileHandle(project, routineName);
 			if (fileHandle == null) {
-				fileHandle = getNewFileHandle(project, routineName);
-				if (fileHandle == null) {
-					IFolder folder = CustomDialogHelper.selectWritableFolder(project);
-					if (folder != null) {
-						return folder.getFile(routineName + ".m");
-					} else {
-						return null;
-					}
-	
-				}			
+				return getNewFileHandle(project, routineName);
 			}
 			return fileHandle;
 		} catch (CoreException coreException) {

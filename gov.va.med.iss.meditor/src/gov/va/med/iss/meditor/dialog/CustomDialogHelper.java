@@ -16,7 +16,7 @@
 
 package gov.va.med.iss.meditor.dialog;
 
-import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,7 +28,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 public class CustomDialogHelper {
-	public static IFolder selectWritableFolder(IProject project) {
+	public static IContainer selectWritableFolder(IProject project) {
 		Shell shell = Display.getDefault().getActiveShell();
 		WorkbenchLabelProvider wlp = new WorkbenchLabelProvider();
 		WorkbenchContentProvider wcp = new WorkbenchContentProvider();
@@ -42,9 +42,9 @@ public class CustomDialogHelper {
 		ViewerFilter filter = new ProjectDirViewerFilter(project.getName());
 		dialog.addFilter(filter);
 		int result = dialog.open();
-		if (result == Window.OK) {
-			IFolder folder = (IFolder) dialog.getFirstResult();
-			return folder;
+		if (result == Window.OK) {			
+			IContainer container = (IContainer) dialog.getFirstResult();
+			return container;
 		} else {
 			return null;
 		}		
