@@ -7,7 +7,6 @@ import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 
@@ -121,35 +120,5 @@ public class MEditorPlugin extends AbstractUIPlugin {
 			if (result != null) return result;
 		}
 		return PLUGIN_ID;
-	}
-
-	public void logError(String message) {
-		this.logError(message, null);
-	}
-	
-	public void logError(String message, Throwable t) {
-		this.log(Status.ERROR, message, t);
-	}
-	
-	public void logWarning(String message) {
-		this.logWarning(message, null);
-	}
-	
-	public void logWarning(String message, Throwable t) {		
-		this.log(Status.WARNING, message, t);
-	}
-	
-	public void logInfo(String message) {
-		this.logError(message, null);
-	}
-	
-	public void logInfo(String message, Throwable t) {		
-		this.log(Status.INFO, message, t);
-	}
-	
-	public void log(int severity, String message, Throwable t) {
-		String pluginId =  this.getPluginId();
-		Status status = new Status(severity, pluginId, message, t);
-		this.getLog().log(status);
 	}
 }
