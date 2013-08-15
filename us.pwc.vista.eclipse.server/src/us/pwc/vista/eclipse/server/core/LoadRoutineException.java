@@ -1,7 +1,6 @@
-package us.pwc.vista.eclipse.server.error;
+package us.pwc.vista.eclipse.server.core;
 
-
-public class LoadRoutineException extends VistAServerException {
+public class LoadRoutineException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public LoadRoutineException(String message) {

@@ -1,7 +1,6 @@
-package us.pwc.vista.eclipse.server.error;
+package us.pwc.vista.eclipse.server.core;
 
-
-public class BackupSynchException extends VistAServerException {
+public class BackupSynchException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public BackupSynchException(String message, Throwable cause) {

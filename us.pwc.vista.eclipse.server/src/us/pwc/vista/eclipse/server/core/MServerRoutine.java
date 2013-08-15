@@ -37,9 +37,7 @@ import org.eclipse.jface.text.IRegion;
 
 import us.pwc.vista.eclipse.core.VistACorePrefs;
 import us.pwc.vista.eclipse.server.Messages;
-import us.pwc.vista.eclipse.server.error.BackupSynchException;
-import us.pwc.vista.eclipse.server.error.InvalidFileException;
-import us.pwc.vista.eclipse.server.error.LoadRoutineException;
+import us.pwc.vista.eclipse.server.resource.InvalidFileException;
 import us.pwc.vista.eclipse.server.resource.ResourceUtilsExtension;
 
 /**

@@ -24,8 +24,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
-import us.pwc.vista.eclipse.server.error.BackupSynchException;
-import us.pwc.vista.eclipse.server.error.InvalidFileException;
+import us.pwc.vista.eclipse.server.resource.InvalidFileException;
 import us.pwc.vista.eclipse.server.resource.ResourceUtilsExtension;
 
 public class SaveRoutineEngine {

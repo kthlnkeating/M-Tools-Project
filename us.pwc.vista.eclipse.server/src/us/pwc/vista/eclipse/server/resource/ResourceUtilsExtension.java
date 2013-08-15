@@ -42,7 +42,6 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.core.IRoutineBuilder;
-import us.pwc.vista.eclipse.server.error.InvalidFileException;
 
 /**
  * Contains static methods for manipulating Eclipse resources 
