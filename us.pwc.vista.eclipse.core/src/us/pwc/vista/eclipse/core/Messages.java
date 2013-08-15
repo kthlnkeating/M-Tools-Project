@@ -10,6 +10,10 @@ public class Messages extends NLS {
 	public static String MCH_WRITE_ERROR;
 	public static String UNEXPECTED_FILE_EXT;
 	public static String UNEXPECTED_OBJECT;
+
+	public static String SEL_FILE_PROJECT_MISMATCH;
+	public static String SEL_FILE_UNEXPECTED_OBJECT;
+	public static String SEL_FILE_NOT_M;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

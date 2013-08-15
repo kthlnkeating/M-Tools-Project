@@ -27,9 +27,9 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
+import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 import us.pwc.vista.eclipse.server.core.SaveRoutineEngine;
 import us.pwc.vista.eclipse.server.core.StringRoutineBuilder;
-import us.pwc.vista.eclipse.server.resource.ResourceUtilExtension;
 
 /**
  *	This class is responsible for configuring the M editor.

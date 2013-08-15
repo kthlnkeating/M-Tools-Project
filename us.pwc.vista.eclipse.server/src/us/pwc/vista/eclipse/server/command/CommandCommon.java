@@ -26,7 +26,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -45,16 +44,17 @@ import org.eclipse.ui.ide.IDE;
 
 import us.pwc.vista.eclipse.core.VistACorePrefs;
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
+import us.pwc.vista.eclipse.core.resource.FileFillState;
+import us.pwc.vista.eclipse.core.resource.FileSetSearchVisitor;
+import us.pwc.vista.eclipse.core.resource.IResourceFilter;
+import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
+import us.pwc.vista.eclipse.core.resource.SelectedMFileFilter;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.core.CommandResult;
 import us.pwc.vista.eclipse.server.core.LoadRoutineEngine;
 import us.pwc.vista.eclipse.server.core.MServerRoutine;
 import us.pwc.vista.eclipse.server.core.StatusHelper;
-import us.pwc.vista.eclipse.server.resource.FileFillState;
-import us.pwc.vista.eclipse.server.resource.FileSetSearchVisitor;
-import us.pwc.vista.eclipse.server.resource.IResourceFilter;
-import us.pwc.vista.eclipse.server.resource.ResourceUtilExtension;
 
 public class CommandCommon {
 	public static boolean openEditor(ExecutionEvent event, IFile file) {	
@@ -70,41 +70,10 @@ public class CommandCommon {
 		}
 	}
 	
-	private static class SelectedMFileFilter implements IResourceFilter {
-		private String projectName;
-
-		public SelectedMFileFilter(String projectName) {
-			super();
-			this.projectName = projectName;
-		}
-		
-		private boolean checkProject(IProject project) {
-			String name = project.getName();
-			return this.projectName.equals(name);
-		}
-		
-		@Override
-		public boolean isValid(IResource resource) {
-			if (resource instanceof IProject) {
-				IProject project = (IProject) resource;
-				return this.checkProject(project);
-			} else if (resource instanceof IFolder) {
-				IFolder folder = (IFolder) resource;
-				return this.checkProject(folder.getProject());				
-			} else if (resource instanceof IFile) {
-				IFile file = (IFile) resource;
-				String extension = file.getFullPath().getFileExtension();
-				return "m".equals(extension) && this.checkProject(file.getProject());
- 			} else {
-				return false;
-			}
-		}		
-	}
-	
 	private static List<IFile> getMFiles(TreePath[] selections, String projectName) throws CoreException {
 		IResourceFilter filter = new SelectedMFileFilter(projectName);
 		FileFillState result = ResourceUtilExtension.getSelectedFiles(selections, filter);
-		String invalids = result.getInvalidResourcesAsString(4, "\n");
+		String invalids = result.getInvalidResourcesAsString(3, "\n");
 		if (invalids != null) {
 			invalids = "\n" + invalids;
 			String message = Messages.bind(Messages.NOT_SUPPORTED_RESOURCES, invalids); 

@@ -22,10 +22,10 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.statushandlers.StatusManager;
 
 import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
+import us.pwc.vista.eclipse.core.resource.InvalidFileException;
+import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
-import us.pwc.vista.eclipse.server.resource.InvalidFileException;
-import us.pwc.vista.eclipse.server.resource.ResourceUtilExtension;
 
 public class SaveRoutineEngine {
 	private static final String SAVE_ROUTINE_CONSOLE = "Save Routine Console";
@@ -36,7 +36,8 @@ public class SaveRoutineEngine {
 		boolean updated = ResourceUtilExtension.cleanCode(document, target);
 		if (updated) {
 			String message = Messages.bind(Messages.NOT_SUPPORTED_MFILE_CONTENT, file.getName());
-			throw new InvalidFileException(message);
+			IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message);
+			throw new CoreException(status);
 		}
 		return target;
 	}
@@ -232,8 +233,14 @@ public class SaveRoutineEngine {
 			
 			StringBuilder consoleMessage = startConsoleMessage(routineName, synchResult);
 			return saveRoutineToServer(connection, routineName, routineContent, backupFile, consoleMessage);
+		} catch (CoreException coreException) {
+			IStatus result = coreException.getStatus();
+			StatusManager.getManager().handle(result, StatusManager.LOG);
+			return result;
 		} catch (Throwable t) {
-			return new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, t.getMessage(), t);
+			IStatus result = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, t.getMessage(), t);
+			StatusManager.getManager().handle(result, StatusManager.LOG);
+			return result;
 		}
 	}	
 }

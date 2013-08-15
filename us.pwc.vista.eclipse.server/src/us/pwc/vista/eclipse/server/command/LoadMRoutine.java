@@ -38,6 +38,7 @@ import org.eclipse.core.runtime.Path;
 
 import us.pwc.vista.eclipse.core.VistACorePrefs;
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
+import us.pwc.vista.eclipse.core.resource.FileSearchVisitor;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.core.CommandResult;
@@ -51,7 +52,6 @@ import us.pwc.vista.eclipse.server.dialog.CustomDialogHelper;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
 import us.pwc.vista.eclipse.server.preferences.VistAServerPrefs;
 import us.pwc.vista.eclipse.server.preferences.NewFileFolderScheme;
-import us.pwc.vista.eclipse.server.resource.FileSearchVisitor;
 
 public class LoadMRoutine extends AbstractHandler {
 	private static IProject getProject(String projectName) {

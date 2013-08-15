@@ -34,8 +34,7 @@ public class ReportGlobalDirectory extends AbstractHandler {
 			str = "Globals beginning with "+globalName+"\n\n"+ str;
 			writeToConsole(globalName,str);
 		} catch (Throwable t) {
-			String message = Messages.bind2(Messages.DLG_GLOBAL_DIR_UNEXPECTED, t.getMessage());
-			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, message, t);
+			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, Messages.DLG_GLOBAL_DIR_UNEXPECTED, t);
 		}
 	}
 	

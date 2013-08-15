@@ -31,13 +31,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreePath;
 
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
+import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.core.CommandResult;
 import us.pwc.vista.eclipse.server.core.LoadRoutineEngine;
 import us.pwc.vista.eclipse.server.core.MServerRoutine;
 import us.pwc.vista.eclipse.server.core.RoutineDirectory;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
-import us.pwc.vista.eclipse.server.resource.ResourceUtilExtension;
 
 /**
  * This implementation of <code>AbstractHandler</code> loads the selected M 

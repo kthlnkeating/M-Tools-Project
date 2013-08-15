@@ -36,9 +36,9 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 
 import us.pwc.vista.eclipse.core.VistACorePrefs;
+import us.pwc.vista.eclipse.core.resource.InvalidFileException;
+import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 import us.pwc.vista.eclipse.server.Messages;
-import us.pwc.vista.eclipse.server.resource.InvalidFileException;
-import us.pwc.vista.eclipse.server.resource.ResourceUtilExtension;
 
 /**
  * This class represents an M routine that is loaded from server.  Due to 

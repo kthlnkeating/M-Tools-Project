@@ -4,7 +4,7 @@ package us.pwc.vista.eclipse.server.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import us.pwc.vista.eclipse.server.resource.IRoutineBuilder;
+import us.pwc.vista.eclipse.core.resource.IRoutineBuilder;
 
 public class ListRoutineBuilder implements IRoutineBuilder {
 	private List<String> lines = new ArrayList<String>();

@@ -8,7 +8,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 
-import us.pwc.vista.eclipse.server.resource.ResourceUtilExtension;
+import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 
 public class VFPackageRepo implements PackageRepository {
 	private IFile packagesCSVFile;
