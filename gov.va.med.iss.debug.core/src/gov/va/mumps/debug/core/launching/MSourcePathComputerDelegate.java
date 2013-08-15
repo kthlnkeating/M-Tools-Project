@@ -61,13 +61,6 @@ public class MSourcePathComputerDelegate implements ISourcePathComputerDelegate 
 //		URI uri = resource.getLocationURI();
 //		System.out.println(uri.toString());
 		
-		//if project is null, the substitute 'mcode', and add all directories except for [connName]/backup
-		//what about letting the user configure the source container in the tab? maybe a better idea for now
-		
-		if (currentPojrect == null || currentPojrect.isEmpty())
-			//return new ISourceContainer[]{new WorkspaceSourceContainer()};
-			currentPojrect = "mcode";
-		
 		ISourceContainer sourceContainer = null;
 		IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(currentPojrect));
 		if (resource != null) {

@@ -61,7 +61,7 @@ public class MEditor extends TextEditor {
 		new MEditorPreferencesPage(); //This is invoked so that preferences are set to their default values in case this is the first time running MEditor
 		sourceViewer = getTheSourceViewer();
 		currMEditor = this;
-		String wordWrapValue = MEditorPrefs.getPrefs(MEditorPlugin.P_WRAP_LINES); //"mcode");
+		String wordWrapValue = MEditorPrefs.getPrefs(MEditorPlugin.P_WRAP_LINES);
 		if (wordWrapValue.compareTo("true") == 0)
 			wordWrap = true;
 		else

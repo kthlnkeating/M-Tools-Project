@@ -64,7 +64,6 @@ public class MEditorPreferencesPage
 		store.setDefault(MEditorPlugin.P_AUTO_SAVE_TO_SERVER, true);
 		store.setDefault(MEditorPlugin.P_DEFAULT_UPDATE, true);
 		store.setDefault(MEditorPlugin.P_WRAP_LINES, false);
-		store.setDefault(MEditorPlugin.P_PROJECT_NAME,"mcode");
 
 		store.setDefault(MEditorPlugin.P_MULTI_LINE_COMMENT_COLOR, "64,128,128");
 		store.setDefault(MEditorPlugin.P_COMMENT_COLOR, "128,128,0");

@@ -158,7 +158,7 @@ public class ListFieldEditor extends FieldEditor {
                             newServer = newServer + ';' + str;
                         }
                         else {
-                        	newServer = newServer + ';';
+                        	newServer = newServer + ';' + "mcode";
                         }
 						isGood = true;
 					}
