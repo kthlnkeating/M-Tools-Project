@@ -6,9 +6,6 @@ import gov.va.med.iss.meditor.MEditorDocumentProvider;
 import gov.va.med.iss.meditor.MEditorPlugin;
 import gov.va.med.iss.meditor.MEditorSourceViewerConfiguration;
 import gov.va.med.iss.meditor.Messages;
-import gov.va.med.iss.meditor.core.SaveRoutineEngine;
-import gov.va.med.iss.meditor.core.StringRoutineBuilder;
-import gov.va.med.iss.meditor.dialog.MessageDialogHelper;
 import gov.va.med.iss.meditor.m.MCodeScanner;
 import gov.va.med.iss.meditor.preferences.MEditorPreferencesPage;
 import gov.va.med.iss.meditor.preferences.MEditorPrefs;
@@ -26,6 +23,10 @@ import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.DefaultRangeIndicator;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+
+import us.pwc.vista.eclipse.server.core.SaveRoutineEngine;
+import us.pwc.vista.eclipse.server.core.StringRoutineBuilder;
+import us.pwc.vista.eclipse.server.dialog.MessageDialogHelper;
 
 /**
  *	This class is responsible for configuring the M editor.

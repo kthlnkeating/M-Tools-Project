@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 
@@ -152,25 +151,5 @@ public class MEditorPlugin extends AbstractUIPlugin {
 		String pluginId =  this.getPluginId();
 		Status status = new Status(severity, pluginId, message, t);
 		this.getLog().log(status);
-	}
-	
-    /**
-     * Convenience method to return the dialog settings for a particular 
-     * <code>Dialog</code>.  Class name is used as section and a subsection 
-     * can also be used.  If the dialog settings is not found it is created.
-     *
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#getDialogSettings
-     * @param clazz dialog class
-     * @param subsection
-     * @return the dialog settings
-     */
-	public IDialogSettings getDialogSettings(Object object, String subsection) {
-		IDialogSettings settings = this.getDialogSettings();
-		String section = object.getClass().getName() + "_" + subsection;
-		IDialogSettings result = settings.getSection(section);
-		if (result == null) {
-			result = settings.addNewSection(section);
-		}
-		return result;		
 	}
 }
