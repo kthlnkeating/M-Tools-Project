@@ -93,7 +93,7 @@ public class MServerRoutine {
 		ResourceUtilsExtension.updateFile(file, content);						
 	}
 	
-	public void copyTo(IFile file) throws CoreException, UnsupportedEncodingException {
+	private void copyTo(IFile file) throws CoreException, UnsupportedEncodingException {
 		copyTo(file, this.content);
 	}
 
@@ -101,7 +101,7 @@ public class MServerRoutine {
 		return compareTo(file, this.content);		
 	}
 	
-	public static boolean compareTo(IFile file, String content) throws CoreException, BadLocationException {
+	private static boolean compareTo(IFile file, String content) throws CoreException, BadLocationException {
 		IDocument fileDocument = ResourceUtilsExtension.getDocument(file);
 		StringTokenizer tokenizer = new StringTokenizer(content, EOL);
 		int n = fileDocument.getNumberOfLines();
@@ -146,7 +146,7 @@ public class MServerRoutine {
 		}
 	}
 	
-	public static boolean updateFile(IFile file, String content) throws CoreException, BadLocationException, UnsupportedEncodingException {
+	private static boolean updateFile(IFile file, String content) throws CoreException, BadLocationException, UnsupportedEncodingException {
 		if (compareTo(file, content)) {
 			return false;
 		} else {
@@ -189,7 +189,7 @@ public class MServerRoutine {
 	 * @param file
 	 * @return handle to the backup file.                                                              
 	 */	
-	public static IFile getBackupFile(IFile file) throws CoreException {
+	private static IFile getBackupFile(IFile file) throws CoreException {
 		String backupFolderName = VistACorePrefs.getServerBackupDirectory(file.getProject());
 		if (backupFolderName.isEmpty()) return null;
 		IProject project = file.getProject();
@@ -243,7 +243,7 @@ public class MServerRoutine {
 	}	
 
 	public static MServerRoutine load(VistaLinkConnection connection, IFile file) throws InvalidFileException, LoadRoutineException, BackupSynchException {
-		String routineName = SaveRoutineEngine.getRoutineName(file);
+		String routineName = ResourceUtilsExtension.getRoutineName(file, "m");
 		return load(connection, file, routineName);
 	}
 }

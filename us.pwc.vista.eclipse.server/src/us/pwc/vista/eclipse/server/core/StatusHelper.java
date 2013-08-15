@@ -22,42 +22,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 
-import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
 
 public class StatusHelper {
-	public static int CODE_PROJECT_FILE_UPDATED = 1000;
-	public static int CODE_PROJECT_FILE_CREATED = 1001;
-	public static int CODE_PROJECT_FILE_IDENTICAL = 1002;
-
-	public static IStatus getStatus(int code, int severity, String msgKey, String... msgBindings) {
-		String message = Messages.bind(msgKey, msgBindings);
-		IStatus status = new Status(severity, VistAServerPlugin.PLUGIN_ID, code, message, null);
-		return status;
-	}
-
-	public static IStatus getStatus(int severity, String msgKey, String... msgBindings) {
-		String message = Messages.bind(msgKey, msgBindings);
-		IStatus status = new Status(severity, VistAServerPlugin.PLUGIN_ID, message);
-		return status;
-	}
-
-	public static IStatus getStatus(Throwable t) {
-		IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, t.getMessage(), t);
-		return status;
-	}
-
-	public static IStatus getStatus(String message, Throwable t) {
-		IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message, t);
-		return status;
-	}
-
-	public static IStatus getOKStatus() {
-		IStatus status = new Status(IStatus.OK, VistAServerPlugin.PLUGIN_ID, "");
-		return status;
-	}
-	
-	public static IStatus getStatus(IStatus status, String newMessage) {
+	public static IStatus getStatus(IStatus status, String pluginId, String newMessage) {
 		return new Status (status.getSeverity(), status.getPlugin(), status.getCode(), newMessage, status.getException());
 	}
 	
@@ -76,13 +44,13 @@ public class StatusHelper {
 		return result;
 	}
 		
-	public static int updateStatuses(IStatus status, String prefixForFile, int overallSeverity, List<IStatus> statuses) {
+	public static int updateStatuses(IStatus status, String pluginId, String prefixForFile, int overallSeverity, List<IStatus> statuses) {
 		if (status.getSeverity() == IStatus.OK) {
-			IStatus newStatus = StatusHelper.getStatus(IStatus.INFO, prefixForFile + "no issues");
+			IStatus newStatus = new Status(IStatus.INFO, pluginId, prefixForFile + "no issues");
 			statuses.add(newStatus);
 			return IStatus.INFO;
 		} else {
-			IStatus newStatus = StatusHelper.getStatus(status, prefixForFile + status.getMessage() + "\n");
+			IStatus newStatus = new Status(status.getSeverity(), status.getPlugin(), status.getCode(), prefixForFile + status.getMessage() + "\n", status.getException());
 			statuses.add(newStatus);
 			int severity = status.getSeverity();
 			return StatusHelper.updateOverallSeverity(overallSeverity, severity);				

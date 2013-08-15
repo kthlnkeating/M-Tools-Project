@@ -30,13 +30,13 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreePath;
 
+import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.core.CommandResult;
 import us.pwc.vista.eclipse.server.core.LoadRoutineEngine;
 import us.pwc.vista.eclipse.server.core.MServerRoutine;
 import us.pwc.vista.eclipse.server.core.RoutineDirectory;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
-import us.pwc.vista.eclipse.server.dialog.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.resource.ResourceUtilsExtension;
 
 /**
@@ -53,19 +53,19 @@ public class LoadRoutine extends AbstractHandler {
 			return null;
 		}
 		if (paths.length != 1) {
-			MessageDialogHelper.showError(Messages.MULTI_LOAD_RTN_FOLDER_SINGLE);
+			MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, Messages.MULTI_LOAD_RTN_FOLDER_SINGLE);
 			return null;
 		}		
 		IFolder folder = ResourceUtilsExtension.getFolder(paths[0]);
 		if (folder == null) {
-			MessageDialogHelper.showError(Messages.MULTI_LOAD_RTN_FOLDER_ONLY);
+			MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, Messages.MULTI_LOAD_RTN_FOLDER_ONLY);
 			return null;			
 		}
 		
 		String projectName = VistaConnection.getPrimaryProject();
 		if (! folder.getProject().getName().equals(projectName)) {
 			String message = Messages.bind(Messages.CONNECTION_INVALID_PROJECT, projectName);
-			MessageDialogHelper.showError(message);
+			MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, message);
 			return null;						
 		}
 	
@@ -82,7 +82,7 @@ public class LoadRoutine extends AbstractHandler {
 		String routines = RoutineDirectory.getRoutineList(routineNamespace);
 		if (routines.isEmpty() || (routines.indexOf("<") >= 0)) {
 			String message = Messages.bind(Messages.MULTI_LOAD_RTN_NONE_IN_NAMESPC, routineNamespace);
-			MessageDialogHelper.showError(message);
+			MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, message);
 			return null;						
 			
 		}
@@ -109,7 +109,7 @@ public class LoadRoutine extends AbstractHandler {
 			IProject project = folder.getProject();
 			if (! project.getName().equals(projectName)) {
 				String message = Messages.bind2(Messages.PROJECT_INVALID_FILE, projectName, folder.getName(), folder.getProject().getName());
-				MessageDialogHelper.showError(message);
+				MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, message);
 				return null;
 			}
 		
@@ -142,7 +142,7 @@ public class LoadRoutine extends AbstractHandler {
 		List<IFile> files = getFiles(event, projectName, namespaceFlag, folderFlag);
 		if (files.size() == 1) {
 			CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connection, files.get(0));
-			MessageDialogHelper.logAndShow(r.getStatus());
+			MessageDialogHelper.logAndShow(Messages.LOAD_MSG_TITLE, r.getStatus());
 		} else {
 			CommandCommon.loadRoutines(connection, files);
 		}

@@ -29,14 +29,20 @@ import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentExtension4;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import us.pwc.vista.eclipse.server.Messages;
-import us.pwc.vista.eclipse.server.core.StatusHelper;
+import us.pwc.vista.eclipse.server.VistAServerPlugin;
+import us.pwc.vista.eclipse.server.core.IRoutineBuilder;
+import us.pwc.vista.eclipse.server.error.InvalidFileException;
 
 /**
  * Contains static methods for manipulating Eclipse resources 
@@ -74,6 +80,66 @@ public class ResourceUtilsExtension {
 		return document;
 	}
 	
+	/** Returns the routine name for a specific extension.
+	 * 
+	 * @param file
+	 * @return routine name.
+	 * @throws InvalidFileException when file does not end with the extension.                                                              
+	 */	
+	public static String getRoutineName(IFile file, String extension) throws InvalidFileException {
+		String fileName = file.getName();
+		String fileEnd = '.' + extension;
+		if (! fileName.endsWith(fileEnd)) {
+			String message = Messages.bind(Messages.UNEXPECTED_EDITOR_FILE_EXT, extension);
+			throw new InvalidFileException(message);
+		}
+		int length = fileName.length();
+		String routineName = fileName.substring(0, length-2);
+		return routineName;
+	}
+
+	/**
+	 * Converts all tabs to space, removes all control characters, and removes
+	 * all empty lines.  This method also makes sure that all the end of line
+	 * characters are consistent. 
+	 * 
+	 * @param source code.
+	 * @param target updated code.
+	 * @return if any update needed.
+	 * @throws BadLocationException
+	 */
+	public static boolean cleanCode(IDocument source, IRoutineBuilder target) throws BadLocationException { 
+        boolean result = false; 
+		String eol = ((IDocumentExtension4) source).getDefaultLineDelimiter();
+        int n = source.getNumberOfLines(); 
+        for (int i=0; i<n; ++i) { 
+        	IRegion lineInfo = source.getLineInformation(i); 
+        	int lineLength = lineInfo.getLength();
+        	boolean emptyLine = (lineLength == 0); 
+        	result = result || (emptyLine && (source.getLineLength(i) > 0)); 
+        	if (! emptyLine) { 
+        		int offset = lineInfo.getOffset(); 
+        		String lineText = source.get(offset, lineLength); 
+        		if (lineText.indexOf('\t') >= 0) { 
+        			lineText = lineText.replace('\t', ' '); 
+        			result = true; 
+        		}        		
+        		lineText = lineText.replaceAll("\\p{Cntrl}", "");        		
+        		result = result || (lineText.length() != lineLength);
+        		if (lineText.trim().isEmpty()) {
+        			result = true;
+        			continue;
+        		}
+        		String eolLine = source.getLineDelimiter(i);
+        		if (! eol.equals(eolLine)) {
+        			result = true;
+        		}
+        		target.appendLine(lineText, eol);
+        	} 
+        } 
+        return result;
+ 	} 
+	
 	public static void prepareFolders(IContainer container) throws CoreException {
 	    if (! container.exists()) {
 	        prepareFolders(container.getParent());
@@ -109,7 +175,8 @@ public class ResourceUtilsExtension {
 				IResource selected = (IResource) lastSegment;
 				result.add(selected);
 			} else {
-				IStatus status = StatusHelper.getStatus(IStatus.ERROR, Messages.UNEXPECTED_OBJECT, lastSegment.getClass().getName());				
+				String message = Messages.bind(Messages.UNEXPECTED_OBJECT, lastSegment.getClass().getName());
+				IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message);
 				throw new CoreException(status);
 			}
 		}

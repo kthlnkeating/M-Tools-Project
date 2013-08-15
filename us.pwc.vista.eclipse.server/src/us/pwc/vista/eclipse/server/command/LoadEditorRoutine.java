@@ -26,11 +26,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.core.CommandResult;
 import us.pwc.vista.eclipse.server.core.LoadRoutineEngine;
 import us.pwc.vista.eclipse.server.core.MServerRoutine;
-import us.pwc.vista.eclipse.server.dialog.MessageDialogHelper;
 
 /**
  * This implementation of <code>AbstractHandler</code> updates the M file 
@@ -55,12 +55,12 @@ public class LoadEditorRoutine extends AbstractHandler {
 		String projectName = VistaConnection.getPrimaryProject();
 		if (! file.getProject().getName().equals(projectName)) {
 			String message = Messages.bind2(Messages.PROJECT_INVALID_FILE, projectName, file.getName(), file.getProject().getName());
-			MessageDialogHelper.showError(message);
+			MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, message);
 			return null;
 		}
 		
 		CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connection, file);
-		MessageDialogHelper.logAndShow(r.getStatus());
+		MessageDialogHelper.logAndShow(Messages.LOAD_MSG_TITLE, r.getStatus());
 		return null;
 	}
 }

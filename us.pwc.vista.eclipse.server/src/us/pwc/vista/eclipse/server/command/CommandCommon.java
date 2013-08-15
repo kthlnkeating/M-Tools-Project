@@ -44,12 +44,13 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.ide.IDE;
 
 import us.pwc.vista.eclipse.core.VistACorePrefs;
+import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.Messages;
+import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.core.CommandResult;
 import us.pwc.vista.eclipse.server.core.LoadRoutineEngine;
 import us.pwc.vista.eclipse.server.core.MServerRoutine;
 import us.pwc.vista.eclipse.server.core.StatusHelper;
-import us.pwc.vista.eclipse.server.dialog.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.resource.FileFillState;
 import us.pwc.vista.eclipse.server.resource.FileSetSearchVisitor;
 import us.pwc.vista.eclipse.server.resource.IResourceFilter;
@@ -107,12 +108,12 @@ public class CommandCommon {
 		if (invalids != null) {
 			invalids = "\n" + invalids;
 			String message = Messages.bind(Messages.NOT_SUPPORTED_RESOURCES, invalids); 
-			MessageDialogHelper.showError(message);
+			MessageDialogHelper.showError(Messages.FILE_SELECT_TITLE, message);
 			return null;
 		}
 		List<IFile> files = result.getFiles();
 		if (files.size() == 0) {
-			MessageDialogHelper.showError(Messages.NO_FILES);
+			MessageDialogHelper.showError(Messages.FILE_SELECT_TITLE, Messages.NO_FILES);
 			return null;			
 		}
 		return files;
@@ -121,7 +122,7 @@ public class CommandCommon {
 	public static TreePath[] getTreePaths(ExecutionEvent event) {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		if ((selection == null) || (! (selection instanceof TreeSelection))) {
-			MessageDialogHelper.showError(Messages.NOT_SUPPORTED_SELECTION_LIST);
+			MessageDialogHelper.showError(Messages.FILE_SELECT_TITLE, Messages.NOT_SUPPORTED_SELECTION_LIST);
 			return null;
 		}
 		TreeSelection ts = (TreeSelection) selection;
@@ -139,14 +140,14 @@ public class CommandCommon {
 				return files;				
 			}
 		} catch (Throwable t) {
-			MessageDialogHelper.logAndShowUnexpected(t);
+			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, t);
 			return null;
 		}
 	}
 
-	public static void showMultiStatus(int overallSeverity, String message, List<IStatus> statuses) {
+	public static void showMultiStatus(int overallSeverity, String title, String message, List<IStatus> statuses) {
 		MultiStatus multiStatus = StatusHelper.getMultiStatus(overallSeverity, message, statuses);
-		MessageDialogHelper.showMulti(multiStatus);		
+		MessageDialogHelper.showMulti(title, multiStatus);		
 	}
 	
 	public static List<IFile> getFileHandles(IFolder defaultFolder, String[] routineNames) {
@@ -162,7 +163,7 @@ public class CommandCommon {
 			project.accept(visitor, 0);
 			return visitor.getFiles(defaultFolder);
 		} catch (Throwable t) {
-			MessageDialogHelper.logAndShow(t);
+			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, t);
 			return null;
 		}
 	}
@@ -201,7 +202,7 @@ public class CommandCommon {
 				CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(this.connection, file);
 				String prefixForFile = file.getFullPath().toString() + " -- ";
 				IStatus status = r.getStatus();
-				this.overallSeverity = StatusHelper.updateStatuses(status, prefixForFile, this.overallSeverity, this.statuses);
+				this.overallSeverity = StatusHelper.updateStatuses(status, VistAServerPlugin.PLUGIN_ID, prefixForFile, this.overallSeverity, this.statuses);
 				i = i + 1;
 				if (monitor.isCanceled()) break;
 				monitor.worked(i);
@@ -219,9 +220,9 @@ public class CommandCommon {
 	
 			String[] topMessages = new String[]{Messages.MULTI_LOAD_RTN_ERRR, Messages.MULTI_LOAD_RTN_WARN, Messages.MULTI_LOAD_RTN_INFO};
 			String topMessage = CommandCommon.selectMessageOnStatus(mrl.overallSeverity, topMessages);
-			CommandCommon.showMultiStatus(mrl.overallSeverity, topMessage, mrl.statuses);		
+			CommandCommon.showMultiStatus(mrl.overallSeverity, Messages.LOAD_MSG_TITLE, topMessage, mrl.statuses);		
 		} catch (Throwable t) {
-			MessageDialogHelper.logAndShow(t);
+			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, t);
 		}
 	}
 }

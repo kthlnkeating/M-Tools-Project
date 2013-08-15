@@ -4,7 +4,10 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "us.pwc.vista.eclipse.server.messages"; //$NON-NLS-1$
-	public static String DEFAULT_MSG_TITLE;
+	public static String LOAD_MSG_TITLE;
+	public static String SAVE_MSG_TITLE;
+	public static String FILE_SELECT_TITLE;
+	public static String GLOBAL_LISTING;
 	public static String EDITOR_FILE_WRONG_PROJECT;
 	public static String ERRORS_FOUND_FOR_FILES;
 	public static String INPUT_DLG_INPUT_MSG;
@@ -55,7 +58,7 @@ public class Messages extends NLS {
 	public static String UNABLE_RTN_SAVE;
 	public static String UNABLE_GET_HANDLE;
 	public static String UNEXPECTED_EDITOR_FILE_NULL;
-	public static String UNEXPECTED_EDITOR_FILE_NOTM;
+	public static String UNEXPECTED_EDITOR_FILE_EXT;
 	public static String UNEXPECTED_INTERNAL;
 	public static String UNEXPECTED_OBJECT;
 	public static String WRITE_TO_CONSOLE_ERROR;

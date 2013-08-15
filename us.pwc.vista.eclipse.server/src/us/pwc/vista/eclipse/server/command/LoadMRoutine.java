@@ -37,7 +37,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 import us.pwc.vista.eclipse.core.VistACorePrefs;
+import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.Messages;
+import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.core.CommandResult;
 import us.pwc.vista.eclipse.server.core.LoadRoutineEngine;
 import us.pwc.vista.eclipse.server.core.MServerRoutine;
@@ -47,7 +49,6 @@ import us.pwc.vista.eclipse.server.core.VFPackageRepo;
 import us.pwc.vista.eclipse.server.core.VFPathResolver;
 import us.pwc.vista.eclipse.server.dialog.CustomDialogHelper;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
-import us.pwc.vista.eclipse.server.dialog.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.preferences.VistAServerPrefs;
 import us.pwc.vista.eclipse.server.preferences.NewFileFolderScheme;
 import us.pwc.vista.eclipse.server.resource.FileSearchVisitor;
@@ -67,10 +68,10 @@ public class LoadMRoutine extends AbstractHandler {
 			return project;
 		} catch (CoreException ce) {
 			String message = Messages.bind(Messages.UNABLE_GET_PROJECT, projectName, ce.getMessage());
-			MessageDialogHelper.logAndShow(message, ce);
+			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, message, ce);
 			return null;
 		} catch (Throwable t) {
-			MessageDialogHelper.logAndShowUnexpected(t);
+			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, t);
 			return null;
 		}
 	}
@@ -152,7 +153,7 @@ public class LoadMRoutine extends AbstractHandler {
 		CommandResult<MServerRoutine> result = LoadRoutineEngine.loadRoutine(connection, fileHandle);
 		IStatus status = result.getStatus();		
 		if (status.getSeverity() != IStatus.OK) {
-			MessageDialogHelper.logAndShow(status);			
+			MessageDialogHelper.logAndShow(Messages.LOAD_MSG_TITLE, status);			
 		}
 		if (status.getSeverity() != IStatus.ERROR) {
 			IFile file = result.getResultObject().getFileHandle();

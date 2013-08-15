@@ -21,9 +21,11 @@ import java.io.UnsupportedEncodingException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
 
 import us.pwc.vista.eclipse.server.Messages;
+import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.error.VistAServerException;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
@@ -32,7 +34,8 @@ public class LoadRoutineEngine {
 	private static CommandResult<MServerRoutine> loadRoutine(MServerRoutine serverRoutine) throws CoreException, BadLocationException, UnsupportedEncodingException {
 		String routineName = serverRoutine.getRoutineName();
 		if (! serverRoutine.isLoaded()) {
-			IStatus status = StatusHelper.getStatus(IStatus.ERROR, Messages.ROUTINE_NOT_ON_SERVER, routineName);
+			String message = Messages.bind(Messages.ROUTINE_NOT_ON_SERVER, routineName);
+			IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message);
 			return new CommandResult<MServerRoutine>(serverRoutine, status);
 		}		
 		UpdateFileResult result = serverRoutine.updateClient();
@@ -42,13 +45,13 @@ public class LoadRoutineEngine {
 	}
 	
 	private static CommandResult<MServerRoutine> getKnownExceptionResult(VistAServerException exception) {
-		IStatus status = StatusHelper.getStatus(exception);
+		IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, exception.getMessage(), exception);
 		return new CommandResult<MServerRoutine>(null, status);					
 	}
 	
 	private static CommandResult<MServerRoutine> getUnknownExceptionResult(Throwable t) {
 		String message = Messages.bind(Messages.UNEXPECTED_INTERNAL, t.getMessage());
-		IStatus status = StatusHelper.getStatus(message, t);
+		IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message, t);
 		return new CommandResult<MServerRoutine>(null, status);			
 	}
 		

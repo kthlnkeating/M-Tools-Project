@@ -41,12 +41,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
+import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.Messages;
+import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.core.CommandResult;
-import us.pwc.vista.eclipse.server.core.StatusHelper;
 import us.pwc.vista.eclipse.server.dialog.GlobalListingData;
 import us.pwc.vista.eclipse.server.dialog.GlobalListingDialog;
-import us.pwc.vista.eclipse.server.dialog.MessageDialogHelper;
 
 public class ReportGlobalListing extends AbstractHandler {
 	private static class GlobalListingRPCResult {
@@ -189,24 +189,23 @@ public class ReportGlobalListing extends AbstractHandler {
 			killTemporaryGlobal(connection);
 		} catch (Throwable t) {
 			String message = Messages.bind2(Messages.GLOBAL_LISTING_UNEXPECTED, t.getMessage());
-			MessageDialogHelper.logAndShow(message, t);
+			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, message, t);
 		}		
 	}
 	
 	private static CommandResult<GlobalListResult> getGlobals(VistaLinkConnection connection, GlobalListingData data, String lastLine, boolean continuation) {
 		try {
 			GlobalListResult result = getGlobalListing(connection, data, lastLine, continuation);
-			IStatus status = StatusHelper.getOKStatus();
-			return new CommandResult<GlobalListResult>(result, status);
+			return new CommandResult<GlobalListResult>(result, Status.OK_STATUS);
 		} catch (Throwable t) {
 			String message = Messages.bind(Messages.GLOBAL_LISTING_UNEXPECTED, t.getMessage());
-			IStatus status = StatusHelper.getStatus(message, t);
+			IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message, t);
 			return new CommandResult<GlobalListResult>(null, status);
 		}
 	}
 	
 	private void handleGlobalListing(final VistaLinkConnection connection, final GlobalListingData data, final String currentCount, final int page) {
-		Job job = new Job("Global Listing") {			
+		Job job = new Job(Messages.GLOBAL_LISTING) {			
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				monitor.beginTask("Loading globals from server", IProgressMonitor.UNKNOWN);
@@ -215,13 +214,13 @@ public class ReportGlobalListing extends AbstractHandler {
 					public void run() {
 						IStatus status = result.getStatus();
 						if (status.getSeverity() != IStatus.OK) {
-							MessageDialogHelper.logAndShow(status);
+							MessageDialogHelper.logAndShow(Messages.GLOBAL_LISTING, status);
 						} else {
 							GlobalListResult glResult =  result.getResultObject();
 							MessageConsoleHelper.writeToConsole(data.globalName, glResult.consoleOutput, page == 0);
 							boolean killGlobal = page > 0;
 							if (glResult.currCount != null) {
-								boolean moreWanted = MessageDialogHelper.question(Messages.GLOBAL_LISTING_MORE, glResult.currCount);
+								boolean moreWanted = MessageDialogHelper.question(Messages.GLOBAL_LISTING, Messages.GLOBAL_LISTING_MORE, glResult.currCount);
 								if (moreWanted) {
 									handleGlobalListing(connection, data, glResult.currCount, page+1);
 									killGlobal = false;

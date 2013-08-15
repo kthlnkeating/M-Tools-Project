@@ -19,8 +19,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentExtension4;
-import org.eclipse.jface.text.IRegion;
 import org.eclipse.ui.statushandlers.StatusManager;
 
 import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
@@ -28,74 +26,15 @@ import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.error.BackupSynchException;
 import us.pwc.vista.eclipse.server.error.InvalidFileException;
-import us.pwc.vista.eclipse.server.error.VistAServerException;
 import us.pwc.vista.eclipse.server.resource.ResourceUtilsExtension;
 
 public class SaveRoutineEngine {
 	private static final String SAVE_ROUTINE_CONSOLE = "Save Routine Console";
 
-	/** Returns the routine name for an M file. Backup  
-	 * 
-	 * @param file
-	 * @return routine name.
-	 * @throws VistAServerException when file is not an M file.                                                              
-	 */	
-	public static String getRoutineName(IFile file) throws InvalidFileException {
-		String fileName = file.getName();
-		if (! fileName.endsWith(".m")) {
-			throw new InvalidFileException(Messages.UNEXPECTED_EDITOR_FILE_NOTM);
-		}
-		int length = fileName.length();
-		String routineName = fileName.substring(0, length-2);
-		return routineName;
-	}
-
-	/**
-	 * Converts all tabs to space, removes all control characters, and removes
-	 * all empty lines.  This method also makes sure that all the end of line
-	 * characters are consistent. 
-	 * 
-	 * @param source M code.
-	 * @param target updated M code.
-	 * @return if any updated needed.
-	 * @throws BadLocationException
-	 */
-	public static boolean cleanMCode(IDocument source, IRoutineBuilder target) throws BadLocationException { 
-        boolean result = false; 
-		String eol = ((IDocumentExtension4) source).getDefaultLineDelimiter();
-        int n = source.getNumberOfLines(); 
-        for (int i=0; i<n; ++i) { 
-        	IRegion lineInfo = source.getLineInformation(i); 
-        	int lineLength = lineInfo.getLength();
-        	boolean emptyLine = (lineLength == 0); 
-        	result = result || (emptyLine && (source.getLineLength(i) > 0)); 
-        	if (! emptyLine) { 
-        		int offset = lineInfo.getOffset(); 
-        		String lineText = source.get(offset, lineLength); 
-        		if (lineText.indexOf('\t') >= 0) { 
-        			lineText = lineText.replace('\t', ' '); 
-        			result = true; 
-        		}        		
-        		lineText = lineText.replaceAll("\\p{Cntrl}", "");        		
-        		result = result || (lineText.length() != lineLength);
-        		if (lineText.trim().isEmpty()) {
-        			result = true;
-        			continue;
-        		}
-        		String eolLine = source.getLineDelimiter(i);
-        		if (! eol.equals(eolLine)) {
-        			result = true;
-        		}
-        		target.appendLine(lineText, eol);
-        	} 
-        } 
-        return result;
- 	} 
-	
 	private static ListRoutineBuilder getListRoutineBuilder(IFile file) throws InvalidFileException, CoreException, BadLocationException {		
 		IDocument document = ResourceUtilsExtension.getDocument(file);
 		ListRoutineBuilder target = new ListRoutineBuilder();
-		boolean updated = cleanMCode(document, target);
+		boolean updated = ResourceUtilsExtension.cleanCode(document, target);
 		if (updated) {
 			String message = Messages.bind(Messages.NOT_SUPPORTED_MFILE_CONTENT, file.getName());
 			throw new InvalidFileException(message);
@@ -129,14 +68,14 @@ public class SaveRoutineEngine {
 			warningMessage += "\n" + message;
 		} catch (Throwable t) {
 			String message = Messages.bind(Messages.UNABLE_RTN_SAVE, routineName, t.getMessage());
-			return StatusHelper.getStatus(message, t);
+			return new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message, t);
 		}		
 
 		if (warningMessage.length() > 0) {
 			warningMessage = Messages.bind(Messages.ROUTINE_SAVED_W_WARNINGS, routineName) + warningMessage;
-			return StatusHelper.getStatus(IStatus.WARNING, warningMessage); 
+			return new Status(IStatus.WARNING, VistAServerPlugin.PLUGIN_ID, warningMessage); 
 		} else {
-			return StatusHelper.getOKStatus();
+			return Status.OK_STATUS;
 		}
 	}
 	
@@ -174,7 +113,7 @@ public class SaveRoutineEngine {
 				backupFile.create(stream, true, null);
 			}
 			stream.close();
-			return StatusHelper.getOKStatus();
+			return Status.OK_STATUS;
 		} catch (Throwable t) {
 			String message = Messages.bind(Messages.SAVE_BACKUP_SYNCH_ERROR, backupFile.getName());
 			throw new BackupSynchException(message, t);
@@ -253,24 +192,25 @@ public class SaveRoutineEngine {
 			String line1 = vResp.getResults().substring(0, index);
 			if (line1.indexOf("-1") == 0) {
 				String message = MPiece.getPiece(line1,"^",2);
-				IStatus r = StatusHelper.getStatus(IStatus.ERROR, message);
+				IStatus r = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message);
 				return r;
 			}
 			String doc = vResp.getResults().substring(vResp.getResults().indexOf('\n'));
 			boolean isErrorsOrWarnings = updateConsoleMessage(doc, consoleMessage);
 			if (isErrorsOrWarnings) {
-				IStatus r = StatusHelper.getStatus(IStatus.WARNING, Messages.XINDEX_IN_CONSOLE);
+				IStatus r = new Status(IStatus.WARNING, VistAServerPlugin.PLUGIN_ID, Messages.XINDEX_IN_CONSOLE);
 				return r;
 			}			
 		}
-		return StatusHelper.getOKStatus();
+		return Status.OK_STATUS;
 	}
 	
 	public static IStatus save(VistaLinkConnection connection, IFile file) {
 		try {
 			String projectName = VistaConnection.getPrimaryProject();
 			if (! file.getProject().getName().equals(projectName)) {
-				IStatus status = StatusHelper.getStatus(IStatus.ERROR, Messages.EDITOR_FILE_WRONG_PROJECT, file.getName(), projectName);
+				String message = Messages.bind(Messages.EDITOR_FILE_WRONG_PROJECT, file.getName(), projectName);
+				IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message);
 				return status;
 			}
 
@@ -281,19 +221,20 @@ public class SaveRoutineEngine {
 			BackupSynchResult synchResult = serverRoutine.getSynchResult();
 			IFile backupFile = synchResult.getFile();
 			if (synchResult.getStatus() == BackupSynchStatus.UPDATED) {
-				IStatus status = StatusHelper.getStatus(IStatus.ERROR, Messages.SERVER_BACKUP_CONFLICT, backupFile.getFullPath().toString());
+				String message = Messages.bind(Messages.SERVER_BACKUP_CONFLICT, backupFile.getFullPath().toString());
+				IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message);
 				return status;
 			}
 			
 			if (serverRoutine.isLoaded() && serverRoutine.compareTo(file)) {
-				IStatus status = StatusHelper.getStatus(IStatus.ERROR, Messages.SERVER_CLIENT_EQUAL);
+				IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, Messages.SERVER_CLIENT_EQUAL);
 				return status;
 			}
 			
 			StringBuilder consoleMessage = startConsoleMessage(routineName, synchResult);
 			return saveRoutineToServer(connection, routineName, routineContent, backupFile, consoleMessage);
 		} catch (Throwable t) {
-			return StatusHelper.getStatus(t);
+			return new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, t.getMessage(), t);
 		}
 	}	
 }

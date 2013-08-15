@@ -12,9 +12,10 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
 import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
+import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.Messages;
+import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
-import us.pwc.vista.eclipse.server.dialog.MessageDialogHelper;
 
 public class ReportGlobalDirectory extends AbstractHandler {
 	public static void writeGlobalDirectory(VistaLinkConnection connection, String globalName) {
@@ -34,7 +35,7 @@ public class ReportGlobalDirectory extends AbstractHandler {
 			writeToConsole(globalName,str);
 		} catch (Throwable t) {
 			String message = Messages.bind2(Messages.DLG_GLOBAL_DIR_UNEXPECTED, t.getMessage());
-			MessageDialogHelper.logAndShow(message, t);
+			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, message, t);
 		}
 	}
 	

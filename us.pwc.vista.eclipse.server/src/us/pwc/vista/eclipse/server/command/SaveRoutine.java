@@ -29,11 +29,12 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
 
+import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.Messages;
+import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.core.SaveRoutineEngine;
 import us.pwc.vista.eclipse.server.core.StatusHelper;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
-import us.pwc.vista.eclipse.server.dialog.MessageDialogHelper;
 
 /**
  * This implementation of <code>AbstractHandler</code> saves the selected M 
@@ -74,7 +75,7 @@ public class SaveRoutine extends AbstractHandler {
 			}			
 			if (updatedFiles.size() == 0) {
 				String message = Messages.bind(Messages.NO_FILES_IN_NAMESPACE, namespace);
-				MessageDialogHelper.showError(message);
+				MessageDialogHelper.showError(Messages.SAVE_MSG_TITLE, message);
 				return null;
 			}			
 			selectedFiles = updatedFiles;
@@ -82,19 +83,19 @@ public class SaveRoutine extends AbstractHandler {
 
 		if (selectedFiles.size() == 1) {
 			IStatus status = SaveRoutineEngine.save(connection, selectedFiles.get(0));
-			MessageDialogHelper.logAndShow(status);
+			MessageDialogHelper.logAndShow(Messages.SAVE_MSG_TITLE, status);
 		} else {
 			int overallSeverity = IStatus.OK;
 			List<IStatus> statuses = new ArrayList<IStatus>();
 			for (IFile file : selectedFiles) {
 				IStatus status = SaveRoutineEngine.save(connection, file);
 				String prefixForFile = file.getFullPath().toString() + " -- ";
-				overallSeverity = StatusHelper.updateStatuses(status, prefixForFile, overallSeverity, statuses);
+				overallSeverity = StatusHelper.updateStatuses(status, VistAServerPlugin.PLUGIN_ID, prefixForFile, overallSeverity, statuses);
 			}
 			
 			String[] topMessages = new String[]{Messages.MULTI_SAVE_RTN_ERRR, Messages.MULTI_SAVE_RTN_WARN, Messages.MULTI_SAVE_RTN_INFO};
 			String topMessage = CommandCommon.selectMessageOnStatus(overallSeverity, topMessages);
-			CommandCommon.showMultiStatus(overallSeverity, topMessage, statuses);
+			CommandCommon.showMultiStatus(overallSeverity, Messages.SAVE_MSG_TITLE, topMessage, statuses);
 		}
 		return null;		
 	}

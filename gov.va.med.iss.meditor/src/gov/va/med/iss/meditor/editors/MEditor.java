@@ -13,6 +13,7 @@ import gov.va.med.iss.meditor.preferences.MEditorPrefs;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -20,20 +21,22 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.ResourceUtil;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.ui.texteditor.DefaultRangeIndicator;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
+import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.core.SaveRoutineEngine;
 import us.pwc.vista.eclipse.server.core.StringRoutineBuilder;
-import us.pwc.vista.eclipse.server.dialog.MessageDialogHelper;
+import us.pwc.vista.eclipse.server.resource.ResourceUtilsExtension;
 
 /**
  *	This class is responsible for configuring the M editor.
  *  
  */
 public class MEditor extends TextEditor {
-	public static final String M_EDITOR_ID = "gov.va.med.iss.meditor.editors.MEditor";
+	private static final String MESSAGE_TITLE = "MEditor";
 	
 	private static MCodeScanner fMCodeScanner;
 	private MContentOutlinePage outlinePage = null;
@@ -135,8 +138,9 @@ public class MEditor extends TextEditor {
 	private IFile getFile() {
 		IEditorInput input = this.getEditorInput();
 		IFile file =  ResourceUtil.getFile(input);
-		if (file == null) {
-			MessageDialogHelper.showError(Messages.UNEXPECTED_EDITOR_FILE_NULL);
+		if (file == null) {			
+			IStatus status = new Status(IStatus.ERROR, MEditorPlugin.PLUGIN_ID, Messages.UNEXPECTED_EDITOR_FILE_NULL);
+			StatusManager.getManager().handle(status, StatusManager.SHOW);
 			return null;
 		}
 		return file;
@@ -144,7 +148,7 @@ public class MEditor extends TextEditor {
 	
 	private void updateCode(IDocument document) throws BadLocationException {
 		StringRoutineBuilder srb = new StringRoutineBuilder();
-		boolean updated = SaveRoutineEngine.cleanMCode(document, srb);
+		boolean updated = ResourceUtilsExtension.cleanCode(document, srb);
 		if (updated) {
         	document.set(srb.getRoutine()); 
         }         
@@ -157,7 +161,8 @@ public class MEditor extends TextEditor {
 		try {
 			this.updateCode(document);			
 		} catch (BadLocationException e) {
-			MessageDialogHelper.showError(e, Messages.UNEXPECTED_INTERNAL, e.getMessage());
+			IStatus status = new Status(IStatus.ERROR, MEditorPlugin.PLUGIN_ID, e.getMessage(), e);
+			StatusManager.getManager().handle(status, StatusManager.SHOW);
 			return false;
 		}
 		return true;
@@ -196,7 +201,7 @@ public class MEditor extends TextEditor {
 		}
 		
 		IStatus result = SaveRoutineEngine.save(connection, file);
-		MessageDialogHelper.logAndShow(result);
+		MessageDialogHelper.logAndShow(MESSAGE_TITLE, result);
 	}
 
 	@SuppressWarnings("rawtypes")

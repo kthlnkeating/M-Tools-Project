@@ -18,13 +18,15 @@ package us.pwc.vista.eclipse.server.core;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 
 import us.pwc.vista.eclipse.server.Messages;
+import us.pwc.vista.eclipse.server.VistAServerPlugin;
 
 public enum UpdateFileResult {
-	UPDATED(StatusHelper.CODE_PROJECT_FILE_UPDATED, Messages.ROUTINE_UPDATED_IN_PROJECT),
-	CREATED(StatusHelper.CODE_PROJECT_FILE_CREATED, Messages.ROUTINE_CREATED_IN_PROJECT),
-	IDENTICAL(StatusHelper.CODE_PROJECT_FILE_IDENTICAL, Messages.ROUTINE_IDENTICAL_IN_PROJECT);
+	UPDATED(1000, Messages.ROUTINE_UPDATED_IN_PROJECT),
+	CREATED(1001, Messages.ROUTINE_CREATED_IN_PROJECT),
+	IDENTICAL(1002, Messages.ROUTINE_IDENTICAL_IN_PROJECT);
 	
 	private int code;
 	private String messageKey;
@@ -36,7 +38,8 @@ public enum UpdateFileResult {
 	
 	public IStatus toStatus(IFile file) {
 		String path = file.getFullPath().toString();
-		IStatus status = StatusHelper.getStatus(this.code, IStatus.INFO, this.messageKey, path);
+		String message = Messages.bind(this.messageKey, path);
+		IStatus status = new Status(IStatus.INFO, VistAServerPlugin.PLUGIN_ID, code, message, null);
 		return status;
 	}
 }

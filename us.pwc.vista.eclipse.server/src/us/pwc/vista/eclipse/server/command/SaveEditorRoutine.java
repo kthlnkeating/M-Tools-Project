@@ -27,9 +27,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.core.SaveRoutineEngine;
-import us.pwc.vista.eclipse.server.dialog.MessageDialogHelper;
 
 /**
  * This implementation of <code>AbstractHandler</code> saves the M file
@@ -54,12 +54,12 @@ public class SaveEditorRoutine extends AbstractHandler {
 		String projectName = VistaConnection.getPrimaryProject();
 		if (! file.getProject().getName().equals(projectName)) {
 			String message = Messages.bind2(Messages.PROJECT_INVALID_FILE, projectName, file.getName(), file.getProject().getName());
-			MessageDialogHelper.showError(message);
+			MessageDialogHelper.showError(Messages.SAVE_MSG_TITLE, message);
 			return null;
 		}
 
 		IStatus status = SaveRoutineEngine.save(connection, file);
-		MessageDialogHelper.logAndShow(status);
+		MessageDialogHelper.logAndShow(Messages.SAVE_MSG_TITLE, status);
 		return null;
 	}
 }

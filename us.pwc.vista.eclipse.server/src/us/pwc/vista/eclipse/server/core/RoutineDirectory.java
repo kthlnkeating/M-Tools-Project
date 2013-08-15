@@ -6,7 +6,8 @@
  */
 package us.pwc.vista.eclipse.server.core;
 
-import us.pwc.vista.eclipse.server.dialog.MessageDialogHelper;
+import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
+import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
@@ -72,7 +73,7 @@ public class RoutineDirectory {
 					str = "Routines beginning with "+routineName+"\n\n"+ str;
 				} catch (Throwable t) {
 					String message = "Error encountered while executing RPC " + t.getMessage();
-					MessageDialogHelper.logAndShow(message, t);
+					MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, message, t);
 					str = "";
 				}
 			}
