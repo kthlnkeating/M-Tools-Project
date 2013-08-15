@@ -37,7 +37,7 @@ import us.pwc.vista.eclipse.server.core.LoadRoutineEngine;
 import us.pwc.vista.eclipse.server.core.MServerRoutine;
 import us.pwc.vista.eclipse.server.core.RoutineDirectory;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
-import us.pwc.vista.eclipse.server.resource.ResourceUtilsExtension;
+import us.pwc.vista.eclipse.server.resource.ResourceUtilExtension;
 
 /**
  * This implementation of <code>AbstractHandler</code> loads the selected M 
@@ -56,7 +56,7 @@ public class LoadRoutine extends AbstractHandler {
 			MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, Messages.MULTI_LOAD_RTN_FOLDER_SINGLE);
 			return null;
 		}		
-		IFolder folder = ResourceUtilsExtension.getFolder(paths[0]);
+		IFolder folder = ResourceUtilExtension.getFolder(paths[0]);
 		if (folder == null) {
 			MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, Messages.MULTI_LOAD_RTN_FOLDER_ONLY);
 			return null;			

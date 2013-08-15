@@ -29,7 +29,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.core.SaveRoutineEngine;
 import us.pwc.vista.eclipse.server.core.StringRoutineBuilder;
-import us.pwc.vista.eclipse.server.resource.ResourceUtilsExtension;
+import us.pwc.vista.eclipse.server.resource.ResourceUtilExtension;
 
 /**
  *	This class is responsible for configuring the M editor.
@@ -148,7 +148,7 @@ public class MEditor extends TextEditor {
 	
 	private void updateCode(IDocument document) throws BadLocationException {
 		StringRoutineBuilder srb = new StringRoutineBuilder();
-		boolean updated = ResourceUtilsExtension.cleanCode(document, srb);
+		boolean updated = ResourceUtilExtension.cleanCode(document, srb);
 		if (updated) {
         	document.set(srb.getRoutine()); 
         }         

@@ -25,15 +25,15 @@ import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.resource.InvalidFileException;
-import us.pwc.vista.eclipse.server.resource.ResourceUtilsExtension;
+import us.pwc.vista.eclipse.server.resource.ResourceUtilExtension;
 
 public class SaveRoutineEngine {
 	private static final String SAVE_ROUTINE_CONSOLE = "Save Routine Console";
 
 	private static ListRoutineBuilder getListRoutineBuilder(IFile file) throws InvalidFileException, CoreException, BadLocationException {		
-		IDocument document = ResourceUtilsExtension.getDocument(file);
+		IDocument document = ResourceUtilExtension.getDocument(file);
 		ListRoutineBuilder target = new ListRoutineBuilder();
-		boolean updated = ResourceUtilsExtension.cleanCode(document, target);
+		boolean updated = ResourceUtilExtension.cleanCode(document, target);
 		if (updated) {
 			String message = Messages.bind(Messages.NOT_SUPPORTED_MFILE_CONTENT, file.getName());
 			throw new InvalidFileException(message);
@@ -108,7 +108,7 @@ public class SaveRoutineEngine {
 			if (backupFile.exists()) {
 				backupFile.setContents(stream, true, true, null);
 			} else {
-				ResourceUtilsExtension.prepareFolders((IFolder) backupFile.getParent());			
+				ResourceUtilExtension.prepareFolders((IFolder) backupFile.getParent());			
 				backupFile.create(stream, true, null);
 			}
 			stream.close();

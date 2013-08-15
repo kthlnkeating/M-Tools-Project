@@ -54,7 +54,7 @@ import us.pwc.vista.eclipse.server.core.StatusHelper;
 import us.pwc.vista.eclipse.server.resource.FileFillState;
 import us.pwc.vista.eclipse.server.resource.FileSetSearchVisitor;
 import us.pwc.vista.eclipse.server.resource.IResourceFilter;
-import us.pwc.vista.eclipse.server.resource.ResourceUtilsExtension;
+import us.pwc.vista.eclipse.server.resource.ResourceUtilExtension;
 
 public class CommandCommon {
 	public static boolean openEditor(ExecutionEvent event, IFile file) {	
@@ -103,7 +103,7 @@ public class CommandCommon {
 	
 	private static List<IFile> getMFiles(TreePath[] selections, String projectName) throws CoreException {
 		IResourceFilter filter = new SelectedMFileFilter(projectName);
-		FileFillState result = ResourceUtilsExtension.getSelectedFiles(selections, filter);
+		FileFillState result = ResourceUtilExtension.getSelectedFiles(selections, filter);
 		String invalids = result.getInvalidResourcesAsString(4, "\n");
 		if (invalids != null) {
 			invalids = "\n" + invalids;

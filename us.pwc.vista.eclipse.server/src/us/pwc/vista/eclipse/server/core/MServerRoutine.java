@@ -38,7 +38,7 @@ import org.eclipse.jface.text.IRegion;
 import us.pwc.vista.eclipse.core.VistACorePrefs;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.resource.InvalidFileException;
-import us.pwc.vista.eclipse.server.resource.ResourceUtilsExtension;
+import us.pwc.vista.eclipse.server.resource.ResourceUtilExtension;
 
 /**
  * This class represents an M routine that is loaded from server.  Due to 
@@ -84,11 +84,11 @@ public class MServerRoutine {
 	
 	private static void copyTo(IFile file, String content) throws CoreException, UnsupportedEncodingException {
 		IProject project = file.getProject();
-		String eolToBeUsed = ResourceUtilsExtension.getLineSeperator(project);
+		String eolToBeUsed = ResourceUtilExtension.getLineSeperator(project);
 		if (! eolToBeUsed.equals(EOL)) {
 			content = content.replaceAll(EOL, eolToBeUsed);
 		}
-		ResourceUtilsExtension.updateFile(file, content);						
+		ResourceUtilExtension.updateFile(file, content);						
 	}
 	
 	private void copyTo(IFile file) throws CoreException, UnsupportedEncodingException {
@@ -100,11 +100,11 @@ public class MServerRoutine {
 	}
 	
 	private static boolean compareTo(IFile file, String content) throws CoreException, BadLocationException {
-		IDocument fileDocument = ResourceUtilsExtension.getDocument(file);
+		IDocument fileDocument = ResourceUtilExtension.getDocument(file);
 		StringTokenizer tokenizer = new StringTokenizer(content, EOL);
 		int n = fileDocument.getNumberOfLines();
 		int fileLineIndex = 0;
-		String requiredEol = ResourceUtilsExtension.getLineSeperator(file.getProject());
+		String requiredEol = ResourceUtilExtension.getLineSeperator(file.getProject());
 		while (tokenizer.hasMoreTokens()) {
 			if (fileLineIndex == n) {
 				return false;
@@ -217,8 +217,8 @@ public class MServerRoutine {
 				}
 			} else {
 				if (content != null) {
-					ResourceUtilsExtension.prepareFolders((IFolder) backupFile.getParent());			
-					ResourceUtilsExtension.updateFile(backupFile, content);
+					ResourceUtilExtension.prepareFolders((IFolder) backupFile.getParent());			
+					ResourceUtilExtension.updateFile(backupFile, content);
 					return new BackupSynchResult(BackupSynchStatus.INITIATED, backupFile);
 				} else {
 					return new BackupSynchResult(BackupSynchStatus.NO_CHANGE_BOTH_ABSENT, backupFile);
@@ -241,7 +241,7 @@ public class MServerRoutine {
 	}	
 
 	public static MServerRoutine load(VistaLinkConnection connection, IFile file) throws InvalidFileException, LoadRoutineException, BackupSynchException {
-		String routineName = ResourceUtilsExtension.getRoutineName(file, "m");
+		String routineName = ResourceUtilExtension.getRoutineName(file, "m");
 		return load(connection, file, routineName);
 	}
 }

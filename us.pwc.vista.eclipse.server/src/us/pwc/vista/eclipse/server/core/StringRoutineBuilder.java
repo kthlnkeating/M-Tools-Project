@@ -1,5 +1,7 @@
 package us.pwc.vista.eclipse.server.core;
 
+import us.pwc.vista.eclipse.server.resource.IRoutineBuilder;
+
 
 public class StringRoutineBuilder implements IRoutineBuilder {
 	private StringBuilder builder = new StringBuilder();

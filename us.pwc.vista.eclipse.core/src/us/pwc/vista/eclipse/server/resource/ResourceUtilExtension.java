@@ -39,15 +39,14 @@ import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
-import us.pwc.vista.eclipse.server.Messages;
-import us.pwc.vista.eclipse.server.VistAServerPlugin;
-import us.pwc.vista.eclipse.server.core.IRoutineBuilder;
+import us.pwc.vista.eclipse.core.Messages;
+import us.pwc.vista.eclipse.core.VistACorePlugin;
 
 /**
  * Contains static methods for manipulating Eclipse resources 
  * <code>IProject</code>, <code>IFile</code>, and <code>IFolder</code>.
  */
-public class ResourceUtilsExtension {
+public class ResourceUtilExtension {
 	/** Returns the end of file string that Eclipse is configured to used for
 	 *  the project.
 	 * 
@@ -89,7 +88,7 @@ public class ResourceUtilsExtension {
 		String fileName = file.getName();
 		String fileEnd = '.' + extension;
 		if (! fileName.endsWith(fileEnd)) {
-			String message = Messages.bind(Messages.UNEXPECTED_EDITOR_FILE_EXT, extension);
+			String message = Messages.bind(Messages.UNEXPECTED_FILE_EXT, extension);
 			throw new InvalidFileException(message);
 		}
 		int length = fileName.length();
@@ -175,7 +174,7 @@ public class ResourceUtilsExtension {
 				result.add(selected);
 			} else {
 				String message = Messages.bind(Messages.UNEXPECTED_OBJECT, lastSegment.getClass().getName());
-				IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message);
+				IStatus status = new Status(IStatus.ERROR, VistACorePlugin.PLUGIN_ID, message);
 				throw new CoreException(status);
 			}
 		}

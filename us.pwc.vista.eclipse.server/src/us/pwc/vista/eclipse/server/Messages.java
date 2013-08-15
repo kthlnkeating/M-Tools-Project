@@ -58,9 +58,7 @@ public class Messages extends NLS {
 	public static String UNABLE_RTN_SAVE;
 	public static String UNABLE_GET_HANDLE;
 	public static String UNEXPECTED_EDITOR_FILE_NULL;
-	public static String UNEXPECTED_EDITOR_FILE_EXT;
 	public static String UNEXPECTED_INTERNAL;
-	public static String UNEXPECTED_OBJECT;
 	public static String WRITE_TO_CONSOLE_ERROR;
 	public static String XINDEX_IN_CONSOLE;
 	

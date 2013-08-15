@@ -8,7 +8,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 
-import us.pwc.vista.eclipse.server.resource.ResourceUtilsExtension;
+import us.pwc.vista.eclipse.server.resource.ResourceUtilExtension;
 
 public class VFPackageRepo implements PackageRepository {
 	private IFile packagesCSVFile;
@@ -21,7 +21,7 @@ public class VFPackageRepo implements PackageRepository {
 	private Map<String,String> loadPackages() {
 		try {
 			Map<String,String> results = new TreeMap<String, String>();
-			IDocument document = ResourceUtilsExtension.getDocument(this.packagesCSVFile);
+			IDocument document = ResourceUtilExtension.getDocument(this.packagesCSVFile);
 			int n = document.getNumberOfLines();
 			String packageDirectory = null;
 			for (int i=1; i<n; ++n) {

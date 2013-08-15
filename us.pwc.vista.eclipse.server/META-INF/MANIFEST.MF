@@ -17,5 +17,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: us.pwc.vista.eclipse.server.command,
  us.pwc.vista.eclipse.server.core,
- us.pwc.vista.eclipse.server.dialog,
- us.pwc.vista.eclipse.server.resource
+ us.pwc.vista.eclipse.server.dialog
