@@ -14,10 +14,13 @@
 // limitations under the License.
 //---------------------------------------------------------------------------
 
-package us.pwc.vista.eclipse.server.resource;
+package us.pwc.vista.eclipse.core.validator;
 
-import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.dialogs.IInputValidator;
 
-public interface IResourceFilter {
-	boolean isValid(IResource resource);
+public class TrueInputValidator implements IInputValidator {
+	@Override
+	public String isValid(String newText) {
+		return null;
+	}
 }

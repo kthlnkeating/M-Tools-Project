@@ -11,8 +11,6 @@ public class Messages extends NLS {
 	public static String EDITOR_FILE_WRONG_PROJECT;
 	public static String ERRORS_FOUND_FOR_FILES;
 	public static String INPUT_DLG_INPUT_MSG;
-	public static String INPUT_DLG_INVALID_MSG;
-	public static String INPUT_DLG_REQUIRED_MSG;	
 	public static String FILE_NOT_SAVED;
 	public static String FILE_SAVED;
 	public static String LOAD_M_RTN_DLG_TITLE;

@@ -17,4 +17,5 @@ Bundle-ActivationPolicy: lazy
 Export-Package: us.pwc.vista.eclipse.core,
  us.pwc.vista.eclipse.core.command,
  us.pwc.vista.eclipse.core.helper,
- us.pwc.vista.eclipse.core.resource
+ us.pwc.vista.eclipse.core.resource,
+ us.pwc.vista.eclipse.core.validator

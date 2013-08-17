@@ -18,8 +18,12 @@ package us.pwc.vista.eclipse.server.dialog;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.ui.statushandlers.StatusManager;
+
+import us.pwc.vista.eclipse.core.VistACorePrefs;
 
 public class ProjectDirViewerFilter extends ViewerFilter {
 	private String projectName; 
@@ -43,7 +47,13 @@ public class ProjectDirViewerFilter extends ViewerFilter {
 				return false;
 			}			
 			if (eRes.getParent().getType() == IResource.PROJECT) {
-				return ! eRes.getName().equals("backups");
+				try {
+					String backupDir = VistACorePrefs.getServerBackupDirectory(project);
+					return ! eRes.getName().equals(backupDir);
+				} catch (CoreException coreException) {
+					StatusManager.getManager().handle(coreException.getStatus(), StatusManager.LOG);
+					return false;
+				}				
 			} else {
 				return true;
 			}

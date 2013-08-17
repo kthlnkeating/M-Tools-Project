@@ -14,32 +14,30 @@
 // limitations under the License.
 //---------------------------------------------------------------------------
 
-package us.pwc.vista.eclipse.server.dialog;
+package us.pwc.vista.eclipse.core.validator;
 
 import org.eclipse.jface.dialogs.IInputValidator;
 
-class BasicRequiredValidator implements IInputValidator {
-	private String requiredMessage;
-	private String invalidMessage;
-	private String regex;
-	
-	public BasicRequiredValidator(String requiredMessage, String invalidMessage, String regex) {
-		super();
-		this.requiredMessage = requiredMessage;
-		this.invalidMessage = invalidMessage;
-		this.regex = regex;
-	}
+import us.pwc.vista.eclipse.core.Messages;
 
+public abstract class InputValidator implements IInputValidator {
+	private boolean entryRequired;
+	
+	public InputValidator(boolean entryRequired) {
+		this.entryRequired = entryRequired;
+	}
+	
+	protected abstract String isValidWhenNotEmpty(String newText);
+		
 	@Override
 	public String isValid(String newText) {
 		if ((newText == null) || newText.isEmpty()) {
-			return this.requiredMessage;
-		}
-		if (this.regex != null) {
-			if (! newText.matches(this.regex)) {
-				return this.invalidMessage;
-			}
-		}
-		return null;			
+			if (this.entryRequired) {
+				return Messages.VAL_ENTRY_REQUIRED;
+			} else {
+				return null;
+			}			
+		}	
+		return this.isValidWhenNotEmpty(newText);
 	}
 }

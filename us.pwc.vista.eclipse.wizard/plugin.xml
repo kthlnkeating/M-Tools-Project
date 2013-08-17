@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="us.pwc.vista.eclipse.wizard.topcategory"
+            class="us.pwc.vista.eclipse.wizard.core.NewVistAFileWizard"
+            icon="platform:/plugin/us.pwc.vista.eclipse.core/icons/m.gif"
+            id="gov.va.med.iss.meditor.wizard.newVistaFile"
+            name="VistA Routine">
+      </wizard>
+      <category
+            id="us.pwc.vista.eclipse.wizard.topcategory"
+            name="VistA">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="us.pwc.vista.eclipse.core.perspective">
+         <newWizardShortcut
+               id="gov.va.med.iss.meditor.wizard.newVistaFile">
+         </newWizardShortcut>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>

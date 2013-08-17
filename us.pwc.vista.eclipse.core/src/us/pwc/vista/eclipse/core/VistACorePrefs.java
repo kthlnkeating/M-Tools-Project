@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.QualifiedName;
 
 public class VistACorePrefs {
 	private static final String BACKUP_DIR_PREF_NAME = "backupdir"; //$NON-NLS-1$
-	private static final String BACKUP_DIR_DEFAULT = "backups"; //$NON-NLS-1$
+	private static final String BACKUP_DIR_DEFAULT = ".backups"; //$NON-NLS-1$
 	private static final QualifiedName BACKUP_DIR = new QualifiedName(VistACorePlugin.PLUGIN_ID, BACKUP_DIR_PREF_NAME);
 
 	public static String getServerBackupDirectory(IProject project) throws CoreException {

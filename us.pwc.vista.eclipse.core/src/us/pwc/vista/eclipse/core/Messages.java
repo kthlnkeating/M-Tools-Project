@@ -14,6 +14,12 @@ public class Messages extends NLS {
 	public static String SEL_FILE_PROJECT_MISMATCH;
 	public static String SEL_FILE_UNEXPECTED_OBJECT;
 	public static String SEL_FILE_NOT_M;
+
+	public static String VAL_ENTRY_NOT_NUMBER;
+	public static String VAL_ENTRY_REQUIRED;	
+	public static String VAL_INVALID_INPUT;
+
+	public static String WORD_DATE;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

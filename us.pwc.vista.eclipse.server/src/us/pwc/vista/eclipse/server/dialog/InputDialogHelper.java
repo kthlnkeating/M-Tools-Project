@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
+import us.pwc.vista.eclipse.core.validator.RegexInputValidator;
 import us.pwc.vista.eclipse.server.Messages;
 
 public class InputDialogHelper {
@@ -31,10 +32,8 @@ public class InputDialogHelper {
 	private static String getRequiredEntity(String title, String entityName, String regex) {
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		String inputMessage  = Messages.bind(Messages.INPUT_DLG_INPUT_MSG, entityName);
-		String requiredMessage = Messages.INPUT_DLG_REQUIRED_MSG; 
-		String invalidMessage = Messages.bind(Messages.INPUT_DLG_INVALID_MSG, entityName);
 		
-		IInputValidator validator = new BasicRequiredValidator(requiredMessage, invalidMessage, regex);
+		IInputValidator validator = new RegexInputValidator(true, M_ROUTINE_NAME_REGEX, entityName);
 		
 		final InputDialog dialog = new InputDialog(shell, title, inputMessage, "", validator);
 		Display.getDefault().syncExec(new Runnable() {
