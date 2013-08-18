@@ -3,6 +3,7 @@ package gov.va.med.iss.connection.actions;
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.security.vistalink.EclipseConnection;
 import gov.va.med.foundations.security.vistalink.VistaKernelPrincipalImpl;
+import gov.va.med.iss.connection.preferences.ServerConnectionData;
 
 /***
  * This class holds data related to servers which may not be the primary server.
@@ -14,12 +15,9 @@ import gov.va.med.foundations.security.vistalink.VistaKernelPrincipalImpl;
  *
  */
 public class ConnectionData {
-
 	private String serverAddress = "";
 	private String serverPort = "";
 	private String serverName = "";
-	@SuppressWarnings("unused")
-	private String serverProject = "";
 	private VistaLinkConnection connection = null;
 	private VistaKernelPrincipalImpl principal = null;
 	private EclipseConnection eclipseConnection = null;
@@ -79,4 +77,13 @@ public class ConnectionData {
 	public void setEclipseConnection(EclipseConnection connection) {
 		eclipseConnection = connection;
 	}
+	
+	public boolean matches(ServerConnectionData data) {		
+		if (this.getServerPort().equalsIgnoreCase(data.port) && this.getServerAddress().equalsIgnoreCase(data.serverAddress)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }

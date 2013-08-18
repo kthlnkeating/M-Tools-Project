@@ -29,8 +29,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -50,73 +48,15 @@ public class EclipseConnection {
 	
 	@SuppressWarnings("unused")
 	private static Logger logger;
-//	private JFrame topFrame;
 	private Frame topFrame;
 	private VistaKernelPrincipalImpl userPrincipal;
 	private EclipseLoginModule eclipseLoginModule;
-	@SuppressWarnings("unused")
-	private IWorkbenchWindow window;
 	
-	@SuppressWarnings("unused")
-	private class BasicDialog extends Dialog {
-		
-		protected Composite basicComposite = null; 
-		
-		private BasicDialog(Shell parentShell){
-			super(parentShell);
-		}
-		
-		protected Control createDialogArea(Composite parent) {
-			Composite main = new Composite(parent, SWT.EMBEDDED);
-			basicComposite = main;
-			return main;
-		}
-		public Composite getBasicComposite() {
-			return basicComposite;
-		}
-	}
-
 	@SuppressWarnings("rawtypes")
-	public VistaKernelPrincipalImpl getConnection(String server, String port, IWorkbenchWindow window) {
-		this.window = window;
-/*
-		BasicDialog basicDialog = new BasicDialog(window.getShell());
-		basicDialog.createDialogArea(basicDialog.getParent());
-		Composite basicComposite = basicDialog.getBasicComposite();
-
-//		topFrame = SWT_AWT.new_Frame(basicComposite);
-			Panel panel = new Panel();
-
-//		topFrame = new JFrame("VistALink Start Up");
-		topFrame = new Frame();
-			topFrame.setName("VistALink Start Up");
-			
-		topFrame.getAccessibleContext().setAccessibleDescription(
-			"Provides for VistALink Start Up.");
-
-		//add contents to it.
-		Component contents = createComponents();
-//		topFrame.getContentPane().add(contents, BorderLayout.CENTER);
-		topFrame.add(contents, BorderLayout.CENTER);
-
-
-		// set up "close" event to force logoff if the window is closed
-//		topFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		topFrame.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				logout();
-				System.exit(0);
-			}
-		});
-
-		// pack frame, set position, set default focus, make it visible
-		topFrame.pack();
-		topFrame.setSize(600, 325); // (600, 600);
-//		setFramePosition();
-//		serverComboBox.requestFocusInWindow();
-		topFrame.setVisible(true);
-*/
-		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+	public VistaKernelPrincipalImpl getConnection(String server, String port) {
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		Shell shell = window.getShell();
+		
 		Composite composite = new Composite(shell, SWT.EMBEDDED);
 		composite.setBounds(20, 20, 300, 200);
 		composite.setLayout(new RowLayout( ));

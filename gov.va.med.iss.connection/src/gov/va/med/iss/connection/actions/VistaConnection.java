@@ -15,9 +15,12 @@ import gov.va.med.iss.connection.preferences.ServerConnectionData;
 import gov.va.med.iss.connection.utilities.MPiece;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -27,6 +30,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.statushandlers.StatusManager;
 
 /**
  * Our sample action implements workbench action delegate.
@@ -37,8 +41,6 @@ import org.eclipse.ui.PlatformUI;
  * @see IWorkbenchWindowActionDelegate
  */
 public class VistaConnection {
-	public IWorkbenchWindow window;
-	public static IWorkbenchWindow windowx;
 	/**
 	 * The constructor.
 	 */
@@ -46,8 +48,8 @@ public class VistaConnection {
 	private static EclipseConnection eclipseConnection = null;
 	private static VistaKernelPrincipalImpl userPrincipal = null;
 	private static VistaKernelPrincipalImpl primaryPrincipal = null;
-	@SuppressWarnings("rawtypes")
-	private static ArrayList connectionList = new ArrayList(20);
+	
+	private static List<ConnectionData> connectionList = new ArrayList<ConnectionData>();
 	
 	private static ServerConnectionData primaryData = new ServerConnectionData();
 	private static VistaLinkConnection primaryConnection = null;
@@ -72,8 +74,6 @@ public class VistaConnection {
 	
 	public static void run(IWorkbenchWindow window) {
 		VistaConnection vistaConnection = new VistaConnection();
-		vistaConnection.window = window;
-		windowx = window;
 		vistaConnection.run();
 	}
 	
@@ -111,7 +111,7 @@ public class VistaConnection {
 							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 							"Meditor Plug-in Routine Load Error",
 							"An error occured while checking for whether the current\n" +
-							"server "+VistaConnection.getCurrentConnection()+" is a\n"+
+							"server is a\n"+
 							"production server or not.");
 				}
 			}
@@ -128,7 +128,7 @@ public class VistaConnection {
 				// if lost, it notifies user to sign on again, and removes
 				// current connection
 				// 091029 if (! checkConnection(primaryConnection, primaryServerName, primaryPort, primaryServerAddress)) {
-		        if (! checkConnection(primaryConnection, primaryData.port, primaryData.serverAddress)) {
+		        if (! checkConnection(primaryConnection, primaryData)) {
 					primaryConnection = null;
 					primaryConnection = getConnection();
 				}
@@ -143,8 +143,7 @@ public class VistaConnection {
 	
 	// JLI 100226 - connection should only depend on port and url, 
 	// removed other factors (name and projectname) 
-	private static boolean checkConnection(VistaLinkConnection connection,
-			String port, String url) {
+	private static boolean checkConnection(VistaLinkConnection connection, ServerConnectionData serverData) {
 		if (connection == null)
 			return false;
 		RpcRequest vReq = null;
@@ -157,8 +156,7 @@ public class VistaConnection {
 		if (result) {
 			vReq.setUseProprietaryMessageFormat(false);
 			try {
-				@SuppressWarnings("unused")
-				RpcResponse vResp = connection.executeRPC(vReq);
+				connection.executeRPC(vReq);
 			} catch (Exception e) {
 				result = false;
 			}
@@ -170,32 +168,24 @@ public class VistaConnection {
 					window.getShell(),
 					"VistA Connection Error",
 					"The connection to the server has been lost, sign in again");
-            ConnectionData connData = getMatchingConnection(port, url); // JLI 100226 changed for change in method, since connection depends only on port and url
+            ConnectionData connData = getMatchingConnection(serverData);
 			removeConnection(connData);
 		}
 		return result;
 	}
 	
-    @SuppressWarnings("unchecked")
 	public static VistaLinkConnection getConnection(ServerConnectionData data) {
 		currConnection = null;
-		for (int i=0; i<connectionList.size(); i++) {
-			if (! (connectionList.get(i) == null) ) {
-				ConnectionData connData = (ConnectionData)connectionList.get(i);
-				if ((connData.getServerAddress().compareTo(data.serverAddress) == 0) &&
-						connData.getServerPort().compareTo(data.port) == 0) {
-					// 080523 added functionality to check for loss of connection
-					// if lost, it notifies user to sign on again, and removes
-					// current connection
-					setServer(connData);
-					if (! checkConnection(currConnection, data.port, data.serverAddress)) {
-						currConnection = null;
-					}
-					if (currConnection != null)
-						return currConnection;
-				}
+		ConnectionData matchingConnData = getMatchingConnection(data);
+		if (matchingConnData != null) {
+			setServer(matchingConnData);
+			if (! checkConnection(currConnection, data)) {
+				currConnection = null;
 			}
-		}
+			if (currConnection != null)
+				return currConnection;
+		}		
+
 		VistaConnection vistaConnection = new VistaConnection(data);
 		vistaConnection.run();
 		// only add connection if connection has been made
@@ -218,15 +208,6 @@ public class VistaConnection {
 			}
 		}
 		return currConnection;
-	}
-	
-	public static VistaKernelPrincipalImpl getPrincipal() {
-		if (userPrincipal == null) {
-			VistaConnection vistaConnection = new VistaConnection();
-			vistaConnection.run();
-			vistaConnection = null;
-		}
-		return userPrincipal;
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -253,13 +234,12 @@ public class VistaConnection {
 				String[] servers = SecondaryServerSelectionDialogData.getAllServers();
 				int totCount = 0;
 				for (int i=0; i<servers.length; i++) {
-					@SuppressWarnings("unused")
 					String name = MPiece.getPiece(servers[i],";",2);
 					String port = MPiece.getPiece(servers[i],";",4);
 					String url = MPiece.getPiece(servers[i],";",3);
-                    @SuppressWarnings("unused")
 					String project = MPiece.getPiece(servers[i],";",5);
-                    ConnectionData connData = getMatchingConnection(port,url); // JLI 100226 changed for change in method, since connection depends only on port and url
+                    ServerConnectionData data = new ServerConnectionData(url, name, port, project);                    
+                    ConnectionData connData = getMatchingConnection(data);
 					if (! (connData == null)) {
 						totCount++;
 					}
@@ -267,13 +247,12 @@ public class VistaConnection {
 				String[] activeServers = new String[totCount];
 				totCount = 0;
 				for (int i=0; i<servers.length; i++) {
-					@SuppressWarnings("unused")
 					String name = MPiece.getPiece(servers[i],";",2);
 					String port = MPiece.getPiece(servers[i],";",4);
 					String url = MPiece.getPiece(servers[i],";",3);
-                    @SuppressWarnings("unused")
 					String project = MPiece.getPiece(servers[i],";",5); // JLI 090908 added for Source Code Version Control
-                    ConnectionData connData = getMatchingConnection(port,url); // JLI 100226
+                    ServerConnectionData data = new ServerConnectionData(url, name, port, project);                    
+                    ConnectionData connData = getMatchingConnection(data); // JLI 100226
 					if (! (connData == null)) {
 						activeServers[totCount++] = servers[i];
 					}
@@ -282,13 +261,12 @@ public class VistaConnection {
 				SecondaryServerSelectionDialogData data = secondary.open("DISCONNECT",activeServers);
 				checkedServers = data.getCheckedList();
 				for (int i=0; i<checkedServers.length; i++) {
-					@SuppressWarnings("unused")
 					String name = MPiece.getPiece(checkedServers[i],";",1);
 					String port = MPiece.getPiece(checkedServers[i],";",3);
 					String url = MPiece.getPiece(checkedServers[i],";",2);
-                    @SuppressWarnings("unused")
 					String project = MPiece.getPiece(checkedServers[i],";",4); // JLI 090908 added for Source Code Version Control
-                    ConnectionData connData = getMatchingConnection(port,url); // JLI 110914
+                    ServerConnectionData data2 = new ServerConnectionData(url, name, port, project);                    
+                    ConnectionData connData = getMatchingConnection(data2); // JLI 110914
 					if (! (connData == null)) {
 						removeConnection(connData);
 					}
@@ -300,13 +278,7 @@ public class VistaConnection {
 	static private void removeConnection(ConnectionData connData) {
 		EclipseConnection econnect = connData.getEclipseConnection();
 		econnect.logout();
-		@SuppressWarnings("unused")
-		VistaKernelPrincipalImpl principal = connData.getPrincipal();
-		@SuppressWarnings("unused")
-		VistaLinkConnection vlConnection = connData.getConnection();
-		econnect = null;
-		principal = null;
-		vlConnection = null;
+		
 		if ((currentData.port.compareTo(connData.getServerPort()) == 0) &&
 				(currentData.serverAddress.compareTo(connData.getServerAddress()) == 0)){
 			eclipseConnection = null;
@@ -330,27 +302,7 @@ public class VistaConnection {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run() {
-		if (! (window == null)) {
-			windowx = window;
-		}
-		else if (! (windowx == null)) {
-			window = windowx;
-		}
-		IWorkbench wb = PlatformUI.getWorkbench();
-		window = wb.getActiveWorkbenchWindow();
-		if (window == null) {
-			MessageDialog.openInformation(
-					window.getShell(),
-					"VistA Connection Error",
-					"window not defined in run()");
-		}
 		if (! (currConnection == null)) {
-/*
-			MessageDialog.openInformation(
-					window.getShell(),
-					"Vista Connection",
-					"Already connected to Server: "+currServerAddress+" at Port: "+currPort);
-*/
 		}
 		else if (currentData.serverAddress.compareTo("") == 0) {
 			try {
@@ -364,7 +316,7 @@ public class VistaConnection {
 			
 			}
 		}
-		if ((currentData.serverAddress.compareTo("") != 0) && (getMatchingConnection(currentData.port, currentData.serverAddress) == null)){
+		if ((currentData.serverAddress.compareTo("") != 0) && (getMatchingConnection(currentData) == null)){
 //				PropertyConfigurator.configure("log4jConfig.properties");
 //				DOMConfigurator.configure("%ECLIPSEHOME%/plugins/gov.va.med.iss.connection_0.9.0/log4jConfig.xml");
 			BasicConfigurator.configure();
@@ -375,48 +327,48 @@ public class VistaConnection {
 				eclipseConnection = new EclipseConnection();
 			} catch (Exception e) {
 				eclipseConnection = null;
-				MessageDialog.openInformation(
-						window.getShell(),
-						"VistA Connection Error",
-						"Error in EclipseConnection creation "+e.getMessage());
-				System.out.println("Error in EclipseConnection creation: "+e.getMessage());
+				IStatus status = new Status(IStatus.ERROR, VLConnectionPlugin.PLUGIN_ID, "VistA connection error in EclipseConnection creation.", e);
+				StatusManager.getManager().handle(status, StatusManager.SHOW);
 			}
 			if (!(eclipseConnection == null)) {
 				try {  // The following line gets the connection to the server
-					userPrincipal = eclipseConnection.getConnection(currentData.serverAddress, currentData.port, window);
+					userPrincipal = eclipseConnection.getConnection(currentData.serverAddress, currentData.port);
 				} catch (Exception e) {
-					MessageDialog.openInformation(
-							window.getShell(),
-							"VistA Connection Error",
-							"Error in eclipseConnection.getConnection "+e.getMessage());
-					System.out.println("Error in eclipseConnection.getConnection: "+e.getMessage());
+					IStatus status = new Status(IStatus.ERROR, VLConnectionPlugin.PLUGIN_ID, "VistA connection error in eclipseConnection.getConnection.", e);
+					StatusManager.getManager().handle(status, StatusManager.SHOW);
 					userPrincipal = null;
 				}
 				if (!(userPrincipal == null)) {
 					try {
 						currConnection = userPrincipal.getAuthenticatedConnection();
 					} catch (Exception e) {
-						MessageDialog.openInformation(
-								window.getShell(),
-								"VistA Connection Error",
-								"Error in userPrincipal.getAuthenicatedConnection()"+e.getMessage());
-						System.out.println("Error in userPrincipal.getAuthen...: "+e.getMessage());
+						IStatus status = new Status(IStatus.ERROR, VLConnectionPlugin.PLUGIN_ID, "VistA connection error in userPrincipal.getAuthenicatedConnection().", e);
+						StatusManager.getManager().handle(status, StatusManager.SHOW);
 					}
 				}
 			}
 		}
 	}
 	
-	static public void getDefaultPrefs() throws Exception {
+	static public ServerConnectionData getDefaultConnectionData() {
 		IPreferencesService prefService = Platform.getPreferencesService();
-		defaultData.serverName = prefService.getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_SERVER_NAME, "", null);
-		// JLI 110127 if default name is empty, show message and then exit
+
+		String serverName = prefService.getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_SERVER_NAME, "", null);
+		String serverAddress = prefService.getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_SERVER, "", null);
+		String port = MPiece.getPiece(prefService.getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_PORT, "", null),";");
+		String serverProject = MPiece.getPiece(prefService.getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_PORT, "", null),";",2);
+
+		return new ServerConnectionData(serverAddress, serverName, port, serverProject);
+	}
+	
+	
+	static public void getDefaultPrefs() throws Exception {
+		defaultData = getDefaultConnectionData();
 		if (defaultData.serverName == "") {
 			ShowConnectionServerMsg();
 		}
-		currentData.serverName = defaultData.serverName;
 		if (primaryData.serverName.compareTo("") != 0) {
-			if (primaryData.serverName.compareTo(currentData.serverName) != 0) {
+			if (primaryData.serverName.compareTo(defaultData.serverName) != 0) {
 	            IWorkbench wb = PlatformUI.getWorkbench();
 	            IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
 	            MessageDialog.openInformation(
@@ -426,13 +378,7 @@ public class VistaConnection {
 	            clearPrimary();
 			}
 		}
-		defaultData.serverAddress = prefService.getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_SERVER, "", null);
-		currentData.serverAddress = defaultData.serverAddress;
-		defaultData.port = MPiece.getPiece(prefService.getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_PORT, "", null),";");
-		currentData.port = defaultData.port;
-		defaultData.serverProject = prefService.getString(VLConnectionPlugin.PLUGIN_ID, ConnectionPreferencePage.P_PORT, "", null);
-		defaultData.serverProject = MPiece.getPiece(defaultData.serverProject,";",2);
-		currentData.serverProject = defaultData.serverProject;
+		currentData = new ServerConnectionData(defaultData);
 		setPrimaryServer();
 	}
 	
@@ -486,15 +432,14 @@ public class VistaConnection {
 		currentData.serverName = connData.getServerName();
 	}
 	
-	@SuppressWarnings("unchecked")
 	static public void setPrimaryServer() {
 		primaryConnection = currConnection;
 		primaryPrincipal = userPrincipal;
 		primaryData = new ServerConnectionData(currentData);
-        ConnectionData connData = getMatchingConnection(currentData.port, currentData.serverAddress); // JLI 100226 changed for change in method, since connection depends only on port and url 
+        ConnectionData connData = getMatchingConnection(currentData); 
 		if (connData == null) {
 				currConnection = getConnection(currentData);
-			connData = getMatchingConnection(currentData.port, currentData.serverAddress); // JLI 100226 changed for change in method, since connection depends only on port and url
+			connData = getMatchingConnection(currentData);
 			if ((connData == null) && (currConnection != null)) {
 				connData = new ConnectionData();
 				connData.setServerName(currentData.serverName);
@@ -528,42 +473,16 @@ public class VistaConnection {
         return currentData.serverProject;
 	}
 	
-	static public VistaLinkConnection getCurrentConnection() {
-		if (currConnection == null) {  // must be primary connection
-			currConnection = VistaConnection.getConnection();
-			if (currConnection == null) {
-				return null;
-			}
-		}
-		currConnection = getMatchingConnection(currentData.port, currentData.serverAddress).getConnection();
-		if (currConnection == null) {
-			currConnection = getConnection(currentData);
-		}
-		if (currConnection != null) {
-			if (! checkConnection(currConnection, primaryData.port, primaryData.serverAddress)) {
-				currConnection = null;
-				currConnection = getCurrentConnection();
-			}
-		}
-		return currConnection;
-	}
-
 	public static void doDispose() {
 		if (! (currConnection == null)) {
 			disconnect();
 		}
 	}
 
-	static public ConnectionData getMatchingConnection(String portValue, String serverURL) { // JLI 090908 added for Source Code Version Control) {
-		for (int i=0; i<connectionList.size(); i++) {
-			if (! (connectionList.get(i) == null) ) {
-				ConnectionData connData = (ConnectionData)connectionList.get(i);
-				@SuppressWarnings("unused")
-				String serverPort = connData.getServerPort();
-				@SuppressWarnings("unused")
-				String serverAddress = connData.getServerAddress();
-				if (connData.getServerPort().equalsIgnoreCase(portValue)
-						&& connData.getServerAddress().equalsIgnoreCase(serverURL)){ // JLI 090908 added for Source Code Version Control
+	static public ConnectionData getMatchingConnection(ServerConnectionData serverData) {
+		for (ConnectionData connData : connectionList) {
+			if (connData != null) {
+				if (connData.matches(serverData)) {
 					return connData;
 				}
 			}
