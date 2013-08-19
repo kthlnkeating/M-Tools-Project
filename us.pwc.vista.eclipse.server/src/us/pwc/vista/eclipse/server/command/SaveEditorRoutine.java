@@ -16,13 +16,14 @@
 
 package us.pwc.vista.eclipse.server.command;
 
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
-import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VLConnectionPlugin;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -46,19 +47,13 @@ public class SaveEditorRoutine extends AbstractHandler {
 			return null;
 		}
 		
-		VistaLinkConnection connection = VistaConnection.getConnection();
-		if (connection == null) {
+		IProject project = file.getProject();
+		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData(project);
+		if (connectionData == null) {
 			return null;
 		}
-
-		//String projectName = VistaConnection.getPrimaryProject();
-		//if (! file.getProject().getName().equals(projectName)) {
-		//	String message = Messages.bind2(Messages.PROJECT_INVALID_FILE, projectName, file.getName(), file.getProject().getName());
-		//	MessageDialogHelper.showError(Messages.SAVE_MSG_TITLE, message);
-		//	return null;
-		//}
-
-		IStatus status = SaveRoutineEngine.save(connection, file);
+		
+		IStatus status = SaveRoutineEngine.save(connectionData, file);
 		MessageDialogHelper.logAndShow(Messages.SAVE_MSG_TITLE, status);
 		return null;
 	}

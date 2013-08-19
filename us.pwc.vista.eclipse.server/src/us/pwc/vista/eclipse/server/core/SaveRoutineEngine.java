@@ -5,7 +5,7 @@ import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
-import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.connection.ConnectionData;
 import gov.va.med.iss.connection.preferences.ServerData;
 import gov.va.med.iss.connection.utilities.MPiece;
 
@@ -80,10 +80,9 @@ public class SaveRoutineEngine {
 		}
 	}
 	
-	private static StringBuilder startConsoleMessage(String routineName, BackupSynchResult synchResult) {
+	private static StringBuilder startConsoleMessage(String routineName, ServerData serverData, BackupSynchResult synchResult) {
 		StringBuilder result = new StringBuilder();
-		ServerData scd = VistaConnection.getServerData();
-		String header = routineName + " saved to: " + scd.serverName + " ("+scd.serverAddress+", "+scd.port+")\n";
+		String header = routineName + " saved to: " + serverData.toUIString() + ")\n";
 		result.append(header);
 		
 		IFile backupFile = synchResult.getFile();
@@ -203,18 +202,13 @@ public class SaveRoutineEngine {
 		return Status.OK_STATUS;
 	}
 	
-	public static IStatus save(VistaLinkConnection connection, IFile file) {
+	public static IStatus save(ConnectionData connectionData, IFile file) {
 		try {
-			//String projectName = VistaConnection.getPrimaryProject();
-			//if (! file.getProject().getName().equals(projectName)) {
-			//	String message = Messages.bind(Messages.EDITOR_FILE_WRONG_PROJECT, file.getName(), projectName);
-			//	IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message);
-			//	return status;
-			//}
+			VistaLinkConnection connection = connectionData.getConnection();
 
 			ListRoutineBuilder routineContent = getListRoutineBuilder(file);
 
-			MServerRoutine serverRoutine = MServerRoutine.load(connection, file);
+			MServerRoutine serverRoutine = MServerRoutine.load(connectionData, file);
 			String routineName = serverRoutine.getRoutineName();
 			BackupSynchResult synchResult = serverRoutine.getSynchResult();
 			IFile backupFile = synchResult.getFile();
@@ -229,7 +223,7 @@ public class SaveRoutineEngine {
 				return status;
 			}
 			
-			StringBuilder consoleMessage = startConsoleMessage(routineName, synchResult);
+			StringBuilder consoleMessage = startConsoleMessage(routineName, connectionData.getServerData(), synchResult);
 			return saveRoutineToServer(connection, routineName, routineContent, backupFile, consoleMessage);
 		} catch (CoreException coreException) {
 			IStatus result = coreException.getStatus();

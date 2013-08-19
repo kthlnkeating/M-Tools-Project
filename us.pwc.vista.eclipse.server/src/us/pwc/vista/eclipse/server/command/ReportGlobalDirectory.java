@@ -4,7 +4,8 @@ import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
-import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.med.iss.connection.preferences.ServerData;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -52,19 +53,19 @@ public class ReportGlobalDirectory extends AbstractHandler {
 
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		VistaLinkConnection connection = VistaConnection.getConnection();
-		if (connection == null) {
+		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData();
+		if (connectionData == null) {
 			return null;
 		}
 		
-		ServerData data = VistaConnection.getServerData();
+		ServerData data = connectionData.getServerData();
 		String title = Messages.bind(Messages.DLG_GLOBAL_DIR_TITLE, data.serverAddress, data.port);
 		String namespace = InputDialogHelper.getGlobalNamespace(title);
 		if (namespace == null) {
 			return null;
 		}
 
-		writeGlobalDirectory(connection, namespace);
+		writeGlobalDirectory(connectionData.getConnection(), namespace);
 		return null;
 	}
 }

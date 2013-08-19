@@ -21,6 +21,7 @@ import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
+import gov.va.med.iss.connection.ConnectionData;
 
 import java.io.UnsupportedEncodingException;
 import java.util.StringTokenizer;
@@ -233,15 +234,15 @@ public class MServerRoutine {
 		}
 	}
 	
-	private static MServerRoutine load(VistaLinkConnection connection, IFile file, String routineName) throws LoadRoutineException, BackupSynchException {
-		String content = load(connection, routineName);
+	private static MServerRoutine load(ConnectionData connectionData, IFile file, String routineName) throws LoadRoutineException, BackupSynchException {
+		String content = load(connectionData.getConnection(), routineName);
 		BackupSynchResult synchBackupResult = synchBackupFile(file, content);
 		MServerRoutine result = new MServerRoutine(routineName, content, file, synchBackupResult);
 		return result;
 	}	
 
-	public static MServerRoutine load(VistaLinkConnection connection, IFile file) throws InvalidFileException, LoadRoutineException, BackupSynchException {
+	public static MServerRoutine load(ConnectionData connectionData, IFile file) throws InvalidFileException, LoadRoutineException, BackupSynchException {
 		String routineName = ResourceUtilExtension.getRoutineName(file, "m");
-		return load(connection, file, routineName);
+		return load(connectionData, file, routineName);
 	}
 }

@@ -27,7 +27,7 @@ import org.eclipse.jface.text.BadLocationException;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
 
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
+import gov.va.med.iss.connection.ConnectionData;
 
 public class LoadRoutineEngine {
 	private static CommandResult<MServerRoutine> loadRoutine(MServerRoutine serverRoutine) throws CoreException, BadLocationException, UnsupportedEncodingException {
@@ -43,9 +43,9 @@ public class LoadRoutineEngine {
 		return new CommandResult<MServerRoutine>(serverRoutine, status);
 	}
 	
-	public static CommandResult<MServerRoutine> loadRoutine(VistaLinkConnection connection, IFile file) {
+	public static CommandResult<MServerRoutine> loadRoutine(ConnectionData connectionData, IFile file) {
 		try {			
-			MServerRoutine serverRoutine = MServerRoutine.load(connection, file);
+			MServerRoutine serverRoutine = MServerRoutine.load(connectionData, file);
 			return loadRoutine(serverRoutine);
 		} catch (Throwable t) {
 			IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, t.getMessage(), t);

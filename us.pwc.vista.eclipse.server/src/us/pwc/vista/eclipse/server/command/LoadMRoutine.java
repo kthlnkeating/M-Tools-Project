@@ -16,8 +16,8 @@
 
 package us.pwc.vista.eclipse.server.command;
 
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
-import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.med.iss.connection.preferences.ServerData;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -130,25 +130,25 @@ public class LoadMRoutine extends AbstractHandler {
 			return null;
 		}
 		
-		
-		VistaLinkConnection connection = VistaConnection.getConnection();
-		if (connection == null) {
+
+		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData(project);
+		if (connectionData == null) {
 			return null;
 		}
 		
-		ServerData data = VistaConnection.getServerData();
+		ServerData data = connectionData.getServerData();
 		String title = Messages.bind(Messages.LOAD_M_RTN_DLG_TITLE, data.serverAddress, data.port);
 		String routineName = InputDialogHelper.getRoutineName(title);
 		if (routineName == null) {
 			return null;
 		}
 		
-		IFile fileHandle = getFileHandle(project, VistaConnection.getServerData().serverName, routineName);
+		IFile fileHandle = getFileHandle(project, data.serverName, routineName);
 		if (fileHandle == null) {
 			return null;
 		}
 		
-		CommandResult<MServerRoutine> result = LoadRoutineEngine.loadRoutine(connection, fileHandle);
+		CommandResult<MServerRoutine> result = LoadRoutineEngine.loadRoutine(connectionData, fileHandle);
 		IStatus status = result.getStatus();		
 		if (status.getSeverity() != IStatus.OK) {
 			MessageDialogHelper.logAndShow(Messages.LOAD_MSG_TITLE, status);			

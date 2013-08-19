@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
+import gov.va.med.iss.connection.ConnectionData;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
@@ -149,15 +149,15 @@ public class CommandCommon {
 	}
 	
 	private static class MultipleRoutineLoad extends WorkspaceModifyOperation {
-		private VistaLinkConnection connection;
+		private ConnectionData connectionData;
 		private List<IFile> files;
  		
 		private List<IStatus> statuses;
 		private int overallSeverity;
 		
-		public MultipleRoutineLoad(VistaLinkConnection connection, List<IFile> files) {
+		public MultipleRoutineLoad(ConnectionData connectionData, List<IFile> files) {
 			super();
-			this.connection = connection;
+			this.connectionData = connectionData;
 			this.files = files;
 		}
 
@@ -168,7 +168,7 @@ public class CommandCommon {
 			monitor.beginTask("Load Routines", this.files.size());
 			int i = 0;
 			for (IFile file : this.files) {
-				CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(this.connection, file);
+				CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(this.connectionData, file);
 				String prefixForFile = file.getFullPath().toString() + " -- ";
 				IStatus status = r.getStatus();
 				this.overallSeverity = StatusHelper.updateStatuses(status, VistAServerPlugin.PLUGIN_ID, prefixForFile, this.overallSeverity, this.statuses);
@@ -180,11 +180,11 @@ public class CommandCommon {
 		}
 	}
 	
-	public static void loadRoutines(final VistaLinkConnection connection, final List<IFile> files) {
+	public static void loadRoutines(final ConnectionData connectionData, final List<IFile> files) {
 		try {
 			Shell shell = Display.getDefault().getActiveShell();
 			ProgressMonitorDialog pmd = new ProgressMonitorDialog(shell);
-			MultipleRoutineLoad mrl = new MultipleRoutineLoad(connection, files);
+			MultipleRoutineLoad mrl = new MultipleRoutineLoad(connectionData, files);
 			pmd.run(true, true, mrl);
 	
 			String[] topMessages = new String[]{Messages.MULTI_LOAD_RTN_ERRR, Messages.MULTI_LOAD_RTN_WARN, Messages.MULTI_LOAD_RTN_INFO};

@@ -28,11 +28,7 @@ public class ConnectionPreferencePage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 	
-	//public static final String P_SERVER_NAME = "stringPreference";
-	//public static final String P_SERVER = "serverPreference";
-	//public static final String P_PORT = "portPreference";
 	public static final String P_SERVER_NUM = "Server_Preference_";
-	//public static final String P_PROJECT = "projectPreference"; // JLI 090908 added for Source Code Version Control
 	public static final int SERVER_MAX_NUM = 10;
 
 	public ConnectionPreferencePage() {
@@ -64,7 +60,7 @@ public class ConnectionPreferencePage
  */
 
 	public void createFieldEditors() {
-		addField(new ServerListFieldEditor(P_SERVER_NUM,"Working Servers",getFieldEditorParent()));
+		addField(new ListFieldEditor(P_SERVER_NUM, "Servers:", getFieldEditorParent()));
 	}
 	
 	public void init(IWorkbench workbench) {

@@ -1,4 +1,4 @@
-package gov.va.med.iss.connection.actions;
+package gov.va.med.iss.connection;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.security.vistalink.EclipseConnection;
@@ -26,5 +26,9 @@ public class ConnectionData {
 
 	public EclipseConnection getEclipseConnection() {
 		return eclipseConnection;
+	}
+
+	public String getServerName() {
+		return this.serverData.serverName;
 	}
 }

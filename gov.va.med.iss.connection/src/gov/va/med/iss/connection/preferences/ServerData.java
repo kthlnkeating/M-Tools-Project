@@ -1,5 +1,8 @@
 package gov.va.med.iss.connection.preferences;
 
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
+
 public class ServerData {
     public String serverAddress;
     public String serverName;
@@ -36,6 +39,29 @@ public class ServerData {
     @Override
     public String toString() {
     	return this.serverName + ";" + this.serverAddress + ";" + this.port + ";" + this.serverProject;
+    }
+    
+    public String toUIString() {
+    	return this.serverName + " (" + this.serverAddress + ";" + this.port + ")";    	
+    }
+    
+    public static LabelProvider getLabelProvider() {
+    	LabelProvider result = new LabelProvider() {
+    		@Override
+    		public Image getImage(Object element) {
+    			return null;
+    		}
+    		
+    		@Override
+    		public String getText(Object element) {
+    			if(element instanceof ServerData) {
+    				ServerData sd = (ServerData) element;
+    				return sd.toUIString();
+    			}
+    			return null;
+    		}
+    	};
+    	return result;
     }
     
 }

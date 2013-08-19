@@ -1,7 +1,7 @@
 package us.pwc.vista.eclipse.server.command;
 
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
-import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.med.iss.connection.preferences.ServerData;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -18,12 +18,12 @@ public class ReportRoutineDirectory extends AbstractHandler {
 		
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		VistaLinkConnection connection = VistaConnection.getConnection();
-		if (connection == null) {
+		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData();
+		if (connectionData == null) {
 			return null;
 		}
 		
-		ServerData data = VistaConnection.getServerData();
+		ServerData data = connectionData.getServerData();
 		String title =  Messages.bind(Messages.LOAD_RTNDIR_DLG_TITLE, data.serverAddress, data.port);
 		String namespace = InputDialogHelper.getRoutineNamespace(title);
 		if (namespace == null) {

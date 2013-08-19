@@ -1,7 +1,7 @@
 package gov.va.mumps.debug.core.model;
 
-import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.connection.preferences.ServerData;
+import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.mumps.debug.xtdebug.XtdebugHandler;
 import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
 
@@ -42,21 +42,16 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	private StepResultsVO responseResults;
 	private XtdebugHandler xtdebugHandler;
 	
-	//optimization
-	//private static final Pattern semiPat = Pattern.compile(";");
-	
 	public MDebugRpcProcess(ILaunch launch, String debugEntryTag, Map<String, String> attributes) {
 		initializeAttributes(attributes);
-		xtdebugHandler = new XtdebugHandler(VistaConnection.getConnection());
-		responseResults = xtdebugHandler.startDebug(debugEntryTag);
 		
-		//name = debugEntryTag;
-		ServerData data = VistaConnection.getServerData();
-//		if (VistaConnection.getCurrentServer() != null && !VistaConnection.getCurrentServer().isEmpty()) { //dislike globals like this, want to refactor this to OOP using factories and explicit dependencies in contructors
-		if (data != null) { //dislike globals like this, want to refactor this to OOP using factories and explicit dependencies in contructors
-			//String connStr = ;
-			//String[] pieces = semiPat.split(connStr);
-			name = "VistA Connection: " +data.serverName+ ", " +data.serverAddress+ ":" +data.port;
+		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData();
+		// Needs to be testted
+		
+		if (connectionData != null) { //dislike globals like this, want to refactor this to OOP using factories and explicit dependencies in contructors
+			xtdebugHandler = new XtdebugHandler(connectionData.getConnection());
+			responseResults = xtdebugHandler.startDebug(debugEntryTag);			
+			name = "VistA Connection: " + connectionData.getServerData().toUIString();
 		} else
 			name = "Error: Not connected to VistA";
 		this.launch = launch;

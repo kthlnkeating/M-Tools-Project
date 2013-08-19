@@ -25,7 +25,8 @@ import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
-import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.med.iss.connection.preferences.ServerData;
 import gov.va.med.iss.connection.utilities.MPiece;
 
@@ -243,20 +244,20 @@ public class ReportGlobalListing extends AbstractHandler {
 	
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		VistaLinkConnection connection = VistaConnection.getConnection();
-		if (connection == null) {
+		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData();
+		if (connectionData == null) {
 			return null;
 		}
 		
 		Shell shell = HandlerUtil.getActiveShell(event);
-		ServerData datax = VistaConnection.getServerData();
+		ServerData datax = connectionData.getServerData();
 		String title = Messages.bind(Messages.DLG_GLOBAL_LISTING_TITLE, datax.serverAddress, datax.port);
 		GlobalListingDialog dialog = new GlobalListingDialog(shell, title);
 		int result = dialog.open();
 		if (result == GlobalListingDialog.OK) {
 			GlobalListingData data = dialog.getData();
 			MessageConsoleHelper.writeToConsole(data.globalName, "", true);
-			this.handleGlobalListing(connection, data, "", 0);
+			this.handleGlobalListing(connectionData.getConnection(), data, "", 0);
 		}
 		return null;
 	}

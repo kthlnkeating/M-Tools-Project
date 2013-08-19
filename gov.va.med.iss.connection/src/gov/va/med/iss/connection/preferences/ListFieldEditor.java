@@ -13,13 +13,6 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
-/**
- * 
- * @author vhaisfiveyj
- *
- *  class to generate a List control on a preference page
- *  
- */
 public class ListFieldEditor extends FieldEditor {
 	
 	private String nameBase = "";
@@ -28,13 +21,6 @@ public class ListFieldEditor extends FieldEditor {
 	private Composite panel1;
 	private int initialCount = 0;
 
-/*
-	public ListFieldEditor() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-*/	
 	/**
 	 * name argument is taken as the beginning of the 
 	 *   preference name, an integer value will be appended to
@@ -45,35 +31,37 @@ public class ListFieldEditor extends FieldEditor {
 		nameBase = name;
 	}
 
+	@Override
 	protected void adjustForNumColumns(int numColumns) {
-		// TODO Auto-generated method stub
-
+        GridData gd = (GridData) this.stringList.getLayoutData();
+        if (gd != null) {
+        	gd.horizontalSpan = numColumns - 1;
+        	gd.grabExcessHorizontalSpace = true;
+        }
 	}
 
 	protected void doFillIntoGrid(Composite parent, int numColumns) {
-		// TODO Auto-generated method stub
 		getLabelControl(parent);
-		Composite panel = new Composite(parent,SWT.BORDER);
+
+		Composite panel = new Composite(parent, SWT.BORDER);
         GridData gd = new GridData();
-        gd.horizontalSpan = numColumns - 1;
+        gd.horizontalSpan = numColumns - 2;
         gd.horizontalAlignment = GridData.FILL;
-        gd.grabExcessHorizontalSpace = false;
+        gd.grabExcessHorizontalSpace = true;
         panel.setLayoutData(gd);
 		stringList = new List(panel,SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
 		stringList.setSize(300,200);
 		stringList.setVisible(true);
 		stringList.setEnabled(true);
 		stringList.add("stringList1");
-		panel1 = new Composite(parent,SWT.BORDER);
-        gd = new GridData();
-        gd.horizontalSpan = numColumns - 1;
-        gd.horizontalAlignment = GridData.FILL;
-        gd.grabExcessHorizontalSpace = true;
-        panel.setLayoutData(gd);
+		
+		
+		panel1 = new Composite(parent, SWT.TOP);
+
 		FillLayout fillLayout = new FillLayout();
 		fillLayout.type = SWT.VERTICAL;
 		panel1.setLayout(fillLayout);
-		Button buttonAdd = new Button(panel1,SWT.BORDER | SWT.PUSH);
+		Button buttonAdd = new Button(panel1,  SWT.PUSH);
 		buttonAdd.setText("&Add");
 	    buttonAdd.addListener(SWT.Selection, new Listener() {
 	        public void handleEvent(Event e) {
@@ -84,7 +72,7 @@ public class ListFieldEditor extends FieldEditor {
 	          }
 	        }
 	      });
-	    Button buttonRemove = new Button(panel1 /* getFieldEditorParent() */,SWT.BORDER | SWT.PUSH);
+	    Button buttonRemove = new Button(panel1, SWT.PUSH);
 		buttonRemove.setText("&Remove");
 	    buttonRemove.addListener(SWT.Selection, new Listener() {
 	        public void handleEvent(Event e) {
@@ -98,9 +86,9 @@ public class ListFieldEditor extends FieldEditor {
 	          }
 	        }
 	      });
-		Button buttonSpace = new Button(panel1,SWT.PUSH);
+		Button buttonSpace = new Button(panel1, SWT.PUSH);
 		buttonSpace.setEnabled(false);
-		Button buttonUp = new Button(panel1,SWT.PUSH);
+		Button buttonUp = new Button(panel1, SWT.PUSH);
 		buttonUp.setText("Move &Up");
 	    buttonUp.addListener(SWT.Selection, new Listener() {
 	        public void handleEvent(Event e) {
@@ -117,7 +105,7 @@ public class ListFieldEditor extends FieldEditor {
 	          }
 	        }
 	      });
-		Button buttonDown = new Button(panel1,SWT.PUSH);
+		Button buttonDown = new Button(panel1, SWT.PUSH);
 		buttonDown.setText("Move &Down");
 	    buttonDown.addListener(SWT.Selection, new Listener() {
 	        public void handleEvent(Event e) {
@@ -210,17 +198,8 @@ public class ListFieldEditor extends FieldEditor {
 		}
 	}
 
+	@Override
 	public int getNumberOfControls() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 3;
 	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
