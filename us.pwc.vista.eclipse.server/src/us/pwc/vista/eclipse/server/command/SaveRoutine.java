@@ -21,7 +21,7 @@ import java.util.List;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.connection.utilities.ConnectionUtilities;
+import gov.va.med.iss.connection.preferences.ServerData;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -53,14 +53,15 @@ public class SaveRoutine extends AbstractHandler {
 			return null;
 		}
 
-		String projectName = VistaConnection.getPrimaryProject();
-		List<IFile> selectedFiles = CommandCommon.getSelectedMFiles(event, projectName);
+		//String projectName = VistaConnection.getPrimaryProject();
+		List<IFile> selectedFiles = CommandCommon.getSelectedMFiles(event, "");
 		if (selectedFiles == null) {
 			return null;
 		}
 		
 		if (namespaceFlag) {
-			String title = Messages.bind2(Messages.SAVE_M_RTNS_DLG_TITLE, ConnectionUtilities.getServer(), ConnectionUtilities.getPort(), ConnectionUtilities.getProject());
+			ServerData data = VistaConnection.getServerData();
+			String title =  Messages.bind(Messages.SAVE_M_RTNS_DLG_TITLE, data.serverAddress, data.port);
 			String namespace = InputDialogHelper.getRoutineNamespace(title);
 			if (namespace == null) {
 				return null;

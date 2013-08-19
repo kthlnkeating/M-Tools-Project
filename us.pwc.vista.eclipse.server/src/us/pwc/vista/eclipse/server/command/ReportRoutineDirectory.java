@@ -2,7 +2,7 @@ package us.pwc.vista.eclipse.server.command;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.connection.utilities.ConnectionUtilities;
+import gov.va.med.iss.connection.preferences.ServerData;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -23,7 +23,8 @@ public class ReportRoutineDirectory extends AbstractHandler {
 			return null;
 		}
 		
-		String title =  Messages.bind(Messages.LOAD_RTNDIR_DLG_TITLE, ConnectionUtilities.getServer(), ConnectionUtilities.getPort());
+		ServerData data = VistaConnection.getServerData();
+		String title =  Messages.bind(Messages.LOAD_RTNDIR_DLG_TITLE, data.serverAddress, data.port);
 		String namespace = InputDialogHelper.getRoutineNamespace(title);
 		if (namespace == null) {
 			return null;

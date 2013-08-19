@@ -199,7 +199,6 @@
          </commandParameter>
       </command>
       <command
-            defaultHandler="us.pwc.vista.eclipse.server.command.LoadMRoutine"
             id="us.pwc.vista.eclipse.server.command.loadMRoutine"
             name="Load M Routine">
       </command>
@@ -256,6 +255,10 @@
                   definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
             </reference>
          </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.vista.eclipse.server.command.LoadMRoutine"
+            commandId="us.pwc.vista.eclipse.server.command.loadMRoutine">
       </handler>
    </extension>
 

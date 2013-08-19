@@ -20,14 +20,13 @@ import java.util.List;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.connection.utilities.ConnectionUtilities;
+import gov.va.med.iss.connection.preferences.ServerData;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreePath;
 
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
@@ -62,18 +61,19 @@ public class LoadRoutine extends AbstractHandler {
 			return null;			
 		}
 		
-		String projectName = VistaConnection.getPrimaryProject();
-		if (! folder.getProject().getName().equals(projectName)) {
-			String message = Messages.bind(Messages.CONNECTION_INVALID_PROJECT, projectName);
-			MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, message);
-			return null;						
-		}
+		//String projectName = VistaConnection.getPrimaryProject();
+		//if (! folder.getProject().getName().equals(projectName)) {
+		//	String message = Messages.bind(Messages.CONNECTION_INVALID_PROJECT, projectName);
+		//	MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, message);
+		//	return null;						
+		//}
 	
 		return folder;
 	}
 	
 	private String[] getRoutinesInNamespace() {
-		String title = Messages.bind2(Messages.LOAD_M_RTNS_DLG_TITLE, ConnectionUtilities.getServer(), ConnectionUtilities.getPort(), ConnectionUtilities.getProject());
+		ServerData data = VistaConnection.getServerData();
+		String title = Messages.bind(Messages.LOAD_M_RTNS_DLG_TITLE, data.serverAddress, data.port);
 		String routineNamespace = InputDialogHelper.getRoutineNamespace(title);
 		if (routineNamespace == null) {
 			return null;
@@ -92,7 +92,8 @@ public class LoadRoutine extends AbstractHandler {
 	}
 	
 	private String[] getRoutine() {
-		String title = Messages.bind2(Messages.LOAD_M_RTN_DLG_TITLE, ConnectionUtilities.getServer(), ConnectionUtilities.getPort(), ConnectionUtilities.getProject());
+		ServerData data = VistaConnection.getServerData();
+		String title = Messages.bind(Messages.LOAD_M_RTN_DLG_TITLE, data.serverAddress, data.port);
 		String routineName = InputDialogHelper.getRoutineName(title);
 		if (routineName == null) {
 			return null;
@@ -106,12 +107,12 @@ public class LoadRoutine extends AbstractHandler {
 			if (folder == null) {
 				return null;
 			}
-			IProject project = folder.getProject();
-			if (! project.getName().equals(projectName)) {
-				String message = Messages.bind2(Messages.PROJECT_INVALID_FILE, projectName, folder.getName(), folder.getProject().getName());
-				MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, message);
-				return null;
-			}
+			//IProject project = folder.getProject();
+			//if (! project.getName().equals(projectName)) {
+			//	String message = Messages.bind2(Messages.PROJECT_INVALID_FILE, projectName, folder.getName(), folder.getProject().getName());
+			//	MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, message);
+			//	return null;
+			//}
 		
 			String[] routines = namespaceFlag ? this.getRoutinesInNamespace() : this.getRoutine();
 			if (routines == null) {
@@ -138,8 +139,9 @@ public class LoadRoutine extends AbstractHandler {
 			return null;
 		}
 
-		String projectName = VistaConnection.getPrimaryProject();
-		List<IFile> files = getFiles(event, projectName, namespaceFlag, folderFlag);
+		//String projectName = VistaConnection.getPrimaryProject();
+		//List<IFile> files = getFiles(event, projectName, namespaceFlag, folderFlag);
+		List<IFile> files = getFiles(event, "", namespaceFlag, folderFlag);
 		if (files.size() == 1) {
 			CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connection, files.get(0));
 			MessageDialogHelper.logAndShow(Messages.LOAD_MSG_TITLE, r.getStatus());

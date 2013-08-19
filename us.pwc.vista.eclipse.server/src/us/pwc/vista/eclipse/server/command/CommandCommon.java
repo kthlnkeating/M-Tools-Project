@@ -71,7 +71,7 @@ public class CommandCommon {
 	}
 	
 	private static List<IFile> getMFiles(TreePath[] selections, String projectName) throws CoreException {
-		IResourceFilter filter = new SelectedMFileFilter(projectName);
+		IResourceFilter filter = new SelectedMFileFilter("");
 		FileFillState result = ResourceUtilExtension.getSelectedFiles(selections, filter);
 		String invalids = result.getInvalidResourcesAsString(3, "\n");
 		if (invalids != null) {
@@ -105,7 +105,7 @@ public class CommandCommon {
 			if (paths == null) {
 				return null;
 			} else {
-				List<IFile> files = getMFiles(paths, projectName);
+				List<IFile> files = getMFiles(paths, "");
 				return files;				
 			}
 		} catch (Throwable t) {

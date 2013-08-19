@@ -5,7 +5,7 @@ import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.connection.utilities.ConnectionUtilities;
+import gov.va.med.iss.connection.preferences.ServerData;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -57,7 +57,8 @@ public class ReportGlobalDirectory extends AbstractHandler {
 			return null;
 		}
 		
-		String title = Messages.bind(Messages.DLG_GLOBAL_DIR_TITLE, ConnectionUtilities.getServer(), ConnectionUtilities.getPort());
+		ServerData data = VistaConnection.getServerData();
+		String title = Messages.bind(Messages.DLG_GLOBAL_DIR_TITLE, data.serverAddress, data.port);
 		String namespace = InputDialogHelper.getGlobalNamespace(title);
 		if (namespace == null) {
 			return null;

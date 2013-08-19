@@ -72,4 +72,13 @@
             name="Disconnect From VistA">
       </command>
    </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            category="us.pwc.vista.eclipse.core.project.propertyPage"
+            class="gov.va.med.iss.connection.preferences.ProjectPropertyPage"
+            id="gov.va.med.iss.connection.project.propertyPage"
+            name="Connection">
+      </page>
+   </extension>
 </plugin>

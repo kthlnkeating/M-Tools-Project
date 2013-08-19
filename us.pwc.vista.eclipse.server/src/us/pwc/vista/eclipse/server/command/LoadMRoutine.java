@@ -18,7 +18,7 @@ package us.pwc.vista.eclipse.server.command;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.connection.utilities.ConnectionUtilities;
+import gov.va.med.iss.connection.preferences.ServerData;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -27,14 +27,16 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.statushandlers.StatusManager;
 
 import us.pwc.vista.eclipse.core.VistACorePrefs;
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
@@ -54,28 +56,6 @@ import us.pwc.vista.eclipse.server.preferences.VistAServerPrefs;
 import us.pwc.vista.eclipse.server.preferences.NewFileFolderScheme;
 
 public class LoadMRoutine extends AbstractHandler {
-	private static IProject getProject(String projectName) {
-		try {
-			IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			IWorkspaceRoot root = workspace.getRoot();
-			IProject project = root.getProject(projectName);
-			if (! project.exists()) {
-				project.create(new NullProgressMonitor());
-			}
-			if (! project.isOpen()) {
-				project.open(new NullProgressMonitor());
-			}
-			return project;
-		} catch (CoreException ce) {
-			String message = Messages.bind(Messages.UNABLE_GET_PROJECT, projectName, ce.getMessage());
-			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, message, ce);
-			return null;
-		} catch (Throwable t) {
-			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, t);
-			return null;
-		}
-	}
-	
 	private static IFile getExistingFileHandle(IProject project, String routineName) throws CoreException {
 		String backupDirectory = VistACorePrefs.getServerBackupDirectory(project);
 		FileSearchVisitor visitor = new FileSearchVisitor(routineName + ".m", backupDirectory);
@@ -83,7 +63,7 @@ public class LoadMRoutine extends AbstractHandler {
 		return visitor.getFile();
 	}
 	
-	public static IFile getNewFileHandle(IProject project, String routineName) throws CoreException {		
+	public static IFile getNewFileHandle(IProject project, String serverNameIn, String routineName) throws CoreException {		
 		NewFileFolderScheme locationScheme = VistAServerPrefs.getNewFileFolderScheme(project);
 		switch (locationScheme) {
 		case NAMESPACE_SPECIFIED:
@@ -99,7 +79,7 @@ public class LoadMRoutine extends AbstractHandler {
 		case PROJECT_ROOT:
 			boolean serverNameToFolder = VistAServerPrefs.getAddServerNameSubfolder(project);
 			int namespaceDigits = VistAServerPrefs.getAddNamespaceCharsSubfolder(project);
-			String serverName = serverNameToFolder ? VistaConnection.getPrimaryServerName() : null;
+			String serverName = serverNameToFolder ? serverNameIn : null;
 			PreferencesPathResolver ppr = new PreferencesPathResolver(serverName, namespaceDigits);
 			return ppr.getFileHandle(project, routineName);
 		default:
@@ -113,11 +93,11 @@ public class LoadMRoutine extends AbstractHandler {
 		}
 	}
 
-	private static IFile getFileHandle(IProject project, String routineName) throws ExecutionException {
+	private static IFile getFileHandle(IProject project, String serverName, String routineName) throws ExecutionException {
 		try {
 			IFile fileHandle = getExistingFileHandle(project, routineName);
 			if (fileHandle == null) {
-				return getNewFileHandle(project, routineName);
+				return getNewFileHandle(project, serverName, routineName);
 			}
 			return fileHandle;
 		} catch (CoreException coreException) {
@@ -126,26 +106,44 @@ public class LoadMRoutine extends AbstractHandler {
 		}
 	}
 		
+	private IProject extractProject(ISelection selection) {
+		if (! (selection instanceof IStructuredSelection)) {
+			return null;
+		}
+		IStructuredSelection ss = (IStructuredSelection) selection;
+		Object element = ss.getFirstElement();
+		if (element instanceof IResource) return ((IResource) element).getProject();
+		if (!(element instanceof IAdaptable)) return null;
+		IAdaptable adaptable = (IAdaptable)element;
+		Object adapter = adaptable.getAdapter(IResource.class);
+		if (adapter == null) return null;
+		return ((IResource) adapter).getProject();
+	}
+	
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+		IProject project = extractProject(selection);
+		if (project == null) {			
+			IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, "Please a select a project.");
+			StatusManager.getManager().handle(status, StatusManager.SHOW);
+			return null;
+		}
+		
+		
 		VistaLinkConnection connection = VistaConnection.getConnection();
 		if (connection == null) {
 			return null;
 		}
 		
-		String title = Messages.bind2(Messages.LOAD_M_RTN_DLG_TITLE, ConnectionUtilities.getServer(), ConnectionUtilities.getPort(), ConnectionUtilities.getProject());
+		ServerData data = VistaConnection.getServerData();
+		String title = Messages.bind(Messages.LOAD_M_RTN_DLG_TITLE, data.serverAddress, data.port);
 		String routineName = InputDialogHelper.getRoutineName(title);
 		if (routineName == null) {
 			return null;
 		}
 		
-		String projectName = VistaConnection.getPrimaryProject();
-		IProject project = getProject(projectName);
-		if (project == null) {
-			return null;
-		}
-		
-		IFile fileHandle = getFileHandle(project, routineName);
+		IFile fileHandle = getFileHandle(project, VistaConnection.getServerData().serverName, routineName);
 		if (fileHandle == null) {
 			return null;
 		}

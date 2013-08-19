@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -29,11 +28,11 @@ public class ConnectionPreferencePage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 	
-	public static final String P_SERVER_NAME = "stringPreference";
-	public static final String P_SERVER = "serverPreference";
-	public static final String P_PORT = "portPreference";
+	//public static final String P_SERVER_NAME = "stringPreference";
+	//public static final String P_SERVER = "serverPreference";
+	//public static final String P_PORT = "portPreference";
 	public static final String P_SERVER_NUM = "Server_Preference_";
-	public static final String P_PROJECT = "projectPreference"; // JLI 090908 added for Source Code Version Control
+	//public static final String P_PROJECT = "projectPreference"; // JLI 090908 added for Source Code Version Control
 	public static final int SERVER_MAX_NUM = 10;
 
 	public ConnectionPreferencePage() {
@@ -52,12 +51,6 @@ public class ConnectionPreferencePage
  */
 	private void initializeDefaults() {
 		IPreferenceStore store = getPreferenceStore();
-		String str = store.getString(P_SERVER_NUM+1);
-		if (str.compareTo("") == 0) {
-			store.setValue(P_SERVER_NAME,"Primary");
-			str = "Primary;"+store.getString(P_SERVER)+";"+store.getString(P_PORT)+";"+store.getString(P_PROJECT);
-			store.setValue(P_SERVER_NUM+1,str);
-		}
 		for (int i=1; i<=SERVER_MAX_NUM; i++) {
 			store.setDefault(P_SERVER_NUM+i,"");
 		}
@@ -71,15 +64,6 @@ public class ConnectionPreferencePage
  */
 
 	public void createFieldEditors() {
-		StringFieldEditor strField = new StringFieldEditor(P_SERVER_NAME,"Primary Server Name:", getFieldEditorParent());
-		strField.setEnabled(false,getFieldEditorParent());
-		addField(strField);
-		strField = new StringFieldEditor(P_SERVER, "Primary Server Address:", getFieldEditorParent());
-		strField.setEnabled(false,getFieldEditorParent());
-		addField(strField);
-		strField = new StringFieldEditor(P_PORT, "Primary Port number:", getFieldEditorParent());
-		strField.setEnabled(false,getFieldEditorParent());
-		addField(strField);
 		addField(new ServerListFieldEditor(P_SERVER_NUM,"Working Servers",getFieldEditorParent()));
 	}
 	
@@ -94,7 +78,7 @@ public class ConnectionPreferencePage
 	 *          for defined servers
 	 *         The first entry is the primary server
 	 */
-	public static ArrayList getServerList() {
+	public static ArrayList<String> getServerList() {
 		IPreferenceStore store = VLConnectionPlugin.getDefault().getPreferenceStore();
 		ArrayList array = new ArrayList(SERVER_MAX_NUM);
 		String str = " ";

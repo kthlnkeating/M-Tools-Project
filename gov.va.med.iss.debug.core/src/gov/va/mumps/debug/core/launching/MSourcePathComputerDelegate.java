@@ -1,18 +1,10 @@
 package gov.va.mumps.debug.core.launching;
 
-import gov.va.med.iss.connection.actions.VistaConnection;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
-import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer;
 
 public class MSourcePathComputerDelegate implements ISourcePathComputerDelegate {
@@ -55,27 +47,27 @@ public class MSourcePathComputerDelegate implements ISourcePathComputerDelegate 
 		 * Update3: backup folder is only applicable to the mcode project.
 		 */
 		
-		String currentPojrect = VistaConnection.getCurrentProject();
+		//String currentPojrect = VistaConnection.getCurrentProject();
 		//IProject proj = ResourcesPlugin.getWorkspace().getRoot().getProject(currentPojrect);
 //		IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(currentPojrect);
 //		URI uri = resource.getLocationURI();
 //		System.out.println(uri.toString());
 		
-		ISourceContainer sourceContainer = null;
-		IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(currentPojrect));
-		if (resource != null) {
-			IContainer container = resource.getParent();
-			if (container.getType() == IResource.PROJECT) {
-				sourceContainer = new ProjectSourceContainer((IProject)container, false);
-			} 
+		//ISourceContainer sourceContainer = null;
+		//IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(currentPojrect));
+		//if (resource != null) {
+		//	IContainer container = resource.getParent();
+		//	if (container.getType() == IResource.PROJECT) {
+		//		sourceContainer = new ProjectSourceContainer((IProject)container, false);
+		//	} 
 //			else if (container.getType() == IResource.FOLDER) {
 //				sourceContainer = new FolderSourceContainer(container, false);
 //			}			
-		}
+		//}
 		
-		if (sourceContainer == null) {
-			sourceContainer = new WorkspaceSourceContainer();
-		}
+		//if (sourceContainer == null) {
+		ISourceContainer sourceContainer = new WorkspaceSourceContainer();
+		//}
 		return new ISourceContainer[]{sourceContainer};
 	}
 

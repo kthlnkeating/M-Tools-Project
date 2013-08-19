@@ -6,8 +6,6 @@
  */
 package gov.va.med.foundations.security.vistalink;
 
-import gov.va.med.iss.connection.actions.VistaConnection;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
@@ -96,7 +94,6 @@ public class EclipseConnection {
 		// get principal
 		userPrincipal = VistaKernelPrincipalImpl.getKernelPrincipal(eclipseLoginModule.getSubject());
 		} catch (Exception e) {
-			VistaConnection.setBadConnection(true);
 			if (e.getMessage().indexOf("Connection timed out") > -1) {
 				MessageDialog.openInformation(
 						window.getShell(),

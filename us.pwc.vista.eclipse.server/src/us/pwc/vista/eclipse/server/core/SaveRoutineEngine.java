@@ -6,6 +6,7 @@ import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.connection.preferences.ServerData;
 import gov.va.med.iss.connection.utilities.MPiece;
 
 import java.io.ByteArrayInputStream;
@@ -81,11 +82,8 @@ public class SaveRoutineEngine {
 	
 	private static StringBuilder startConsoleMessage(String routineName, BackupSynchResult synchResult) {
 		StringBuilder result = new StringBuilder();
-		String currentServer = VistaConnection.getCurrentServer();
-		String currentServerName = MPiece.getPiece(currentServer,";");
-		String currentServerAddress = MPiece.getPiece(currentServer,";",2);
-		String currentServerPort = MPiece.getPiece(currentServer,";",3);
-		String header = routineName + " saved to: " + currentServerName + " ("+currentServerAddress+", "+currentServerPort+")\n";
+		ServerData scd = VistaConnection.getServerData();
+		String header = routineName + " saved to: " + scd.serverName + " ("+scd.serverAddress+", "+scd.port+")\n";
 		result.append(header);
 		
 		IFile backupFile = synchResult.getFile();
@@ -207,12 +205,12 @@ public class SaveRoutineEngine {
 	
 	public static IStatus save(VistaLinkConnection connection, IFile file) {
 		try {
-			String projectName = VistaConnection.getPrimaryProject();
-			if (! file.getProject().getName().equals(projectName)) {
-				String message = Messages.bind(Messages.EDITOR_FILE_WRONG_PROJECT, file.getName(), projectName);
-				IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message);
-				return status;
-			}
+			//String projectName = VistaConnection.getPrimaryProject();
+			//if (! file.getProject().getName().equals(projectName)) {
+			//	String message = Messages.bind(Messages.EDITOR_FILE_WRONG_PROJECT, file.getName(), projectName);
+			//	IStatus status = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message);
+			//	return status;
+			//}
 
 			ListRoutineBuilder routineContent = getListRoutineBuilder(file);
 

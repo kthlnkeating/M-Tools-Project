@@ -1,28 +1,27 @@
 package gov.va.med.iss.connection;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * The main plugin class to be used in the desktop.
+ * The activator class controls the plug-in life cycle
  */
 public class VLConnectionPlugin extends AbstractUIPlugin {
-	//The shared instance.
-	private static VLConnectionPlugin plugin;
-	//Resource bundle.
-	private ResourceBundle resourceBundle;
-	
+	// The plug-in ID
 	public static String PLUGIN_ID = "gov.va.med.iss.connection";
+	
+	// The shared instance.
+	private static VLConnectionPlugin plugin;
+	
+	private ConnectionManager connectionManager;
+	
 	public static ImageDescriptor IMG_ERROR = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons/error.gif");
 	public static ImageDescriptor IMG_SUCCESS = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons/yes1a.gif");
 	public static ImageDescriptor IMG_POST_TEXT = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons/yes1a.gif");
 	public static ImageDescriptor IMG_HELP = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons/helpbook07.gif");
 	public static ImageDescriptor IMG_VA_LOGO = AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID,"icons/VAlogo.gif");
-
 	
 	/**
 	 * The constructor.
@@ -30,11 +29,6 @@ public class VLConnectionPlugin extends AbstractUIPlugin {
 	public VLConnectionPlugin() {
 		super();
 		plugin = this;
-		try {
-			resourceBundle = ResourceBundle.getBundle("gov.va.med.iss.connection.VLConnectionPluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
 	}
 
 	/**
@@ -42,12 +36,15 @@ public class VLConnectionPlugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		plugin = this;
+		this.connectionManager = new ConnectionManager();
 	}
 
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
 	public void stop(BundleContext context) throws Exception {
+		this.connectionManager.removeAllConnections();
 		super.stop(context);
 	}
 
@@ -57,24 +54,8 @@ public class VLConnectionPlugin extends AbstractUIPlugin {
 	public static VLConnectionPlugin getDefault() {
 		return plugin;
 	}
-
-	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle = VLConnectionPlugin.getDefault().getResourceBundle();
-		try {
-			return (bundle != null) ? bundle.getString(key) : key;
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
+	
+	public static ConnectionManager getConnectionManager() {
+		return getDefault().connectionManager;
 	}
 }

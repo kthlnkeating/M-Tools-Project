@@ -18,6 +18,6 @@ public class ConnectToVistA extends AbstractHandler {
 	
 	@Override
 	public void dispose() {
-		VistaConnection.doDispose();
+		VistaConnection.disconnect();
 	}
 }

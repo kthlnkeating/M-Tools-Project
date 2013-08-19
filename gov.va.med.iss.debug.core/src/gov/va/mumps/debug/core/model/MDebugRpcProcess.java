@@ -1,13 +1,14 @@
 package gov.va.mumps.debug.core.model;
 
 import gov.va.med.iss.connection.actions.VistaConnection;
+import gov.va.med.iss.connection.preferences.ServerData;
 import gov.va.mumps.debug.xtdebug.XtdebugHandler;
 import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Pattern;
+//import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.debug.core.DebugEvent;
@@ -42,7 +43,7 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	private XtdebugHandler xtdebugHandler;
 	
 	//optimization
-	private static final Pattern semiPat = Pattern.compile(";");
+	//private static final Pattern semiPat = Pattern.compile(";");
 	
 	public MDebugRpcProcess(ILaunch launch, String debugEntryTag, Map<String, String> attributes) {
 		initializeAttributes(attributes);
@@ -50,10 +51,12 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 		responseResults = xtdebugHandler.startDebug(debugEntryTag);
 		
 		//name = debugEntryTag;
-		if (VistaConnection.getCurrentServer() != null && !VistaConnection.getCurrentServer().isEmpty()) { //dislike globals like this, want to refactor this to OOP using factories and explicit dependencies in contructors
-			String connStr = VistaConnection.getCurrentServer();
-			String[] pieces = semiPat.split(connStr);
-			name = "VistA Connection: " +pieces[0]+ ", " +pieces[1]+ ":" +pieces[2];
+		ServerData data = VistaConnection.getServerData();
+//		if (VistaConnection.getCurrentServer() != null && !VistaConnection.getCurrentServer().isEmpty()) { //dislike globals like this, want to refactor this to OOP using factories and explicit dependencies in contructors
+		if (data != null) { //dislike globals like this, want to refactor this to OOP using factories and explicit dependencies in contructors
+			//String connStr = ;
+			//String[] pieces = semiPat.split(connStr);
+			name = "VistA Connection: " +data.serverName+ ", " +data.serverAddress+ ":" +data.port;
 		} else
 			name = "Error: Not connected to VistA";
 		this.launch = launch;

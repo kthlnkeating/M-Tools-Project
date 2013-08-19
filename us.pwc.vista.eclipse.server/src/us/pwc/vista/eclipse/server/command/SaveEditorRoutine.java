@@ -51,12 +51,12 @@ public class SaveEditorRoutine extends AbstractHandler {
 			return null;
 		}
 
-		String projectName = VistaConnection.getPrimaryProject();
-		if (! file.getProject().getName().equals(projectName)) {
-			String message = Messages.bind2(Messages.PROJECT_INVALID_FILE, projectName, file.getName(), file.getProject().getName());
-			MessageDialogHelper.showError(Messages.SAVE_MSG_TITLE, message);
-			return null;
-		}
+		//String projectName = VistaConnection.getPrimaryProject();
+		//if (! file.getProject().getName().equals(projectName)) {
+		//	String message = Messages.bind2(Messages.PROJECT_INVALID_FILE, projectName, file.getName(), file.getProject().getName());
+		//	MessageDialogHelper.showError(Messages.SAVE_MSG_TITLE, message);
+		//	return null;
+		//}
 
 		IStatus status = SaveRoutineEngine.save(connection, file);
 		MessageDialogHelper.logAndShow(Messages.SAVE_MSG_TITLE, status);

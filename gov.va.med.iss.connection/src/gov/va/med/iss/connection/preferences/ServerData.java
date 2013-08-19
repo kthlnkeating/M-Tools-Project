@@ -1,12 +1,12 @@
 package gov.va.med.iss.connection.preferences;
 
-public class ServerConnectionData {
+public class ServerData {
     public String serverAddress;
     public String serverName;
     public String port;
     public String serverProject;
 
-    public ServerConnectionData() {
+    public ServerData() {
 		super();
 		this.serverAddress = "";
 		this.serverName = "";
@@ -14,7 +14,7 @@ public class ServerConnectionData {
 		this.serverProject = "";
     }
     
-    public ServerConnectionData(String serverAddress, String serverName, String port, String serverProject) {
+    public ServerData(String serverAddress, String serverName, String port, String serverProject) {
 		super();
 		this.serverAddress = serverAddress;
 		this.serverName = serverName;
@@ -22,7 +22,7 @@ public class ServerConnectionData {
 		this.serverProject = serverProject;
 	}
     
-    public ServerConnectionData(ServerConnectionData rhs) {
+    public ServerData(ServerData rhs) {
     	this(rhs.serverAddress, rhs.serverName, rhs.port, rhs.serverProject);
     }
     

@@ -26,7 +26,7 @@ import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.iss.connection.actions.VistaConnection;
-import gov.va.med.iss.connection.utilities.ConnectionUtilities;
+import gov.va.med.iss.connection.preferences.ServerData;
 import gov.va.med.iss.connection.utilities.MPiece;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -249,7 +249,8 @@ public class ReportGlobalListing extends AbstractHandler {
 		}
 		
 		Shell shell = HandlerUtil.getActiveShell(event);
-		String title = Messages.bind(Messages.DLG_GLOBAL_LISTING_TITLE, ConnectionUtilities.getServer(), ConnectionUtilities.getPort());
+		ServerData datax = VistaConnection.getServerData();
+		String title = Messages.bind(Messages.DLG_GLOBAL_LISTING_TITLE, datax.serverAddress, datax.port);
 		GlobalListingDialog dialog = new GlobalListingDialog(shell, title);
 		int result = dialog.open();
 		if (result == GlobalListingDialog.OK) {
