@@ -22,6 +22,5 @@ Export-Package: gov.va.med.foundations.adapter.cci,
  gov.va.med.foundations.rpc,
  gov.va.med.foundations.utilities,
  gov.va.med.iss.connection,
- gov.va.med.iss.connection.dialogs,
  gov.va.med.iss.connection.preferences,
  gov.va.med.iss.connection.utilities
