@@ -73,7 +73,7 @@ public class RecursionSpecificationHandlerFactory {
 		Button[] radioButtons = addRadioButtons(parent);
 		
 		TableViewer viewer = addFilterTable(parent);
-		Button[] buttons = SWTHelper.createButtons(parent);
+		Button[] buttons = SWTHelper.createButtons(parent, new String[]{"Add", "Remove"});
 		SWTHelper.addEmptyLabel(parent, 3);
 				
 		RecursionSpecificationHandler result = new RecursionSpecificationHandler(prefix, radioButtons, viewer, buttons[0], buttons[1]);

@@ -46,7 +46,7 @@ public class AssumedVariables extends PropertyPage implements IWorkbenchProperty
 	private void addExpectedVarsSection(Composite parent) {		
 		SWTHelper.addLabel(parent, "Specify expected assumed variables:", 3);
 		List expectedVarsList = this.addExpectedVarsList(parent);
-		Button[] buttons = SWTHelper.createButtons(parent);
+		Button[] buttons = SWTHelper.createButtons(parent, new String[]{"Add", "Remove"});
 		
 		this.initializeExpectedVarsHandler(expectedVarsList, buttons[0], buttons[1]);		
 	}

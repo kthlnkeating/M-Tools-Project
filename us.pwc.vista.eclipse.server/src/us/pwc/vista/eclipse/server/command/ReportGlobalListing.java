@@ -251,7 +251,7 @@ public class ReportGlobalListing extends AbstractHandler {
 		
 		Shell shell = HandlerUtil.getActiveShell(event);
 		ServerData datax = connectionData.getServerData();
-		String title = Messages.bind(Messages.DLG_GLOBAL_LISTING_TITLE, datax.serverAddress, datax.port);
+		String title = Messages.bind(Messages.DLG_GLOBAL_LISTING_TITLE, datax.getAddress(), datax.getPort());
 		GlobalListingDialog dialog = new GlobalListingDialog(shell, title);
 		int result = dialog.open();
 		if (result == GlobalListingDialog.OK) {

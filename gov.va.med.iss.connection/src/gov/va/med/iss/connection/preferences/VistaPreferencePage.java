@@ -1,55 +1,26 @@
 package gov.va.med.iss.connection.preferences;
 
-import gov.va.med.iss.connection.VLConnectionPlugin;
-
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.dialogs.PropertyPage;
 
-/**
- * This class represents a preference page that
- * is contributed to the Preferences dialog. By 
- * subclassing <samp>FieldEditorPreferencePage</samp>, we
- * can use the field support built into JFace that allows
- * us to create a page that is small and knows how to 
- * save, restore and apply itself.
- * <p>
- * This page is used to modify preferences only. They
- * are stored in the preference store that belongs to
- * the main plug-in class. That way, preferences can
- * be accessed directly via the preference store.
- */
+import us.pwc.vista.eclipse.core.helper.SWTHelper;
 
-
-public class VistaPreferencePage
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
-
-	public VistaPreferencePage() {
-		super(GRID);
-		setPreferenceStore(VLConnectionPlugin.getDefault().getPreferenceStore());
-		setDescription("Vista Preferences");
-		initializeDefaults();
+public class VistaPreferencePage extends PropertyPage implements IWorkbenchPreferencePage {
+	@Override
+	protected Control createContents(Composite parent) {
+		Composite contents = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		contents.setLayout(layout);
+		SWTHelper.setGridData(contents, SWT.FILL, true, SWT.FILL, true);
+		return contents;
 	}
-/**
- * Sets the default values of the preferences.
- */
-	private void initializeDefaults() {
-		@SuppressWarnings("unused")
-		IPreferenceStore store = getPreferenceStore();
-	}
-	
-/**
- * Creates the field editors. Field editors are abstractions of
- * the common GUI blocks needed to manipulate various types
- * of preferences. Each field editor knows how to save and
- * restore itself.
- */
 
-	public void createFieldEditors() {
-	}
-	
+	@Override
 	public void init(IWorkbench workbench) {
 	}
 }

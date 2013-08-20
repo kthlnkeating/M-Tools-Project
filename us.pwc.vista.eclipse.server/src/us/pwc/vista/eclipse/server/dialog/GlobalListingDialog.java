@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 
+import us.pwc.vista.eclipse.core.helper.SWTHelper;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
 
@@ -71,16 +72,16 @@ public class GlobalListingDialog extends Dialog {
 		Composite panel = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		panel.setLayout(layout);
-		setGridData(panel, SWT.FILL, true, SWT.FILL, true);
+		SWTHelper.setGridData(panel, SWT.FILL, true, SWT.FILL, true);
 
 		Composite inputPanel = createInputPanel(panel);
-		setGridData(inputPanel, SWT.FILL, true, SWT.TOP, false);
+		SWTHelper.setGridData(inputPanel, SWT.FILL, true, SWT.TOP, false);
 
 		Composite returnTypeGroup = createReturnTypeGroup(panel);
-		setGridData(returnTypeGroup, SWT.FILL, true, SWT.FILL, false);
+		SWTHelper.setGridData(returnTypeGroup, SWT.FILL, true, SWT.FILL, false);
 
 		Composite optionsGroup = createTextSearchGroup(panel);
-		setGridData(optionsGroup, SWT.FILL, true, SWT.FILL, true);
+		SWTHelper.setGridData(optionsGroup, SWT.FILL, true, SWT.FILL, true);
 
 		return panel;
 	}
@@ -93,10 +94,10 @@ public class GlobalListingDialog extends Dialog {
 
 		Label globalNameLabel = new Label(panel, SWT.LEFT);
 		globalNameLabel.setText(Messages.DLG_GLOBAL_LISTING_GLNAME);
-		setGridData(globalNameLabel, SWT.LEFT, false, SWT.CENTER, false);
+		SWTHelper.setGridData(globalNameLabel, SWT.LEFT, false, SWT.CENTER, false);
 
 		this.global= new Combo(panel, SWT.DROP_DOWN | SWT.BORDER);
-		setGridData(this.global, SWT.FILL, true, SWT.CENTER, false);
+		SWTHelper.setGridData(this.global, SWT.FILL, true, SWT.CENTER, false);
 
 		return panel;
 	}
@@ -111,22 +112,22 @@ public class GlobalListingDialog extends Dialog {
 		GridLayout groupLayout= new GridLayout();
 		groupLayout.numColumns= 3;
 		group.setLayout(groupLayout);
-		setGridData(group, SWT.FILL, true, SWT.FILL, true);
+		SWTHelper.setGridData(group, SWT.FILL, true, SWT.FILL, true);
 
 		this.normalButton = new Button(group, SWT.RADIO | SWT.LEFT);
 		this.normalButton.setText(Messages.DLG_GLOBAL_LISTING_RTNTYP_0);
 		this.normalButton.setToolTipText(Messages.DLG_GLOBAL_LISTING_RTNTYP_0_TT);
-		setGridData(this.normalButton, SWT.LEFT, false, SWT.CENTER, false);
+		SWTHelper.setGridData(this.normalButton, SWT.LEFT, false, SWT.CENTER, false);
 
 		this.dataOnlyButton = new Button(group, SWT.RADIO | SWT.LEFT);
 		this.dataOnlyButton.setText(Messages.DLG_GLOBAL_LISTING_RTNTYP_1);
 		this.dataOnlyButton.setToolTipText(Messages.DLG_GLOBAL_LISTING_RTNTYP_1_TT);
-		setGridData(this.dataOnlyButton, SWT.LEFT, false, SWT.CENTER, false);
+		SWTHelper.setGridData(this.dataOnlyButton, SWT.LEFT, false, SWT.CENTER, false);
 
 		this.setupCopyButton = new Button(group, SWT.RADIO | SWT.LEFT);
 		this.setupCopyButton.setText(Messages.DLG_GLOBAL_LISTING_RTNTYP_2);
 		this.setupCopyButton.setToolTipText(Messages.DLG_GLOBAL_LISTING_RTNTYP_2_TT);
-		setGridData(this.setupCopyButton, SWT.LEFT, false, SWT.CENTER, false);
+		SWTHelper.setGridData(this.setupCopyButton, SWT.LEFT, false, SWT.CENTER, false);
 
 		this.normalButton.setSelection(true);
 		this.dataOnlyButton.setSelection(false);
@@ -145,7 +146,7 @@ public class GlobalListingDialog extends Dialog {
 		GridLayout groupLayout= new GridLayout();
 		groupLayout.numColumns = 2;
 		group.setLayout(groupLayout);
-		setGridData(group, SWT.FILL, true, SWT.FILL, true);
+		SWTHelper.setGridData(group, SWT.FILL, true, SWT.FILL, true);
 
 		createSearchText(group);
 		createCaseSensitive(group);
@@ -157,17 +158,17 @@ public class GlobalListingDialog extends Dialog {
 	private void createSearchText(Composite parent) {
 		Label searchTextLabel = new Label(parent, SWT.LEFT);
 		searchTextLabel.setText(Messages.DLG_GLOBAL_LISTING_TXTSRC_T);
-		setGridData(searchTextLabel, SWT.LEFT, false, SWT.CENTER, false);
+		SWTHelper.setGridData(searchTextLabel, SWT.LEFT, false, SWT.CENTER, false);
 
 		this.searchText = new Text(parent, SWT.BORDER);
 		this.searchText.setToolTipText(Messages.DLG_GLOBAL_LISTING_TXTSRC_TT);
-		setGridData(this.searchText, SWT.FILL, true, SWT.CENTER, false);
+		SWTHelper.setGridData(this.searchText, SWT.FILL, true, SWT.CENTER, false);
 	}
 
 	private void createCaseSensitive(Composite parent) {
 		this.caseSensitive = new Button(parent, SWT.CHECK | SWT.LEFT);
 		this.caseSensitive.setText(Messages.DLG_GLOBAL_LISTING_TXTSRC_0);
-		GridData gd = setGridData(this.caseSensitive, SWT.LEFT, false, SWT.CENTER, false);
+		GridData gd = SWTHelper.setGridData(this.caseSensitive, SWT.LEFT, false, SWT.CENTER, false);
 		gd.horizontalSpan= 2;		
 	}
 	
@@ -176,16 +177,16 @@ public class GlobalListingDialog extends Dialog {
 		GridLayout layout= new GridLayout();
 		layout.numColumns= 2;
 		panel.setLayout(layout);
-		GridData gd = setGridData(panel, SWT.FILL, true, SWT.FILL, true);
+		GridData gd = SWTHelper.setGridData(panel, SWT.FILL, true, SWT.FILL, true);
 		gd.horizontalSpan= 2;
 
 		this.searchDataOnly = new Button(panel, SWT.RADIO | SWT.LEFT);
 		this.searchDataOnly.setText(Messages.DLG_GLOBAL_LISTING_TXTSRC_1);		
-		setGridData(this.searchDataOnly, SWT.LEFT, false, SWT.CENTER, false);
+		SWTHelper.setGridData(this.searchDataOnly, SWT.LEFT, false, SWT.CENTER, false);
 
 		Button b2 = new Button(panel, SWT.RADIO | SWT.LEFT);
 		b2.setText(Messages.DLG_GLOBAL_LISTING_TXTSRC_2);		
-		setGridData(b2, SWT.LEFT, false, SWT.CENTER, false);
+		SWTHelper.setGridData(b2, SWT.LEFT, false, SWT.CENTER, false);
 
 		this.searchDataOnly.setSelection(true);
 		b2.setSelection(false);
@@ -199,16 +200,6 @@ public class GlobalListingDialog extends Dialog {
 				this.global.add(value);
 			}
 		}
-	}
-
-	private static GridData setGridData(Control component, int horizontalAlignment, boolean grabExcessHorizontalSpace, int verticalAlignment, boolean grabExcessVerticalSpace) {
-		GridData gd = new GridData();
-		gd.horizontalAlignment= horizontalAlignment;
-		gd.grabExcessHorizontalSpace= grabExcessHorizontalSpace;
-		gd.verticalAlignment= verticalAlignment;
-		gd.grabExcessVerticalSpace= grabExcessVerticalSpace;
-		component.setLayoutData(gd);
-		return gd;
 	}
 
 	@Override

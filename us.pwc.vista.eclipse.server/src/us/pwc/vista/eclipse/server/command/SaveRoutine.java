@@ -61,7 +61,7 @@ public class SaveRoutine extends AbstractHandler {
 		
 		if (namespaceFlag) {
 			ServerData data = connectionData.getServerData();
-			String title =  Messages.bind(Messages.SAVE_M_RTNS_DLG_TITLE, data.serverAddress, data.port);
+			String title =  Messages.bind(Messages.SAVE_M_RTNS_DLG_TITLE, data.getAddress(), data.getPort());
 			String namespace = InputDialogHelper.getRoutineNamespace(title);
 			if (namespace == null) {
 				return null;

@@ -4,45 +4,53 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 public class ServerData {
-    public String serverAddress;
-    public String serverName;
-    public String port;
-    public String serverProject;
+    private String name;
+    private String address;
+    private String port;
 
-    public ServerData() {
+	public ServerData() {
 		super();
-		this.serverAddress = "";
-		this.serverName = "";
+		this.name = "";
+		this.address = "";
 		this.port = "";
-		this.serverProject = "";
     }
     
-    public ServerData(String serverAddress, String serverName, String port, String serverProject) {
+    public ServerData(String name, String address, String port) {
 		super();
-		this.serverAddress = serverAddress;
-		this.serverName = serverName;
+		this.name = name;
+		this.address = address;
 		this.port = port;
-		this.serverProject = serverProject;
 	}
     
     public ServerData(ServerData rhs) {
-    	this(rhs.serverAddress, rhs.serverName, rhs.port, rhs.serverProject);
+    	this(rhs.name, rhs.address, rhs.port);
     }
     
+	public String getName() {
+		return name;
+	}
+
+    public String getAddress() {
+		return address;
+	}
+
+	public String getPort() {
+		return port;
+	}
+
     public void reset() {
-		this.serverAddress = "";
-		this.serverName = "";
+		this.name = "";
+		this.address = "";
 		this.port = "";
-		this.serverProject = "";    	
-    }
+   }
     
     @Override
     public String toString() {
-    	return this.serverName + ";" + this.serverAddress + ";" + this.port + ";" + this.serverProject;
+    	return this.name + ";" + this.address + ";" + this.port;
     }
     
     public String toUIString() {
-    	return this.serverName + " (" + this.serverAddress + ";" + this.port + ")";    	
+    	return this.name + " (" + this.address + ";" + this.port + ")";    	
     }
     
     public static LabelProvider getLabelProvider() {
@@ -63,5 +71,14 @@ public class ServerData {
     	};
     	return result;
     }
+
+    public static ServerData valueOf(String s) {
+    	String[] fields = s.split(";");
+    	ServerData serverData = new ServerData(fields[0], fields[1], fields[2]);
+    	return serverData;
+    }
     
+    public boolean isComplete() {
+    	return ! (this.name.isEmpty() || this.address.isEmpty() || this.port.isEmpty());
+    }
 }

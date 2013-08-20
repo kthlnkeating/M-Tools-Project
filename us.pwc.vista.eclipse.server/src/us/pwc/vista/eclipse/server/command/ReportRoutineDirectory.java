@@ -24,7 +24,7 @@ public class ReportRoutineDirectory extends AbstractHandler {
 		}
 		
 		ServerData data = connectionData.getServerData();
-		String title =  Messages.bind(Messages.LOAD_RTNDIR_DLG_TITLE, data.serverAddress, data.port);
+		String title =  Messages.bind(Messages.LOAD_RTNDIR_DLG_TITLE, data.getAddress(), data.getPort());
 		String namespace = InputDialogHelper.getRoutineNamespace(title);
 		if (namespace == null) {
 			return null;

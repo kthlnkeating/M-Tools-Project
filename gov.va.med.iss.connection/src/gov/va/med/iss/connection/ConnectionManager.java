@@ -11,7 +11,6 @@ import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.security.vistalink.EclipseConnection;
 import gov.va.med.foundations.security.vistalink.VistaKernelPrincipalImpl;
 import gov.va.med.foundations.utilities.FoundationsException;
-import gov.va.med.iss.connection.preferences.ConnectionPreferencePage;
 import gov.va.med.iss.connection.preferences.ServerData;
 import gov.va.med.iss.connection.preferences.VistAConnectionPrefs;
 
@@ -58,11 +57,11 @@ public class ConnectionManager {
 	private ConnectionData createConnectionData(ServerData serverData) {
 		try {
 			EclipseConnection eclipseConnection = new EclipseConnection();
-			VistaKernelPrincipalImpl principal = eclipseConnection.getConnection(serverData.serverAddress, serverData.port);
+			VistaKernelPrincipalImpl principal = eclipseConnection.getConnection(serverData.getAddress(), serverData.getPort());
 			if (principal != null) {
 				VistaLinkConnection connection = principal.getAuthenticatedConnection();
 				ConnectionData result = new ConnectionData(serverData, connection, eclipseConnection);
-				checkProductionConnection(result.getConnection(), serverData.serverAddress, serverData.port);
+				checkProductionConnection(result.getConnection(), serverData.getAddress(), serverData.getPort());
 				this.connections.add(result);
 				return result;
 			}
@@ -117,7 +116,7 @@ public class ConnectionManager {
 		}
 		ServerData serverData = this.selectConnectionData(serverDataList, "Select a connection");
 		if (serverData != null) {
-			ConnectionData connectionData = this.findConnection(serverData.serverName);
+			ConnectionData connectionData = this.findConnection(serverData.getName());
 			connectionData.getEclipseConnection().logout();
 			this.connections.remove(connectionData);
 		} else {
@@ -244,23 +243,12 @@ public class ConnectionManager {
 	}
 	
 	private List<ServerData> getServerDataList() {
-		List<String> servers = ConnectionPreferencePage.getServerList();
-		if ((servers == null) || (servers.size() == 0)) {
+		List<ServerData> result = VistAConnectionPrefs.getServers();
+		if ((result == null) || (result.size() == 0)) {
 			String message = "No server is specified.";
 			message += "\n" + "Use Windows/Preferences/VistA/Connection to add.";			
 			MessageDialogHelper.showError("Connection Manager", message);			
 			return null;
-		}
-		List<ServerData> result = new ArrayList<ServerData>();
-		for (String serverString : servers) {
-			String[] serverFields = serverString.split(";");
-			String serverName = serverFields[0];
-			String serverAddress = serverFields[1];
-			String port = serverFields[2];
-			String serverProject = serverFields[3];
-
-			ServerData serverData = new ServerData(serverAddress, serverName, port, serverProject);
-			result.add(serverData);
 		}
 		return result;
 	}
@@ -269,7 +257,7 @@ public class ConnectionManager {
 		List<ServerData> serverDataList = this.getServerDataList();
 		if (serverDataList != null) {
 			for (ServerData serverData : serverDataList) {
-				if (serverData.serverName.equals(serverName)) {
+				if (serverData.getName().equals(serverName)) {
 					return serverData;
 				}		
 			}

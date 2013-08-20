@@ -29,6 +29,6 @@ public class ConnectionData {
 	}
 
 	public String getServerName() {
-		return this.serverData.serverName;
+		return this.serverData.getName();
 	}
 }

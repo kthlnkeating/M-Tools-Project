@@ -50,8 +50,8 @@ public class SWTHelper {
 		return b;	
 	}	
 
-	public static Button[] createButtons(Composite parent) {
-		Button[] result = new Button[2];
+	public static Button[] createButtons(Composite parent, String[] buttonNames) {
+		Button[] result = new Button[buttonNames.length];
 		Composite buttons = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(1, false);
 		layout.marginHeight = 0;
@@ -61,11 +61,11 @@ public class SWTHelper {
 		gd.horizontalSpan = 1;
 		gd.verticalAlignment = SWT.BEGINNING;
 		buttons.setLayoutData(gd);
-		
-		Button newButton = createButton(buttons, "Add");		
-		Button removeButton = createButton(buttons, "Remove");
-		result[0] = newButton;
-		result[1] = removeButton;
+		int i = 0;
+		for (String name : buttonNames) {
+			result[i] = createButton(buttons, name);
+			++i;
+		}
 		return result;
 	}
 	

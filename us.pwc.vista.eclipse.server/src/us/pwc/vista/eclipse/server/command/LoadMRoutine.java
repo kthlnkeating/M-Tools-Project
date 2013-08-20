@@ -137,13 +137,13 @@ public class LoadMRoutine extends AbstractHandler {
 		}
 		
 		ServerData data = connectionData.getServerData();
-		String title = Messages.bind(Messages.LOAD_M_RTN_DLG_TITLE, data.serverAddress, data.port);
+		String title = Messages.bind(Messages.LOAD_M_RTN_DLG_TITLE, data.getAddress(), data.getPort());
 		String routineName = InputDialogHelper.getRoutineName(title);
 		if (routineName == null) {
 			return null;
 		}
 		
-		IFile fileHandle = getFileHandle(project, data.serverName, routineName);
+		IFile fileHandle = getFileHandle(project, data.getName(), routineName);
 		if (fileHandle == null) {
 			return null;
 		}

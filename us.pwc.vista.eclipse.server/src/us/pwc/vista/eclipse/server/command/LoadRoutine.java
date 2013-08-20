@@ -62,19 +62,12 @@ public class LoadRoutine extends AbstractHandler {
 			return null;			
 		}
 		
-		//String projectName = VistaConnection.getPrimaryProject();
-		//if (! folder.getProject().getName().equals(projectName)) {
-		//	String message = Messages.bind(Messages.CONNECTION_INVALID_PROJECT, projectName);
-		//	MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, message);
-		//	return null;						
-		//}
-	
 		return folder;
 	}
 	
 	private String[] getRoutinesInNamespace(ConnectionData connectionData) {
 		ServerData data = connectionData.getServerData();
-		String title = Messages.bind(Messages.LOAD_M_RTNS_DLG_TITLE, data.serverAddress, data.port);
+		String title = Messages.bind(Messages.LOAD_M_RTNS_DLG_TITLE, data.getAddress(), data.getPort());
 		String routineNamespace = InputDialogHelper.getRoutineNamespace(title);
 		if (routineNamespace == null) {
 			return null;
@@ -94,7 +87,7 @@ public class LoadRoutine extends AbstractHandler {
 	
 	private String[] getRoutine(ConnectionData connectionData) {
 		ServerData data = connectionData.getServerData();
-		String title = Messages.bind(Messages.LOAD_M_RTN_DLG_TITLE, data.serverAddress, data.port);
+		String title = Messages.bind(Messages.LOAD_M_RTN_DLG_TITLE, data.getAddress(), data.getPort());
 		String routineName = InputDialogHelper.getRoutineName(title);
 		if (routineName == null) {
 			return null;

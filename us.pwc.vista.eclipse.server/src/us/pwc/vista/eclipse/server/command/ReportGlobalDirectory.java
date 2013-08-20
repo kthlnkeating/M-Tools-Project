@@ -59,7 +59,7 @@ public class ReportGlobalDirectory extends AbstractHandler {
 		}
 		
 		ServerData data = connectionData.getServerData();
-		String title = Messages.bind(Messages.DLG_GLOBAL_DIR_TITLE, data.serverAddress, data.port);
+		String title = Messages.bind(Messages.DLG_GLOBAL_DIR_TITLE, data.getAddress(), data.getPort());
 		String namespace = InputDialogHelper.getGlobalNamespace(title);
 		if (namespace == null) {
 			return null;

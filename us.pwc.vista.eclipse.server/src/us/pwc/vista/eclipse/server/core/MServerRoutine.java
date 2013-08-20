@@ -27,7 +27,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -92,10 +91,6 @@ public class MServerRoutine {
 		ResourceUtilExtension.updateFile(file, content);						
 	}
 	
-	private void copyTo(IFile file) throws CoreException, UnsupportedEncodingException {
-		copyTo(file, this.content);
-	}
-
 	public boolean compareTo(IFile file) throws CoreException, BadLocationException {
 		return compareTo(file, this.content);		
 	}
@@ -132,25 +127,20 @@ public class MServerRoutine {
 	}
 	
 	public UpdateFileResult updateClient() throws CoreException, BadLocationException, UnsupportedEncodingException {
-		if (this.clientFileHandle.exists()) {
-			if (this.compareTo(this.clientFileHandle)) {
+		return updateFile(this.clientFileHandle, this.content);
+	}
+	
+	private static UpdateFileResult updateFile(IFile file, String content) throws CoreException, BadLocationException, UnsupportedEncodingException {
+		if (file.exists()) {
+			if (compareTo(file, content)) {
 				return UpdateFileResult.IDENTICAL;
 			} else {
-				this.copyTo(this.clientFileHandle);
+				copyTo(file, content);
 				return UpdateFileResult.UPDATED;
 			}
 		} else {
-			this.copyTo(this.clientFileHandle);
-			return UpdateFileResult.CREATED;
-		}
-	}
-	
-	private static boolean updateFile(IFile file, String content) throws CoreException, BadLocationException, UnsupportedEncodingException {
-		if (compareTo(file, content)) {
-			return false;
-		} else {
 			copyTo(file, content);
-			return true;
+			return UpdateFileResult.CREATED;
 		}
 	}
 
@@ -210,16 +200,15 @@ public class MServerRoutine {
 			}
 			if (backupFile.exists()) {
 				if (content != null) {
-					boolean updated = updateFile(backupFile, content);
-					BackupSynchStatus status = updated ? BackupSynchStatus.UPDATED : BackupSynchStatus.NO_CHANGE_IDENTICAL;
+					UpdateFileResult ufr = updateFile(backupFile, content);
+					BackupSynchStatus status = (ufr == UpdateFileResult.IDENTICAL) ? BackupSynchStatus.NO_CHANGE_IDENTICAL : BackupSynchStatus.UPDATED;
 					return new BackupSynchResult(status, backupFile);
 				} else {
 					return new BackupSynchResult(BackupSynchStatus.NO_CHANGE_SERVER_DELETED, backupFile);
 				}
 			} else {
 				if (content != null) {
-					ResourceUtilExtension.prepareFolders((IFolder) backupFile.getParent());			
-					ResourceUtilExtension.updateFile(backupFile, content);
+					updateFile(backupFile, content);
 					return new BackupSynchResult(BackupSynchStatus.INITIATED, backupFile);
 				} else {
 					return new BackupSynchResult(BackupSynchStatus.NO_CHANGE_BOTH_ABSENT, backupFile);
