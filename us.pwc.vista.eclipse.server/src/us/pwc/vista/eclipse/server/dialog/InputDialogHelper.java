@@ -23,17 +23,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
+import us.pwc.vista.eclipse.core.validator.ICommonRegexs;
 import us.pwc.vista.eclipse.core.validator.RegexInputValidator;
 import us.pwc.vista.eclipse.server.Messages;
 
 public class InputDialogHelper {
-	private static final String M_ROUTINE_NAME_REGEX = "[%A-Z][A-Z0-9]{0,7}"; //$NON-NLS-1$
-	
 	private static String getRequiredEntity(String title, String entityName, String regex) {
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		String inputMessage  = Messages.bind(Messages.INPUT_DLG_INPUT_MSG, entityName);
 		
-		IInputValidator validator = new RegexInputValidator(true, M_ROUTINE_NAME_REGEX, entityName);
+		IInputValidator validator = new RegexInputValidator(true, ICommonRegexs.M_ROUTINE_NAME, entityName);
 		
 		final InputDialog dialog = new InputDialog(shell, title, inputMessage, "", validator);
 		Display.getDefault().syncExec(new Runnable() {
@@ -50,11 +49,11 @@ public class InputDialogHelper {
 	}
 	
 	public static String getRoutineName(String title) {
-		return getRequiredEntity(title, Messages.ROUTINE_NAME, M_ROUTINE_NAME_REGEX);
+		return getRequiredEntity(title, Messages.ROUTINE_NAME, ICommonRegexs.M_ROUTINE_NAME);
 	}
 
 	public static String getRoutineNamespace(String title) {
-		return getRequiredEntity(title, Messages.ROUTINE_NAMESPACE, M_ROUTINE_NAME_REGEX);
+		return getRequiredEntity(title, Messages.ROUTINE_NAMESPACE, ICommonRegexs.M_ROUTINE_NAME);
 	}
 
 	public static String getGlobalNamespace(String title) {

@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 
 public class SWTHelper {
  	private static int getButtonWidthHint(Button button) {
@@ -128,5 +129,39 @@ public class SWTHelper {
 		gd.grabExcessVerticalSpace= grabExcessVerticalSpace;
 		component.setLayoutData(gd);
 		return gd;
+	}
+	
+	public static Composite createComposite(Composite parent, int numColumns) {
+		Composite result = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		result.setLayout(layout);
+		layout.numColumns = numColumns;
+		return result;
+	}
+	
+	public static Text createLabelTextPair(Composite parent, String labelText) {
+		Label label = new Label(parent, SWT.NONE);
+		label.setText(labelText);
+
+		Text text = new Text(parent, SWT.BORDER | SWT.SINGLE);
+		text.setText("");
+
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		text.setLayoutData(gd);	
+
+		return text;
+	}
+
+	public static Label createLabelLabelPair(Composite parent, String labelText) {
+		Label label = new Label(parent, SWT.NONE);
+		label.setText(labelText);
+
+		Label target = new Label(parent, SWT.NONE);
+		target.setText("");
+
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		target.setLayoutData(gd);	
+
+		return target;
 	}
 }

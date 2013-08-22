@@ -16,10 +16,7 @@
 
 package us.pwc.vista.eclipse.core.validator;
 
-import us.pwc.vista.eclipse.core.Messages;
-
-public class DateInputValidator extends RegexInputValidator {
-	public DateInputValidator(boolean entryRequired) {
-		super(entryRequired, ICommonRegexs.DATE, Messages.WORD_DATE);
-	}
+public interface ICommonRegexs {
+	public static final String DATE = "[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}"; //$NON-NLS-1$
+	public static final String M_ROUTINE_NAME = "[%A-Z][A-Z0-9]{0,7}"; //$NON-NLS-1$
 }

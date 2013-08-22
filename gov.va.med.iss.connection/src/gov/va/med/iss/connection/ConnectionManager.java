@@ -155,31 +155,35 @@ public class ConnectionManager {
 				message += "\nUse Properties/VistA/Connection to specify.";
 				MessageDialogHelper.showError("Connection Manager", message);
 				return null;
-			}			
-			ConnectionData cd = this.findConnection(serverName);
-			if (cd == null) {
-				return this.createConnectionData(serverName);
-			} else {
-				VistaLinkConnection connection = cd.getConnection();
-				ServerData serverData = cd.getServerData();
-				if (this.checkConnection(connection, serverData)) {
-					return cd;
-				} else {
-					cd.getEclipseConnection().logout();					
-					this.connections.remove(cd);
-					cd = this.createConnectionData(serverData);
-					if (cd == null) {
-						return null;
-					} else {
-						this.connections.add(cd);
-						return cd;
-					}
-				}
-			}
+			}	
+			return this.getConnectionData(serverName);
 		} catch (CoreException coreException) {
 			StatusManager.getManager().handle(coreException, VLConnectionPlugin.PLUGIN_ID);
 			return null;
 		}
+	}
+	
+	public ConnectionData getConnectionData(String serverName) {
+		ConnectionData cd = this.findConnection(serverName);
+		if (cd == null) {
+			return this.createConnectionData(serverName);
+		} else {
+			VistaLinkConnection connection = cd.getConnection();
+			ServerData serverData = cd.getServerData();
+			if (this.checkConnection(connection, serverData)) {
+				return cd;
+			} else {
+				cd.getEclipseConnection().logout();					
+				this.connections.remove(cd);
+				cd = this.createConnectionData(serverData);
+				if (cd == null) {
+					return null;
+				} else {
+					this.connections.add(cd);
+					return cd;
+				}
+			}
+		}		
 	}
 	
 	public VistaLinkConnection getConnection(IProject project) {

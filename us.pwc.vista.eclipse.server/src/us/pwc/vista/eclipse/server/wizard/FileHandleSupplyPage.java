@@ -14,12 +14,20 @@
 // limitations under the License.
 //---------------------------------------------------------------------------
 
-package us.pwc.vista.eclipse.core.validator;
+package us.pwc.vista.eclipse.server.wizard;
 
-import us.pwc.vista.eclipse.core.Messages;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.wizard.WizardPage;
 
-public class DateInputValidator extends RegexInputValidator {
-	public DateInputValidator(boolean entryRequired) {
-		super(entryRequired, ICommonRegexs.DATE, Messages.WORD_DATE);
+public abstract class FileHandleSupplyPage extends WizardPage {
+	public FileHandleSupplyPage(String pageName) {
+		super(pageName);
 	}
+	
+	public abstract IFile getFileHandle();
+	
+	@Override
+    public boolean canFlipToNextPage() {
+        return false;
+    }	
 }
