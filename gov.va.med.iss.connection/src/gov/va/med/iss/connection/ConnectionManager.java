@@ -1,7 +1,6 @@
 package gov.va.med.iss.connection;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
@@ -114,7 +113,7 @@ public class ConnectionManager {
 		for (ConnectionData cd : this.connections) {
 			serverDataList.add(cd.getServerData());
 		}
-		ServerData serverData = this.selectConnectionData(serverDataList, "Select a connection");
+		ServerData serverData = this.selectConnectionData(serverDataList, false, "Select a connection:");
 		if (serverData != null) {
 			ConnectionData connectionData = this.findConnection(serverData.getName());
 			connectionData.getEclipseConnection().logout();
@@ -124,19 +123,6 @@ public class ConnectionManager {
 		}
 	}
 
-	public List<ServerData> getConnectionsServerData() {
-		if (this.connections.size() == 0) {
-			return Collections.emptyList();
-		} else {
-			List<ServerData> result = new ArrayList<ServerData>();
-			for (ConnectionData cd : this.connections) {
-				ServerData serverData = cd.getServerData();
-				result.add(serverData);
-			}			
-			return result;
-		}
-	}
-	
 	private ConnectionData findConnection(String serverName) {
 		for (ConnectionData cd : this.connections) {
 			String existingServerName = cd.getServerName();
@@ -175,36 +161,22 @@ public class ConnectionManager {
 			} else {
 				cd.getEclipseConnection().logout();					
 				this.connections.remove(cd);
-				cd = this.createConnectionData(serverData);
-				if (cd == null) {
-					return null;
-				} else {
-					this.connections.add(cd);
-					return cd;
-				}
+				return this.createConnectionData(serverData);
 			}
 		}		
 	}
 	
-	public VistaLinkConnection getConnection(IProject project) {
-		ConnectionData cd = this.getConnectionData(project);
-		if (cd == null) {
-			return null;
-		} else {
-			return cd.getConnection();
-		}
-	}
-	
-	private ServerData selectConnectionData(List<ServerData> serverDataList, String message) {
+	private ServerData selectConnectionData(List<ServerData> serverDataList, boolean forceSelectionForOne, String message) {
 		if (serverDataList != null) {
-			if (serverDataList.size() == 1) {
+			if ((! forceSelectionForOne) && (serverDataList.size() == 1)) {
 				return serverDataList.get(0);
 			} else {						
 				LabelProvider lp = ServerData.getLabelProvider();
 				Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 				ElementListSelectionDialog dlg = new ElementListSelectionDialog(shell, lp);
 				dlg.setMultipleSelection(false);
-				dlg.setMessage("Select a server for connection");
+				dlg.setTitle("Connection Manager");
+				dlg.setMessage(message);
 				dlg.setElements(serverDataList.toArray());
 				if (ListSelectionDialog.OK == dlg.open()) {
 					dlg.getResult();
@@ -216,27 +188,18 @@ public class ConnectionManager {
 		
 	}
  	
-	public ConnectionData getConnectionData() {
+	public ConnectionData selectConnectionData(boolean forceSelectionForOne) {
 		List<ServerData> serverDataList = this.getServerDataList();
-		ServerData serverData = this.selectConnectionData(serverDataList, "Select a server for connection");
+		ServerData serverData = this.selectConnectionData(serverDataList, forceSelectionForOne, "Select a server for connection:");
 		if (serverData == null) {
 			return null;
 		} else {
-			ConnectionData cd = this.createConnectionData(serverData);
+			ConnectionData cd = this.getConnectionData(serverData.getName());
 			return cd;			
 		}
 	}
 	
-	public VistaLinkConnection getConnection() {
-		ConnectionData cd = this.getConnectionData();
-		if (cd== null) {
-			return null;
-		} else {
-			return cd.getConnection();
-		}
-	}
-	
-	public ConnectionData createConnectionData(String serverName) {
+	private ConnectionData createConnectionData(String serverName) {
 		ServerData serverData = this.getServerData(serverName);
 		if (serverData == null) {
 			return null;
@@ -266,7 +229,7 @@ public class ConnectionManager {
 				}		
 			}
 		}
-		String message = "Project server name " + serverName + " is not found.";
+		String message = "No information for " + serverName + " is found.";
 		message += "\n" + "Use Windows/Preferences/VistA/Connection to add.";			
 		MessageDialogHelper.showError("Connection Manager", message);
 		return null;		

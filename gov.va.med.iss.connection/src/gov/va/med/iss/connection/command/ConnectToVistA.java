@@ -9,7 +9,7 @@ import org.eclipse.core.commands.ExecutionException;
 public class ConnectToVistA extends AbstractHandler {
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		VLConnectionPlugin.getConnectionManager().getConnection();
+		VLConnectionPlugin.getConnectionManager().selectConnectionData(false);
 		return null;
 	}
 }

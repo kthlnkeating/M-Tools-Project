@@ -178,7 +178,7 @@ public class MServerRoutine {
 	 * @param file
 	 * @return handle to the backup file.                                                              
 	 */	
-	private static IFile getBackupFile(IFile file) throws CoreException {
+	private static IFile getBackupFile(IFile file, String serverName) throws CoreException {
 		String backupFolderName = VistACorePrefs.getServerBackupDirectory(file.getProject());
 		if (backupFolderName.isEmpty()) return null;
 		IProject project = file.getProject();
@@ -186,15 +186,16 @@ public class MServerRoutine {
 		IPath filePath = file.getFullPath();
 		filePath = filePath.removeFileExtension().addFileExtension("mbk");		
 		IPath relativeFilePath = filePath.makeRelativeTo(projectPath);
-		Path relativeBackupFolderPath = new Path(backupFolderName);
-		IPath relativeBackupFilePath = relativeBackupFolderPath.append(relativeFilePath);
+		Path relativeBackupFolderPath = new Path(backupFolderName);		
+		IPath relativeBackupFolderPathWServer = relativeBackupFolderPath.append(serverName);
+		IPath relativeBackupFilePath = relativeBackupFolderPathWServer.append(relativeFilePath);
 		IFile backupFile = project.getFile(relativeBackupFilePath);
 		return backupFile;
 	}
 
-	private static BackupSynchResult synchBackupFile(IFile file, String content) throws BackupSynchException {
+	private static BackupSynchResult synchBackupFile(IFile file, String serverName, String content) throws BackupSynchException {
 		try {
-			IFile backupFile = getBackupFile(file);
+			IFile backupFile = getBackupFile(file, serverName);
 			if (backupFile == null) {
 				return new BackupSynchResult(BackupSynchStatus.OFF_BY_CONFIGURATION);
 			}
@@ -225,7 +226,8 @@ public class MServerRoutine {
 	
 	private static MServerRoutine load(ConnectionData connectionData, IFile file, String routineName) throws LoadRoutineException, BackupSynchException {
 		String content = load(connectionData.getConnection(), routineName);
-		BackupSynchResult synchBackupResult = synchBackupFile(file, content);
+		String serverName = connectionData.getServerName();
+		BackupSynchResult synchBackupResult = synchBackupFile(file, serverName, content);
 		MServerRoutine result = new MServerRoutine(routineName, content, file, synchBackupResult);
 		return result;
 	}	

@@ -142,6 +142,17 @@
                </visibleWhen>
             </command>
             <command
+                  commandId="us.pwc.vista.eclipse.server.command.saveRoutineToSelectedServer"
+                  label="Save Routine to Selected Server"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="us.pwc.vista.eclipse.core.exprdef.composite.onemfileonly">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
                   commandId="us.pwc.vista.eclipse.server.command.saveRoutine"
                   label="Save Routines"
                   style="push">
@@ -191,6 +202,16 @@
       <command
             id="us.pwc.vista.eclipse.server.command.saveRoutine"
             name="Save Routine">
+         <commandParameter
+               id="us.pwc.vista.eclipse.server.command.saveRoutine.namespace"
+               name="Namespace"
+               optional="true"
+               typeId="us.pwc.vista.eclipse.core.cmdparamtype.boolean">
+         </commandParameter>
+      </command>
+      <command
+            id="us.pwc.vista.eclipse.server.command.saveRoutineToSelectedServer"
+            name="Save Routine to Selected Server">
          <commandParameter
                id="us.pwc.vista.eclipse.server.command.saveRoutine.namespace"
                name="Namespace"
@@ -250,6 +271,15 @@
       <handler
             class="us.pwc.vista.eclipse.server.command.SaveEditorRoutine"
             commandId="us.pwc.vista.eclipse.server.command.saveRoutine">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.vista.eclipse.server.command.SaveEditorRoutineToSelectedServer"
+            commandId="us.pwc.vista.eclipse.server.command.saveRoutineToSelectedServer">
          <activeWhen>
             <reference
                   definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">

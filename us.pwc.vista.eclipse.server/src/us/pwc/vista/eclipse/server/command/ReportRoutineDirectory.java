@@ -18,7 +18,7 @@ public class ReportRoutineDirectory extends AbstractHandler {
 		
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData();
+		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().selectConnectionData(false);
 		if (connectionData == null) {
 			return null;
 		}

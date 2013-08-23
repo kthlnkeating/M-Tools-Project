@@ -12,6 +12,7 @@ import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
 import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
+import gov.va.med.iss.connection.ConnectionData;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 
 /**
@@ -47,7 +48,9 @@ public class RoutineDirectory {
 	public static String getRoutineNames(String routineName) {
 		str = "";
 		if ( ! (routineName.compareTo("") == 0)) {
-			VistaLinkConnection myConnection = VLConnectionPlugin.getConnectionManager().getConnection();
+			ConnectionData cd = VLConnectionPlugin.getConnectionManager().selectConnectionData(false);
+			if (cd == null) return str;
+			VistaLinkConnection myConnection = cd.getConnection();
 			if (! (myConnection == null)) {
 				try {
 //					int startLineCount = 0;

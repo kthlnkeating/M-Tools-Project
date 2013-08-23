@@ -45,7 +45,7 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	public MDebugRpcProcess(ILaunch launch, String debugEntryTag, Map<String, String> attributes) {
 		initializeAttributes(attributes);
 		
-		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData();
+		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().selectConnectionData(false);
 		// Needs to be testted
 		
 		if (connectionData != null) { //dislike globals like this, want to refactor this to OOP using factories and explicit dependencies in contructors
