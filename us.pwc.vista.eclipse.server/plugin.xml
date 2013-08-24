@@ -147,9 +147,14 @@
                   style="push">
                <visibleWhen
                      checkEnabled="false">
-                  <reference
-                        definitionId="us.pwc.vista.eclipse.core.exprdef.composite.onemfileonly">
-                  </reference>
+                  <and>
+                     <reference
+                           definitionId="us.pwc.vista.eclipse.core.exprdef.composite.onemfileonly">
+                     </reference>
+                     <reference
+                           definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
+                     </reference>
+                  </and>
                </visibleWhen>
             </command>
             <command

@@ -10,7 +10,8 @@ Bundle-ClassPath: .
 Require-Bundle: 
  org.eclipse.debug.core;bundle-version="3.7.1",
  org.eclipse.core.runtime.compatibility;bundle-version="3.2.100",
- gov.va.med.iss.connection;bundle-version="0.1.5"
+ gov.va.med.iss.connection;bundle-version="0.1.5",
+ us.pwc.vista.eclipse.core;bundle-version="1.0.0"
 Export-Package: gov.va.mumps.debug.core,
  gov.va.mumps.debug.core.launching,
  gov.va.mumps.debug.core.model,

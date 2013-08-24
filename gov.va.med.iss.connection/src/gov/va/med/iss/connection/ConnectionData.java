@@ -1,8 +1,8 @@
 package gov.va.med.iss.connection;
 
+import us.pwc.vista.eclipse.core.ServerData;
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.security.vistalink.EclipseConnection;
-import gov.va.med.iss.connection.preferences.ServerData;
 
 public class ConnectionData {
 	private ServerData serverData;

@@ -10,8 +10,6 @@ import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.security.vistalink.EclipseConnection;
 import gov.va.med.foundations.security.vistalink.VistaKernelPrincipalImpl;
 import gov.va.med.foundations.utilities.FoundationsException;
-import gov.va.med.iss.connection.preferences.ServerData;
-import gov.va.med.iss.connection.preferences.VistAConnectionPrefs;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +25,8 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.eclipse.ui.statushandlers.StatusManager;
 
+import us.pwc.vista.eclipse.core.ServerData;
+import us.pwc.vista.eclipse.core.VistACorePrefs;
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 
 public class ConnectionManager {
@@ -113,13 +113,15 @@ public class ConnectionManager {
 		for (ConnectionData cd : this.connections) {
 			serverDataList.add(cd.getServerData());
 		}
-		ServerData serverData = this.selectConnectionData(serverDataList, false, "Select a connection:");
+		if (serverDataList.size() == 0) {
+			MessageDialogHelper.showWarning("Connection Manager", "No existing connection is found.");
+			return;			
+		}
+		ServerData serverData = this.selectConnectionData(serverDataList, false, "Select an existing connection:");
 		if (serverData != null) {
 			ConnectionData connectionData = this.findConnection(serverData.getName());
 			connectionData.getEclipseConnection().logout();
 			this.connections.remove(connectionData);
-		} else {
-			MessageDialogHelper.showWarning("Connection Manager", "No connection is found.");
 		}
 	}
 
@@ -135,10 +137,10 @@ public class ConnectionManager {
 	
 	public ConnectionData getConnectionData(IProject project) {
 		try {
-			String serverName = VistAConnectionPrefs.getServerName(project);
+			String serverName = VistACorePrefs.getServerName(project);
 			if (serverName.isEmpty()) {
 				String message = "Server name is not specified for project " + project.getName() + ".";
-				message += "\nUse Properties/VistA/Connection to specify.";
+				message += "\nUse VistA project properties to specify.";
 				MessageDialogHelper.showError("Connection Manager", message);
 				return null;
 			}	
@@ -210,10 +212,9 @@ public class ConnectionManager {
 	}
 	
 	private List<ServerData> getServerDataList() {
-		List<ServerData> result = VistAConnectionPrefs.getServers();
+		List<ServerData> result = VistACorePrefs.getServers();
 		if ((result == null) || (result.size() == 0)) {
-			String message = "No server is specified.";
-			message += "\n" + "Use Windows/Preferences/VistA/Connection to add.";			
+			String message = "No server is specified. Use VistA preferences to add.";			
 			MessageDialogHelper.showError("Connection Manager", message);			
 			return null;
 		}
@@ -222,15 +223,16 @@ public class ConnectionManager {
 	
 	private ServerData getServerData(String serverName) {
 		List<ServerData> serverDataList = this.getServerDataList();
-		if (serverDataList != null) {
-			for (ServerData serverData : serverDataList) {
-				if (serverData.getName().equals(serverName)) {
-					return serverData;
-				}		
-			}
+		if (serverDataList == null) {
+			return null;
 		}
-		String message = "No information for " + serverName + " is found.";
-		message += "\n" + "Use Windows/Preferences/VistA/Connection to add.";			
+		for (ServerData serverData : serverDataList) {
+			if (serverData.getName().equals(serverName)) {
+				return serverData;
+			}		
+		}
+
+		String message = "No server named " + serverName + " is found. Use VistA preferences to add.";			
 		MessageDialogHelper.showError("Connection Manager", message);
 		return null;		
 	}

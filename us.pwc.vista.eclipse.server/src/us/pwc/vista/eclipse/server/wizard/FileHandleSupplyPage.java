@@ -26,6 +26,8 @@ public abstract class FileHandleSupplyPage extends WizardPage {
 	
 	public abstract IFile getFileHandle();
 	
+	public abstract void reset();
+	
 	@Override
     public boolean canFlipToNextPage() {
         return false;

@@ -16,7 +16,6 @@
 
 package us.pwc.vista.eclipse.server.wizard;
 
-import gov.va.med.iss.connection.preferences.ServerData;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -32,6 +31,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.statushandlers.StatusManager;
 
+import us.pwc.vista.eclipse.core.ServerData;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.core.PreferencesPathResolver;
 import us.pwc.vista.eclipse.server.core.RootPathResolver;
@@ -103,6 +103,12 @@ public class SelectRoutineWizard extends Wizard implements IWorkbenchWizard {
 				this.nextPage = null;
 				StatusManager.getManager().handle(coreException, VistAServerPlugin.PLUGIN_ID);					
 			}
+		}
+	}
+	
+	public void resetNextPage() {
+		if (this.nextPage != null) {
+			this.nextPage.reset();
 		}
 	}
 

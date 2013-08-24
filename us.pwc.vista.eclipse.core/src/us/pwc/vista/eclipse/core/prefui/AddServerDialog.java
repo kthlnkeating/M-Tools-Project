@@ -1,6 +1,4 @@
-package gov.va.med.iss.connection.preferences;
-
-import gov.va.med.iss.connection.VLConnectionPlugin;
+package us.pwc.vista.eclipse.core.prefui;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -17,6 +15,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import us.pwc.vista.eclipse.core.ServerData;
+import us.pwc.vista.eclipse.core.VistACorePlugin;
 import us.pwc.vista.eclipse.core.helper.SWTHelper;
 
 public class AddServerDialog extends Dialog {
@@ -106,7 +106,7 @@ public class AddServerDialog extends Dialog {
 	
 	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
-		return VLConnectionPlugin.getDefault().getDialogSettings(this, BOUNDS);
+		return VistACorePlugin.getDefault().getDialogSettings(this, BOUNDS);
 	}
 	
 	private ServerData ctrlToData() {

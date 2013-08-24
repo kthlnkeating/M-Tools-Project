@@ -1,4 +1,20 @@
-package gov.va.med.iss.connection.preferences;
+//---------------------------------------------------------------------------
+// Copyright 2013 PwC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//---------------------------------------------------------------------------
+
+package us.pwc.vista.eclipse.core.prefui;
 
 import java.util.ArrayList;
 
@@ -18,9 +34,11 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PropertyPage;
 
+import us.pwc.vista.eclipse.core.ServerData;
+import us.pwc.vista.eclipse.core.VistACorePrefs;
 import us.pwc.vista.eclipse.core.helper.SWTHelper;
 
-public class ConnectionPreferencePage extends PropertyPage implements IWorkbenchPreferencePage {	
+public class VistAPreferencePage extends PropertyPage implements IWorkbenchPreferencePage {
 	private IWorkbench workbench;
 	
 	private List servers;
@@ -41,7 +59,7 @@ public class ConnectionPreferencePage extends PropertyPage implements IWorkbench
 		GridLayout gl = new GridLayout(2, false);
 		contents.setLayout(gl);
 		
-		SWTHelper.addLabel(contents, "Use the 'Add' button to add a new server.", 2);
+		SWTHelper.addLabel(contents, "Add M servers for VistA.", 2);
 		SWTHelper.addLabel(contents, "Enter a *BRIEF* name for the server, the port number and IP address or URL.", 2);
 		SWTHelper.addLabel(contents, "Name is used as a property to assign a server to a project.", 2);
 		SWTHelper.addLabel(contents, "Servers:", 2);
@@ -68,7 +86,7 @@ public class ConnectionPreferencePage extends PropertyPage implements IWorkbench
 	}
 	
 	private void initialize() {
-		java.util.List<ServerData> serverDataList = VistAConnectionPrefs.getServers();
+		java.util.List<ServerData> serverDataList = VistACorePrefs.getServers();
 		this.servers.removeAll();
 		for (ServerData serverData : serverDataList) {
 			String s = serverData.toString();
@@ -86,7 +104,7 @@ public class ConnectionPreferencePage extends PropertyPage implements IWorkbench
 			ServerData sd = ServerData.valueOf(s);
 			dataList.add(sd);
 		}
-		VistAConnectionPrefs.setServers(dataList);
+		VistACorePrefs.setServers(dataList);
 		return super.performOk();
 	}
 	
@@ -94,7 +112,7 @@ public class ConnectionPreferencePage extends PropertyPage implements IWorkbench
 	    this.servers.addSelectionListener(new SelectionListener() {			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ConnectionPreferencePage.this.handleSelectionChanged();
+				VistAPreferencePage.this.handleSelectionChanged();
 			}
 			
 			@Override
@@ -105,28 +123,28 @@ public class ConnectionPreferencePage extends PropertyPage implements IWorkbench
 	    this.addButton.addListener(SWT.Selection, new Listener() {
 	    	@Override
 	    	public void handleEvent(Event e) {
-	    		ConnectionPreferencePage.this.handleAddServer();
+	    		VistAPreferencePage.this.handleAddServer();
 	    	}
 	      });
 
 	   this.removeButton.addListener(SWT.Selection, new Listener() {
 		   @Override
 		   public void handleEvent(Event e) {
-	    		ConnectionPreferencePage.this.handleRemoveServer();
+			   VistAPreferencePage.this.handleRemoveServer();
 	        }
 	    });
 	    
 	    this.moveDownButton.addListener(SWT.Selection, new Listener() {
 	    	@Override
 	    	public void handleEvent(Event e) {
-	    		ConnectionPreferencePage.this.handleMoveDownServer();
+	    		VistAPreferencePage.this.handleMoveDownServer();
 	    	}
 	    });	    
 
 	    this.moveUpButton.addListener(SWT.Selection, new Listener() {
 	    	@Override
 	    	public void handleEvent(Event e) {
-	    		ConnectionPreferencePage.this.handleMoveUpServer();
+	    		VistAPreferencePage.this.handleMoveUpServer();
 	    	}
 	    });	    
 	}
@@ -188,4 +206,17 @@ public class ConnectionPreferencePage extends PropertyPage implements IWorkbench
 		this.servers.select(newIndex);
 		this.handleSelectionChanged();
 	}
+	
+	//	@Override
+//	protected Control createContents(Composite parent) {
+//		Composite contents = new Composite(parent, SWT.NONE);
+//		GridLayout layout = new GridLayout();
+//		contents.setLayout(layout);
+//		SWTHelper.setGridData(contents, SWT.FILL, true, SWT.FILL, true);
+//		return contents;
+//	}
+//
+//	@Override
+//	public void init(IWorkbench workbench) {
+//	}
 }

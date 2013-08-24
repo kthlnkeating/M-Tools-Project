@@ -42,7 +42,6 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.ide.IDE;
 
-import us.pwc.vista.eclipse.core.VistACorePrefs;
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.core.resource.FileFillState;
 import us.pwc.vista.eclipse.core.resource.FileSetSearchVisitor;
@@ -70,8 +69,8 @@ public class CommandCommon {
 		}
 	}
 	
-	private static List<IFile> getMFiles(TreePath[] selections, String projectName) throws CoreException {
-		IResourceFilter filter = new SelectedMFileFilter("");
+	private static List<IFile> getMFiles(TreePath[] selections) throws CoreException {
+		IResourceFilter filter = new SelectedMFileFilter();
 		FileFillState result = ResourceUtilExtension.getSelectedFiles(selections, filter);
 		String invalids = result.getInvalidResourcesAsString(3, "\n");
 		if (invalids != null) {
@@ -99,13 +98,13 @@ public class CommandCommon {
 		return selections;	
 	}
 
-	public static List<IFile> getSelectedMFiles(ExecutionEvent event, String projectName) {
+	public static List<IFile> getSelectedMFiles(ExecutionEvent event) {
 		try {
 			TreePath[] paths = getTreePaths(event);
 			if (paths == null) {
 				return null;
 			} else {
-				List<IFile> files = getMFiles(paths, "");
+				List<IFile> files = getMFiles(paths);
 				return files;				
 			}
 		} catch (Throwable t) {
@@ -127,9 +126,8 @@ public class CommandCommon {
 		}		
 		try {
 			IProject project = defaultFolder.getProject();
-			String backupDirectory = VistACorePrefs.getServerBackupDirectory(project);
-			FileSetSearchVisitor visitor = new FileSetSearchVisitor(fileNames, backupDirectory);
-			project.accept(visitor, 0);
+			FileSetSearchVisitor visitor = new FileSetSearchVisitor(fileNames);
+			visitor.run(project, null);
 			return visitor.getFiles(defaultFolder);
 		} catch (Throwable t) {
 			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, t);

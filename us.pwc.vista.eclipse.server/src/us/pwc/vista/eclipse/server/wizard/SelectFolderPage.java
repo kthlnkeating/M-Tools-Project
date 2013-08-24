@@ -232,4 +232,9 @@ public class SelectFolderPage extends FileHandleSupplyPage {
 		IFile result = this.project.getFile(relativePath);
 		return result;
 	}
+
+	@Override
+	public void reset() {
+		this.setProject(null, null);
+	}
 }

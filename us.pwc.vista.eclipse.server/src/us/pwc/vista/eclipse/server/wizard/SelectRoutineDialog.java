@@ -16,9 +16,6 @@
 
 package us.pwc.vista.eclipse.server.wizard;
 
-import gov.va.med.iss.connection.preferences.ServerData;
-
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -31,6 +28,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 
+import us.pwc.vista.eclipse.core.ServerData;
 import us.pwc.vista.eclipse.core.resource.FileSearchVisitor;
 
 public class SelectRoutineDialog extends WizardDialog {
@@ -46,21 +44,29 @@ public class SelectRoutineDialog extends WizardDialog {
 		SelectRoutineWizard wizard = (SelectRoutineWizard) this.getWizard();
 		IProject project = wizard.getProject();
 		String routineName = wizard.getRoutineName();
-		if ((project == null) || (routineName == null) || routineName.isEmpty()) {
+		ServerData serverData = wizard.getServerData();
+		if ((project == null) || (routineName == null) || routineName.isEmpty() || (serverData == null)) {
 			wizard.setNextError("Invalid routine name and/or project.");
 		} else {
-			this.setNextPageOffExistingFile(wizard, project, routineName); 
+			this.setNextPageOffExistingFile(wizard, project, routineName, serverData.getName()); 
 		}
 	}
 	
-	private void setNextPageOffExistingFile(final SelectRoutineWizard wizard, final IProject project, final String routineName) {
+	@Override
+	protected void backPressed() {
+		SelectRoutineWizard wizard = (SelectRoutineWizard) this.getWizard();
+		wizard.resetNextPage();
+		super.backPressed();
+	}
+	
+	private void setNextPageOffExistingFile(final SelectRoutineWizard wizard, final IProject project, final String routineName, final String serverName) {
 		Job job = new Job("Find Existing File") {
 			@Override
 			protected IStatus run(IProgressMonitor progressMonitor) {				
 				try {
 					progressMonitor.beginTask("Searching file", IProgressMonitor.UNKNOWN);
-					FileSearchVisitor fsv = new FileSearchVisitor(routineName + ".m", null);
-					project.accept(fsv, IContainer.NONE);
+					FileSearchVisitor fsv = new FileSearchVisitor(routineName + ".m");
+					fsv.run(project, serverName);
 					final IFile file = fsv.getFile();
 					Display.getDefault().asyncExec(new Runnable() {						
 						@Override

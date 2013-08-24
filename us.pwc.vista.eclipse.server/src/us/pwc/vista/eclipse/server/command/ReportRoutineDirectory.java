@@ -2,12 +2,12 @@ package us.pwc.vista.eclipse.server.command;
 
 import gov.va.med.iss.connection.ConnectionData;
 import gov.va.med.iss.connection.VLConnectionPlugin;
-import gov.va.med.iss.connection.preferences.ServerData;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
+import us.pwc.vista.eclipse.core.ServerData;
 import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.core.RoutineDirectory;

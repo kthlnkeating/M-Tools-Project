@@ -6,7 +6,6 @@ import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.iss.connection.ConnectionData;
-import gov.va.med.iss.connection.preferences.ServerData;
 import gov.va.med.iss.connection.utilities.MPiece;
 
 import java.io.ByteArrayInputStream;
@@ -22,6 +21,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.statushandlers.StatusManager;
 
+import us.pwc.vista.eclipse.core.ServerData;
 import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
 import us.pwc.vista.eclipse.core.resource.InvalidFileException;
 import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;

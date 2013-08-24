@@ -21,7 +21,6 @@ import java.util.List;
 
 import gov.va.med.iss.connection.ConnectionData;
 import gov.va.med.iss.connection.VLConnectionPlugin;
-import gov.va.med.iss.connection.preferences.ServerData;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -30,6 +29,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 
+import us.pwc.vista.eclipse.core.ServerData;
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
@@ -49,7 +49,7 @@ public class SaveRoutine extends AbstractHandler {
 		Object namespaceParam = event.getObjectParameterForExecution("us.pwc.vista.eclipse.server.command.saveRoutine.namespace");
 		boolean namespaceFlag = ((Boolean) namespaceParam).booleanValue();
 		
-		List<IFile> selectedFiles = CommandCommon.getSelectedMFiles(event, "");
+		List<IFile> selectedFiles = CommandCommon.getSelectedMFiles(event);
 		if (selectedFiles == null) {
 			return null;
 		}

@@ -2,19 +2,6 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            name="Connection"
-            category="gov.va.med.iss.connection.preferences.VistaPreferencePage"
-            class="gov.va.med.iss.connection.preferences.ConnectionPreferencePage"
-            id="gov.va.med.iss.connection.preferences.ConnectionPreferencePage">
-      </page>
-      <page
-            class="gov.va.med.iss.connection.preferences.VistaPreferencePage"
-            name="VistA"
-            id="gov.va.med.iss.connection.preferences.VistaPreferencePage"/>
-    </extension>
-   <extension
          point="org.eclipse.ui.views">
       <category
             name="Sample Category"
@@ -71,14 +58,5 @@
             id="gov.va.med.iss.connection.command.disconnectFromVistA"
             name="Disconnect From VistA">
       </command>
-   </extension>
-   <extension
-         point="org.eclipse.ui.propertyPages">
-      <page
-            category="us.pwc.vista.eclipse.core.project.propertyPage"
-            class="gov.va.med.iss.connection.preferences.ProjectPropertyPage"
-            id="gov.va.med.iss.connection.project.propertyPage"
-            name="Connection">
-      </page>
    </extension>
 </plugin>

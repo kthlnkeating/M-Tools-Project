@@ -18,7 +18,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="M-Editor"
-            category="gov.va.med.iss.connection.preferences.VistaPreferencePage"
+            category="us.pwc.vista.eclipse.core.preferences.vistaPreferencePage"
             class="gov.va.med.iss.meditor.preferences.MEditorPreferencesPage"
             id="gov.va.med.iss.meditor.preferences.MEditorPreferencesPage">
       </page>

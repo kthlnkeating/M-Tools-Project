@@ -1,4 +1,4 @@
-package gov.va.med.iss.connection.preferences;
+package us.pwc.vista.eclipse.core;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;

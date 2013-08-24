@@ -61,4 +61,10 @@ public class FileNoticePage extends FileHandleSupplyPage {
 	public IFile getFileHandle() {
 		return this.fileHandle;
 	}
+	
+	@Override
+	public void reset() {
+		this.fileHandle = null;
+		this.validate();
+	}
 }

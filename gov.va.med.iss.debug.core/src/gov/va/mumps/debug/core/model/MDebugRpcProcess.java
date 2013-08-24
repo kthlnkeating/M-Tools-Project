@@ -50,7 +50,7 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 		
 		if (connectionData != null) { //dislike globals like this, want to refactor this to OOP using factories and explicit dependencies in contructors
 			xtdebugHandler = new XtdebugHandler(connectionData.getConnection());
-			responseResults = xtdebugHandler.startDebug(debugEntryTag);			
+			responseResults = xtdebugHandler.startDebug(debugEntryTag);	
 			name = "VistA Connection: " + connectionData.getServerData().toUIString();
 		} else
 			name = "Error: Not connected to VistA";

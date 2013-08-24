@@ -20,7 +20,6 @@ import java.util.List;
 
 import gov.va.med.iss.connection.ConnectionData;
 import gov.va.med.iss.connection.VLConnectionPlugin;
-import gov.va.med.iss.connection.preferences.ServerData;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -30,6 +29,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreePath;
 
+import us.pwc.vista.eclipse.core.ServerData;
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 import us.pwc.vista.eclipse.server.Messages;
@@ -95,7 +95,7 @@ public class LoadRoutine extends AbstractHandler {
 		return new String[]{routineName};
 	}
 	
-	private List<IFile> getFiles(final ExecutionEvent event, String projectName, boolean namespaceFlag, boolean folderFlag) {
+	private List<IFile> getFiles(final ExecutionEvent event, boolean namespaceFlag, boolean folderFlag) {
 		if (folderFlag) {
 			IFolder folder = this.getFolder(event);
 			if (folder == null) {
@@ -114,7 +114,7 @@ public class LoadRoutine extends AbstractHandler {
 			
 			return CommandCommon.getFileHandles(folder, routines);
 		} else {
-			List<IFile> selectedFiles = CommandCommon.getSelectedMFiles(event, projectName);
+			List<IFile> selectedFiles = CommandCommon.getSelectedMFiles(event);
 			return selectedFiles;
 		}		
 	}
@@ -127,19 +127,20 @@ public class LoadRoutine extends AbstractHandler {
 		Object folderParam = event.getObjectParameterForExecution("us.pwc.vista.eclipse.server.command.loadRoutine.folder");
 		boolean folderFlag = ((Boolean) folderParam).booleanValue();
 
-		List<IFile> files = getFiles(event, "", namespaceFlag, folderFlag);
-
-		IFile firstFile = files.get(0);
-		IProject project = firstFile.getProject();
-		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData(project);
-		if (connectionData == null) {
-			return null;
-		}		
-		if (files.size() == 1) {
-			CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connectionData, firstFile);
-			MessageDialogHelper.logAndShow(Messages.LOAD_MSG_TITLE, r.getStatus());
-		} else {
-			CommandCommon.loadRoutines(connectionData, files);
+		List<IFile> files = getFiles(event, namespaceFlag, folderFlag);
+		if (files != null) {
+			IFile firstFile = files.get(0);
+			IProject project = firstFile.getProject();
+			ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData(project);
+			if (connectionData == null) {
+				return null;
+			}		
+			if (files.size() == 1) {
+				CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connectionData, firstFile);
+				MessageDialogHelper.logAndShow(Messages.LOAD_MSG_TITLE, r.getStatus());
+			} else {
+				CommandCommon.loadRoutines(connectionData, files);
+			}
 		}
 		return null;
 	}

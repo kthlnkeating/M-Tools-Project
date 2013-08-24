@@ -17,51 +17,27 @@
 package us.pwc.vista.eclipse.core.resource;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 
 import us.pwc.vista.eclipse.core.Messages;
 
 public class SelectedMFileFilter implements IResourceFilter {
-	private String projectName;
-
-	public SelectedMFileFilter(String projectName) {
+	public SelectedMFileFilter() {
 		super();
-		this.projectName = projectName;
-	}
-	
-	private String checkProject(IProject project) {
-		String name = project.getName();
-		if (this.projectName.equals(name)) {
-			return null;
-		} else {
-			String message = Messages.bind(Messages.SEL_FILE_PROJECT_MISMATCH, project.getFullPath().toString(), this.projectName);
-			return message;
-		}
 	}
 	
 	@Override
 	public String getError(IResource resource) {
-		if (resource instanceof IProject) {
-			IProject project = (IProject) resource;
-			return this.checkProject(project);
-		} else if (resource instanceof IFolder) {
-			IFolder folder = (IFolder) resource;
-			return this.checkProject(folder.getProject());				
-		} else if (resource instanceof IFile) {
+		if (resource instanceof IFile) {
 			IFile file = (IFile) resource;
-			String result = this.checkProject(file.getProject());
-			if (result == null) {			
-				String extension = file.getFullPath().getFileExtension();
-				if ("m".equals(extension)) {
-					return null;
-				} else {
-					return Messages.bind(Messages.SEL_FILE_NOT_M, file.getFullPath().toString());
-				}
-			} 
-			return result;
+			String extension = file.getFullPath().getFileExtension();
+			if ("m".equals(extension)) {
+				return null;
+			} else {
+				return Messages.bind(Messages.SEL_FILE_NOT_M, file.getFullPath().toString());
+			}
+		} else {
+			return null;
 		}
-		return Messages.bind(Messages.SEL_FILE_UNEXPECTED_OBJECT, resource.getFullPath().toString());
 	}		
 }

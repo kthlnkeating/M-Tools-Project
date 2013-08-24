@@ -1,5 +1,6 @@
 package us.pwc.vista.eclipse.core;
 
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -47,4 +48,23 @@ public class VistACorePlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
+    /**
+     * Convenience method to return the dialog settings for a particular 
+     * <code>Dialog</code>.  Class name is used as section and a subsection 
+     * can also be used.  If the dialog settings is not found it is created.
+     *
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#getDialogSettings
+     * @param clazz dialog class
+     * @param subsection
+     * @return the dialog settings
+     */
+	public IDialogSettings getDialogSettings(Object object, String subsection) {
+		IDialogSettings settings = this.getDialogSettings();
+		String section = object.getClass().getName() + "_" + subsection;
+		IDialogSettings result = settings.getSection(section);
+		if (result == null) {
+			result = settings.addNewSection(section);
+		}
+		return result;		
+	}
 }

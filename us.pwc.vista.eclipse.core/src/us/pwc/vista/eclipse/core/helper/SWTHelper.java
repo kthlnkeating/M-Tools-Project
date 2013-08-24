@@ -112,13 +112,12 @@ public class SWTHelper {
 		label.setLayoutData(gd);
 	}
 	
-	public static void addLabel(Composite parent, String text, int horizontalSpan) {
-		Label label = new Label(parent, SWT.NONE | SWT.WRAP);
-		label.setText(text);
-		
-		GridData gd = new GridData();
+	public static Label addLabel(Composite parent, String text, int horizontalSpan) {
+		Label label = new Label(parent, SWT.WRAP | SWT.LEFT);
+		label.setText(text);		
+		GridData gd = SWTHelper.setGridData(label, SWT.FILL, true, SWT.CENTER, false);
 		gd.horizontalSpan = horizontalSpan;
-		label.setLayoutData(gd);
+		return label;
 	}
 	
 	public static GridData setGridData(Control component, int horizontalAlignment, boolean grabExcessHorizontalSpace, int verticalAlignment, boolean grabExcessVerticalSpace) {

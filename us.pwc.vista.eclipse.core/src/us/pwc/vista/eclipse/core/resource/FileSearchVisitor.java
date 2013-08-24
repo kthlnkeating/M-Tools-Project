@@ -17,38 +17,37 @@
 package us.pwc.vista.eclipse.core.resource;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
-import org.eclipse.core.resources.IResourceProxyVisitor;
 
-public class FileSearchVisitor implements IResourceProxyVisitor {
+public class FileSearchVisitor extends VistAProjectFileVisitor {
 	private IFile file;
 	private String fileName;
-	private String excludeDirectory;
 	
-	public FileSearchVisitor(String fileName, String excludeDirectory) {
+	public FileSearchVisitor(String fileName) {
 		this.fileName = fileName;
-		this.excludeDirectory = excludeDirectory;
+	}
+
+	@Override
+	protected boolean isDone() {
+		return this.file != null;
 	}
 	
 	@Override
-	public boolean visit(IResourceProxy proxy) { 
-		if (this.file != null) {
-			return false;
-		}
-		String name = proxy.getName();
-		if (proxy.getType() != IResource.FILE) {
-			return ! name.equals(this.excludeDirectory);
-		}
-		if (! name.equals(this.fileName)) {
-			return true;
-		}
+	protected void handleFile(IFile file) {
+		this.file = file;
+	}
+
+	@Override
+	protected void handleFileProxy(IResourceProxy proxy) {
 		this.file = (IFile) proxy.requestResource();
-		return false;
-    } 
+	}
+
+	@Override
+	protected boolean checkName(String name) {
+		return name.equals(this.fileName);		
+	}
 	
 	public IFile getFile() {
 		return this.file;
 	}
 }
-

@@ -16,9 +16,6 @@
 
 package us.pwc.vista.eclipse.server.wizard;
 
-import gov.va.med.iss.connection.preferences.ServerData;
-import gov.va.med.iss.connection.preferences.VistAConnectionPrefs;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,7 +41,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.statushandlers.StatusManager;
 
+import us.pwc.vista.eclipse.core.ServerData;
 import us.pwc.vista.eclipse.core.VistACorePlugin;
+import us.pwc.vista.eclipse.core.VistACorePrefs;
 import us.pwc.vista.eclipse.core.helper.SWTHelper;
 import us.pwc.vista.eclipse.core.validator.ICommonRegexs;
 import us.pwc.vista.eclipse.core.validator.RegexInputValidator;
@@ -97,11 +96,12 @@ public class SelectRoutinePage extends WizardPage {
 	}
 	
 	private void initialize() {
-		List<ServerData> serverDataList = VistAConnectionPrefs.getServers();
+		List<ServerData> serverDataList = VistACorePrefs.getServers();
 		this.serversCtrl.setData(serverDataList);
 		int count = serverDataList.size();
 		if (count == 0) {
-			this.disableAll("No server is specified in Preferences/VistA/Connection.");
+			this.disableAll("No server is specified. Use VistA preferences to add.");
+			this.setPageComplete(false);
 			return;			
 		}
 		for (ServerData sd : serverDataList) {
@@ -139,7 +139,7 @@ public class SelectRoutinePage extends WizardPage {
 			IProject[] result = new IProject[projects.length];
 			int count = 0;
 			for (IProject project : projects) {
-				String projectServerName = VistAConnectionPrefs.getServerName(project);
+				String projectServerName = VistACorePrefs.getServerName(project);
 				if (projectServerName.equals(serverName)) {
 					result[count] = project;
 					++count;
@@ -263,7 +263,8 @@ public class SelectRoutinePage extends WizardPage {
 			++index;
 		}
 		if (selectionIndex >= 0) {
-			this.projectCtrl.select(selectionIndex);				
+			this.projectCtrl.select(selectionIndex);
+			this.projectCtrl.setEnabled(projects.length > 1);
 		} else {
 			this.updateProject(projects);
 		}
@@ -314,7 +315,7 @@ public class SelectRoutinePage extends WizardPage {
 				if (this.overrideCtrl.getSelection()) {
 					this.updatePage("No project found in workspace.");
 				} else {
-					this.updatePage("No project found for the server.");
+					this.updatePage("No project is configured to use the server.");
 				}
 			}
 			return false;

@@ -26,38 +26,44 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
-import org.eclipse.core.resources.IResourceProxyVisitor;
 
-public class FileSetSearchVisitor implements IResourceProxyVisitor {
+public class FileSetSearchVisitor extends VistAProjectFileVisitor {
 	private Map<String, IFile> files = new HashMap<String, IFile>();
 	private Set<String> fileNames;
-	private String excludeDirectory;
 	private Set<String> multiples = new HashSet<String>();
 	
-	public FileSetSearchVisitor(Collection<String> fileNames, String excludeDirectory) {
+	public FileSetSearchVisitor(Collection<String> fileNames) {
 		this.fileNames = new HashSet<String>(fileNames);
-		this.excludeDirectory = excludeDirectory;
 	}
 	
 	@Override
-	public boolean visit(IResourceProxy proxy) { 
-		String name = proxy.getName();
-		if (proxy.getType() != IResource.FILE) {
-			return ! name.equals(this.excludeDirectory);
-		}
-		if (! fileNames.contains(name)) {
-			return true;
-		}
-		if (this.files.containsKey(name)) {
-			multiples.add(name);
-		} else {
-			IFile file = (IFile) proxy.requestResource();
-			this.files.put(name, file);
+	protected boolean isDone() {
+		return false;
+	}
+	
+	@Override
+	protected void handleFile(IFile file) {
+		this.files.put(file.getName(), file);
+	}
+
+	@Override
+	protected void handleFileProxy(IResourceProxy proxy) {
+		IFile file = (IFile) proxy.requestResource();
+		this.files.put(proxy.getName(), file);
+	}
+
+	@Override
+	protected boolean checkName(String name) {
+		if (fileNames.contains(name)) {
+			if (this.files.containsKey(name)) {
+				multiples.add(name);
+			} else {
+				return true;
+			}
 		}
 		return false;
-    } 
+	}
 	
 	public Set<String> getMultiplyExists() {
 		return this.multiples;

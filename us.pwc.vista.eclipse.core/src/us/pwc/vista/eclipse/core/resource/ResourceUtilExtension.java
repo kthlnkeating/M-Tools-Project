@@ -165,11 +165,35 @@ public class ResourceUtilExtension {
 		}
 	}
 	
+	private static class FileFillSubFolderVisitor extends VistaProjectSubFolderVisitor {
+		private FileFillState result;
+		
+		public FileFillSubFolderVisitor(IProject project, String serverName, FileFillState result) {
+			super(project, serverName);
+			this.result = result;
+		}
+		
+		@Override
+		protected void visitFile(IFile file) {
+			try {
+				result.add(file);
+			} catch (CoreException coreException) {				
+			}
+		}		
+	}
+	
 	public static FileFillState getSelectedFiles(TreePath[] selections, IResourceFilter filter) throws CoreException {
 		FileFillState result = new FileFillState(filter);
 		for (TreePath path : selections) {
 			Object lastSegment = path.getLastSegment();			
-			if (lastSegment instanceof IResource) {
+			if (lastSegment instanceof IProject) {
+				IProject project = (IProject) lastSegment;
+				FileFillSubFolderVisitor ffv = new FileFillSubFolderVisitor(project, null, result);
+				project.accept(ffv);
+				for (IFolder folder : ffv.getFolders()) {
+					result.add(folder);					
+				}
+			} else if (lastSegment instanceof IResource) {
 				IResource selected = (IResource) lastSegment;
 				result.add(selected);
 			} else {
