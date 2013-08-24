@@ -27,7 +27,6 @@ import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.iss.connection.ConnectionData;
 import gov.va.med.iss.connection.VLConnectionPlugin;
-import gov.va.med.iss.connection.utilities.MPiece;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -61,6 +60,14 @@ public class ReportGlobalListing extends AbstractHandler {
 		public String consoleOutput;
 		public String currCount;
 	}
+
+	private static String getPiece(String[] pieces, int index) {
+		if ((pieces == null) || (pieces.length <= index)) {
+			return "";
+		} else {
+			return pieces[index];
+		}
+	}
 	
 	private static GlobalListingRPCResult doGlobalListingRPC(VistaLinkConnection connection, GlobalListingData data, String lastLine) throws FoundationsException, VistaLinkFaultException {
 		RpcRequest vReq = RpcRequestFactory.getRpcRequest("", "XT ECLIPSE M EDITOR");
@@ -91,8 +98,9 @@ public class ReportGlobalListing extends AbstractHandler {
 		GlobalListingRPCResult result = new GlobalListingRPCResult();
 		String topStr = vResp.getResults().substring(0,value2);
 		result.str = vResp.getResults().substring(value2);
-		result.more = MPiece.getPiece(topStr,"~^~",5);
-		result.currCount = MPiece.getPiece(topStr,"~^~",4);
+		String[] pieces = topStr.split("\\~\\^\\~");	
+		result.more = getPiece(pieces, 4);
+		result.currCount = getPiece(pieces, 3);
 		result.lastLine = lastLine;
 		return result;
 	}

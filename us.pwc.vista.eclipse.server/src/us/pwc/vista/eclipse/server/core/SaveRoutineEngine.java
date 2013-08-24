@@ -6,7 +6,6 @@ import gov.va.med.foundations.rpc.RpcRequestFactory;
 import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.iss.connection.ConnectionData;
-import gov.va.med.iss.connection.utilities.MPiece;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -188,7 +187,8 @@ public class SaveRoutineEngine {
 		if (index > -1) {
 			String line1 = vResp.getResults().substring(0, index);
 			if (line1.indexOf("-1") == 0) {
-				String message = MPiece.getPiece(line1,"^",2);
+				String[] pieces = line1.split("\\^");
+				String message = (pieces.length > 1) ? pieces[1] : "Unknown error saving the routine to server.";
 				IStatus r = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message);
 				return r;
 			}
