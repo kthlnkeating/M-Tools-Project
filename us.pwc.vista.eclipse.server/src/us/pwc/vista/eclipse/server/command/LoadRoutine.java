@@ -73,7 +73,7 @@ public class LoadRoutine extends AbstractHandler {
 			return null;
 		}
 		
-		String routines = RoutineDirectory.getRoutineList(routineNamespace);
+		String routines = RoutineDirectory.getRoutineList(connectionData, routineNamespace);
 		if (routines.isEmpty() || (routines.indexOf("<") >= 0)) {
 			String message = Messages.bind(Messages.MULTI_LOAD_RTN_NONE_IN_NAMESPC, routineNamespace);
 			MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, message);

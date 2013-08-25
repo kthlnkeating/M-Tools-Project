@@ -8,12 +8,7 @@ package us.pwc.vista.eclipse.server.core;
 
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 import us.pwc.vista.eclipse.server.VistAServerPlugin;
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
-import gov.va.med.foundations.rpc.RpcRequest;
-import gov.va.med.foundations.rpc.RpcRequestFactory;
-import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.iss.connection.ConnectionData;
-import gov.va.med.iss.connection.VLConnectionPlugin;
 
 /**
  * @author vhaisfiveyj
@@ -29,8 +24,8 @@ public class RoutineDirectory {
 	 * 
 	 * @return string of routine names which begin with routineName. 
 	 */
-	public static String getRoutineList(String routineName) {
-		String str = getRoutineNames(routineName);
+	public static String getRoutineList(ConnectionData connectionData, String routineName) {
+		String str = getRoutineNames(connectionData, routineName);
 		// comes back with a header followed by \n\n
 		int loc = str.indexOf("\n\n");
 		// remove header and \n\n 
@@ -45,40 +40,20 @@ public class RoutineDirectory {
 	 * 
 	 * @return
 	 */
-	public static String getRoutineNames(String routineName) {
+	public static String getRoutineNames(ConnectionData connectionData, String routineName) {
 		str = "";
 		if ( ! (routineName.compareTo("") == 0)) {
-			ConnectionData cd = VLConnectionPlugin.getConnectionManager().selectConnectionData(false);
-			if (cd == null) return str;
-			VistaLinkConnection myConnection = cd.getConnection();
-			if (! (myConnection == null)) {
-				try {
-//					int startLineCount = 0;
-					RpcRequest vReq = RpcRequestFactory.getRpcRequest("", "XT ECLIPSE M EDITOR");
-//					if (this.xmlRadioButton.isSelected()) {
-						vReq.setUseProprietaryMessageFormat(false);
-//					} else {
-//						vReq.setUseProprietaryMessageFormat(true);
-//					}
-					vReq.getParams().setParam(1, "string", "RD");  // RD  RL  GD  GL  RS
-					vReq.getParams().setParam(2, "string", "notused");
-					vReq.getParams().setParam(3, "string", routineName);
-					RpcResponse vResp = myConnection.executeRPC(vReq);
-					int value2 = vResp.getResults().indexOf("\n");
-/*					
-					int value1 = vResp.getResults().indexOf("1");
-					int value = vResp.getResults().length();
-					int location = 0;
-*/
-					str = vResp.getResults().substring(value2+1);
-					if (str.length() == 0)
-						str = "<no matches found>\n";
-					str = "Routines beginning with "+routineName+"\n\n"+ str;
-				} catch (Throwable t) {
-					String message = "Error encountered while executing RPC " + t.getMessage();
-					MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, message, t);
-					str = "";
-				}
+			try {
+				String result = connectionData.rpcXML("XT ECLIPSE M EDITOR", "RD", "notused", routineName);				
+				int value2 = result.indexOf("\n");
+				str = result.substring(value2+1);
+				if (str.length() == 0)
+					str = "<no matches found>\n";
+				str = "Routines beginning with "+routineName+"\n\n"+ str;
+			} catch (Throwable t) {
+				String message = "Error encountered while executing RPC " + t.getMessage();
+				MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, message, t);
+				str = "";
 			}
 		}
 		return str;

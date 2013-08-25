@@ -16,10 +16,6 @@
 
 package us.pwc.vista.eclipse.server.core;
 
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
-import gov.va.med.foundations.rpc.RpcRequest;
-import gov.va.med.foundations.rpc.RpcRequestFactory;
-import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.iss.connection.ConnectionData;
 
@@ -144,15 +140,9 @@ public class MServerRoutine {
 		}
 	}
 
-	private static String load(VistaLinkConnection connection, String routineName) throws LoadRoutineException {
+	private static String load(ConnectionData connectionData, String routineName) throws LoadRoutineException {
 		try {
-			RpcRequest vReq = RpcRequestFactory.getRpcRequest("", "XT ECLIPSE M EDITOR");
-			vReq.setUseProprietaryMessageFormat(false);
-			vReq.getParams().setParam(1, "string", "RL"); // RD RL GD GL RS
-			vReq.getParams().setParam(2, "string", "notused");
-			vReq.getParams().setParam(3, "string", routineName);
-			RpcResponse vResp = connection.executeRPC(vReq);
-			String result = vResp.getResults();
+			String result = connectionData.rpcXML("XT ECLIPSE M EDITOR", "RL", "notused", routineName);
 			if (result.startsWith("-1^Error Processing load request")) {
 				return null;
 			} else {
@@ -225,7 +215,7 @@ public class MServerRoutine {
 	}
 	
 	private static MServerRoutine load(ConnectionData connectionData, IFile file, String routineName) throws LoadRoutineException, BackupSynchException {
-		String content = load(connectionData.getConnection(), routineName);
+		String content = load(connectionData, routineName);
 		String serverName = connectionData.getServerName();
 		BackupSynchResult synchBackupResult = synchBackupFile(file, serverName, content);
 		MServerRoutine result = new MServerRoutine(routineName, content, file, synchBackupResult);

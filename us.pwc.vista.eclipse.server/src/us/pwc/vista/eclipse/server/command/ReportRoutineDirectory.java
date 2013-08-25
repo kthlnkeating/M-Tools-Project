@@ -30,7 +30,7 @@ public class ReportRoutineDirectory extends AbstractHandler {
 			return null;
 		}
 		
-		String result = RoutineDirectory.getRoutineNames(namespace);
+		String result = RoutineDirectory.getRoutineNames(connectionData, namespace);
 		MessageConsoleHelper.writeToConsole(ROUTINE_DIRECTORY, result, true);
 		return null;
 	}
