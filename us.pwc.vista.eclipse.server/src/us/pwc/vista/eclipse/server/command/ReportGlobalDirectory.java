@@ -1,9 +1,5 @@
 package us.pwc.vista.eclipse.server.command;
 
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
-import gov.va.med.foundations.rpc.RpcRequest;
-import gov.va.med.foundations.rpc.RpcRequestFactory;
-import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.iss.connection.ConnectionData;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 
@@ -19,16 +15,11 @@ import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
 
 public class ReportGlobalDirectory extends AbstractHandler {
-	public static void writeGlobalDirectory(VistaLinkConnection connection, String globalName) {
+	public static void writeGlobalDirectory(ConnectionData connectionData, String globalName) {
 		try {
-			RpcRequest vReq = RpcRequestFactory.getRpcRequest("", "XT ECLIPSE M EDITOR");
-			vReq.setUseProprietaryMessageFormat(false);
-			vReq.getParams().setParam(1, "string", "GD");  // RD  RL  GD  GL  RS
-			vReq.getParams().setParam(2, "string", "notused");
-			vReq.getParams().setParam(3, "string", globalName);
-			RpcResponse vResp = connection.executeRPC(vReq);
-			int value2 = vResp.getResults().indexOf("\n");
-			String str = vResp.getResults().substring(value2+1);
+			String rpcResult = connectionData.rpcXML("XT ECLIPSE M EDITOR", "GD", "notused", globalName);
+			int value2 = rpcResult.indexOf("\n");
+			String str = rpcResult.substring(value2+1);
 			if (str.length() == 0) {
 				str = "<no matches found>\n";
 			}
@@ -65,7 +56,7 @@ public class ReportGlobalDirectory extends AbstractHandler {
 			return null;
 		}
 
-		writeGlobalDirectory(connectionData.getConnection(), namespace);
+		writeGlobalDirectory(connectionData, namespace);
 		return null;
 	}
 }

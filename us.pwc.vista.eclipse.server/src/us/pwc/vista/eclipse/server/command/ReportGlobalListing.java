@@ -19,11 +19,7 @@ package us.pwc.vista.eclipse.server.command;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.adapter.record.VistaLinkFaultException;
-import gov.va.med.foundations.rpc.RpcRequest;
-import gov.va.med.foundations.rpc.RpcRequestFactory;
-import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.iss.connection.ConnectionData;
 import gov.va.med.iss.connection.VLConnectionPlugin;
@@ -69,9 +65,7 @@ public class ReportGlobalListing extends AbstractHandler {
 		}
 	}
 	
-	private static GlobalListingRPCResult doGlobalListingRPC(VistaLinkConnection connection, GlobalListingData data, String lastLine) throws FoundationsException, VistaLinkFaultException {
-		RpcRequest vReq = RpcRequestFactory.getRpcRequest("", "XT ECLIPSE M EDITOR");
-		vReq.setUseProprietaryMessageFormat(false);
+	private static GlobalListingRPCResult doGlobalListingRPC(ConnectionData connectionData, GlobalListingData data, String lastLine) throws FoundationsException, VistaLinkFaultException {
 		String searchVal = data.searchText;
 		String globalName = data.globalName;
 		if (! (globalName.indexOf('^') == 0))
@@ -87,17 +81,13 @@ public class ReportGlobalListing extends AbstractHandler {
 		// accumulate all results before returning initially
 		// changed next line 
 		lastLine = lastLine+"^1";
-		vReq.getParams().setParam(1, "string", "GL");  // RD  RL  GD  GL  RS
-		vReq.getParams().setParam(2, "string", "notused");
-		vReq.getParams().setParam(3, "string", globalName);
-		vReq.getParams().setParam(4, "string", searchVal);
-		vReq.getParams().setParam(5, "string", lastLine);
-		RpcResponse vResp = connection.executeRPC(vReq);
-		int value2 = vResp.getResults().indexOf("\n");
+		
+		String rpcResult = connectionData.rpcXML("XT ECLIPSE M EDITOR", "GL", "notused", globalName, searchVal, lastLine); 
+		int value2 = rpcResult.indexOf("\n");
 
 		GlobalListingRPCResult result = new GlobalListingRPCResult();
-		String topStr = vResp.getResults().substring(0,value2);
-		result.str = vResp.getResults().substring(value2);
+		String topStr = rpcResult.substring(0,value2);
+		result.str = rpcResult.substring(value2);
 		String[] pieces = topStr.split("\\~\\^\\~");	
 		result.more = getPiece(pieces, 4);
 		result.currCount = getPiece(pieces, 3);
@@ -105,16 +95,16 @@ public class ReportGlobalListing extends AbstractHandler {
 		return result;
 	}
 	
-	private static void killTemporaryGlobal(VistaLinkConnection connection) throws FoundationsException, VistaLinkFaultException {
+	private static void killTemporaryGlobal(ConnectionData connectionData) throws FoundationsException, VistaLinkFaultException {
 		GlobalListingData data = GlobalListingData.getEmptyInstance();	
-		doGlobalListingRPC(connection, data, "");
+		doGlobalListingRPC(connectionData, data, "");
 	}
 	
-	private static GlobalListResult getGlobalListing(VistaLinkConnection connection, GlobalListingData data, String lastLine, boolean continuation)  throws FoundationsException, VistaLinkFaultException {
+	private static GlobalListResult getGlobalListing(ConnectionData connectionData, GlobalListingData data, String lastLine, boolean continuation)  throws FoundationsException, VistaLinkFaultException {
 		String globalName = data.globalName;
 		
 		if (! (globalName.indexOf('^') == 0)) globalName = "^" + globalName;
-		GlobalListingRPCResult rpcResult = doGlobalListingRPC(connection, data, lastLine);
+		GlobalListingRPCResult rpcResult = doGlobalListingRPC(connectionData, data, lastLine);
 
 		String str = rpcResult.str;
 		String more =  rpcResult.more;
@@ -193,18 +183,18 @@ public class ReportGlobalListing extends AbstractHandler {
 		return glr;
 	}
 	
-	private static void killTemporaryLastLocationGlobal(VistaLinkConnection connection) {
+	private static void killTemporaryLastLocationGlobal(ConnectionData connectionData) {
 		try {
-			killTemporaryGlobal(connection);
+			killTemporaryGlobal(connectionData);
 		} catch (Throwable t) {
 			String message = Messages.bind2(Messages.GLOBAL_LISTING_UNEXPECTED, t.getMessage());
 			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, message, t);
 		}		
 	}
 	
-	private static CommandResult<GlobalListResult> getGlobals(VistaLinkConnection connection, GlobalListingData data, String lastLine, boolean continuation) {
+	private static CommandResult<GlobalListResult> getGlobals(ConnectionData connectionData, GlobalListingData data, String lastLine, boolean continuation) {
 		try {
-			GlobalListResult result = getGlobalListing(connection, data, lastLine, continuation);
+			GlobalListResult result = getGlobalListing(connectionData, data, lastLine, continuation);
 			return new CommandResult<GlobalListResult>(result, Status.OK_STATUS);
 		} catch (Throwable t) {
 			String message = Messages.bind(Messages.GLOBAL_LISTING_UNEXPECTED, t.getMessage());
@@ -213,12 +203,12 @@ public class ReportGlobalListing extends AbstractHandler {
 		}
 	}
 	
-	private void handleGlobalListing(final VistaLinkConnection connection, final GlobalListingData data, final String currentCount, final int page) {
+	private void handleGlobalListing(final ConnectionData connectionData, final GlobalListingData data, final String currentCount, final int page) {
 		Job job = new Job(Messages.GLOBAL_LISTING) {			
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				monitor.beginTask("Loading globals from server", IProgressMonitor.UNKNOWN);
-				final CommandResult<GlobalListResult> result = getGlobals(connection, data, currentCount, page > 0);
+				final CommandResult<GlobalListResult> result = getGlobals(connectionData, data, currentCount, page > 0);
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
 						IStatus status = result.getStatus();
@@ -231,14 +221,14 @@ public class ReportGlobalListing extends AbstractHandler {
 							if (glResult.currCount != null) {
 								boolean moreWanted = MessageDialogHelper.question(Messages.GLOBAL_LISTING, Messages.GLOBAL_LISTING_MORE, glResult.currCount);
 								if (moreWanted) {
-									handleGlobalListing(connection, data, glResult.currCount, page+1);
+									handleGlobalListing(connectionData, data, glResult.currCount, page+1);
 									killGlobal = false;
 								} else {
 									killGlobal = true;
 								}
 							}
 							if (killGlobal) {
-								killTemporaryLastLocationGlobal(connection);	
+								killTemporaryLastLocationGlobal(connectionData);	
 							}								
 						}
 					}
@@ -265,7 +255,7 @@ public class ReportGlobalListing extends AbstractHandler {
 		if (result == GlobalListingDialog.OK) {
 			GlobalListingData data = dialog.getData();
 			MessageConsoleHelper.writeToConsole(data.globalName, "", true);
-			this.handleGlobalListing(connectionData.getConnection(), data, "", 0);
+			this.handleGlobalListing(connectionData, data, "", 0);
 		}
 		return null;
 	}

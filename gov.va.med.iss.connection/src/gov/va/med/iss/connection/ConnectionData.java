@@ -1,5 +1,7 @@
 package gov.va.med.iss.connection;
 
+import java.util.List;
+
 import us.pwc.vista.eclipse.core.ServerData;
 import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.rpc.RpcRequest;
@@ -37,15 +39,40 @@ public class ConnectionData {
 		return this.serverData.getName();
 	}
 	
-	public String rpcXML(String rpcName, String... paramNames) throws FoundationsException {
+	private String rpc(String rpcName, boolean propprietaryFormat, RPCParam... rpcParams) throws FoundationsException {
 		RpcRequest vReq = RpcRequestFactory.getRpcRequest("", rpcName);
-		vReq.setUseProprietaryMessageFormat(false);
+		vReq.setUseProprietaryMessageFormat(propprietaryFormat);
 		RpcRequestParams params = vReq.getParams();
-		for (int i=1; i<=paramNames.length; ++i) {
-			params.setParam(i, "string", paramNames[i-1]);
+		for (int i=1; i<=rpcParams.length; ++i) {
+			RPCParam rpcParam = rpcParams[i-1];
+			params.setParam(i, rpcParam.getType(), rpcParam.getValue());
 		}
 		RpcResponse vResp = this.connection.executeRPC(vReq);
 		String result = vResp.getResults();
 		return result;
+	}
+
+	public String rpc(String rpcName, RPCParam... rpcParams) throws FoundationsException {
+		return this.rpc(rpcName, true, rpcParams);
+	}
+
+	public String rpcXML(String rpcName, RPCParam... rpcParams) throws FoundationsException {
+		return this.rpc(rpcName, false, rpcParams);
+	}
+
+	public String rpc(String rpcName, String param0, List<String> param1, String... paramsRest) throws FoundationsException {
+		int n = paramsRest.length;
+		RPCParam[] rpcParams = new RPCParam[n+2];
+		rpcParams[0] = RPCParam.valueOf(param0);
+		rpcParams[1] = RPCParam.valueOf(param1);
+		for (int i=0; i<n; ++i) {
+			rpcParams[i+2] = RPCParam.valueOf(paramsRest[i]);	
+		}
+		return this.rpc(rpcName, true, rpcParams);
+	}
+
+	public String rpcXML(String rpcName, String... paramNames) throws FoundationsException {
+		RPCParam[] rpcParams = RPCParam.valueOf(paramNames);
+		return this.rpcXML(rpcName, rpcParams);
 	}
 }

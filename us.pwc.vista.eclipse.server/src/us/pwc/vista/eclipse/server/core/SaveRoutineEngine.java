@@ -1,9 +1,5 @@
 package us.pwc.vista.eclipse.server.core;
 
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
-import gov.va.med.foundations.rpc.RpcRequest;
-import gov.va.med.foundations.rpc.RpcRequestFactory;
-import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
 import gov.va.med.iss.connection.ConnectionData;
 
@@ -42,11 +38,11 @@ public class SaveRoutineEngine {
 		return target;
 	}
 	
-	private static IStatus saveRoutineToServer(VistaLinkConnection connection, String routineName, ListRoutineBuilder builder, IFile backupFile, StringBuilder consoleMessage) {
+	private static IStatus saveRoutineToServer(ConnectionData connectionData, String routineName, ListRoutineBuilder builder, IFile backupFile, StringBuilder consoleMessage) {
 		String warningMessage = "";
 		try {
 			List<String> contents = builder.getRoutineLines();
-			IStatus result = saveRoutineToServer(connection, routineName, contents, consoleMessage);
+			IStatus result = saveRoutineToServer(connectionData, routineName, contents, consoleMessage);
 			if (result.getSeverity() == IStatus.ERROR) {
 				return result;
 			}
@@ -169,30 +165,18 @@ public class SaveRoutineEngine {
 		return isErrorsOrWarnings;
 	}
 	
-	public static IStatus saveRoutineToServer(VistaLinkConnection connection, String routineName, List<String> contents, StringBuilder consoleMessage) throws FoundationsException {
-		RpcRequest vReq = RpcRequestFactory.getRpcRequest("", "XT ECLIPSE M EDITOR");
-		vReq.setUseProprietaryMessageFormat(true);
-		vReq.getParams().setParam(1, "string", "RS");  // RD  RL  GD  GL  RS
-		vReq.getParams().setParam(2, "array", contents);
-		vReq.getParams().setParam(3, "string", routineName);
-		//String unitTestName = getUnitTestName(routineName+".m"); //--jspivey not supported beause it is loading this value into the eclipse persistence store when the routine is loaded in. This won't work for routines imported from the filesystem
-		String unitTestName = "";
-		String updateFirstLine = "0";  //isCopy ? "1" : "0";
-		//String updateFirstLine = "0"; //fixed because it makes syncing and comparing files difficult when it changes on the server but not locally --jspivey
-		String updateEntryInRoutineFile = "0";   //(updateEntryInRoutineFile=="true") ? "1" : "0";
-		vReq.getParams().setParam(4, "string",updateEntryInRoutineFile +"^"+unitTestName+"^"+updateFirstLine);
-		RpcResponse vResp = connection.executeRPC(vReq);
-
-		int index = vResp.getResults().indexOf('\n');
+	public static IStatus saveRoutineToServer(ConnectionData connectionData, String routineName, List<String> contents, StringBuilder consoleMessage) throws FoundationsException {
+		String rpcResult = connectionData.rpc("XT ECLIPSE M EDITOR", "RS", contents, routineName, "0^^0");
+		int index = rpcResult.indexOf('\n');
 		if (index > -1) {
-			String line1 = vResp.getResults().substring(0, index);
+			String line1 = rpcResult.substring(0, index);
 			if (line1.indexOf("-1") == 0) {
 				String[] pieces = line1.split("\\^");
 				String message = (pieces.length > 1) ? pieces[1] : "Unknown error saving the routine to server.";
 				IStatus r = new Status(IStatus.ERROR, VistAServerPlugin.PLUGIN_ID, message);
 				return r;
 			}
-			String doc = vResp.getResults().substring(vResp.getResults().indexOf('\n'));
+			String doc = rpcResult.substring(rpcResult.indexOf('\n'));
 			boolean isErrorsOrWarnings = updateConsoleMessage(doc, consoleMessage);
 			if (isErrorsOrWarnings) {
 				IStatus r = new Status(IStatus.WARNING, VistAServerPlugin.PLUGIN_ID, Messages.XINDEX_IN_CONSOLE);
@@ -204,8 +188,6 @@ public class SaveRoutineEngine {
 	
 	public static IStatus save(ConnectionData connectionData, IFile file) {
 		try {
-			VistaLinkConnection connection = connectionData.getConnection();
-
 			ListRoutineBuilder routineContent = getListRoutineBuilder(file);
 
 			MServerRoutine serverRoutine = MServerRoutine.load(connectionData, file);
@@ -224,7 +206,7 @@ public class SaveRoutineEngine {
 			}
 			
 			StringBuilder consoleMessage = startConsoleMessage(routineName, connectionData.getServerData(), synchResult);
-			return saveRoutineToServer(connection, routineName, routineContent, backupFile, consoleMessage);
+			return saveRoutineToServer(connectionData, routineName, routineContent, backupFile, consoleMessage);
 		} catch (CoreException coreException) {
 			IStatus result = coreException.getStatus();
 			StatusManager.getManager().handle(result, StatusManager.LOG);
