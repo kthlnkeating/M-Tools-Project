@@ -25,8 +25,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -203,5 +206,18 @@ public class ResourceUtilExtension {
 			}
 		}
 		return result;
+	}
+	
+	public static String getRelativePath(IProject project, IFile file) {
+		IPath fullPath = file.getFullPath();
+		IPath projectPath = project.getFullPath();
+		IPath relativePath = fullPath.makeRelativeTo(projectPath);
+		return relativePath.toString();
+	}
+	
+	public static IProject getProject(String projectName) {
+		IWorkspaceRoot r = ResourcesPlugin.getWorkspace().getRoot();
+		IProject project = r.getProject(projectName);
+		return project;
 	}
 }

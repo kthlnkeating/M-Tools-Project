@@ -5,9 +5,11 @@ import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -132,6 +134,7 @@ public class SWTHelper {
 	
 	public static Composite createComposite(Composite parent, int numColumns) {
 		Composite result = new Composite(parent, SWT.NONE);
+		result.setFont(parent.getFont());
 		GridLayout layout = new GridLayout();
 		result.setLayout(layout);
 		layout.numColumns = numColumns;
@@ -139,16 +142,36 @@ public class SWTHelper {
 	}
 	
 	public static Text createLabelTextPair(Composite parent, String labelText) {
+		Font font = parent.getFont();
+		
 		Label label = new Label(parent, SWT.NONE);
 		label.setText(labelText);
-
+		label.setFont(font);
+	
 		Text text = new Text(parent, SWT.BORDER | SWT.SINGLE);
 		text.setText("");
-
+		text.setFont(font);
+		
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		text.setLayoutData(gd);	
 
 		return text;
+	}
+	
+	public static Combo createLabelComboPair(Composite parent, String labelText) {
+		Font font = parent.getFont();
+
+		Label label = new Label(parent, SWT.NONE);
+		label.setText(labelText);
+		label.setFont(font);
+				
+		Combo combo = new Combo(parent, SWT.BORDER | SWT.READ_ONLY);
+		combo.setFont(font);
+		
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		combo.setLayoutData(gd);	
+		
+		return combo;
 	}
 
 	public static Label createLabelLabelPair(Composite parent, String labelText) {

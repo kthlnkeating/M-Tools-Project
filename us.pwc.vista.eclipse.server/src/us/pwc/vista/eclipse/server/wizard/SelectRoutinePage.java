@@ -30,13 +30,11 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.statushandlers.StatusManager;
@@ -79,11 +77,11 @@ public class SelectRoutinePage extends WizardPage {
 		layout.numColumns = 2;
 		
 		this.addRoutineNameCtrl(container);
-		this.serversCtrl = this.addCombo(container, "Server name:");
+		this.serversCtrl = SWTHelper.createLabelComboPair(container, "Server name:");
 		this.overrideCtrl = SWTHelper.createCheckButton(container, "Override project server name property", 2);		
 
 		SWTHelper.addEmptyLabel(container, 2);
-		this.projectCtrl = this.addCombo(container, "Target project:");
+		this.projectCtrl = SWTHelper.createLabelComboPair(container, "Target project:");
 				
 		this.setControl(container);
 		this.initialize();
@@ -283,17 +281,6 @@ public class SelectRoutinePage extends WizardPage {
 		}
 	}
 		
-	private Combo addCombo(Composite parent, String labelText) {
-		Label label = new Label(parent, SWT.NONE);
-		label.setText(labelText);
-				
-		Combo c = new Combo(parent, SWT.BORDER | SWT.READ_ONLY);
-		
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		c.setLayoutData(gd);	
-		return c;
-	}
-	
 	private void validate(Control source) {
 		if (source != this.routineNameCtrl) {
 			if (! this.validateRoutineNameCtrl(false)) return;

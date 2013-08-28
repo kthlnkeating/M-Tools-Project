@@ -11,5 +11,7 @@ public interface MDebugConstants {
 	 */
 	public static final String M_DEBUG_MODEL = "gov.va.mumps.debug";
 	
-	public static final String ATTR_M_ENTRY_TAG = M_DEBUG_MODEL + ".ATTR_M_ROUTINE";
+	public static final String ATTR_M_PROJECT_NAME = M_DEBUG_MODEL + ".ATTR_M_PROJECT_NAME";
+	public static final String ATTR_M_FILE_PATH = M_DEBUG_MODEL + ".ATTR_M_FILE_PATH";
+	public static final String ATTR_M_ENTRY_TAG = M_DEBUG_MODEL + ".ATTR_M_ENTRY_TAG";
 }

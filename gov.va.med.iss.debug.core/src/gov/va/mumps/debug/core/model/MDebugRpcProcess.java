@@ -1,14 +1,12 @@
 package gov.va.mumps.debug.core.model;
 
 import gov.va.med.iss.connection.ConnectionData;
-import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.mumps.debug.xtdebug.XtdebugHandler;
 import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-//import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.debug.core.DebugEvent;
@@ -42,18 +40,12 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	private StepResultsVO responseResults;
 	private XtdebugHandler xtdebugHandler;
 	
-	public MDebugRpcProcess(ILaunch launch, String debugEntryTag, Map<String, String> attributes) {
+	public MDebugRpcProcess(ILaunch launch, ConnectionData connectionData, String debugEntryTag, Map<String, String> attributes) {
 		initializeAttributes(attributes);
 		
-		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().selectConnectionData(false);
-		// Needs to be testted
-		
-		if (connectionData != null) { //dislike globals like this, want to refactor this to OOP using factories and explicit dependencies in contructors
-			xtdebugHandler = new XtdebugHandler(connectionData.getConnection());
-			responseResults = xtdebugHandler.startDebug(debugEntryTag);	
-			name = "VistA Connection: " + connectionData.getServerData().toUIString();
-		} else
-			name = "Error: Not connected to VistA";
+		xtdebugHandler = new XtdebugHandler(connectionData.getConnection());
+		responseResults = xtdebugHandler.startDebug(debugEntryTag);	
+		name = "VistA Connection: " + connectionData.getServerData().toUIString();
 		this.launch = launch;
 		launch.addProcess(this);
 		fireCreationEvent();

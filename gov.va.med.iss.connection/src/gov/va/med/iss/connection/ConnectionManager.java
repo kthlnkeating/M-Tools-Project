@@ -125,7 +125,7 @@ public class ConnectionManager {
 		}
 	}
 
-	private ConnectionData findConnection(String serverName) {
+	public ConnectionData findConnection(String serverName) {
 		for (ConnectionData cd : this.connections) {
 			String existingServerName = cd.getServerName();
 			if (existingServerName.equals(serverName)) {

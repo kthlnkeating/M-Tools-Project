@@ -18,24 +18,42 @@ package gov.va.mumps.debug.core;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /**
  * Implements M language debugger.
  */
 public class MDebugCorePlugin extends Plugin {
 	
-	private static MDebugCorePlugin instance = null;
+	private static MDebugCorePlugin plugin = null;
 	
 	public MDebugCorePlugin() {
 		super();
-		MDebugCorePlugin.instance = this;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		plugin = this;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext context) throws Exception {
+		plugin = null;
+		super.stop(context);
+	}
+
 	/**
 	 * Returns the current instance of the plug-in.
 	 */
 	public static MDebugCorePlugin getInstance() {
-		return MDebugCorePlugin.instance;
+		return MDebugCorePlugin.plugin;
 	}
 	
 	public String getPluginId() {

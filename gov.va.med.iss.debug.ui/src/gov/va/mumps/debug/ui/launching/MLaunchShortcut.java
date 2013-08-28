@@ -1,14 +1,12 @@
 package gov.va.mumps.debug.ui.launching;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import gov.va.mumps.debug.core.MDebugConstants;
 
-import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -19,20 +17,22 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
-import org.eclipse.debug.ui.DebugUITools;
-import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
-import org.eclipse.jface.window.Window;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+import org.eclipse.ui.dialogs.ListSelectionDialog;
+import org.eclipse.ui.statushandlers.StatusManager;
 
-@SuppressWarnings("restriction")
+import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
+
 public class MLaunchShortcut implements ILaunchShortcut {
 
 	private final String CONFIG_TYPE = "gov.va.mumps.debug.core.launchConfigurationType";
@@ -46,7 +46,7 @@ public class MLaunchShortcut implements ILaunchShortcut {
 			Object lastSegment = path.getLastSegment();
 			if (lastSegment instanceof IFile) {
 				final IFile file = (IFile) lastSegment;
-				scheduleLaunch(file, mode);
+				this.launch(file, mode);
 			}
 		}
 	}
@@ -56,140 +56,128 @@ public class MLaunchShortcut implements ILaunchShortcut {
 		Object adaptor = editor.getEditorInput().getAdapter(IFile.class);
 		if (adaptor instanceof IFile) {
 			final IFile file = (IFile) adaptor;
-			scheduleLaunch(file, mode);
+			this.launch(file, mode);
+		}
+	}
+	
+	private void launch(IFile file, String mode) {
+		try {
+			List<ILaunchConfiguration> runables = this.getConfigurations(file);
+			int n = runables.size();
+			if (n == 1) {
+				this.scheduleLaunch(runables.get(0), mode);
+				return;
+			}
+			if (n > 1) {
+				ILaunchConfiguration config = this.selectConfiguration(runables.toArray(new ILaunchConfiguration[0]), mode);
+				if (config != null) {
+					this.scheduleLaunch(config, mode);
+					return;
+				}
+			}
+			List<String> tags = TagUtilities.getTags(file);
+			if ((tags != null) && (tags.size() > 0)) {
+				String tag = TagUtilities.selectTag(tags);
+				if (tag != null) {
+					this.run(file, tag, mode);
+				}
+			}
+			
+		} catch (CoreException coreException) {
+			StatusManager.getManager().handle(coreException, MDebugConstants.M_DEBUG_MODEL);
 		}
 	}
 
-	private void scheduleLaunch(final IFile file, final String mode) {
+	private void scheduleLaunch(final ILaunchConfiguration config, final String mode) {
 		Job job = new Job("Start M Debug") {
 			@Override
 			protected IStatus run(IProgressMonitor arg0) {
-				MLaunchShortcut.this.run(file, mode);
-				return Status.OK_STATUS;
+				try {
+					config.launch(mode, null);
+					return Status.OK_STATUS;
+				} catch (final CoreException coreException) {
+					Display.getDefault().asyncExec(new Runnable() {						
+						@Override
+						public void run() {
+							String message = "'Launching " + config.getName() + "' has encountered an problem.";
+							IStatus status = new Status(IStatus.ERROR, MDebugConstants.M_DEBUG_MODEL, message, coreException);
+							StatusManager.getManager().handle(status, StatusManager.SHOW);
+						}
+					});
+					return Status.OK_STATUS;
+				}
 			}
 		};
 		job.schedule();		
 	}
 	
-	private ILaunchConfiguration[] getConfigurations(IFile file) throws CoreException {
-		LaunchConfigurationManager lcm = DebugUIPlugin.getDefault().getLaunchConfigurationManager();
-		ILaunchConfiguration[] configs = lcm.getApplicableLaunchConfigurations(new String[]{CONFIG_TYPE}, file);
-		return configs;
-	}
-	
-	private void launchFromConfigurations(ILaunchConfiguration[] configs, String mode) throws CoreException {
-		ILaunchConfiguration config = (configs.length == 1) ? configs[0] : this.selectConfiguration(configs, mode);
-		if (config != null) {
-			config.launch(mode, null);
-		}		
+	private List<ILaunchConfiguration> getConfigurations(IFile file) throws CoreException {
+		List<ILaunchConfiguration> runables	= new ArrayList<ILaunchConfiguration>();
+		IProject project  = file.getProject();
+		String projectName = file.getProject().getName();
+		String filePath = ResourceUtilExtension.getRelativePath(project, file);
+		ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+		ILaunchConfigurationType configType = launchManager.getLaunchConfigurationType(CONFIG_TYPE);
+		ILaunchConfiguration[] configs = launchManager.getLaunchConfigurations(configType);
+		for (ILaunchConfiguration config : configs) {
+			String configProjectName = config.getAttribute(MDebugConstants.ATTR_M_PROJECT_NAME, (String) null);
+			if (! projectName.equals(configProjectName)) continue;			
+			String configFilePath = config.getAttribute(MDebugConstants.ATTR_M_FILE_PATH, (String) null);
+			if (! filePath.equals(configFilePath)) continue;						
+			String entryTag = config.getAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, (String) null);
+			if ((entryTag == null) || entryTag.isEmpty()) continue;
+			runables.add(config);
+		}
+		return runables;
 	}
 	
 	private ILaunchConfiguration selectConfiguration(final ILaunchConfiguration[] configs, final String mode) {
-		final IDebugModelPresentation renderer = DebugUITools.newDebugModelPresentation();
-		final ElementListSelectionDialog dialog = new ElementListSelectionDialog(null, renderer);
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				dialog.setElements(configs);
-				dialog.setTitle("M " + mode + " configurations");
-				dialog.setMessage("Select an M " + mode + " configuration");
-				dialog.setMultipleSelection(false);
-				dialog.open();
-				renderer.dispose();
-			}
-		});
-		if (dialog.getReturnCode() == Window.OK) {
-			return (ILaunchConfiguration) dialog.getFirstResult();
-		}
-		return null;	
-	}
-		
-	public void run(IFile file, String mode) {
-		try {
-			ILaunchConfiguration[] configs = this.getConfigurations(file);
-			if ((configs != null) && (configs.length > 0)) {
-				this.launchFromConfigurations(configs, mode);
-				return;
-			}
-			
-			Vector<String> tags = null;
-			try {
-				tags = getTags(file);
-			} catch (CoreException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			String tag = selectTag(tags, mode);
-			if (tag == null) {
-				return;
-			} else {
-				String fileName = file.getName().split("\\.")[0];
-				run(fileName, tag, mode);
-				return;
-			}
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private String selectTag(final Vector<String> tags, final String mode) {
-		final IDebugModelPresentation renderer = DebugUITools
-				.newDebugModelPresentation();
-		final ElementListSelectionDialog dialog = new ElementListSelectionDialog(
-				null, renderer);
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				dialog.setElements(tags.toArray());
-				dialog.setTitle("Select M Tag");
-				dialog.setMessage((new StringBuilder("Select M Tag to ")).append(mode).append(":").toString());
-				dialog.setMultipleSelection(false);
-				dialog.open();
-				renderer.dispose();
-			}
-		});
-		if (dialog.getReturnCode() == Window.OK) {
-			return (String) dialog.getFirstResult();
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		LabelProvider lp = new LabelProvider() {
+	    	@Override
+	    	public Image getImage(Object element) {
+	    		return null;
+	    	}
+	    		
+	    	@Override
+	    	public String getText(Object element) {
+	    		if (element instanceof ILaunchConfiguration) {
+	    			return ((ILaunchConfiguration) element).getName();
+	    		} else {
+	    			return null;
+	    		}
+	    	}
+    	}; 
+		ElementListSelectionDialog dlg = new ElementListSelectionDialog(shell, lp);
+		dlg.setMultipleSelection(false);
+		dlg.setTitle("Entry Tag Selection");
+		dlg.setMessage("Select entry tag.");
+		dlg.setElements(configs);
+		if (ListSelectionDialog.OK == dlg.open()) {
+			ILaunchConfiguration result = (ILaunchConfiguration) dlg.getFirstResult();
+			return result;
 		}
 		return null;
 	}
-
-	public void run(String routine, String tag, String mode) {
-		if (null == routine || null == tag)
-			return;
+		
+	public void run(IFile file, String tag, String mode) {
+		IProject project = file.getProject();
+		String projectName = project.getName();
+		String filePath = ResourceUtilExtension.getRelativePath(project, file);
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfigurationType configType = manager.getLaunchConfigurationType(CONFIG_TYPE);
 		ILaunchConfigurationWorkingCopy wc;
 		try {
-			String command = "D " + tag + "^" + routine;
-			wc = configType.newInstance(null, manager.generateLaunchConfigurationName(routine));
-			wc.setAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, command);
+			String fileName = file.getName();
+			String routineName = fileName.substring(0, fileName.length()-2); 
+			wc = configType.newInstance(null, manager.generateLaunchConfigurationName(routineName));
+			wc.setAttribute(MDebugConstants.ATTR_M_PROJECT_NAME, projectName);
+			wc.setAttribute(MDebugConstants.ATTR_M_FILE_PATH, filePath);
+			wc.setAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, tag);
 			ILaunchConfiguration config = wc.doSave();
-			config.launch(mode, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
+			this.scheduleLaunch(config, mode);
+		} catch (CoreException coreException) {
+			StatusManager.getManager().handle(coreException, MDebugConstants.M_DEBUG_MODEL);
 		}
 	}
-
-	public static Vector<String> getTags(IFile routineFile) throws CoreException, IOException {
-		BufferedReader reader;
-		try {
-			reader = new BufferedReader(new InputStreamReader(routineFile.getContents()));
-		} catch (ResourceException e) {
-			throw e;
-		}
-		Vector<String> tags = new Vector<String>();
-		String line;
-		while ((line = reader.readLine()) != null) {
-			int ichr = 0;
-			StringBuilder tag = new StringBuilder();
-			for (; ichr < line.length() && line.charAt(ichr) != '\t' && line.charAt(ichr) != ' ' && line.charAt(ichr) != '('; ichr++)
-				tag.append(line.charAt(ichr));
-
-			if (!tag.toString().equals(""))
-				tags.add(tag.toString());
-		}
-		reader.close();
-		return tags;
-	}
-
 }
