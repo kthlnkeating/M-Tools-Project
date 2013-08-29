@@ -85,7 +85,9 @@ public class SWTHelper {
 		TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.NONE);
 		TableColumn column = viewerColumn.getColumn();
 		column.setText(title);
-		column.setWidth(width);
+		if (width > 0) {
+			column.setWidth(width);
+		}
 		column.setResizable(true);
 		column.setMoveable(true);
 		return viewerColumn;		

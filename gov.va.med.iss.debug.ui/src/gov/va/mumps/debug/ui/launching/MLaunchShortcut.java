@@ -18,6 +18,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.ui.ILaunchShortcut;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreePath;
@@ -67,22 +68,16 @@ public class MLaunchShortcut implements ILaunchShortcut {
 			if (n == 1) {
 				this.scheduleLaunch(runables.get(0), mode);
 				return;
-			}
-			if (n > 1) {
+			} if (n > 1) {
 				ILaunchConfiguration config = this.selectConfiguration(runables.toArray(new ILaunchConfiguration[0]), mode);
 				if (config != null) {
 					this.scheduleLaunch(config, mode);
 					return;
 				}
-			}
-			List<String> tags = TagUtilities.getTags(file);
-			if ((tags != null) && (tags.size() > 0)) {
-				String tag = TagUtilities.selectTag(tags);
-				if (tag != null) {
-					this.run(file, tag, mode);
-				}
-			}
-			
+			} else {
+				Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+				MessageDialog.openError(shell, "Launch Configuration", "No runnable configuration is found.");				
+			}			
 		} catch (CoreException coreException) {
 			StatusManager.getManager().handle(coreException, MDebugConstants.M_DEBUG_MODEL);
 		}

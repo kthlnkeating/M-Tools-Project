@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
@@ -20,24 +21,58 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 
 public class TagUtilities {
-	public static String selectTag(List<String> tags) {
+	public static EntryTag selectTag(List<EntryTag> tags) {
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		LabelProvider lp = new LabelProvider();
+		LabelProvider lp = new LabelProvider() {
+	   		@Override
+    		public Image getImage(Object element) {
+    			return null;
+    		}
+    		
+    		@Override
+    		public String getText(Object element) {
+    			if (element instanceof EntryTag) {
+    				EntryTag et = (EntryTag) element;
+    				return et.getLabel();
+    			}
+    			return null;
+    		}
+    	};
 		ElementListSelectionDialog dlg = new ElementListSelectionDialog(shell, lp);
 		dlg.setMultipleSelection(false);
 		dlg.setTitle("Entry Tag Selection");
 		dlg.setMessage("Select entry tag.");
-		dlg.setElements(tags.toArray(new String[0]));
+		dlg.setElements(tags.toArray(new EntryTag[0]));
 		if (ListSelectionDialog.OK == dlg.open()) {
-			String result = (String) dlg.getFirstResult();
+			EntryTag result = (EntryTag) dlg.getFirstResult();
 			return result;
 		}
 		return null;
 	}
+	
+	private static EntryTag getEntryTag(String lineText) {
+		String[] tagWithParams = lineText.split(" ")[0].trim().split("\\(");
+		String tag = tagWithParams[0];
+		if ((tagWithParams.length < 2)) {
+			return new EntryTag(tag, null);
+		} else {
+			String paramsWithPar = tagWithParams[1].trim();
+			String paramsString = paramsWithPar.substring(0, paramsWithPar.length()-1);
+			if (paramsString.isEmpty()) {
+				return new EntryTag(tag, new String[0]);				
+			} else {
+				String[] params = paramsString.split("\\,");
+				for (int i=0; i<params.length; ++i) {
+					params[i] = params[i].trim();
+				}
+				return new EntryTag(tag, params);
+			}
+		}
+	}
 
-	public static List<String> getTags(IFile file) {
+	public static List<EntryTag> getTags(IFile file) {
 		try {
-			List<String> result = new ArrayList<String>();
+			List<EntryTag> result = new ArrayList<EntryTag>();
 			IDocument document = ResourceUtilExtension.getDocument(file);
 			int n = document.getNumberOfLines(); 
 			for (int i=0; i<n; ++i) {
@@ -48,9 +83,8 @@ public class TagUtilities {
 					String lineText = document.get(offset, lineLength); 
 					lineText = lineText.replace('\t', ' ');
 					if (lineText.charAt(0) != ' ') {
-						String tagFull = lineText.split(" ")[0];
-						String tag = tagFull.split("\\(")[0];
-						result.add(tag);
+						EntryTag entryTag = getEntryTag(lineText);
+						result.add(entryTag);
 					}	    			
 				}
 			}
