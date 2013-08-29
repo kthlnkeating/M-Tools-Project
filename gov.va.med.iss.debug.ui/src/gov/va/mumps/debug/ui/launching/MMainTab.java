@@ -415,7 +415,7 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 		} else {
 			this.viewer.setInput(null);
 		}
-		if (user) this.viewer.refresh();
+		this.viewer.refresh();
 		this.editBtn.setEnabled(false);
 		this.setErrorMessage(errorMessage);		
 		if (user) this.updateLaunchConfigurationDialog();		
@@ -540,6 +540,7 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 				int index = 0;
 				for (String param : params) {
 					this.parameterInfos[index].setValue(param);
+					++index;
 				}
 				this.viewer.refresh();
 			}			
