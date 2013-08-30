@@ -2,7 +2,7 @@
 <feature
       id="gov.va.vista.mtools"
       label="MTools Feature"
-      version="1.0.28"
+      version="1.1.4"
       provider-name="US Department of Veterans Affairs">
 
    <license url="http://www.apache.org/licenses/LICENSE-2.0">
@@ -69,6 +69,34 @@
 
    <plugin
          id="us.pwc.vista.eclipse.tools"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="us.pwc.vista.mlib"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="us.pwc.vista.eclipse.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="us.pwc.vista.eclipse.server"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="us.pwc.vista.eclipse.wizard"
          download-size="0"
          install-size="0"
          version="0.0.0"

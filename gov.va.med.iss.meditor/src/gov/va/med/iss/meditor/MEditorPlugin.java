@@ -37,7 +37,6 @@ public class MEditorPlugin extends AbstractUIPlugin {
 	public static final String P_VARS_COLOR = "VarsColor";
 	public static final String P_COMMAND_COLOR = "CommandColor";
 	public static final String P_CONDITIONS_COLOR = "ConditionsColor";
-	public static final String P_DEFAULT_UPDATE = "defaultUpdatePreference";
 	public static final String P_PROJECT_NAME = "ProjectName";
 	public static final String P_SAVE_DIR_EXAMPLE = "SaveByDirExample";
 	public static final String P_WRAP_LINES = "WrapLines";

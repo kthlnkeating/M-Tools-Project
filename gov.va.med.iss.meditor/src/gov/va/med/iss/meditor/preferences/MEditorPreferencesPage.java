@@ -62,7 +62,6 @@ public class MEditorPreferencesPage
 	public void initializeDefaults() {
 		IPreferenceStore store = getPreferenceStore();
 		store.setDefault(MEditorPlugin.P_AUTO_SAVE_TO_SERVER, true);
-		store.setDefault(MEditorPlugin.P_DEFAULT_UPDATE, true);
 		store.setDefault(MEditorPlugin.P_WRAP_LINES, false);
 
 		store.setDefault(MEditorPlugin.P_MULTI_LINE_COMMENT_COLOR, "64,128,128");
@@ -91,12 +90,6 @@ public class MEditorPreferencesPage
 		Composite parent = getFieldEditorParent();
 		
 		addField(new BooleanFieldEditor(MEditorPlugin.P_AUTO_SAVE_TO_SERVER, "Automatically save files onto server", parent));
-		addField(
-			new BooleanFieldEditor(
-					MEditorPlugin.P_DEFAULT_UPDATE,
-				"Update routine header on server save",
-				parent));
-		
 		addField(new BooleanFieldEditor(MEditorPlugin.P_WRAP_LINES,"&Wrap lines",parent));
 		addField(new ColorFieldEditor(MEditorPlugin.P_VARS_COLOR,"Variables",parent));
 		addField(new ColorFieldEditor(MEditorPlugin.P_COMMAND_COLOR,"Commands",parent));
