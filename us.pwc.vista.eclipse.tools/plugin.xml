@@ -21,6 +21,10 @@
             name="Report Occurances">
       </command>
       <command
+            id="us.pwc.eclipse.vista.eclipse.tools.quitlocations"
+            name="Report Quit Locations">
+      </command>
+      <command
             id="us.pwc.eclipse.vista.eclipse.tools.quittypes"
             name="Validate Quit Types">
       </command>
@@ -75,6 +79,13 @@
             </command>
             <command
                   commandId="us.pwc.eclipse.vista.eclipse.tools.quittypes"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="us.pwc.eclipse.vista.eclipse.tools.quitlocations"
                   style="push">
                <visibleWhen
                      checkEnabled="true">
@@ -214,6 +225,33 @@
          <activeWhen>
             <reference
                   definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.vista.eclipse.tools.command.QuitLocationsEditorCmd"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.quitlocations">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.editor.mfile">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.vista.eclipse.tools.command.QuitLocationsFilesCmd"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.quitlocations">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.mtree">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="us.pwc.vista.eclipse.tools.command.QuitLocationsTagsCmd"
+            commandId="us.pwc.eclipse.vista.eclipse.tools.quitlocations">
+         <activeWhen>
+            <reference
+                  definitionId="us.pwc.vista.eclipse.core.exprdef.tagsupply">
             </reference>
          </activeWhen>
       </handler>
