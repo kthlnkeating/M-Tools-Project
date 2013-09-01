@@ -1,11 +1,8 @@
 package gov.va.mumps.debug.xtdebug;
 
-import gov.va.med.foundations.adapter.cci.VistaLinkConnection;
 import gov.va.med.foundations.adapter.record.VistaLinkFaultException;
-import gov.va.med.foundations.rpc.RpcRequest;
-import gov.va.med.foundations.rpc.RpcRequestFactory;
-import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.utilities.FoundationsException;
+import gov.va.med.iss.connection.ConnectionData;
 import gov.va.mumps.debug.xtdebug.vo.StackVO;
 import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
 import gov.va.mumps.debug.xtdebug.vo.WatchVO;
@@ -39,12 +36,12 @@ public class XtdebugHandler {
 	private volatile boolean readTimeout; //TODO: what are the benefits again of using volatile here?
 	private volatile String lastDebugCommand;
 	
-	private VistaLinkConnection connection;
+	private ConnectionData connectionData;
 	private StepResultsParser parser;
 	
 	
-	public XtdebugHandler(VistaLinkConnection connection) {
-		this.connection = connection;
+	public XtdebugHandler(ConnectionData connectionData) {
+		this.connectionData = connectionData;
 		parser = new StepResultsParser();
 	}
 	
@@ -106,7 +103,7 @@ public class XtdebugHandler {
 				rpcName.equals(XTDEBUG_NEXT)	 ||
 				rpcName.equals(XTDEBUG_READ_INPUT);
 		
-		if (connection == null) {
+		if (this.connectionData == null) {
 			throw new RuntimeException("Not connected to VistaServer");
 		}
 
@@ -160,19 +157,22 @@ public class XtdebugHandler {
 
 	private String callRPC(String rpcName, String debugCommand)
 			throws FoundationsException, VistaLinkFaultException {
-		RpcRequest vReq = RpcRequestFactory.getRpcRequest("", rpcName);
-		vReq.setUseProprietaryMessageFormat(false);
-		vReq.getParams().setParam(1, "string", debugCommand); // RD RL GD GL RS
+		//RpcRequest vReq = RpcRequestFactory.getRpcRequest("", rpcName);
+		//vReq.setUseProprietaryMessageFormat(false);
+		//vReq.getParams().setParam(1, "string", debugCommand); // RD RL GD GL RS
 
 		if (rpcName.equals(XTDEBUG_READ_INPUT)) {
-			vReq.getParams().setParam(2, "string", readTimeout ? "1" : "0");
-			vReq.getParams().setParam(3, "string", lastDebugCommand);
+			//vReq.getParams().setParam(2, "string", readTimeout ? "1" : "0");
+			//vReq.getParams().setParam(3, "string", lastDebugCommand);
+			return this.connectionData.rpcXML(rpcName, debugCommand, readTimeout ? "1" : "0", lastDebugCommand);
+		} else {
+			return this.connectionData.rpcXML(rpcName, debugCommand);
 		}
 
-		RpcResponse vResp = connection.executeRPC(vReq);
+		//RpcResponse vResp = connection.executeRPC(vReq);
 //		System.out.println("response from server: ");
 //		System.out.println(vResp.getResults());
-		return vResp.getResults();
+		//return vResp.getResults();
 	}
 	
 	private void printResults(String debugCommand, StepResultsVO results) {

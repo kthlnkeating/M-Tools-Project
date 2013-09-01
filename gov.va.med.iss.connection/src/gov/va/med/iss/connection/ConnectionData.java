@@ -27,7 +27,7 @@ public class ConnectionData {
 		return this.serverData;
 	}
 	
-	public VistaLinkConnection getConnection() {
+	VistaLinkConnection getConnection() {
 		return connection;
 	}
 

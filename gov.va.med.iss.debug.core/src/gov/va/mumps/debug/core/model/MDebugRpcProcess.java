@@ -43,7 +43,7 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	public MDebugRpcProcess(ILaunch launch, ConnectionData connectionData, String debugEntryTag, Map<String, String> attributes) {
 		initializeAttributes(attributes);
 		
-		xtdebugHandler = new XtdebugHandler(connectionData.getConnection());
+		xtdebugHandler = new XtdebugHandler(connectionData);
 		responseResults = xtdebugHandler.startDebug(debugEntryTag);	
 		name = "VistA Connection: " + connectionData.getServerData().toUIString();
 		this.launch = launch;
