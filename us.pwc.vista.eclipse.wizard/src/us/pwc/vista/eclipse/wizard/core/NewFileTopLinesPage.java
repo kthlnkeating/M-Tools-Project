@@ -186,8 +186,8 @@ public class NewFileTopLinesPage extends WizardPage {
 		sb.append(';');				
 		sb.append(this.packageName.getText());
 		String patchNumbers = this.patchNumbers.getText();
+		sb.append(';');				
 		if (! patchNumbers.isEmpty()) {
-			sb.append(';');				
 			sb.append('*'); sb.append('*');				
 			sb.append(patchNumbers);				
 			sb.append('*'); sb.append('*');			

@@ -16,7 +16,7 @@ public class VistAConnection {
 	private VistaLinkConnection connection;
 	private EclipseConnection eclipseConnection;
 			
-	public VistAConnection(ServerData serverData, VistaLinkConnection connection, EclipseConnection eclipseConnection) {
+	VistAConnection(ServerData serverData, VistaLinkConnection connection, EclipseConnection eclipseConnection) {
 		super();
 		this.serverData = serverData;
 		this.connection = connection;
@@ -31,7 +31,7 @@ public class VistAConnection {
 		return connection;
 	}
 
-	public EclipseConnection getEclipseConnection() {
+	EclipseConnection getEclipseConnection() {
 		return eclipseConnection;
 	}
 
