@@ -51,7 +51,7 @@ public class SaveEditorRoutineToSelectedServer extends AbstractHandler {
 			return null;
 		}
 		
-		IStatus status = SaveRoutineEngine.save(vistaConnection, file);
+		IStatus status = SaveRoutineEngine.saveRoutine(vistaConnection, file);
 		MessageDialogHelper.logAndShow(Messages.SAVE_MSG_TITLE, status);
 		return null;
 	}

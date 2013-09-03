@@ -155,7 +155,7 @@ public class MEditor extends TextEditor {
 			return;
 		}
 		
-		IStatus result = SaveRoutineEngine.save(vistaConnection, file);
+		IStatus result = SaveRoutineEngine.saveRoutine(vistaConnection, file);
 		MessageDialogHelper.logAndShow(MESSAGE_TITLE, result);
 	}
 

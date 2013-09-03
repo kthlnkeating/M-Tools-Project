@@ -165,7 +165,7 @@ public class SaveRoutineEngine {
 		return isErrorsOrWarnings;
 	}
 	
-	public static IStatus saveRoutineToServer(VistAConnection vistaConnection, String routineName, List<String> contents, StringBuilder consoleMessage) throws FoundationsException {
+	private static IStatus saveRoutineToServer(VistAConnection vistaConnection, String routineName, List<String> contents, StringBuilder consoleMessage) throws FoundationsException {
 		String rpcResult = vistaConnection.rpc("XT ECLIPSE M EDITOR", "RS", contents, routineName, "0^^0");
 		int index = rpcResult.indexOf('\n');
 		if (index > -1) {
@@ -186,7 +186,7 @@ public class SaveRoutineEngine {
 		return Status.OK_STATUS;
 	}
 	
-	public static IStatus save(VistAConnection vistaConnection, IFile file) {
+	public static IStatus saveRoutine(VistAConnection vistaConnection, IFile file) {
 		try {
 			ListRoutineBuilder routineContent = getListRoutineBuilder(file);
 

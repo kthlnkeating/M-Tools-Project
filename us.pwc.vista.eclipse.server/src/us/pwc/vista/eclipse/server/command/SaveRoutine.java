@@ -83,13 +83,13 @@ public class SaveRoutine extends AbstractHandler {
 		}
 
 		if (selectedFiles.size() == 1) {
-			IStatus status = SaveRoutineEngine.save(vistaConnection, selectedFiles.get(0));
+			IStatus status = SaveRoutineEngine.saveRoutine(vistaConnection, selectedFiles.get(0));
 			MessageDialogHelper.logAndShow(Messages.SAVE_MSG_TITLE, status);
 		} else {
 			int overallSeverity = IStatus.OK;
 			List<IStatus> statuses = new ArrayList<IStatus>();
 			for (IFile file : selectedFiles) {
-				IStatus status = SaveRoutineEngine.save(vistaConnection, file);
+				IStatus status = SaveRoutineEngine.saveRoutine(vistaConnection, file);
 				String prefixForFile = file.getFullPath().toString() + " -- ";
 				overallSeverity = StatusHelper.updateStatuses(status, VistAServerPlugin.PLUGIN_ID, prefixForFile, overallSeverity, statuses);
 			}
