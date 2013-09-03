@@ -40,15 +40,8 @@ public class MEditor extends TextEditor {
 	
 	private static MCodeScanner fMCodeScanner;
 	private MContentOutlinePage outlinePage = null;
-	public IDocumentProvider meditorDocumentProvider;
-	public ISourceViewer sourceViewer = null;
-	public static MEditorSourceViewerConfiguration meditorSourceViewerConfiguration = null;
-	public static MEditor currMEditor = null;
-	public static boolean wordWrap = false;
-	public int newTopIndex = 0;
-	public int newCaretOffset = 0;
-	public static int oldTopIndex = 0;
-	public static int oldCaretOffset = 0;
+	private static MEditorSourceViewerConfiguration meditorSourceViewerConfiguration = null;
+	private static boolean wordWrap = false;
 	
 	/**
 	 * Constructor for MEditor. Intialization takes place in the constructor 
@@ -57,12 +50,10 @@ public class MEditor extends TextEditor {
 	public MEditor() {
 		super();
 		setDocumentProvider(new MEditorDocumentProvider());
-		meditorDocumentProvider = getDocumentProvider();
 		updateSourceViewerConfiguration();
 		fMCodeScanner = new MCodeScanner();
 		setRangeIndicator(new DefaultRangeIndicator());
 		new MEditorPreferencesPage(); //This is invoked so that preferences are set to their default values in case this is the first time running MEditor
-		currMEditor = this;
 		String wordWrapValue = MEditorPrefs.getPrefs(MEditorPlugin.P_WRAP_LINES);
 		if (wordWrapValue.compareTo("true") == 0)
 			wordWrap = true;
@@ -181,9 +172,14 @@ public class MEditor extends TextEditor {
 		return super.getAdapter(key);
 	}
 	
-	public void updateSourceViewerConfiguration() {
+	private void updateSourceViewerConfiguration() {
 		meditorSourceViewerConfiguration = null;
 		meditorSourceViewerConfiguration = new MEditorSourceViewerConfiguration();
 		setSourceViewerConfiguration(meditorSourceViewerConfiguration);
 	}
+	
+	public void updateAfterPreferencesChanged() {
+		this.updateSourceViewerConfiguration();
+		this.getSourceViewer().invalidateTextPresentation();
+	}	
 }

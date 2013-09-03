@@ -130,8 +130,7 @@ public class MEditorPreferencesPage
 			if (seenFlag) {
 				MCodeScanner.setTokens();
 				if (part instanceof MEditor) {
-					((MEditor) part).updateSourceViewerConfiguration();
-					((MEditor) part).sourceViewer.invalidateTextPresentation();
+					((MEditor) part).updateAfterPreferencesChanged();
 				}
 			}
 		}
