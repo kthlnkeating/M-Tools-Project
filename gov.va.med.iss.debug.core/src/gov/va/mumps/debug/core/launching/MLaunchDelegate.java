@@ -2,7 +2,7 @@ package gov.va.mumps.debug.core.launching;
 
 import java.util.List;
 
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.mumps.debug.core.MDebugConstants;
 import gov.va.mumps.debug.core.model.MDebugRpcProcess;
@@ -52,8 +52,8 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 			IStatus status = new Status(IStatus.ERROR, MDebugConstants.M_DEBUG_MODEL, "No server is specified for project " + projectName + ".");
 			throw new CoreException(status);						
 		}
-		ConnectionData cd = VLConnectionPlugin.getConnectionManager().findConnection(serverName);
-		if (cd == null) {
+		VistAConnection vc = VLConnectionPlugin.getConnectionManager().findConnection(serverName);
+		if (vc == null) {
 			IStatus status = new Status(IStatus.ERROR, MDebugConstants.M_DEBUG_MODEL, "No connection has been established for server " + serverName + ".");
 			throw new CoreException(status);						
 		}
@@ -83,7 +83,7 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 		} 
 		String mCode = sb.toString();
 			
-		MDebugRpcProcess rpcProcess = new MDebugRpcProcess(launch, cd, mCode, null);
+		MDebugRpcProcess rpcProcess = new MDebugRpcProcess(launch, vc, mCode, null);
 
 		IDebugTarget target = new MDebugTarget(launch, rpcProcess);
 		launch.addDebugTarget(target);

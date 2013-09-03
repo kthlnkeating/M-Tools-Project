@@ -30,7 +30,7 @@ import us.pwc.vista.eclipse.core.VistACorePrefs;
 import us.pwc.vista.eclipse.core.helper.MessageDialogHelper;
 
 public class ConnectionManager {
-	private List<ConnectionData> connections = new ArrayList<ConnectionData>();
+	private List<VistAConnection> connections = new ArrayList<VistAConnection>();
 	
 	private void checkProductionConnection(VistaLinkConnection connection, String serverAddress, String portNumber) {
 		try {
@@ -53,13 +53,13 @@ public class ConnectionManager {
 		}		
 	}
 	
-	private ConnectionData createConnectionData(ServerData serverData) {
+	private VistAConnection createConnection(ServerData serverData) {
 		try {
 			EclipseConnection eclipseConnection = new EclipseConnection();
 			VistaKernelPrincipalImpl principal = eclipseConnection.getConnection(serverData.getAddress(), serverData.getPort());
 			if (principal != null) {
 				VistaLinkConnection connection = principal.getAuthenticatedConnection();
-				ConnectionData result = new ConnectionData(serverData, connection, eclipseConnection);
+				VistAConnection result = new VistAConnection(serverData, connection, eclipseConnection);
 				checkProductionConnection(result.getConnection(), serverData.getAddress(), serverData.getPort());
 				this.connections.add(result);
 				return result;
@@ -102,40 +102,40 @@ public class ConnectionManager {
 	}
 
 	public void removeAllConnections() {
-		for (ConnectionData cd : this.connections) {
-			cd.getEclipseConnection().logout();
+		for (VistAConnection vc : this.connections) {
+			vc.getEclipseConnection().logout();
 		}
 		this.connections.clear();
 	}
 	
 	public void removeConnection() {
 		List<ServerData> serverDataList = new ArrayList<ServerData>();
-		for (ConnectionData cd : this.connections) {
-			serverDataList.add(cd.getServerData());
+		for (VistAConnection vc : this.connections) {
+			serverDataList.add(vc.getServerData());
 		}
 		if (serverDataList.size() == 0) {
 			MessageDialogHelper.showWarning("Connection Manager", "No existing connection is found.");
 			return;			
 		}
-		ServerData serverData = this.selectConnectionData(serverDataList, false, "Select an existing connection:");
+		ServerData serverData = this.selectConnection(serverDataList, false, "Select an existing connection:");
 		if (serverData != null) {
-			ConnectionData connectionData = this.findConnection(serverData.getName());
-			connectionData.getEclipseConnection().logout();
-			this.connections.remove(connectionData);
+			VistAConnection vistaConnection = this.findConnection(serverData.getName());
+			vistaConnection.getEclipseConnection().logout();
+			this.connections.remove(vistaConnection);
 		}
 	}
 
-	public ConnectionData findConnection(String serverName) {
-		for (ConnectionData cd : this.connections) {
-			String existingServerName = cd.getServerName();
+	public VistAConnection findConnection(String serverName) {
+		for (VistAConnection vc : this.connections) {
+			String existingServerName = vc.getServerName();
 			if (existingServerName.equals(serverName)) {
-				return cd;
+				return vc;
 			}
 		}
 		return null;
 	}
 	
-	public ConnectionData getConnectionData(IProject project) {
+	public VistAConnection getConnection(IProject project) {
 		try {
 			String serverName = VistACorePrefs.getServerName(project);
 			if (serverName.isEmpty()) {
@@ -144,31 +144,31 @@ public class ConnectionManager {
 				MessageDialogHelper.showError("Connection Manager", message);
 				return null;
 			}	
-			return this.getConnectionData(serverName);
+			return this.getConnection(serverName);
 		} catch (CoreException coreException) {
 			StatusManager.getManager().handle(coreException, VLConnectionPlugin.PLUGIN_ID);
 			return null;
 		}
 	}
 	
-	public ConnectionData getConnectionData(String serverName) {
-		ConnectionData cd = this.findConnection(serverName);
-		if (cd == null) {
-			return this.createConnectionData(serverName);
+	public VistAConnection getConnection(String serverName) {
+		VistAConnection vc = this.findConnection(serverName);
+		if (vc == null) {
+			return this.createConnection(serverName);
 		} else {
-			VistaLinkConnection connection = cd.getConnection();
-			ServerData serverData = cd.getServerData();
+			VistaLinkConnection connection = vc.getConnection();
+			ServerData serverData = vc.getServerData();
 			if (this.checkConnection(connection, serverData)) {
-				return cd;
+				return vc;
 			} else {
-				cd.getEclipseConnection().logout();					
-				this.connections.remove(cd);
-				return this.createConnectionData(serverData);
+				vc.getEclipseConnection().logout();					
+				this.connections.remove(vc);
+				return this.createConnection(serverData);
 			}
 		}		
 	}
 	
-	private ServerData selectConnectionData(List<ServerData> serverDataList, boolean forceSelectionForOne, String message) {
+	private ServerData selectConnection(List<ServerData> serverDataList, boolean forceSelectionForOne, String message) {
 		if (serverDataList != null) {
 			if ((! forceSelectionForOne) && (serverDataList.size() == 1)) {
 				return serverDataList.get(0);
@@ -190,24 +190,24 @@ public class ConnectionManager {
 		
 	}
  	
-	public ConnectionData selectConnectionData(boolean forceSelectionForOne) {
+	public VistAConnection selectConnection(boolean forceSelectionForOne) {
 		List<ServerData> serverDataList = this.getServerDataList();
-		ServerData serverData = this.selectConnectionData(serverDataList, forceSelectionForOne, "Select a server for connection:");
+		ServerData serverData = this.selectConnection(serverDataList, forceSelectionForOne, "Select a server for connection:");
 		if (serverData == null) {
 			return null;
 		} else {
-			ConnectionData cd = this.getConnectionData(serverData.getName());
-			return cd;			
+			VistAConnection vc = this.getConnection(serverData.getName());
+			return vc;			
 		}
 	}
 	
-	private ConnectionData createConnectionData(String serverName) {
+	private VistAConnection createConnection(String serverName) {
 		ServerData serverData = this.getServerData(serverName);
 		if (serverData == null) {
 			return null;
 		} else {
-			ConnectionData cd = this.createConnectionData(serverData);
-			return cd;
+			VistAConnection vc = this.createConnection(serverData);
+			return vc;
 		}
 	}
 	

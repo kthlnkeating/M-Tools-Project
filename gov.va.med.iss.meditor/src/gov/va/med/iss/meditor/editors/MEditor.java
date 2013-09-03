@@ -1,6 +1,6 @@
 package gov.va.med.iss.meditor.editors;
 
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.med.iss.meditor.MEditorDocumentProvider;
 import gov.va.med.iss.meditor.MEditorPlugin;
@@ -195,12 +195,12 @@ public class MEditor extends TextEditor {
 			return;
 		}
 
-		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData(file.getProject());
-		if (connectionData == null) {
+		VistAConnection vistaConnection = VLConnectionPlugin.getConnectionManager().getConnection(file.getProject());
+		if (vistaConnection == null) {
 			return;
 		}
 		
-		IStatus result = SaveRoutineEngine.save(connectionData, file);
+		IStatus result = SaveRoutineEngine.save(vistaConnection, file);
 		MessageDialogHelper.logAndShow(MESSAGE_TITLE, result);
 	}
 

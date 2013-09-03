@@ -2,7 +2,7 @@ package gov.va.mumps.debug.xtdebug;
 
 import gov.va.med.foundations.adapter.record.VistaLinkFaultException;
 import gov.va.med.foundations.utilities.FoundationsException;
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 import gov.va.mumps.debug.xtdebug.vo.StackVO;
 import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
 import gov.va.mumps.debug.xtdebug.vo.WatchVO;
@@ -36,12 +36,12 @@ public class XtdebugHandler {
 	private volatile boolean readTimeout; //TODO: what are the benefits again of using volatile here?
 	private volatile String lastDebugCommand;
 	
-	private ConnectionData connectionData;
+	private VistAConnection vistaConnection;
 	private StepResultsParser parser;
 	
 	
-	public XtdebugHandler(ConnectionData connectionData) {
-		this.connectionData = connectionData;
+	public XtdebugHandler(VistAConnection vistaConnection) {
+		this.vistaConnection = vistaConnection;
 		parser = new StepResultsParser();
 	}
 	
@@ -103,7 +103,7 @@ public class XtdebugHandler {
 				rpcName.equals(XTDEBUG_NEXT)	 ||
 				rpcName.equals(XTDEBUG_READ_INPUT);
 		
-		if (this.connectionData == null) {
+		if (this.vistaConnection == null) {
 			throw new RuntimeException("Not connected to VistaServer");
 		}
 
@@ -164,9 +164,9 @@ public class XtdebugHandler {
 		if (rpcName.equals(XTDEBUG_READ_INPUT)) {
 			//vReq.getParams().setParam(2, "string", readTimeout ? "1" : "0");
 			//vReq.getParams().setParam(3, "string", lastDebugCommand);
-			return this.connectionData.rpcXML(rpcName, debugCommand, readTimeout ? "1" : "0", lastDebugCommand);
+			return this.vistaConnection.rpcXML(rpcName, debugCommand, readTimeout ? "1" : "0", lastDebugCommand);
 		} else {
-			return this.connectionData.rpcXML(rpcName, debugCommand);
+			return this.vistaConnection.rpcXML(rpcName, debugCommand);
 		}
 
 		//RpcResponse vResp = connection.executeRPC(vReq);

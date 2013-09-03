@@ -11,12 +11,12 @@ import gov.va.med.foundations.rpc.RpcResponse;
 import gov.va.med.foundations.security.vistalink.EclipseConnection;
 import gov.va.med.foundations.utilities.FoundationsException;
 
-public class ConnectionData {
+public class VistAConnection {
 	private ServerData serverData;
 	private VistaLinkConnection connection;
 	private EclipseConnection eclipseConnection;
 			
-	public ConnectionData(ServerData serverData, VistaLinkConnection connection, EclipseConnection eclipseConnection) {
+	public VistAConnection(ServerData serverData, VistaLinkConnection connection, EclipseConnection eclipseConnection) {
 		super();
 		this.serverData = serverData;
 		this.connection = connection;

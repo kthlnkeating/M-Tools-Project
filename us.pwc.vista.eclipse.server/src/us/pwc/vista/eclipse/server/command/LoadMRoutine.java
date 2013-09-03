@@ -16,7 +16,7 @@
 
 package us.pwc.vista.eclipse.server.command;
 
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -50,12 +50,12 @@ public class LoadMRoutine extends AbstractHandler {
 		IFile fileHandle = dialog.getFileHandle();
 
 		String serverName = serverData.getName();
-		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData(serverName);
-		if (connectionData == null) {
+		VistAConnection vistaConnection = VLConnectionPlugin.getConnectionManager().getConnection(serverName);
+		if (vistaConnection == null) {
 			return null;
 		}
 
-		CommandResult<MServerRoutine> result = LoadRoutineEngine.loadRoutine(connectionData, fileHandle);
+		CommandResult<MServerRoutine> result = LoadRoutineEngine.loadRoutine(vistaConnection, fileHandle);
 		IStatus status = result.getStatus();		
 		if (status.getSeverity() != IStatus.OK) {
 			MessageDialogHelper.logAndShow(Messages.LOAD_MSG_TITLE, status);			
