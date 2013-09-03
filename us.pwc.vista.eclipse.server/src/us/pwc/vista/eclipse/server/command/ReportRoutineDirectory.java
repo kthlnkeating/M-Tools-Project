@@ -10,7 +10,6 @@ import org.eclipse.core.commands.ExecutionException;
 import us.pwc.vista.eclipse.core.ServerData;
 import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
 import us.pwc.vista.eclipse.server.Messages;
-import us.pwc.vista.eclipse.server.core.RoutineDirectory;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
 
 public class ReportRoutineDirectory extends AbstractHandler {
@@ -30,7 +29,14 @@ public class ReportRoutineDirectory extends AbstractHandler {
 			return null;
 		}
 		
-		String result = RoutineDirectory.getRoutineNames(vistaConnection, namespace);
+		String result = CommandCommon.getRoutineNames(vistaConnection, namespace);
+		if (result == null) {
+			return null;
+		}
+		if (result.isEmpty()) {
+			result = "<no matches found>\n";
+		}
+		result = "Routines beginning with "+ namespace +"\n\n"+ result;		
 		MessageConsoleHelper.writeToConsole(ROUTINE_DIRECTORY, result, true);
 		return null;
 	}

@@ -192,4 +192,17 @@ public class CommandCommon {
 			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, t);
 		}
 	}
+		
+	public static String getRoutineNames(VistAConnection vistaConnection, String namespace) {
+		try {
+			String rawResult = vistaConnection.rpcXML("XT ECLIPSE M EDITOR", "RD", "notused", namespace);				
+			int n = rawResult.indexOf("\n");
+			String result = rawResult.substring(n+1);
+			return result;
+		} catch (Throwable t) {
+			String message = "Error encountered while executing RPC " + t.getMessage();
+			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, message, t);
+			return null;
+		}
+	}
 }

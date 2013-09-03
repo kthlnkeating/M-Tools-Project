@@ -36,7 +36,6 @@ import us.pwc.vista.eclipse.server.Messages;
 import us.pwc.vista.eclipse.server.core.CommandResult;
 import us.pwc.vista.eclipse.server.core.LoadRoutineEngine;
 import us.pwc.vista.eclipse.server.core.MServerRoutine;
-import us.pwc.vista.eclipse.server.core.RoutineDirectory;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
 
 /**
@@ -73,8 +72,11 @@ public class LoadRoutine extends AbstractHandler {
 			return null;
 		}
 		
-		String routines = RoutineDirectory.getRoutineList(vistaConnection, routineNamespace);
-		if (routines.isEmpty() || (routines.indexOf("<") >= 0)) {
+		String routines = CommandCommon.getRoutineNames(vistaConnection, routineNamespace);
+		if (routines == null) {
+			return null;
+		}
+		if (routines.isEmpty()) {
 			String message = Messages.bind(Messages.MULTI_LOAD_RTN_NONE_IN_NAMESPC, routineNamespace);
 			MessageDialogHelper.showError(Messages.LOAD_MSG_TITLE, message);
 			return null;						
