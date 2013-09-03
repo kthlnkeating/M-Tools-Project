@@ -49,7 +49,6 @@ public class MEditor extends TextEditor {
 	public int newCaretOffset = 0;
 	public static int oldTopIndex = 0;
 	public static int oldCaretOffset = 0;
-	private String routinePrimaryServer = "";
 	
 	/**
 	 * Constructor for MEditor. Intialization takes place in the constructor 
@@ -63,7 +62,6 @@ public class MEditor extends TextEditor {
 		fMCodeScanner = new MCodeScanner();
 		setRangeIndicator(new DefaultRangeIndicator());
 		new MEditorPreferencesPage(); //This is invoked so that preferences are set to their default values in case this is the first time running MEditor
-		sourceViewer = getTheSourceViewer();
 		currMEditor = this;
 		String wordWrapValue = MEditorPrefs.getPrefs(MEditorPlugin.P_WRAP_LINES);
 		if (wordWrapValue.compareTo("true") == 0)
@@ -81,18 +79,8 @@ public class MEditor extends TextEditor {
 		super.dispose();
 	}
 	
-	public ISourceViewer getTheSourceViewer() {
-		return super.getSourceViewer();
-	}
-	
-	public int getTopIndex() {
-		int val = getSourceViewer().getTextWidget().getTopIndex();
-		return val;
-	}
-	
 	public void setWordWrap() {
-		//getSourceViewer().getTextWidget().setWordWrap(wordWrap);
-		ISourceViewer viewer = this.getTheSourceViewer();
+		ISourceViewer viewer = this.getSourceViewer();
 		if (viewer != null) {
 			StyledText text = viewer.getTextWidget();
 			text.setWordWrap(wordWrap);
@@ -103,30 +91,6 @@ public class MEditor extends TextEditor {
 		wordWrap = wrap;
 	}
 	
-	public void setRoutinePrimaryServer(String primaryServer) {
-		routinePrimaryServer = primaryServer;
-	}
-	
-	public String getRoutineServer() {
-		return routinePrimaryServer;
-	}
-	public int getCaretOffset() {
-		int val = getSourceViewer().getTextWidget().getCaretOffset();
-		return val;
-	}
-	
-	public void setCaretOffset(int caretOffset) {
-		getSourceViewer().getTextWidget().setCaretOffset(caretOffset);
-	}
-	
-	public void update() {
-		getSourceViewer().getTextWidget().update();
-	}
-	
-	public void setTopIndex(int offset) {
-		getSourceViewer().getTextWidget().setTopIndex(offset);
-	}
-
 	/**
 	 * Getter method that returns a  M Code Scanner.
 	 * @return MCodeScanner
@@ -221,6 +185,5 @@ public class MEditor extends TextEditor {
 		meditorSourceViewerConfiguration = null;
 		meditorSourceViewerConfiguration = new MEditorSourceViewerConfiguration();
 		setSourceViewerConfiguration(meditorSourceViewerConfiguration);
-		sourceViewer = getTheSourceViewer();
 	}
 }
