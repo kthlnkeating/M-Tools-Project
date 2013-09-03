@@ -15,7 +15,7 @@ import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
 
 public class ReportGlobalDirectory extends AbstractHandler {
-	public static void writeGlobalDirectory(ConnectionData connectionData, String globalName) {
+	private static void writeGlobalDirectory(ConnectionData connectionData, String globalName) {
 		try {
 			String rpcResult = connectionData.rpcXML("XT ECLIPSE M EDITOR", "GD", "notused", globalName);
 			int value2 = rpcResult.indexOf("\n");

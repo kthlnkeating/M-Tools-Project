@@ -14,7 +14,7 @@ import us.pwc.vista.eclipse.server.core.RoutineDirectory;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
 
 public class ReportRoutineDirectory extends AbstractHandler {
-	public static final String ROUTINE_DIRECTORY = "Routine Directory Console";
+	private static final String ROUTINE_DIRECTORY = "Routine Directory Console";
 		
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
