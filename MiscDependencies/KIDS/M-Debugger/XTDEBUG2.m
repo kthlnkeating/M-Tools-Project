@@ -302,7 +302,7 @@ RESETLGR ; reset last global reference to previous non XTDEBUG-related
  I XTDEBLGR'["""""" S JUNK=$D(@XTDEBLGR) Q
  S JUNK=$O(@XTDEBLGR)
  Q
-GETNARG(XTDEBEXP,XTDEBBGN,XTDEBEND)	; like $PIECE(str,",",n1,n2) but parses M code by ignoring ( and )
+GETNARG(XTDEBEXP,XTDEBBGN,XTDEBEND) ; like $PIECE(str,",",n1,n2) but parses M code by ignoring ( and )
  ; sample input: I=1:1:$L(ABC,"^")
  N XTDEBCHR,XTDEBPOS,XTDEBPS1,XTDEBPS2,XTDEBLPC,XTDEBRPC
  S:'$D(XTDEBBGN) XTDEBBGN=1 S:'$D(XTDEBEND) XTDEBEND=XTDEBBGN

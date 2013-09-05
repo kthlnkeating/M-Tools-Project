@@ -65,7 +65,7 @@ SETNTRNL ; set internal values after all are ready, in case of dependencies amon
  . K:XTDEBARE'="" @XTDEBARE K @XTDEBAR2
  . I XTDEBBYR M @XTDEBAR2=@XTDEBGL1@(XTDEBNUM,"EXTNAME","VALS")
  . I 'XTDEBBYR,XTDEBARE'="",$D(@XTDEBGL1@(XTDEBNUM,"EXTNAME","VALS"))#2 S @XTDEBAR2=$G(@XTDEBGL1@(XTDEBNUM,"EXTNAME","VALS"))
- . I XTDEBARE="",XTDEBAR2'="" S XTDEBARX=$G(@XTDEBGL1@(XTDEBNUM,"XTDEBARG")) D ; jspivey-- commenting out I XTDEBARX'="" --this is wrong. because variables need to be set to ""
+ . I XTDEBARE="",XTDEBAR2'="" S XTDEBARX=$G(@XTDEBGL1@(XTDEBNUM,"XTDEBARG")) D  ; jspivey-- commenting out I XTDEBARX'="" --this is wrong. because variables need to be set to ""
  . . I $E(XTDEBARX)="$" S XTDEBARX="S "_XTDEBAR2_"="_XTDEBARX D DEBUG^XTMLOG("IN LOOP1","XTDEBARX") I XTDEBARG'="" X XTDEBARX
  . . I $E(XTDEBARX)'="$" S @XTDEBAR2=XTDEBARX
  . . ; jspivey-- added to fix bug with single char var names inside parameters
