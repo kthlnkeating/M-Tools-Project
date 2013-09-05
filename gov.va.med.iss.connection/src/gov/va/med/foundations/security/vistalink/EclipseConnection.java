@@ -6,8 +6,6 @@
  */
 package gov.va.med.foundations.security.vistalink;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Frame;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,10 +14,6 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginException;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.Border;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -29,7 +23,6 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 
 
@@ -160,105 +153,13 @@ public class EclipseConnection {
 	 */
 
 	public void logout() {
-
 		// Kernel logout
 		if (this.userPrincipal != null) {
-
 			try {
-
 				eclipseLoginModule.logout();
-
 			} catch (LoginException e) {
-
 			}
-/*
-			statusTextField.setText(STATUS_DISCONNECTED_TEXT);
-			statusTextField.getAccessibleContext().firePropertyChange(
-				"VISIBLE_PROPERTY_CHANGE",
-				STATUS_CONNECTED_TEXT,
-				STATUS_DISCONNECTED_TEXT);
-			statusTextField.getAccessibleContext().setAccessibleName(STATUS_LABEL_TEXT + STATUS_DISCONNECTED_TEXT);
-*/
-//			disconnectedControlsEnable();
 			userPrincipal = null;
 		}
-//		this.timeout = DEFAULT_TIMEOUT;
-
 	}
-
-
-	/**
-	 * create all components for the window
-	 * @return Component
-	 */
-	@SuppressWarnings("unused")
-	private Component createComponents() {
-
-		try {
-			// create textarea/textfield borders with Java look and feel (haven't set system L&F yet)
-			createFocusBorders();
-		} catch (Exception e) {
-/*
-			DialogConfirm.showDialogConfirm(
-				topFrame,
-				e.getMessage(),
-				"Error",
-				DialogConfirm.INFORMATION_MESSAGE,
-				this.timeout);
-*/
-		}
-
-		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout());
-/*
-		//create Panel for Connection controls
-		mainPanel.add(createConnectionPanel(), BorderLayout.NORTH);
-
-		//create Panel for RPC tabs
-		this.tabPane = (JTabbedPane) createTabPanel();
-		mainPanel.add(this.tabPane, BorderLayout.CENTER);
-
-		//create Panel for RPC counter
-//		mainPanel.add(createRpcCounterPane(), BorderLayout.SOUTH);
-
-		// set controls to "not logged on" state
-		disconnectedControlsEnable();
-
-		connectedFocusTraversalPolicy = new ConnectedFocusTraversalPolicy();
-		disconnectedFocusTraversalPolicy = new DisconnectedFocusTraversalPolicy();
-		mainPanel.setFocusCycleRoot(true);
-		mainPanel.setFocusTraversalPolicy(disconnectedFocusTraversalPolicy);
-*/
-		return mainPanel;
-
-	}
-
-
-	private void createFocusBorders()
-	throws UnsupportedLookAndFeelException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-
-	// set the look and feel to java.
-	UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-
-	// get border from current LaF
-	@SuppressWarnings("unused")
-	Border defaultBorder = UIManager.getBorder("TextField.border");
-/*
-	focusBorder =
-		BorderFactory.createCompoundBorder(UIManager.getBorder("List.focusCellHighlightBorder"), defaultBorder);
-	noFocusBorder =
-		BorderFactory.createCompoundBorder(
-			BorderFactory.createLineBorder(UIManager.getColor("control"), 1),
-			defaultBorder);
-*/
-}
-
-	/**
-	 * We can use this method to dispose of any system
-	 * resources we previously allocated.
-	 * @see IWorkbenchWindowActionDelegate#dispose
-	 */
-	public void dispose() {
-	}
-
 }

@@ -1,6 +1,6 @@
 package gov.va.med.iss.meditor.editors;
 
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.med.iss.meditor.MEditorDocumentProvider;
 import gov.va.med.iss.meditor.MEditorPlugin;
@@ -40,16 +40,8 @@ public class MEditor extends TextEditor {
 	
 	private static MCodeScanner fMCodeScanner;
 	private MContentOutlinePage outlinePage = null;
-	public IDocumentProvider meditorDocumentProvider;
-	public ISourceViewer sourceViewer = null;
-	public static MEditorSourceViewerConfiguration meditorSourceViewerConfiguration = null;
-	public static MEditor currMEditor = null;
-	public static boolean wordWrap = false;
-	public int newTopIndex = 0;
-	public int newCaretOffset = 0;
-	public static int oldTopIndex = 0;
-	public static int oldCaretOffset = 0;
-	private String routinePrimaryServer = "";
+	private static MEditorSourceViewerConfiguration meditorSourceViewerConfiguration = null;
+	private static boolean wordWrap = false;
 	
 	/**
 	 * Constructor for MEditor. Intialization takes place in the constructor 
@@ -58,13 +50,10 @@ public class MEditor extends TextEditor {
 	public MEditor() {
 		super();
 		setDocumentProvider(new MEditorDocumentProvider());
-		meditorDocumentProvider = getDocumentProvider();
 		updateSourceViewerConfiguration();
 		fMCodeScanner = new MCodeScanner();
 		setRangeIndicator(new DefaultRangeIndicator());
 		new MEditorPreferencesPage(); //This is invoked so that preferences are set to their default values in case this is the first time running MEditor
-		sourceViewer = getTheSourceViewer();
-		currMEditor = this;
 		String wordWrapValue = MEditorPrefs.getPrefs(MEditorPlugin.P_WRAP_LINES);
 		if (wordWrapValue.compareTo("true") == 0)
 			wordWrap = true;
@@ -81,18 +70,8 @@ public class MEditor extends TextEditor {
 		super.dispose();
 	}
 	
-	public ISourceViewer getTheSourceViewer() {
-		return super.getSourceViewer();
-	}
-	
-	public int getTopIndex() {
-		int val = getSourceViewer().getTextWidget().getTopIndex();
-		return val;
-	}
-	
 	public void setWordWrap() {
-		//getSourceViewer().getTextWidget().setWordWrap(wordWrap);
-		ISourceViewer viewer = this.getTheSourceViewer();
+		ISourceViewer viewer = this.getSourceViewer();
 		if (viewer != null) {
 			StyledText text = viewer.getTextWidget();
 			text.setWordWrap(wordWrap);
@@ -103,30 +82,6 @@ public class MEditor extends TextEditor {
 		wordWrap = wrap;
 	}
 	
-	public void setRoutinePrimaryServer(String primaryServer) {
-		routinePrimaryServer = primaryServer;
-	}
-	
-	public String getRoutineServer() {
-		return routinePrimaryServer;
-	}
-	public int getCaretOffset() {
-		int val = getSourceViewer().getTextWidget().getCaretOffset();
-		return val;
-	}
-	
-	public void setCaretOffset(int caretOffset) {
-		getSourceViewer().getTextWidget().setCaretOffset(caretOffset);
-	}
-	
-	public void update() {
-		getSourceViewer().getTextWidget().update();
-	}
-	
-	public void setTopIndex(int offset) {
-		getSourceViewer().getTextWidget().setTopIndex(offset);
-	}
-
 	/**
 	 * Getter method that returns a  M Code Scanner.
 	 * @return MCodeScanner
@@ -195,12 +150,12 @@ public class MEditor extends TextEditor {
 			return;
 		}
 
-		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData(file.getProject());
-		if (connectionData == null) {
+		VistAConnection vistaConnection = VLConnectionPlugin.getConnectionManager().getConnection(file.getProject());
+		if (vistaConnection == null) {
 			return;
 		}
 		
-		IStatus result = SaveRoutineEngine.save(connectionData, file);
+		IStatus result = SaveRoutineEngine.saveRoutine(vistaConnection, file);
 		MessageDialogHelper.logAndShow(MESSAGE_TITLE, result);
 	}
 
@@ -217,10 +172,14 @@ public class MEditor extends TextEditor {
 		return super.getAdapter(key);
 	}
 	
-	public void updateSourceViewerConfiguration() {
+	private void updateSourceViewerConfiguration() {
 		meditorSourceViewerConfiguration = null;
 		meditorSourceViewerConfiguration = new MEditorSourceViewerConfiguration();
 		setSourceViewerConfiguration(meditorSourceViewerConfiguration);
-		sourceViewer = getTheSourceViewer();
 	}
+	
+	public void updateAfterPreferencesChanged() {
+		this.updateSourceViewerConfiguration();
+		this.getSourceViewer().invalidateTextPresentation();
+	}	
 }

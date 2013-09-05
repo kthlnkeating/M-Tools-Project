@@ -16,7 +16,7 @@
 
 package us.pwc.vista.eclipse.server.command;
 
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -49,9 +49,9 @@ public class LoadEditorRoutine extends AbstractHandler {
 		}
 		
 		IProject project = file.getProject();
-		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData(project);
+		VistAConnection vistaConnection = VLConnectionPlugin.getConnectionManager().getConnection(project);
 		
-		CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(connectionData, file);
+		CommandResult<MServerRoutine> r = LoadRoutineEngine.loadRoutine(vistaConnection, file);
 		MessageDialogHelper.logAndShow(Messages.LOAD_MSG_TITLE, r.getStatus());
 		return null;
 	}

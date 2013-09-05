@@ -23,23 +23,6 @@
             id="gov.va.med.iss.meditor.preferences.MEditorPreferencesPage">
       </page>
     </extension>
-   <extension
-         id="gov.va.med.iss.meditor.preferences.meditorPropertyPage1"
-         name="M-Editor"
-         point="org.eclipse.ui.propertyPages">
-      <page
-            class="gov.va.med.iss.meditor.preferences.MEditorPropertyPage1"
-            icon="icons/meditor.gif"
-            id="gov.va.med.iss.meditor.page1"
-            name="M-Editor"
-            nameFilter="*.m">
-         <enabledWhen>
-            <instanceof
-                  value="org.eclipse.core.resources.IFile">
-            </instanceof>
-         </enabledWhen>
-      </page>
-   </extension>
    
 
    

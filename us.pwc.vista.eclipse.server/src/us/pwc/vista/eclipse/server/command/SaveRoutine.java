@@ -19,7 +19,7 @@ package us.pwc.vista.eclipse.server.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -54,13 +54,13 @@ public class SaveRoutine extends AbstractHandler {
 			return null;
 		}
 		IProject project = selectedFiles.get(0).getProject();
-		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData(project);
-		if (connectionData == null) {
+		VistAConnection vistaConnection = VLConnectionPlugin.getConnectionManager().getConnection(project);
+		if (vistaConnection == null) {
 			return null;
 		}
 		
 		if (namespaceFlag) {
-			ServerData data = connectionData.getServerData();
+			ServerData data = vistaConnection.getServerData();
 			String title =  Messages.bind(Messages.SAVE_M_RTNS_DLG_TITLE, data.getAddress(), data.getPort());
 			String namespace = InputDialogHelper.getRoutineNamespace(title);
 			if (namespace == null) {
@@ -83,13 +83,13 @@ public class SaveRoutine extends AbstractHandler {
 		}
 
 		if (selectedFiles.size() == 1) {
-			IStatus status = SaveRoutineEngine.save(connectionData, selectedFiles.get(0));
+			IStatus status = SaveRoutineEngine.saveRoutine(vistaConnection, selectedFiles.get(0));
 			MessageDialogHelper.logAndShow(Messages.SAVE_MSG_TITLE, status);
 		} else {
 			int overallSeverity = IStatus.OK;
 			List<IStatus> statuses = new ArrayList<IStatus>();
 			for (IFile file : selectedFiles) {
-				IStatus status = SaveRoutineEngine.save(connectionData, file);
+				IStatus status = SaveRoutineEngine.saveRoutine(vistaConnection, file);
 				String prefixForFile = file.getFullPath().toString() + " -- ";
 				overallSeverity = StatusHelper.updateStatuses(status, VistAServerPlugin.PLUGIN_ID, prefixForFile, overallSeverity, statuses);
 			}

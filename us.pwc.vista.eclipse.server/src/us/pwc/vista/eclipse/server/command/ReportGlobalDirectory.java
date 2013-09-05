@@ -1,6 +1,6 @@
 package us.pwc.vista.eclipse.server.command;
 
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -15,9 +15,9 @@ import us.pwc.vista.eclipse.server.VistAServerPlugin;
 import us.pwc.vista.eclipse.server.dialog.InputDialogHelper;
 
 public class ReportGlobalDirectory extends AbstractHandler {
-	public static void writeGlobalDirectory(ConnectionData connectionData, String globalName) {
+	private static void writeGlobalDirectory(VistAConnection vistaConnection, String globalName) {
 		try {
-			String rpcResult = connectionData.rpcXML("XT ECLIPSE M EDITOR", "GD", "notused", globalName);
+			String rpcResult = vistaConnection.rpcXML("XT ECLIPSE M EDITOR", "GD", "notused", globalName);
 			int value2 = rpcResult.indexOf("\n");
 			String str = rpcResult.substring(value2+1);
 			if (str.length() == 0) {
@@ -44,19 +44,19 @@ public class ReportGlobalDirectory extends AbstractHandler {
 
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().selectConnectionData(false);
-		if (connectionData == null) {
+		VistAConnection vistaConnection = VLConnectionPlugin.getConnectionManager().selectConnection(false);
+		if (vistaConnection == null) {
 			return null;
 		}
 		
-		ServerData data = connectionData.getServerData();
+		ServerData data = vistaConnection.getServerData();
 		String title = Messages.bind(Messages.DLG_GLOBAL_DIR_TITLE, data.getAddress(), data.getPort());
 		String namespace = InputDialogHelper.getGlobalNamespace(title);
 		if (namespace == null) {
 			return null;
 		}
 
-		writeGlobalDirectory(connectionData, namespace);
+		writeGlobalDirectory(vistaConnection, namespace);
 		return null;
 	}
 }

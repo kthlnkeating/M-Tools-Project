@@ -17,7 +17,7 @@
 package us.pwc.vista.eclipse.server.core;
 
 import gov.va.med.foundations.utilities.FoundationsException;
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 
 import java.io.UnsupportedEncodingException;
 import java.util.StringTokenizer;
@@ -140,9 +140,9 @@ public class MServerRoutine {
 		}
 	}
 
-	private static String load(ConnectionData connectionData, String routineName) throws LoadRoutineException {
+	private static String load(VistAConnection vistaConnection, String routineName) throws LoadRoutineException {
 		try {
-			String result = connectionData.rpcXML("XT ECLIPSE M EDITOR", "RL", "notused", routineName);
+			String result = vistaConnection.rpcXML("XT ECLIPSE M EDITOR", "RL", "notused", routineName);
 			if (result.startsWith("-1^Error Processing load request")) {
 				return null;
 			} else {
@@ -214,16 +214,16 @@ public class MServerRoutine {
 		}
 	}
 	
-	private static MServerRoutine load(ConnectionData connectionData, IFile file, String routineName) throws LoadRoutineException, BackupSynchException {
-		String content = load(connectionData, routineName);
-		String serverName = connectionData.getServerName();
+	private static MServerRoutine load(VistAConnection vistaConnection, IFile file, String routineName) throws LoadRoutineException, BackupSynchException {
+		String content = load(vistaConnection, routineName);
+		String serverName = vistaConnection.getServerName();
 		BackupSynchResult synchBackupResult = synchBackupFile(file, serverName, content);
 		MServerRoutine result = new MServerRoutine(routineName, content, file, synchBackupResult);
 		return result;
 	}	
 
-	public static MServerRoutine load(ConnectionData connectionData, IFile file) throws InvalidFileException, LoadRoutineException, BackupSynchException {
+	public static MServerRoutine load(VistAConnection vistaConnection, IFile file) throws InvalidFileException, LoadRoutineException, BackupSynchException {
 		String routineName = ResourceUtilExtension.getRoutineName(file, "m");
-		return load(connectionData, file, routineName);
+		return load(vistaConnection, file, routineName);
 	}
 }

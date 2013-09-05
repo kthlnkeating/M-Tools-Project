@@ -16,7 +16,7 @@
 
 package us.pwc.vista.eclipse.server.command;
 
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -48,12 +48,12 @@ public class SaveEditorRoutine extends AbstractHandler {
 		}
 		
 		IProject project = file.getProject();
-		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().getConnectionData(project);
-		if (connectionData == null) {
+		VistAConnection vistaConnection = VLConnectionPlugin.getConnectionManager().getConnection(project);
+		if (vistaConnection == null) {
 			return null;
 		}
 		
-		IStatus status = SaveRoutineEngine.save(connectionData, file);
+		IStatus status = SaveRoutineEngine.saveRoutine(vistaConnection, file);
 		MessageDialogHelper.logAndShow(Messages.SAVE_MSG_TITLE, status);
 		return null;
 	}

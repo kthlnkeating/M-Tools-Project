@@ -1,6 +1,6 @@
 package gov.va.mumps.debug.core.model;
 
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 import gov.va.mumps.debug.xtdebug.XtdebugHandler;
 import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
 
@@ -40,12 +40,12 @@ public class MDebugRpcProcess extends PlatformObject implements IProcess {
 	private StepResultsVO responseResults;
 	private XtdebugHandler xtdebugHandler;
 	
-	public MDebugRpcProcess(ILaunch launch, ConnectionData connectionData, String debugEntryTag, Map<String, String> attributes) {
+	public MDebugRpcProcess(ILaunch launch, VistAConnection vistaConnection, String debugEntryTag, Map<String, String> attributes) {
 		initializeAttributes(attributes);
 		
-		xtdebugHandler = new XtdebugHandler(connectionData.getConnection());
+		xtdebugHandler = new XtdebugHandler(vistaConnection);
 		responseResults = xtdebugHandler.startDebug(debugEntryTag);	
-		name = "VistA Connection: " + connectionData.getServerData().toUIString();
+		name = "VistA Connection: " + vistaConnection.getServerData().toUIString();
 		this.launch = launch;
 		launch.addProcess(this);
 		fireCreationEvent();

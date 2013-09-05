@@ -1,7 +1,7 @@
 package us.pwc.vista.eclipse.server.core;
 
 import gov.va.med.foundations.utilities.FoundationsException;
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -38,11 +38,11 @@ public class SaveRoutineEngine {
 		return target;
 	}
 	
-	private static IStatus saveRoutineToServer(ConnectionData connectionData, String routineName, ListRoutineBuilder builder, IFile backupFile, StringBuilder consoleMessage) {
+	private static IStatus saveRoutineToServer(VistAConnection vistaConnection, String routineName, ListRoutineBuilder builder, IFile backupFile, StringBuilder consoleMessage) {
 		String warningMessage = "";
 		try {
 			List<String> contents = builder.getRoutineLines();
-			IStatus result = saveRoutineToServer(connectionData, routineName, contents, consoleMessage);
+			IStatus result = saveRoutineToServer(vistaConnection, routineName, contents, consoleMessage);
 			if (result.getSeverity() == IStatus.ERROR) {
 				return result;
 			}
@@ -165,8 +165,8 @@ public class SaveRoutineEngine {
 		return isErrorsOrWarnings;
 	}
 	
-	public static IStatus saveRoutineToServer(ConnectionData connectionData, String routineName, List<String> contents, StringBuilder consoleMessage) throws FoundationsException {
-		String rpcResult = connectionData.rpc("XT ECLIPSE M EDITOR", "RS", contents, routineName, "0^^0");
+	private static IStatus saveRoutineToServer(VistAConnection vistaConnection, String routineName, List<String> contents, StringBuilder consoleMessage) throws FoundationsException {
+		String rpcResult = vistaConnection.rpc("XT ECLIPSE M EDITOR", "RS", contents, routineName, "0^^0");
 		int index = rpcResult.indexOf('\n');
 		if (index > -1) {
 			String line1 = rpcResult.substring(0, index);
@@ -186,11 +186,11 @@ public class SaveRoutineEngine {
 		return Status.OK_STATUS;
 	}
 	
-	public static IStatus save(ConnectionData connectionData, IFile file) {
+	public static IStatus saveRoutine(VistAConnection vistaConnection, IFile file) {
 		try {
 			ListRoutineBuilder routineContent = getListRoutineBuilder(file);
 
-			MServerRoutine serverRoutine = MServerRoutine.load(connectionData, file);
+			MServerRoutine serverRoutine = MServerRoutine.load(vistaConnection, file);
 			String routineName = serverRoutine.getRoutineName();
 			BackupSynchResult synchResult = serverRoutine.getSynchResult();
 			IFile backupFile = synchResult.getFile();
@@ -205,8 +205,8 @@ public class SaveRoutineEngine {
 				return status;
 			}
 			
-			StringBuilder consoleMessage = startConsoleMessage(routineName, connectionData.getServerData(), synchResult);
-			return saveRoutineToServer(connectionData, routineName, routineContent, backupFile, consoleMessage);
+			StringBuilder consoleMessage = startConsoleMessage(routineName, vistaConnection.getServerData(), synchResult);
+			return saveRoutineToServer(vistaConnection, routineName, routineContent, backupFile, consoleMessage);
 		} catch (CoreException coreException) {
 			IStatus result = coreException.getStatus();
 			StatusManager.getManager().handle(result, StatusManager.LOG);

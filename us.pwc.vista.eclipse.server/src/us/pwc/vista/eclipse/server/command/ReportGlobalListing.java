@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 import gov.va.med.foundations.adapter.record.VistaLinkFaultException;
 import gov.va.med.foundations.utilities.FoundationsException;
-import gov.va.med.iss.connection.ConnectionData;
+import gov.va.med.iss.connection.VistAConnection;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -65,7 +65,7 @@ public class ReportGlobalListing extends AbstractHandler {
 		}
 	}
 	
-	private static GlobalListingRPCResult doGlobalListingRPC(ConnectionData connectionData, GlobalListingData data, String lastLine) throws FoundationsException, VistaLinkFaultException {
+	private static GlobalListingRPCResult doGlobalListingRPC(VistAConnection vistaConnection, GlobalListingData data, String lastLine) throws FoundationsException, VistaLinkFaultException {
 		String searchVal = data.searchText;
 		String globalName = data.globalName;
 		if (! (globalName.indexOf('^') == 0))
@@ -82,7 +82,7 @@ public class ReportGlobalListing extends AbstractHandler {
 		// changed next line 
 		lastLine = lastLine+"^1";
 		
-		String rpcResult = connectionData.rpcXML("XT ECLIPSE M EDITOR", "GL", "notused", globalName, searchVal, lastLine); 
+		String rpcResult = vistaConnection.rpcXML("XT ECLIPSE M EDITOR", "GL", "notused", globalName, searchVal, lastLine); 
 		int value2 = rpcResult.indexOf("\n");
 
 		GlobalListingRPCResult result = new GlobalListingRPCResult();
@@ -95,16 +95,16 @@ public class ReportGlobalListing extends AbstractHandler {
 		return result;
 	}
 	
-	private static void killTemporaryGlobal(ConnectionData connectionData) throws FoundationsException, VistaLinkFaultException {
+	private static void killTemporaryGlobal(VistAConnection vistaConnection) throws FoundationsException, VistaLinkFaultException {
 		GlobalListingData data = GlobalListingData.getEmptyInstance();	
-		doGlobalListingRPC(connectionData, data, "");
+		doGlobalListingRPC(vistaConnection, data, "");
 	}
 	
-	private static GlobalListResult getGlobalListing(ConnectionData connectionData, GlobalListingData data, String lastLine, boolean continuation)  throws FoundationsException, VistaLinkFaultException {
+	private static GlobalListResult getGlobalListing(VistAConnection vistaConnection, GlobalListingData data, String lastLine, boolean continuation)  throws FoundationsException, VistaLinkFaultException {
 		String globalName = data.globalName;
 		
 		if (! (globalName.indexOf('^') == 0)) globalName = "^" + globalName;
-		GlobalListingRPCResult rpcResult = doGlobalListingRPC(connectionData, data, lastLine);
+		GlobalListingRPCResult rpcResult = doGlobalListingRPC(vistaConnection, data, lastLine);
 
 		String str = rpcResult.str;
 		String more =  rpcResult.more;
@@ -183,18 +183,18 @@ public class ReportGlobalListing extends AbstractHandler {
 		return glr;
 	}
 	
-	private static void killTemporaryLastLocationGlobal(ConnectionData connectionData) {
+	private static void killTemporaryLastLocationGlobal(VistAConnection vistaConnection) {
 		try {
-			killTemporaryGlobal(connectionData);
+			killTemporaryGlobal(vistaConnection);
 		} catch (Throwable t) {
 			String message = Messages.bind2(Messages.GLOBAL_LISTING_UNEXPECTED, t.getMessage());
 			MessageDialogHelper.logAndShow(VistAServerPlugin.PLUGIN_ID, message, t);
 		}		
 	}
 	
-	private static CommandResult<GlobalListResult> getGlobals(ConnectionData connectionData, GlobalListingData data, String lastLine, boolean continuation) {
+	private static CommandResult<GlobalListResult> getGlobals(VistAConnection vistaConnection, GlobalListingData data, String lastLine, boolean continuation) {
 		try {
-			GlobalListResult result = getGlobalListing(connectionData, data, lastLine, continuation);
+			GlobalListResult result = getGlobalListing(vistaConnection, data, lastLine, continuation);
 			return new CommandResult<GlobalListResult>(result, Status.OK_STATUS);
 		} catch (Throwable t) {
 			String message = Messages.bind(Messages.GLOBAL_LISTING_UNEXPECTED, t.getMessage());
@@ -203,12 +203,12 @@ public class ReportGlobalListing extends AbstractHandler {
 		}
 	}
 	
-	private void handleGlobalListing(final ConnectionData connectionData, final GlobalListingData data, final String currentCount, final int page) {
+	private void handleGlobalListing(final VistAConnection vistaConnection, final GlobalListingData data, final String currentCount, final int page) {
 		Job job = new Job(Messages.GLOBAL_LISTING) {			
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				monitor.beginTask("Loading globals from server", IProgressMonitor.UNKNOWN);
-				final CommandResult<GlobalListResult> result = getGlobals(connectionData, data, currentCount, page > 0);
+				final CommandResult<GlobalListResult> result = getGlobals(vistaConnection, data, currentCount, page > 0);
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
 						IStatus status = result.getStatus();
@@ -221,14 +221,14 @@ public class ReportGlobalListing extends AbstractHandler {
 							if (glResult.currCount != null) {
 								boolean moreWanted = MessageDialogHelper.question(Messages.GLOBAL_LISTING, Messages.GLOBAL_LISTING_MORE, glResult.currCount);
 								if (moreWanted) {
-									handleGlobalListing(connectionData, data, glResult.currCount, page+1);
+									handleGlobalListing(vistaConnection, data, glResult.currCount, page+1);
 									killGlobal = false;
 								} else {
 									killGlobal = true;
 								}
 							}
 							if (killGlobal) {
-								killTemporaryLastLocationGlobal(connectionData);	
+								killTemporaryLastLocationGlobal(vistaConnection);	
 							}								
 						}
 					}
@@ -242,20 +242,20 @@ public class ReportGlobalListing extends AbstractHandler {
 	
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		ConnectionData connectionData = VLConnectionPlugin.getConnectionManager().selectConnectionData(false);
-		if (connectionData == null) {
+		VistAConnection vistaConnection = VLConnectionPlugin.getConnectionManager().selectConnection(false);
+		if (vistaConnection == null) {
 			return null;
 		}
 		
 		Shell shell = HandlerUtil.getActiveShell(event);
-		ServerData datax = connectionData.getServerData();
+		ServerData datax = vistaConnection.getServerData();
 		String title = Messages.bind(Messages.DLG_GLOBAL_LISTING_TITLE, datax.getAddress(), datax.getPort());
 		GlobalListingDialog dialog = new GlobalListingDialog(shell, title);
 		int result = dialog.open();
 		if (result == GlobalListingDialog.OK) {
 			GlobalListingData data = dialog.getData();
 			MessageConsoleHelper.writeToConsole(data.globalName, "", true);
-			this.handleGlobalListing(connectionData, data, "", 0);
+			this.handleGlobalListing(vistaConnection, data, "", 0);
 		}
 		return null;
 	}
