@@ -24,7 +24,9 @@ import org.osgi.framework.BundleContext;
  * Implements M language debugger.
  */
 public class MDebugCorePlugin extends Plugin {
-	
+		// The plug-in ID
+	public static final String PLUGIN_ID = "gov.va.mumps.debug.core"; //$NON-NLS-1$
+
 	private static MDebugCorePlugin plugin = null;
 	
 	public MDebugCorePlugin() {

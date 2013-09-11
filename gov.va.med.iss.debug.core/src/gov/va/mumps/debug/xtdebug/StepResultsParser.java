@@ -13,7 +13,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class StepResultsParser {
+class StepResultsParser {
 	
 	private static final Pattern captureTagLocation = Pattern.compile("^.*?[A-Z]+\\: *([\\w\\+\\^]+)\\s*.*$");
 	private static final Pattern stackCaller = Pattern.compile("^\\s*([%\\w\\d\\+\\^]*).*$");

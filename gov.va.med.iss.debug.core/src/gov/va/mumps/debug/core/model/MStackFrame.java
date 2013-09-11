@@ -82,7 +82,7 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 	
 	public MStackFrame(IThread debugThread, String stackName, String callerTag, 
 			String routineName, int lineLocation, String nextCommand) {
-		super((MDebugTarget) debugThread.getDebugTarget());
+		super((IMDebugTarget) debugThread.getDebugTarget());
 		
 		this.debugThread = debugThread;
 		this.stackName = stackName;
@@ -209,12 +209,12 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 
 	@Override
 	public IVariable[] getVariables() throws DebugException {
-		return ((MDebugTarget)debugThread.getDebugTarget()).getVariables();
+		return ((IMDebugTarget)debugThread.getDebugTarget()).getVariables();
 	}
 
 	@Override
 	public boolean hasVariables() throws DebugException {
-		return ((MDebugTarget)debugThread.getDebugTarget()).getVariables().length != 0;
+		return ((IMDebugTarget)debugThread.getDebugTarget()).getVariables().length != 0;
 	}
 
 	public String getRoutineName() {

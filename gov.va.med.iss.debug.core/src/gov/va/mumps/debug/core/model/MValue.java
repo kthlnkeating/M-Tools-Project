@@ -11,7 +11,7 @@ public class MValue extends MDebugElement implements IValue {
 	private String value;
 	
 	public MValue(MVariable variable, String value) {
-		super((MDebugTarget) variable.getDebugTarget());
+		super(variable.getDebugTarget());
 		
 		this.variable = variable;
 		this.value = value;

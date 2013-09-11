@@ -5,6 +5,10 @@ import java.util.List;
 import gov.va.med.iss.connection.VistAConnection;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.mumps.debug.core.MDebugConstants;
+import gov.va.mumps.debug.core.MDebugSettings;
+import gov.va.mumps.debug.core.model.MCacheTelnetDebugTarget;
+import gov.va.mumps.debug.core.model.MCacheTelnetProcess;
+import gov.va.mumps.debug.core.model.MDebugPreference;
 import gov.va.mumps.debug.core.model.MDebugRpcProcess;
 import gov.va.mumps.debug.core.model.MDebugTarget;
 
@@ -82,10 +86,15 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 			sb.append(')');
 		} 
 		String mCode = sb.toString();
-			
-		MDebugRpcProcess rpcProcess = new MDebugRpcProcess(launch, vc, mCode, null);
-
-		IDebugTarget target = new MDebugTarget(launch, rpcProcess);
-		launch.addDebugTarget(target);
+		
+		if (MDebugSettings.getDebugPreference() == MDebugPreference.CACHE_TELNET) {
+			MCacheTelnetProcess rpcProcess = new MCacheTelnetProcess(launch, vc, mCode, null);
+			IDebugTarget target = new MCacheTelnetDebugTarget(launch, rpcProcess);	
+			launch.addDebugTarget(target);
+		} else {
+			MDebugRpcProcess rpcProcess = new MDebugRpcProcess(launch, vc, mCode, null);
+			IDebugTarget target = new MDebugTarget(launch, rpcProcess);	
+			launch.addDebugTarget(target);			
+		}
 	}
 }

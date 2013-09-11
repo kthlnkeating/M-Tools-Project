@@ -11,12 +11,11 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 
 public class MThread extends MDebugElement implements IThread { //in the future perhaps this can be used to represent a JOB on the server
-
 	private IBreakpoint[] breakpoints;
 	private String name;
 	private boolean debug;
 
-	public MThread(MDebugTarget target) {
+	public MThread(IMDebugTarget target) {
 		super(target);
 		this.debug = target.getLaunch().getLaunchMode().equals(ILaunchManager.DEBUG_MODE);
 		fireCreationEvent();
@@ -71,13 +70,13 @@ public class MThread extends MDebugElement implements IThread { //in the future 
 	@Override
 	public void stepInto() throws DebugException {
 		fireResumeEvent(DebugEvent.STEP_INTO);
-		((MDebugTarget)getDebugTarget()).stepInto();
+		getDebugTarget().stepInto();
 	}
 
 	@Override
 	public void stepOver() throws DebugException {
 		fireResumeEvent(DebugEvent.STEP_OVER);
-		((MDebugTarget)getDebugTarget()).stepOver();
+		getDebugTarget().stepOver();
 	}
 
 	@Override
@@ -141,7 +140,7 @@ public class MThread extends MDebugElement implements IThread { //in the future 
 	@Override
 	public IStackFrame[] getStackFrames() throws DebugException {
 		if (isSuspended()) {
-			return ((MDebugTarget)getDebugTarget()).getStackFrames();
+			return getDebugTarget().getStackFrames();
 		} else {
 			System.out.println("returning dummy stackframes");
 			return new IStackFrame[0];

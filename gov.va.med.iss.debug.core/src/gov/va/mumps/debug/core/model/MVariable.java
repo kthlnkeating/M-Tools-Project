@@ -12,7 +12,7 @@ public class MVariable extends MDebugElement implements IVariable {
 	private MValue value;
 
 	public MVariable(MStackFrame stackFrame, String name) {
-		super((MDebugTarget) stackFrame.getDebugTarget());
+		super(stackFrame.getDebugTarget());
 		
 		this.name = name;
 		this.stackFrame = stackFrame;

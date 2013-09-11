@@ -191,6 +191,15 @@
 	  </configurationType>
 	  </shortcut>
 	</extension>
+ <extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          category="us.pwc.vista.eclipse.core.preferences.vistaPreferencePage"
+          class="gov.va.mumps.debug.ui.settings.MDebugPreferencePage"
+          id="gov.va.med.iss.debug.ui.preference"
+          name="Debug">
+    </page>
+ </extension>
 	
    <!-- copied from JDT's debug.ui plugin: -->
 <!-- Adds the launch and java debug actions whenever a java relevant part is open -->

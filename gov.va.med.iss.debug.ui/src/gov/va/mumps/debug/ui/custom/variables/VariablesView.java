@@ -1,7 +1,7 @@
 package gov.va.mumps.debug.ui.custom.variables;
 
 import gov.va.mumps.debug.core.MDebugConstants;
-import gov.va.mumps.debug.core.model.MDebugTarget;
+import gov.va.mumps.debug.core.model.IMDebugTarget;
 import gov.va.mumps.debug.xtdebug.vo.VariableVO;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -162,9 +162,8 @@ public class VariablesView extends ViewPart implements ISelectionListener {
 				System.out.println("2");
 				if (element.getModelIdentifier().equals(
 						MDebugConstants.M_DEBUG_MODEL)) {
-					if (element.getDebugTarget() instanceof MDebugTarget) {
-						input = ((MDebugTarget) element.getDebugTarget())
-								.getAllVariables();
+					if (element.getDebugTarget() instanceof IMDebugTarget) {
+						input = ((IMDebugTarget) element.getDebugTarget()).getAllVariables();
 						;
 					}
 				}

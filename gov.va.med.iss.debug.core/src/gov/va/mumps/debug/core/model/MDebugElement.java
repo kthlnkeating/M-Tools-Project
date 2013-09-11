@@ -11,12 +11,10 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugElement;
-import org.eclipse.debug.core.model.IDebugTarget;
 
 public abstract class MDebugElement extends PlatformObject implements IDebugElement {
-
 	// containing target 
-	private MDebugTarget target;
+	private IMDebugTarget target;
 	
 	/**
 	 * Constructs a new debug element contained in the given
@@ -24,7 +22,7 @@ public abstract class MDebugElement extends PlatformObject implements IDebugElem
 	 * 
 	 * @param target debug target (PDA VM)
 	 */
-	public MDebugElement(MDebugTarget target) {
+	public MDebugElement(IMDebugTarget target) {
 		this.target = target;
 	}
 	
@@ -34,11 +32,11 @@ public abstract class MDebugElement extends PlatformObject implements IDebugElem
 	}
 	
 	@Override
-	public IDebugTarget getDebugTarget() {
+	public IMDebugTarget getDebugTarget() {
 		return target;
 	}
 	
-	protected void setDebugTarget(MDebugTarget target) {
+	protected void setDebugTarget(IMDebugTarget target) {
 		this.target = target;
 	}
 	

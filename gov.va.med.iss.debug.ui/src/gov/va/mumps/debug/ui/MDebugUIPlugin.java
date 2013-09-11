@@ -1,73 +1,61 @@
 package gov.va.mumps.debug.ui;
 
-import gov.va.mumps.debug.core.model.MDebugTarget;
-import gov.va.mumps.debug.ui.console.MDevConsole;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchListener;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-public class MDebugUIPlugin extends AbstractUIPlugin implements
-		ILaunchListener {
-
-	Map<MDebugTarget,MDevConsole> consoles;
+public class MDebugUIPlugin extends AbstractUIPlugin {
+	private OverallUIManager uiManager;
 	
-	@Override
+	// The plug-in ID
+	public static final String PLUGIN_ID = "gov.va.mumps.debug.ui"; //$NON-NLS-1$
+
+	// The shared instance
+	private static MDebugUIPlugin plugin;
+	
+	/**
+	 * The constructor
+	 */
+	public MDebugUIPlugin() {
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 */
 	public void start(BundleContext context) throws Exception {
-		super.start(context);	
-		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this);
-		consoles = new HashMap<MDebugTarget,MDevConsole>(5);
+		super.start(context);
+		plugin = this;
+		this.uiManager = new OverallUIManager();		
+		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this.uiManager);
 	}
 
-	@Override
-	public void launchAdded(final ILaunch launch) {
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext context) throws Exception {
+		plugin = null;
+		super.stop(context);
 	}
 
-	@Override
-	public void launchChanged(ILaunch launch) {
-		
-		if (launch.getDebugTarget() == null)
-			return;
-		MDebugTarget mDebugTarget = (MDebugTarget) launch.getDebugTarget();
-		
-		synchronized (mDebugTarget) {
-			if (mDebugTarget.isLinkedToConsole())
-				return;
-			
-//			String debugTargetName = launch.getLaunchConfiguration().getName();
-//			try {
-//				String debugTargetName = mDebugTarget.getName();
-//			} catch (DebugException e) {
-//			}
-//			
-			MDevConsole mDevConsole = new MDevConsole("MUMPS Console: " +launch.getLaunchConfiguration().getName(), null, null, true);
-			ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] { mDevConsole });
-			
-			mDebugTarget.addReadCommandListener(mDevConsole);
-			mDebugTarget.addWriteCommandListener(mDevConsole);
-			mDevConsole.addInputReadyListener(mDebugTarget);
-			
-			mDebugTarget.setLinkedToConsole(true);
-			consoles.put(mDebugTarget, mDevConsole);
-		}
+	/**
+	 * Returns the shared instance
+	 *
+	 * @return the shared instance
+	 */
+	public static MDebugUIPlugin getDefault() {
+		return plugin;
 	}
 
-	@Override
-	public void launchRemoved(ILaunch launch) {
-		
-		if (launch.getDebugTarget() == null)
-			return;
-		MDebugTarget mDebugTarget = (MDebugTarget) launch.getDebugTarget();
-		MDevConsole mDevConsole = consoles.get(mDebugTarget);
-		
-		ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] { mDevConsole});
-		consoles.remove(mDevConsole);
-	}
+
+
+
+
+
+
+
+
+
+
 }

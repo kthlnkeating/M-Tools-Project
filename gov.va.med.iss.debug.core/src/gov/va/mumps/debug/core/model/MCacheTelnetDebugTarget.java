@@ -4,8 +4,8 @@ import gov.va.mumps.debug.core.MDebugConstants;
 import gov.va.mumps.debug.xtdebug.vo.ReadResultsVO;
 import gov.va.mumps.debug.xtdebug.vo.StackVO;
 import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
-import gov.va.mumps.debug.xtdebug.vo.StepResultsVO.ResultReasonType;
 import gov.va.mumps.debug.xtdebug.vo.VariableVO;
+import gov.va.mumps.debug.xtdebug.vo.StepResultsVO.ResultReasonType;
 import gov.va.mumps.launching.InputReadyListener;
 import gov.va.mumps.launching.ReadCommandListener;
 import gov.va.mumps.launching.WriteCommandListener;
@@ -32,10 +32,10 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 
-public class MDebugTarget extends MDebugElement implements IMDebugTarget, InputReadyListener {
+public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTarget, InputReadyListener {
 
 	private ILaunch launch;
-	private MDebugRpcProcess rpcDebugProcess;
+	private MCacheTelnetProcess rpcDebugProcess;
 	private boolean suspended;
 	private MThread debugThread;
 	private String name;
@@ -62,7 +62,7 @@ public class MDebugTarget extends MDebugElement implements IMDebugTarget, InputR
 	//mode
 	private boolean debug;
 	
-	public MDebugTarget(ILaunch launch, MDebugRpcProcess rpcProcess) {
+	public MCacheTelnetDebugTarget(ILaunch launch, MCacheTelnetProcess rpcProcess) {
 		super(null);
 		setDebugTarget(this);
 		this.launch = launch;
