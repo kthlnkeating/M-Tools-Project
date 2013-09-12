@@ -1,5 +1,7 @@
 package gov.va.mumps.debug.core.model;
 
+import gov.va.mumps.debug.core.IMInterpreter;
+import gov.va.mumps.debug.core.IMInterpreterConsumer;
 import gov.va.mumps.debug.core.MDebugConstants;
 import gov.va.mumps.debug.xtdebug.vo.ReadResultsVO;
 import gov.va.mumps.debug.xtdebug.vo.StackVO;
@@ -18,10 +20,6 @@ import java.util.TreeSet;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -32,8 +30,16 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 
-public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTarget, InputReadyListener {
-
+public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTarget, InputReadyListener, IMInterpreterConsumer {
+	private static enum TargetState {
+		NOT_CONNECTED,
+		INITIALIZING,
+		ENDING_BREAKPOINT,
+		DEBUGGING,
+		IN_BREAK;
+	}
+	
+	
 	private ILaunch launch;
 	private MCacheTelnetProcess rpcDebugProcess;
 	private boolean suspended;
@@ -62,6 +68,10 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	//mode
 	private boolean debug;
 	
+	private IMInterpreter interpreter;
+	
+	private TargetState state;
+	
 	public MCacheTelnetDebugTarget(ILaunch launch, MCacheTelnetProcess rpcProcess) {
 		super(null);
 		setDebugTarget(this);
@@ -74,9 +84,10 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		suspended = true;		
 		stack = new MStackFrame[0];
 		
+		fireCreationEvent(); //to register that the DebugTarget has been started.
+		/*
 		handleResponse(rpcProcess.getResponseResults());
 		
-		fireCreationEvent(); //to register that the DebugTarget has been started.
 		if (this.debug) {
 			installDeferredBreakpoints();
 			DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
@@ -97,18 +108,19 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 			}
 		};
 		resumeJob.schedule();
+		 */
 	}
 	
 	/**
 	 * Install breakpoints that are already registered with the breakpoint
 	 * manager.
 	 */
-	private void installDeferredBreakpoints() {
-		IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(MDebugConstants.M_DEBUG_MODEL);
-		for (int i = 0; i < breakpoints.length; i++) {
-			breakpointAdded(breakpoints[i]);
-		}
-	}
+	//private void installDeferredBreakpoints() {
+	//	IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(MDebugConstants.M_DEBUG_MODEL);
+	//	for (int i = 0; i < breakpoints.length; i++) {
+	//		breakpointAdded(breakpoints[i]);
+	//	}
+	//}
 	
 	/**
 	 * Removes all active breakpoints currently registered with the breakpoint
@@ -349,10 +361,12 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	
 	@Override
 	public MDebugPreference getPreferenceImplemented() {
-		return MDebugPreference.GENERIC;
+		return MDebugPreference.CACHE_TELNET;
 	}
 	
 	private synchronized void handleResponse(StepResultsVO vo) {
+		if (vo == null) return;
+		
 		
 		debugThread.setBreakpoints(null);
 		
@@ -547,4 +561,45 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		RESUME, STEP_INTO, STEP_OUT, STEP_OVER;
 	}
 	
+	
+	@Override
+	public void handleConnected(IMInterpreter interpreter) {
+		this.interpreter = interpreter;
+		try {
+			this.state = TargetState.INITIALIZING;
+			this.interpreter.sendCommand("ZBREAK MAIN+4^MTESTONE:\"TB\"\n");
+		} catch (Throwable t) {
+			//this.abort("Aborted", t);
+		}
+	}
+	
+	@Override 
+	public void handleCommandExecuted() {
+		if (this.state == TargetState.INITIALIZING) {
+			this.state = TargetState.ENDING_BREAKPOINT;
+			try {
+				this.interpreter.sendCommand("ZBREAK /TRACE:ON\n");
+			} catch (Throwable t) {
+			}
+		} else {
+			this.state = TargetState.DEBUGGING;
+			try {
+				this.interpreter.debugCommand("d MAIN^MTESTONE\n");
+			} catch (Throwable t) {				
+			}
+		}
+	}
+	
+	@Override
+	public void handleBreak(String info) {
+		this.state = TargetState.IN_BREAK;
+		try {
+			this.interpreter.debugCommand("G\n");
+		} catch (Throwable t) {			
+		}
+	}
+
+	@Override
+	public void handleEnd() {		
+	}
 }

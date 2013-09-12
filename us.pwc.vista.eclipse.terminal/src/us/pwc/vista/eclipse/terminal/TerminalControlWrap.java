@@ -10,11 +10,15 @@ import org.eclipse.tm.internal.terminal.provisional.api.TerminalState;
 @SuppressWarnings("restriction")
 public class TerminalControlWrap implements ITerminalControl {
 	private ITerminalControl actual;
-	private OutputStream os;
+	private VistAOutputStream os;
 	
-	public TerminalControlWrap(ITerminalControl actual) {
+	public TerminalControlWrap(ITerminalControl actual, IVistAStreamListener listener) {
 		this.actual = actual;
-		this.os = new VistAOutputStream(actual.getRemoteToTerminalOutputStream());
+		this.os = new VistAOutputStream(actual.getRemoteToTerminalOutputStream(), listener);
+	}
+	
+	public VistAOutputStream getVistAStream() {
+		return this.os;
 	}
 	
 	@Override

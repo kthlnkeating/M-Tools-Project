@@ -5,14 +5,22 @@ import org.eclipse.tm.internal.terminal.provisional.api.provider.TerminalConnect
 
 @SuppressWarnings("restriction")
 public class VistATerminalConnector extends TerminalConnector {
-	private static TerminalConnector.Factory FACTORY = new TerminalConnector.Factory() {		
+	private static class VistATerminalConnectorFactory implements TerminalConnector.Factory {		
+		private IVistAStreamListener listener;
+		
+		public VistATerminalConnectorFactory(IVistAStreamListener listener) {
+			this.listener = listener;
+		}
+		
 		@Override
 		public TerminalConnectorImpl makeConnector() throws Exception {
-			return new VistATelnetConnector();
+			VistATelnetConnector connector = new VistATelnetConnector(this.listener);
+			this.listener.handleConnectorCreated(connector);
+			return connector;
 		}
 	};
 	
-	public VistATerminalConnector() {
-		super(FACTORY, "us.pwc.vista.eclipse.terminal.VistATerminalConnector", "VistA Telnet", false);
+	public VistATerminalConnector(IVistAStreamListener listener) {
+		super(new VistATerminalConnectorFactory(listener), "us.pwc.vista.eclipse.terminal.VistATerminalConnector", "VistA Telnet", false);
 	}	
 }

@@ -56,11 +56,6 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 			IStatus status = new Status(IStatus.ERROR, MDebugConstants.M_DEBUG_MODEL, "No server is specified for project " + projectName + ".");
 			throw new CoreException(status);						
 		}
-		VistAConnection vc = VLConnectionPlugin.getConnectionManager().findConnection(serverName);
-		if (vc == null) {
-			IStatus status = new Status(IStatus.ERROR, MDebugConstants.M_DEBUG_MODEL, "No connection has been established for server " + serverName + ".");
-			throw new CoreException(status);						
-		}
 		IPath path = Path.fromOSString(filePath);
 		String fileName = path.lastSegment();
 		String routineName = fileName.substring(0, fileName.length()-2);
@@ -88,13 +83,23 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 		String mCode = sb.toString();
 		
 		if (MDebugSettings.getDebugPreference() == MDebugPreference.CACHE_TELNET) {
-			MCacheTelnetProcess rpcProcess = new MCacheTelnetProcess(launch, vc, mCode, null);
-			IDebugTarget target = new MCacheTelnetDebugTarget(launch, rpcProcess);	
-			launch.addDebugTarget(target);
-		} else {
+			this.launchCacheTelnet(launch, mCode);
+		} else {			
+			VistAConnection vc = VLConnectionPlugin.getConnectionManager().findConnection(serverName);
+			if (vc == null) {
+				IStatus status = new Status(IStatus.ERROR, MDebugConstants.M_DEBUG_MODEL, "No connection has been established for server " + serverName + ".");
+				throw new CoreException(status);						
+			}			
 			MDebugRpcProcess rpcProcess = new MDebugRpcProcess(launch, vc, mCode, null);
 			IDebugTarget target = new MDebugTarget(launch, rpcProcess);	
 			launch.addDebugTarget(target);			
 		}
 	}
+	
+	private void launchCacheTelnet(ILaunch launch, String mCode) {
+		MCacheTelnetProcess rpcProcess = new MCacheTelnetProcess(launch, null, mCode, null);
+		MCacheTelnetDebugTarget target = new MCacheTelnetDebugTarget(launch, rpcProcess);
+		launch.addDebugTarget(target);		
+	}
+	
 }

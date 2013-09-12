@@ -5,6 +5,9 @@ import java.io.OutputStream;
 
 public class VistAOutputStream extends OutputStream {
 	private static enum StateEnum {
+		NOT_CONNECTED,
+		COMMAND_EXECUTE,
+		COMMAND_STREAM_EXPECTED,
 		BREAK_SEARCH,
 		BREAK_FOUND
 	}
@@ -14,7 +17,7 @@ public class VistAOutputStream extends OutputStream {
 	
 	private OutputStream actual;
 	
-	private StateEnum state = StateEnum.BREAK_SEARCH;
+	private StateEnum state = StateEnum.NOT_CONNECTED;
 	
 	private byte[] buffer = new byte[PATTERN.length];
 	private int count;
@@ -22,8 +25,11 @@ public class VistAOutputStream extends OutputStream {
 	private byte[] debugInfo = new byte[200];
 	private int debugCount;
 	
-	public VistAOutputStream(OutputStream actual) {
+	private IVistAStreamListener listener;
+	
+	public VistAOutputStream(OutputStream actual, IVistAStreamListener listener) {
 		this.actual = actual;
+		this.listener = listener;
 	}
 	
 	@Override
@@ -59,11 +65,29 @@ public class VistAOutputStream extends OutputStream {
 		this.auxWrite((byte) b);
 	}
 	
+	public void startCommand() {
+		this.state = StateEnum.COMMAND_EXECUTE;
+	}
+	
+	public void debugCommand(String command) {
+		this.state = StateEnum.COMMAND_STREAM_EXPECTED;
+	}
+	
 	private void auxWrite(byte b) throws IOException {
 		if (this.state == StateEnum.BREAK_SEARCH) {
 			this.auxWriteSearch(b);
+		} else if (this.state == StateEnum.COMMAND_STREAM_EXPECTED) {
+			int n = this.debugCount;
+			this.debugInfo[n] = b;
+			++this.debugCount;
+			if ((b == 10) && (this.debugInfo[n-1] == 13)) {
+				this.debugCount = 0;
+				this.state = StateEnum.BREAK_SEARCH;
+			}
 		} else {
-			this.auxWriteBreak(b);
+			this.debugInfo[this.debugCount] = b;
+			++this.debugCount;			
+			if (b == '>') this.auxWriteBreak(b, END_PATTERN);
 		}
 	}
 	
@@ -82,26 +106,32 @@ public class VistAOutputStream extends OutputStream {
 		}
 	}
 
-	private void auxWriteBreak(byte b) throws IOException {
-		this.debugInfo[this.debugCount] = b;
-		++this.debugCount;
-		if (b == '>') {
-			int endIndex = this.debugCount-6;
-			if (endIndex < 0) endIndex = 0;
-			int n = END_PATTERN.length;
-			byte epb = END_PATTERN[END_PATTERN.length-1];
-			for (int i=this.debugCount-1; i>=endIndex; --i) {
-				if (epb == this.debugInfo[i]) {
-					for (int j=1; j<n; ++j) {
-						if (i < j) return;
-						if (END_PATTERN[n-j-1] != this.debugInfo[i-j]) {
-							return;
-						}
-					}					
-					this.state = StateEnum.BREAK_SEARCH;
-					this.debugCount = 0;				
-				}			
-			}
-		} 
+	private void auxWriteBreak(byte b, byte[] pattern) throws IOException {
+		int endIndex = this.debugCount-6;
+		if (endIndex < 0) endIndex = 0;
+		int n = pattern.length;
+		byte epb = pattern[n-1];
+		for (int i=this.debugCount-1; i>=endIndex; --i) {
+			if (epb == this.debugInfo[i]) {
+				for (int j=1; j<n; ++j) {
+					if (i < j) return;
+					if (pattern[n-j-1] != this.debugInfo[i-j]) {
+						return;
+					}
+				}
+				StateEnum currentState = this.state;
+				int currentCount = this.debugCount;
+				this.debugCount = 0;
+				this.state = StateEnum.BREAK_SEARCH;
+				if (currentState == StateEnum.NOT_CONNECTED) {
+					this.listener.handleConnected();
+				}  else if (currentState == StateEnum.COMMAND_EXECUTE) {
+					this.listener.handleCommandExecuteEnded();						
+				} else if (currentState == StateEnum.BREAK_FOUND) {						
+					String str = new String(this.debugInfo, 0, currentCount);
+					this.listener.handleBreak(str);
+				}
+			}			
+		}
 	}
 }

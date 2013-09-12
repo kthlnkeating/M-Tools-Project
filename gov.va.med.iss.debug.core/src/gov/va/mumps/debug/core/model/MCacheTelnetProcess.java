@@ -1,7 +1,6 @@
 package gov.va.mumps.debug.core.model;
 
 import gov.va.med.iss.connection.VistAConnection;
-import gov.va.mumps.debug.xtdebug.XtdebugHandler;
 import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
 
 import java.util.HashMap;
@@ -38,14 +37,15 @@ public class MCacheTelnetProcess extends PlatformObject implements IProcess {
 	private boolean terminated;
 	private Map<String,String> attributes;
 	private StepResultsVO responseResults;
-	private XtdebugHandler xtdebugHandler;
+	//*private XtdebugHandler xtdebugHandler;
 	
 	public MCacheTelnetProcess(ILaunch launch, VistAConnection vistaConnection, String debugEntryTag, Map<String, String> attributes) {
 		initializeAttributes(attributes);
 		
-		xtdebugHandler = new XtdebugHandler(vistaConnection);
-		responseResults = xtdebugHandler.startDebug(debugEntryTag);	
-		name = "VistA Connection: " + vistaConnection.getServerData().toUIString();
+		//*xtdebugHandler = new XtdebugHandler(vistaConnection);
+		//*responseResults = xtdebugHandler.startDebug(debugEntryTag);	
+		
+		name = "VistA Connection: ";// + vistaConnection.getServerData().toUIString();
 		this.launch = launch;
 		launch.addProcess(this);
 		fireCreationEvent();
@@ -89,22 +89,20 @@ public class MCacheTelnetProcess extends PlatformObject implements IProcess {
 
 	@Override
 	public boolean canTerminate() {
-		return !terminated;
+		return ! this.terminated;
 	}
 
 	@Override
 	public boolean isTerminated() {
-		return terminated;
+		return this.terminated;
 	}
 
 	@Override
-	public void terminate() { //terminating is rather simple, just stop calling the API
-		//responseResults = mDebugger.terminate();
-		if (isTerminated())
-			return;
-		
-		terminated = true;
-		fireTerminateEvent();
+	public void terminate() {
+		if (! this.isTerminated()) {
+			this.terminated = true;
+			fireTerminateEvent();
+		}
 	}
 
 	@Override
@@ -136,12 +134,12 @@ public class MCacheTelnetProcess extends PlatformObject implements IProcess {
 
 	@Override
 	public String getLabel() {
-		return name;
+		return this.name;
 	}
 
 	@Override
 	public ILaunch getLaunch() {
-		return launch;
+		return this.launch;
 	}
 
 	@Override
@@ -170,35 +168,33 @@ public class MCacheTelnetProcess extends PlatformObject implements IProcess {
 	}
 
 	public void resume() {
-		responseResults = xtdebugHandler.resume();
+		//*responseResults = xtdebugHandler.resume();
 	}
 
 	public void stepOver() {
-		//responseResults = xtdebugHandler.stepOver();
 	}
 
 	public void stepInto() {
-		responseResults = xtdebugHandler.stepInto();
+		//*responseResults = xtdebugHandler.stepInto();
 	}
 
 	public void stepOut() {
-		//responseResults = xtdebugHandler.stepOut();
 	}
 	
 	public void addBreakPoint(String breakPoint) {
-		xtdebugHandler.addBreakpoint(breakPoint);
+		//*xtdebugHandler.addBreakpoint(breakPoint);
 	}
 	
 	public void removeBreakPoint(String breakPoint) {
-		xtdebugHandler.removeBreakpoint(breakPoint);
+		//*xtdebugHandler.removeBreakpoint(breakPoint);
 	}
 	
 	public void addWatchPoint(String watchPoint) {
-		xtdebugHandler.addWatchpoint(watchPoint);
+		//*xtdebugHandler.addWatchpoint(watchPoint);
 	}
 	
 	public void removeWatchPoint(String watchPoint) {
-		xtdebugHandler.removeWatchpoint(watchPoint);
+		//*xtdebugHandler.removeWatchpoint(watchPoint);
 	}
 
 	public StepResultsVO getResponseResults() {
@@ -206,6 +202,6 @@ public class MCacheTelnetProcess extends PlatformObject implements IProcess {
 	}
 
 	public void sendReadInput(String input) {
-		responseResults = xtdebugHandler.sendReadInput(input);
+		//*responseResults = xtdebugHandler.sendReadInput(input);
 	}	
 }
