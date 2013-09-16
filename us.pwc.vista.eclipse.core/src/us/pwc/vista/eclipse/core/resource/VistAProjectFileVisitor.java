@@ -27,6 +27,8 @@ import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.runtime.CoreException;
 
+import us.pwc.vista.eclipse.core.VistACorePrefs;
+
 public abstract class VistAProjectFileVisitor implements IResourceProxyVisitor {
 	private class ProjectLevelVisitor extends VistaProjectSubFolderVisitor {
 		public ProjectLevelVisitor(IProject project, String serverName) {
@@ -74,4 +76,8 @@ public abstract class VistAProjectFileVisitor implements IResourceProxyVisitor {
 		}
 	}
 
+	public void run(IProject project) throws CoreException {
+		String serverName = VistACorePrefs.getServerName(project);
+		this.run(project, serverName);
+	}
 }

@@ -402,11 +402,11 @@ public class MDebugTarget extends MDebugElement implements IMDebugTarget, InputR
 			if (i == svoList.size() - 1)
 				stack[0] = 
 				new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(),
-						vo.getRoutineName(), vo.getLineLocation(), vo.getNextCommnd());
+						vo.getRoutineName(), vo.getLineLocation());
 			else
 				stack[svoList.size() - 1 - i] = 
 				new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(),
-						null, -1, null);
+						null, -1);
 		}
 
 		//handle variables

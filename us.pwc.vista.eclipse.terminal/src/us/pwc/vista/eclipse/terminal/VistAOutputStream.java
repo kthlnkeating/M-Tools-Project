@@ -4,20 +4,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class VistAOutputStream extends OutputStream {
-	private static enum StateEnum {
-		NOT_CONNECTED,
-		COMMAND_EXECUTE,
-		COMMAND_STREAM_EXPECTED,
-		BREAK_SEARCH,
-		BREAK_FOUND
-	}
-	
 	private static byte[] PATTERN = "Trace: ZBREAK".getBytes();
 	private static byte[] END_PATTERN = "VISTA".getBytes();
 	
 	private OutputStream actual;
 	
-	private StateEnum state = StateEnum.NOT_CONNECTED;
+	private VistAOutputStreamState state = VistAOutputStreamState.NOT_CONNECTED;
 	
 	private byte[] buffer = new byte[PATTERN.length];
 	private int count;
@@ -26,6 +18,8 @@ public class VistAOutputStream extends OutputStream {
 	private int debugCount;
 	
 	private IVistAStreamListener listener;
+	
+	private final static boolean OUTDEBUG = true;
 	
 	public VistAOutputStream(OutputStream actual, IVistAStreamListener listener) {
 		this.actual = actual;
@@ -65,24 +59,21 @@ public class VistAOutputStream extends OutputStream {
 		this.auxWrite((byte) b);
 	}
 	
-	public void startCommand() {
-		this.state = StateEnum.COMMAND_EXECUTE;
-	}
-	
-	public void debugCommand(String command) {
-		this.state = StateEnum.COMMAND_STREAM_EXPECTED;
+	public void setState(VistAOutputStreamState state) {
+		this.state = state;
 	}
 	
 	private void auxWrite(byte b) throws IOException {
-		if (this.state == StateEnum.BREAK_SEARCH) {
+		if (this.state == VistAOutputStreamState.BREAK_SEARCH) {
 			this.auxWriteSearch(b);
-		} else if (this.state == StateEnum.COMMAND_STREAM_EXPECTED) {
+		} else if (this.state == VistAOutputStreamState.RESUMED) {
 			int n = this.debugCount;
 			this.debugInfo[n] = b;
 			++this.debugCount;
 			if ((b == 10) && (this.debugInfo[n-1] == 13)) {
+				this.writeInternalStreams(this.debugInfo, this.debugCount);
 				this.debugCount = 0;
-				this.state = StateEnum.BREAK_SEARCH;
+				this.state = VistAOutputStreamState.BREAK_SEARCH;
 			}
 		} else {
 			this.debugInfo[this.debugCount] = b;
@@ -100,7 +91,8 @@ public class VistAOutputStream extends OutputStream {
 			this.buffer[count] = b;
 			++count;
 			if (PATTERN.length == count) {								
-				this.state = StateEnum.BREAK_FOUND;
+				this.state = VistAOutputStreamState.BREAK_FOUND;
+				this.writeInternalStreams(this.buffer, this.count);
 				count = 0;
 			}			
 		}
@@ -119,19 +111,33 @@ public class VistAOutputStream extends OutputStream {
 						return;
 					}
 				}
-				StateEnum currentState = this.state;
+				VistAOutputStreamState currentState = this.state;
+				this.writeInternalStreams(this.debugInfo, this.debugCount);
 				int currentCount = this.debugCount;
 				this.debugCount = 0;
-				this.state = StateEnum.BREAK_SEARCH;
-				if (currentState == StateEnum.NOT_CONNECTED) {
+				this.state = VistAOutputStreamState.BREAK_SEARCH;
+				if (currentState == VistAOutputStreamState.NOT_CONNECTED) {
 					this.listener.handleConnected();
-				}  else if (currentState == StateEnum.COMMAND_EXECUTE) {
-					this.listener.handleCommandExecuteEnded();						
-				} else if (currentState == StateEnum.BREAK_FOUND) {						
-					String str = new String(this.debugInfo, 0, currentCount);
-					this.listener.handleBreak(str);
+				}  else if (currentState == VistAOutputStreamState.COMMAND_EXECUTE) {
+					String str = new String(this.debugInfo, 0, currentCount);					
+					this.listener.handleCommandExecuteEnded(str);						
+				} else if (currentState == VistAOutputStreamState.BREAK_FOUND) {						
+					String str = new String(this.debugInfo, 0, currentCount);					
+					if (str.startsWith(" end")) {
+						this.listener.handleEnd();
+					} else {					
+						int eolIndex = str.indexOf('\r');
+						String entryTagDesription = str.substring(4, eolIndex);
+						this.listener.handleBreak(entryTagDesription);
+					}
 				}
 			}			
+		}
+	}
+	
+	private void writeInternalStreams(byte[] stream, int count) throws IOException {
+		if (OUTDEBUG) {
+			this.actual.write(stream, 0, count);			
 		}
 	}
 }

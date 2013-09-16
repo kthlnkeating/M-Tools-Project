@@ -3,22 +3,14 @@ package gov.va.mumps.debug.core.model;
 import gov.va.mumps.debug.core.IMInterpreter;
 import gov.va.mumps.debug.core.IMInterpreterConsumer;
 import gov.va.mumps.debug.core.MDebugConstants;
-import gov.va.mumps.debug.xtdebug.vo.ReadResultsVO;
-import gov.va.mumps.debug.xtdebug.vo.StackVO;
-import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
 import gov.va.mumps.debug.xtdebug.vo.VariableVO;
-import gov.va.mumps.debug.xtdebug.vo.StepResultsVO.ResultReasonType;
 import gov.va.mumps.launching.InputReadyListener;
-import gov.va.mumps.launching.ReadCommandListener;
-import gov.va.mumps.launching.WriteCommandListener;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
@@ -29,6 +21,12 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+
+import us.pwc.vista.eclipse.core.resource.FileSearchVisitor;
+import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 
 public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTarget, InputReadyListener, IMInterpreterConsumer {
 	private static enum TargetState {
@@ -36,7 +34,9 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		INITIALIZING,
 		ENDING_BREAKPOINT,
 		DEBUGGING,
-		IN_BREAK;
+		IN_BREAK,
+		IN_BREAK_STACK_VARS,
+		IN_BREAK_SUSPEND;
 	}
 	
 	
@@ -46,14 +46,6 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	private MThread debugThread;
 	private String name;
 	
-	//Console handling
-	private boolean linkedToConsole;
-	private List<WriteCommandListener> writeCommandListeners = new LinkedList<WriteCommandListener>();
-	private List<ReadCommandListener> readCommandListeners = new LinkedList<ReadCommandListener>();
-	
-	//variables
-	//variables already defined at debug start
-	private SortedSet<VariableVO> initialVars;
 	//All the currently defined variables
 	private List<VariableVO> allVariables;
 	//Only variables created during the debug process
@@ -62,9 +54,6 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	//process stack
 	private MStackFrame[] stack;
 	
-	//state
-	private StepMode stepMode;
-	
 	//mode
 	private boolean debug;
 	
@@ -72,13 +61,19 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	
 	private TargetState state;
 	
-	public MCacheTelnetDebugTarget(ILaunch launch, MCacheTelnetProcess rpcProcess) {
+	
+	private EntryTag lastEntryTag;
+	private String[] variableInfo;
+	private String stackInfo;
+	private IProject project;
+	
+	public MCacheTelnetDebugTarget(IProject project, ILaunch launch, MCacheTelnetProcess rpcProcess) {
 		super(null);
 		setDebugTarget(this);
 		this.launch = launch;
 		this.debug = launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE);
 		this.rpcDebugProcess = rpcProcess;
-		setLinkedToConsole(false);
+		this.project = project;
 		
 		debugThread = new MThread(this);		
 		suspended = true;		
@@ -176,12 +171,10 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 
 	@Override
 	public void resume() {
-		stepMode = StepMode.RESUME;
 		debugThread.fireResumeEvent(DebugEvent.CLIENT_REQUEST);
 		rpcDebugProcess.resume();
 		suspended = false;
-		StepResultsVO results = rpcDebugProcess.getResponseResults();
-		handleResponse(results);
+		this.interpreter.resume();
 	}
 
 	@Override
@@ -321,28 +314,22 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 
 	@Override
 	public void stepOver() {
-		stepMode = StepMode.STEP_OVER;
 		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_OVER);
 		rpcDebugProcess.stepOver();
-		handleResponse(rpcDebugProcess.getResponseResults());
 	}
 
 	@Override
 	public void stepInto() {
-		stepMode = StepMode.STEP_INTO;
 		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_INTO);
 		rpcDebugProcess.stepInto();
-		handleResponse(rpcDebugProcess.getResponseResults());
 	}
 
 	public void stepOut() {
-		stepMode = StepMode.STEP_OUT;
 		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_RETURN);
 		rpcDebugProcess.stepOut();
-		handleResponse(rpcDebugProcess.getResponseResults());
 	}
 	
 	@Override
@@ -362,116 +349,6 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	@Override
 	public MDebugPreference getPreferenceImplemented() {
 		return MDebugPreference.CACHE_TELNET;
-	}
-	
-	private synchronized void handleResponse(StepResultsVO vo) {
-		if (vo == null) return;
-		
-		
-		debugThread.setBreakpoints(null);
-		
-		//handle any lines that come back (as result of a read or write command)
-		if (vo.getWriteLine() != null && !vo.getWriteLine().equals("")) {
-			for (WriteCommandListener listener : writeCommandListeners) {
-				listener.handleWriteCommand(vo.getWriteLine() + (vo.getResultReason() == ResultReasonType.WRITE ? '\n' : ""));
-			}
-		}
-		
-		if (vo.isComplete()) {
-			terminated();
-			return;
-		}
-		
-		//resend commands. Whenever the debugger comes back it suspends execution of the MUMPS code
-		
-		//resend resume when write is encountered command
-		if (vo.getResultReason() == ResultReasonType.WRITE && stepMode == StepMode.RESUME) {
-			resume();
-			return;
-		}
-		
-		//when a read command is encountered, while stepping in resume mode, it must send a step into. wierd bug with the RPC is that is must step over the read command even though it sends a read command back to the client.
-		if (vo.getResultReason() == ResultReasonType.READ && stepMode == StepMode.RESUME) {
-			rpcDebugProcess.stepInto();
-		}
-		
-		//create stack objects from incoming RPC results
-		Iterator<StackVO> stackItr = vo.getStack();
-		List<StackVO> svoList = new LinkedList<StackVO>();
-		while (stackItr.hasNext()) {
-			 svoList.add(stackItr.next());
-		}
-		stack = new MStackFrame[svoList.size()];
-		
-		//String prevStackCaller = null;
-		for (int i = svoList.size() - 1; i >= 0; i--) {
-			StackVO svo = svoList.get(i);
-			
-			/*
-			 * (1) use locationAsTag and (2) for stacks bellow the top stack,
-			 * subsitute the callerName from the parent stack. Then convert the
-			 * locationAsATag to a lineNumber and routine name.
-			 */
-			
-			if (i == svoList.size() - 1)
-				stack[0] = 
-				new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(),
-						vo.getRoutineName(), vo.getLineLocation(), vo.getNextCommnd());
-			else
-				stack[svoList.size() - 1 - i] = 
-				new MStackFrame(debugThread, svo.getStackName(), svo.getCaller(),
-						null, -1, null);
-		}
-
-		//handle variables
-		allVariables = new LinkedList<VariableVO>();
-		Iterator<VariableVO> varItr = vo.getVariables();
-		while (varItr.hasNext())
-			allVariables.add(varItr.next());
-		
-		if (initialVars == null) { //set all the initial variables
-			initialVars = new TreeSet<VariableVO>(allVariables);
-		} else {
-			List<VariableVO> currVars = new LinkedList<VariableVO>();
-			varItr = vo.getVariables();
-			while (varItr.hasNext()) {
-				VariableVO varVO = varItr.next();
-				if (!initialVars.contains(varVO))
-					currVars.add(varVO);
-			}
-			
-			variables = new MVariable[currVars.size()];
-			for (int s = 0; s < stack.length; s++)
-				for (int i = 0; i < currVars.size(); i++) {
-					variables[i] = new MVariable(
-							stack[s], 
-							currVars.get(i).getName());
-					variables[i].setValue(new MValue(variables[i], currVars.get(i).getValue()));
-				}
-		}
-		
-		//handle read command results
-		if (vo.getReadResults() != null) {
-			ReadResultsVO readCmdResults = vo.getReadResults();
-			for (ReadCommandListener listener : readCommandListeners) {
-				int maxReadChars;
-				if (readCmdResults.isStarRead())
-					maxReadChars = 1;
-				else
-					maxReadChars = readCmdResults.getMaxChars() == null ? Integer.MAX_VALUE : readCmdResults.getMaxChars();
-				listener.handleReadCommand(maxReadChars);
-			}
-		}
-		
-		if (vo.getResultReason() == ResultReasonType.BREAKPOINT || vo.getResultReason() == ResultReasonType.WATCHPOINT)
-			//breakPointHit(vo.getBreakpointName()) //TODO: not possible atm. the RPC is sent the breakpoint location as ROU+55^ROU instead of TAG+5^ROU. The Rpc then sends back TAG+5^ROU. So it isn't possible to figure out which breakpoint was hit unless that is fixed
-			suspended(DebugEvent.BREAKPOINT);
-		else if (vo.getResultReason() == ResultReasonType.STEP)
-			suspended(DebugEvent.STEP_INTO); //STEP_INTO, the only currently supported type.
-		else if (vo.getResultReason() == ResultReasonType.START)
-			;
-		else
-			suspended(DebugEvent.UNSPECIFIED);
 	}
 	
 	/**
@@ -522,14 +399,6 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		fireTerminateEvent(); //this fires the event to indicate that the debugtarget has terminated.
 	}
 
-	public boolean isLinkedToConsole() {
-		return linkedToConsole;
-	}
-
-	public void setLinkedToConsole(boolean linkedToConsole) {
-		this.linkedToConsole = linkedToConsole;
-	}
-
 	@Override
 	public void handleInput(final String input) {
 		if (isTerminated())
@@ -537,69 +406,118 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		
 		//input must be handled because it causes the program to continue (resume) running, and it completes the read command which may update variable values
 		rpcDebugProcess.sendReadInput(input);
-		handleResponse(rpcDebugProcess.getResponseResults());
 
 	}
-	
-	public void addWriteCommandListener(WriteCommandListener listener) {
-		writeCommandListeners.add(listener);
-	}
-
-	public void addReadCommandListener(ReadCommandListener listener) {
-		readCommandListeners.add(listener);
-	}
-	
-	public void removeWriteCommandListener(WriteCommandListener listener) {
-		writeCommandListeners.remove(listener);
-	}
-
-	public void removeReadCommandListener(ReadCommandListener listener) {
-		readCommandListeners.remove(listener);
-	}
-
-	private enum StepMode {
-		RESUME, STEP_INTO, STEP_OUT, STEP_OVER;
-	}
-	
 	
 	@Override
 	public void handleConnected(IMInterpreter interpreter) {
 		this.interpreter = interpreter;
 		try {
 			this.state = TargetState.INITIALIZING;
-			this.interpreter.sendCommand("ZBREAK MAIN+4^MTESTONE:\"TB\"\n");
+			this.interpreter.sendInfoCommand("ZBREAK MAIN+4^MTESTONE:\"TB\"\n");
 		} catch (Throwable t) {
 			//this.abort("Aborted", t);
 		}
 	}
 	
 	@Override 
-	public void handleCommandExecuted() {
+	public void handleCommandExecuted(String info) {
 		if (this.state == TargetState.INITIALIZING) {
 			this.state = TargetState.ENDING_BREAKPOINT;
-			try {
-				this.interpreter.sendCommand("ZBREAK /TRACE:ON\n");
-			} catch (Throwable t) {
+			this.interpreter.sendInfoCommand("ZBREAK /TRACE:ON\n");
+		} else if (this.state == TargetState.IN_BREAK) {
+			String[] lines = info.split("\r\n");
+			int numStack = Integer.parseInt(lines[1]);
+			this.variableInfo = lines;
+			String cmd = "W $ST(0,\"PLACE\"),!";
+			for (int i=1; i<numStack; ++i) {
+				cmd = cmd + " " + "W $ST(" + String.valueOf(i) + ",\"PLACE\"),!";
+ 			}
+			cmd = cmd + '\n';			
+			this.state = TargetState.IN_BREAK_STACK_VARS;
+			this.interpreter.sendInfoCommand(cmd);
+		} else if (this.state == TargetState.IN_BREAK_STACK_VARS) {
+			this.stackInfo = info;
+			this.state = TargetState.IN_BREAK_SUSPEND;
+			
+			int lineNumber = this.getLineNumber(this.lastEntryTag);
+			String routineName = this.lastEntryTag.getRoutine();
+			
+			
+			this.stack = new MStackFrame[1];
+			
+			
+			
+			
+			this.stack[0] = new MStackFrame(this.debugThread, "Stack caller", "MAIN", routineName, lineNumber);
+			
+			
+			
+			int n = this.variableInfo.length;
+			this.variables = new MVariable[n-3];
+			for (int i=2; i<n-1; ++i) {
+				String nv = this.variableInfo[i];
+				int equalLocation = nv.indexOf('=');
+				if (equalLocation >= 0) {
+					String name = nv.substring(0, equalLocation);
+					String value = nv.substring(equalLocation+1);
+					this.variables[i-2] = new MVariable(this.stack[0], name); 
+					MValue mValue = new MValue(this.variables[i-2], value);
+					this.variables[i-2].setValue(mValue);
+				}				
 			}
+			
+			suspended(DebugEvent.BREAKPOINT);			
 		} else {
 			this.state = TargetState.DEBUGGING;
-			try {
-				this.interpreter.debugCommand("d MAIN^MTESTONE\n");
-			} catch (Throwable t) {				
-			}
+			this.interpreter.sendRunCommand("d MAIN^MTESTONE");
 		}
 	}
 	
 	@Override
 	public void handleBreak(String info) {
 		this.state = TargetState.IN_BREAK;
-		try {
-			this.interpreter.debugCommand("G\n");
-		} catch (Throwable t) {			
-		}
+		this.lastEntryTag = EntryTag.getInstance(info);
+		this.interpreter.sendInfoCommand("W $ST ZWRITE\n");
 	}
 
 	@Override
 	public void handleEnd() {		
+		this.terminated();
 	}
+
+	@Override
+	public void handleError(Throwable throwable) {	
+		throw new RuntimeException(throwable);
+	}
+
+	private int getLineNumber(EntryTag entryTag) {
+		String routineName = entryTag.getRoutine();
+		FileSearchVisitor fsv = new FileSearchVisitor(routineName + ".m");
+		try {
+			fsv.run(this.project);
+			IFile file = fsv.getFile();
+			int lineNumber = this.getLineNumber(file, entryTag.getTag());
+			return lineNumber + entryTag.getOffset();
+		} catch (Throwable t) {			
+			throw new RuntimeException("Invalid file");
+		}
+	}
+
+	private int getLineNumber(IFile file, String tag) throws CoreException, BadLocationException {
+		IDocument fileDocument = ResourceUtilExtension.getDocument(file);
+		int n = fileDocument.getNumberOfLines();
+		for (int i=0; i<n; ++i) {
+			IRegion lineInfo = fileDocument.getLineInformation(i);
+			int offset = lineInfo.getOffset();
+			int length = lineInfo.getLength();
+			String fileLine = fileDocument.get(offset, length);
+			if (fileLine.startsWith(tag)) {
+				return i+1;
+			}
+		}
+		return -1;
+	}
+	
+
 }

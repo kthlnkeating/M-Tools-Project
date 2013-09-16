@@ -83,7 +83,7 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 		String mCode = sb.toString();
 		
 		if (MDebugSettings.getDebugPreference() == MDebugPreference.CACHE_TELNET) {
-			this.launchCacheTelnet(launch, mCode);
+			this.launchCacheTelnet(project, launch, mCode);
 		} else {			
 			VistAConnection vc = VLConnectionPlugin.getConnectionManager().findConnection(serverName);
 			if (vc == null) {
@@ -96,9 +96,9 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 		}
 	}
 	
-	private void launchCacheTelnet(ILaunch launch, String mCode) {
+	private void launchCacheTelnet(IProject project, ILaunch launch, String mCode) {
 		MCacheTelnetProcess rpcProcess = new MCacheTelnetProcess(launch, null, mCode, null);
-		MCacheTelnetDebugTarget target = new MCacheTelnetDebugTarget(launch, rpcProcess);
+		MCacheTelnetDebugTarget target = new MCacheTelnetDebugTarget(project, launch, rpcProcess);
 		launch.addDebugTarget(target);		
 	}
 	

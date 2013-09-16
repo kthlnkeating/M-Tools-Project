@@ -51,16 +51,29 @@ public class VistATelnetConnector extends TelnetConnector {
 		settings.save(store);
 	}
 	
-	public void sendCommand(String command) throws IOException {
-		this.os.startCommand();
-		byte[] bytes = command.getBytes();
-		this.getTerminalToRemoteStream().write(bytes);
+	public void sendInfoCommand(String command) {
+		this.os.setState(VistAOutputStreamState.COMMAND_EXECUTE);
+		this.sendCommandToStream(command);
 	}
 	
-	public void debugCommand(String command) throws IOException {
-		this.os.debugCommand(command);
+	public void sendRunCommand(String command) {
+		command = command + " W !,\"Trace: ZBREAK end\"\r\n"; 
+		this.os.setState(VistAOutputStreamState.RESUMED);
+		this.sendCommandToStream(command);
+	}
+	
+	public void resume() {
+		this.os.setState(VistAOutputStreamState.RESUMED);
+		this.sendCommandToStream("ZBREAK /TRACE:ON G\n");
+	}
+	
+	private void sendCommandToStream(String command) {
 		byte[] bytes = command.getBytes();
-		this.getTerminalToRemoteStream().write(bytes);
+		try {
+			this.getTerminalToRemoteStream().write(bytes);
+		} catch (IOException e) {
+			throw new RuntimeException("Error", e);
+		}		
 	}
 }
  

@@ -77,11 +77,9 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 	private String callerTag;
 	private String routineName;
 	private int lineLocation;
-	@SuppressWarnings("unused")
-	private String nextCommand;
 	
 	public MStackFrame(IThread debugThread, String stackName, String callerTag, 
-			String routineName, int lineLocation, String nextCommand) {
+			String routineName, int lineLocation) {
 		super((IMDebugTarget) debugThread.getDebugTarget());
 		
 		this.debugThread = debugThread;
@@ -89,7 +87,6 @@ public class MStackFrame extends MDebugElement implements IStackFrame {
 		this.callerTag = callerTag;
 		this.routineName = routineName;
 		this.lineLocation = lineLocation;
-		this.nextCommand = nextCommand;
 	}
 
 	/* TODO it may be better to implement logic to determine if this stack is the top stack.

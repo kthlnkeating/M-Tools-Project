@@ -1,12 +1,15 @@
 package us.pwc.vista.eclipse.terminal;
 
-import java.io.IOException;
-
 import gov.va.mumps.debug.core.IMInterpreter;
 import gov.va.mumps.debug.core.IMInterpreterConsumer;
 
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.tm.internal.terminal.provisional.api.ITerminalConnector;
 import org.eclipse.tm.internal.terminal.view.TerminalView;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 @SuppressWarnings("restriction")
 public class VistATerminalView extends TerminalView implements IMInterpreter, IVistAStreamListener {
@@ -52,8 +55,8 @@ public class VistATerminalView extends TerminalView implements IMInterpreter, IV
 	}
 
 	@Override
-	public void handleCommandExecuteEnded() {
-		this.consumer.handleCommandExecuted();
+	public void handleCommandExecuteEnded(String info) {
+		this.consumer.handleCommandExecuted(info);
 	}
 
 	@Override
@@ -62,17 +65,43 @@ public class VistATerminalView extends TerminalView implements IMInterpreter, IV
 	}
 
 	@Override
+	public void handleEnd() {
+		this.consumer.handleEnd();
+	}
+
+	@Override
 	public void handleConnectorCreated(VistATelnetConnector connector) {
 		this.connector = connector;
 	}
 
 	@Override
-	public void sendCommand(String command) throws IOException {
-		this.connector.sendCommand(command);
+	public void sendInfoCommand(String command) {
+		this.connector.sendInfoCommand(command);
 	}
 
 	@Override
-	public void debugCommand(String command) throws IOException {
-		this.connector.debugCommand(command);
+	public void sendRunCommand(String command) {
+		this.connector.sendRunCommand(command);
+	}
+	
+	@Override
+	public void resume() {
+		Display.getDefault().syncExec(new Runnable() {						
+			@Override
+			public void run() {
+				try {
+					IWorkbench wb = PlatformUI.getWorkbench();
+					IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
+					IWorkbenchPage wbp = window.getActivePage();
+					try {
+						wbp.showView("us.pwc.vista.eclipse.terminal.VistATerminalView");
+					} catch (Throwable t) {
+					}
+				} catch (Throwable t) {
+				}
+			}
+		});
+		this.connector.resume();
+		
 	}
 }
