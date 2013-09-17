@@ -6,7 +6,10 @@ import gov.va.mumps.debug.core.MDebugConstants;
 import gov.va.mumps.debug.xtdebug.vo.VariableVO;
 import gov.va.mumps.launching.InputReadyListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarkerDelta;
@@ -29,6 +32,8 @@ import us.pwc.vista.eclipse.core.resource.FileSearchVisitor;
 import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 
 public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTarget, InputReadyListener, IMInterpreterConsumer {
+	private static String BREAK_IDENTIFIER = "<BREAK>";
+
 	private static enum TargetState {
 		NOT_CONNECTED,
 		INITIALIZING,
@@ -62,10 +67,10 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	private TargetState state;
 	
 	
-	private EntryTag lastEntryTag;
-	private String[] variableInfo;
-	private String stackInfo;
 	private IProject project;
+	
+	private Map<String, Map<String, Integer>> routineTagLocations = new HashMap<String, Map<String, Integer>>();
+	private List<EntryTag> initialBreakPoints = new ArrayList<EntryTag>();
 	
 	public MCacheTelnetDebugTarget(IProject project, ILaunch launch, MCacheTelnetProcess rpcProcess) {
 		super(null);
@@ -79,43 +84,10 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		suspended = true;		
 		stack = new MStackFrame[0];
 		
-		fireCreationEvent(); //to register that the DebugTarget has been started.
-		/*
-		handleResponse(rpcProcess.getResponseResults());
+		//this.setupBreakPoints();
 		
-		if (this.debug) {
-			installDeferredBreakpoints();
-			DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
-		}
-
-		Job resumeJob = new Job("Resume") { //the LaunchManager is (probably?) executing this and it shouldn't block and hold while the code is resuming (running). It needs to let go at this point
-			
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					resume();
-				} catch (Throwable t) {
-					t.printStackTrace();
-					return Status.CANCEL_STATUS; //was it really cancelled? like by a user?
-				}
-				
-				return Status.OK_STATUS;
-			}
-		};
-		resumeJob.schedule();
-		 */
+		fireCreationEvent();
 	}
-	
-	/**
-	 * Install breakpoints that are already registered with the breakpoint
-	 * manager.
-	 */
-	//private void installDeferredBreakpoints() {
-	//	IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(MDebugConstants.M_DEBUG_MODEL);
-	//	for (int i = 0; i < breakpoints.length; i++) {
-	//		breakpointAdded(breakpoints[i]);
-	//	}
-	//}
 	
 	/**
 	 * Removes all active breakpoints currently registered with the breakpoint
@@ -155,7 +127,6 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 
 	@Override
 	public boolean canResume() {
-		//System.out.println("canResume()");
 		return !isTerminated() && isSuspended();
 	}
 
@@ -266,7 +237,6 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 			name = "MUMPS Code";
 			try {
 				name = getLaunch().getLaunchConfiguration().getAttribute(MDebugConstants.ATTR_M_ENTRY_TAG, "MUMPS Code");
-				//name += " [DebugTarget]";
 			} catch (CoreException e) {
 			}
 		}
@@ -414,7 +384,7 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		this.interpreter = interpreter;
 		try {
 			this.state = TargetState.INITIALIZING;
-			this.interpreter.sendInfoCommand("ZBREAK MAIN+4^MTESTONE:\"TB\"\n");
+			this.interpreter.sendInfoCommand("BREAK \"S+\"\n");
 		} catch (Throwable t) {
 			//this.abort("Aborted", t);
 		}
@@ -424,50 +394,7 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	public void handleCommandExecuted(String info) {
 		if (this.state == TargetState.INITIALIZING) {
 			this.state = TargetState.ENDING_BREAKPOINT;
-			this.interpreter.sendInfoCommand("ZBREAK /TRACE:ON\n");
-		} else if (this.state == TargetState.IN_BREAK) {
-			String[] lines = info.split("\r\n");
-			int numStack = Integer.parseInt(lines[1]);
-			this.variableInfo = lines;
-			String cmd = "W $ST(0,\"PLACE\"),!";
-			for (int i=1; i<numStack; ++i) {
-				cmd = cmd + " " + "W $ST(" + String.valueOf(i) + ",\"PLACE\"),!";
- 			}
-			cmd = cmd + '\n';			
-			this.state = TargetState.IN_BREAK_STACK_VARS;
-			this.interpreter.sendInfoCommand(cmd);
-		} else if (this.state == TargetState.IN_BREAK_STACK_VARS) {
-			this.stackInfo = info;
-			this.state = TargetState.IN_BREAK_SUSPEND;
-			
-			int lineNumber = this.getLineNumber(this.lastEntryTag);
-			String routineName = this.lastEntryTag.getRoutine();
-			
-			
-			this.stack = new MStackFrame[1];
-			
-			
-			
-			
-			this.stack[0] = new MStackFrame(this.debugThread, "Stack caller", "MAIN", routineName, lineNumber);
-			
-			
-			
-			int n = this.variableInfo.length;
-			this.variables = new MVariable[n-3];
-			for (int i=2; i<n-1; ++i) {
-				String nv = this.variableInfo[i];
-				int equalLocation = nv.indexOf('=');
-				if (equalLocation >= 0) {
-					String name = nv.substring(0, equalLocation);
-					String value = nv.substring(equalLocation+1);
-					this.variables[i-2] = new MVariable(this.stack[0], name); 
-					MValue mValue = new MValue(this.variables[i-2], value);
-					this.variables[i-2].setValue(mValue);
-				}				
-			}
-			
-			suspended(DebugEvent.BREAKPOINT);			
+			this.interpreter.sendInfoCommand("ZBREAK $:\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"\n");
 		} else {
 			this.state = TargetState.DEBUGGING;
 			this.interpreter.sendRunCommand("d MAIN^MTESTONE");
@@ -477,8 +404,37 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	@Override
 	public void handleBreak(String info) {
 		this.state = TargetState.IN_BREAK;
-		this.lastEntryTag = EntryTag.getInstance(info);
-		this.interpreter.sendInfoCommand("W $ST ZWRITE\n");
+		
+		String[] pieces = info.split("\r\n");		
+		int breakLineIndex = 0;
+		for (String piece : pieces) {
+			if (piece.startsWith(BREAK_IDENTIFIER)) break;
+			++breakLineIndex;
+		}
+		if (breakLineIndex >= pieces.length) {
+			throw new RuntimeException("Internal Error");
+		}
+		
+		String entryInfo = pieces[breakLineIndex].substring("<BREAK>".length());
+		EntryTag entryTag = EntryTag.getInstance(entryInfo);
+		int lineNumber = this.getLineNumber(entryTag);
+		this.stack = new MStackFrame[1];
+		this.stack[0] = new MStackFrame(this.debugThread, entryInfo, entryTag.getTag(), entryTag.getRoutine(), lineNumber);
+		
+		this.variables = new MVariable[breakLineIndex-3];
+		for (int i=1; i<breakLineIndex-2; ++i) {
+			String nv = pieces[i];
+			int equalLocation = nv.indexOf('=');
+			if (equalLocation >= 0) {
+				String name = nv.substring(0, equalLocation);
+				String value = nv.substring(equalLocation+1);
+				this.variables[i-1] = new MVariable(this.stack[0], name); 
+				MValue mValue = new MValue(this.variables[i-1], value);
+				this.variables[i-1].setValue(mValue);
+			}				
+		}
+
+		suspended(DebugEvent.BREAKPOINT);			
 	}
 
 	@Override
@@ -519,5 +475,37 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		return -1;
 	}
 	
+	private String setupBreakPoints() {
+		String command = "";
+		try {
+			IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(MDebugConstants.M_DEBUG_MODEL);
+			for (IBreakpoint breakPoint : breakpoints) {
+				if (breakPoint.isEnabled()) {
+					if (breakPoint instanceof AbstractMBreakpoint) {
+						AbstractMBreakpoint b = (AbstractMBreakpoint) breakPoint;
+						String tag = b.getBreakpointAsTag();
+						
+					} else if (breakPoint instanceof MWatchpoint) {
+					
+					}
+				}
+			}
+		} catch (CoreException coreExcepion) {			
+		}
+		return command;
+	}
 
+	/**
+	 * Install breakpoints that are already registered with the breakpoint
+	 * manager.
+	 */
+	//private void installDeferredBreakpoints() {
+	//	IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(MDebugConstants.M_DEBUG_MODEL);
+	//	for (int i = 0; i < breakpoints.length; i++) {
+	//		breakpointAdded(breakpoints[i]);
+	//	}
+	//}
+	
+	
+	
 }

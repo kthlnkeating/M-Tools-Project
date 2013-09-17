@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class VistAOutputStream extends OutputStream {
-	private static byte[] PATTERN = "Trace: ZBREAK".getBytes();
+	private static byte[] PATTERN = {0, 0, 0};
 	private static byte[] END_PATTERN = "VISTA".getBytes();
-	
+
 	private OutputStream actual;
 	
 	private VistAOutputStreamState state = VistAOutputStreamState.NOT_CONNECTED;
@@ -92,7 +92,7 @@ public class VistAOutputStream extends OutputStream {
 			++count;
 			if (PATTERN.length == count) {								
 				this.state = VistAOutputStreamState.BREAK_FOUND;
-				this.writeInternalStreams(this.buffer, this.count);
+				//this.writeInternalStreams(this.buffer, this.count);
 				count = 0;
 			}			
 		}
@@ -123,12 +123,10 @@ public class VistAOutputStream extends OutputStream {
 					this.listener.handleCommandExecuteEnded(str);						
 				} else if (currentState == VistAOutputStreamState.BREAK_FOUND) {						
 					String str = new String(this.debugInfo, 0, currentCount);					
-					if (str.startsWith(" end")) {
+					if (str.startsWith("!!")) {
 						this.listener.handleEnd();
 					} else {					
-						int eolIndex = str.indexOf('\r');
-						String entryTagDesription = str.substring(4, eolIndex);
-						this.listener.handleBreak(entryTagDesription);
+						this.listener.handleBreak(str);
 					}
 				}
 			}			

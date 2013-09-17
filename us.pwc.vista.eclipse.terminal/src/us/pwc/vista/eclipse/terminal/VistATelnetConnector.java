@@ -57,14 +57,14 @@ public class VistATelnetConnector extends TelnetConnector {
 	}
 	
 	public void sendRunCommand(String command) {
-		command = command + " W !,\"Trace: ZBREAK end\"\r\n"; 
+		command = command + " W $C(0,0,0),\"!!\"\n"; 
 		this.os.setState(VistAOutputStreamState.RESUMED);
 		this.sendCommandToStream(command);
 	}
 	
 	public void resume() {
 		this.os.setState(VistAOutputStreamState.RESUMED);
-		this.sendCommandToStream("ZBREAK /TRACE:ON G\n");
+		this.sendCommandToStream("G\n");
 	}
 	
 	private void sendCommandToStream(String command) {
