@@ -18,5 +18,7 @@ package us.pwc.vista.eclipse.core.validator;
 
 public interface ICommonRegexs {
 	public static final String DATE = "[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}"; //$NON-NLS-1$
-	public static final String M_ROUTINE_NAME = "[%A-Z][A-Z0-9]{0,7}"; //$NON-NLS-1$
+	public static final String M_NAME = "[%A-Z][A-Z0-9]{0,7}"; //$NON-NLS-1$
+	public static final String M_ROUTINE_NAME = M_NAME;
+	public static final String M_CODE_LOCATION = '(' + M_NAME + ")?(\\+\\d+)?\\^" + M_NAME; 
 }

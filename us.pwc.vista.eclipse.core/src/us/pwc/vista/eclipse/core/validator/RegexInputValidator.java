@@ -18,7 +18,6 @@ package us.pwc.vista.eclipse.core.validator;
 
 import us.pwc.vista.eclipse.core.Messages;
 
-
 public class RegexInputValidator extends InputValidator {
 	private String regex;
 	private String inputName;
