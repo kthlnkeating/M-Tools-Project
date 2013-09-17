@@ -1,11 +1,11 @@
 package gov.va.mumps.debug.core.model;
 
-public class EntryTag {
+public class MCodeLocation {
 	private String routine;
 	private String tag;
 	private int offset;
 	
-	public EntryTag(String routine, String tag, int offset) {
+	public MCodeLocation(String routine, String tag, int offset) {
 		super();
 		this.routine = routine;
 		this.tag = tag;
@@ -36,7 +36,18 @@ public class EntryTag {
 		this.offset = offset;
 	}
 
-	public static EntryTag getInstance(String description) {
+	public String getAsDollarTextInput() {
+		String result = '^' + this.routine;
+		if (this.offset > 0) {
+			result = '+' + String.valueOf(this.offset) + result;
+		}
+		if ((this.tag != null) && (! this.tag.isEmpty())) {
+			result = this.tag + result;
+		}
+		return result;
+	}
+	
+	public static MCodeLocation getInstance(String description) {
 		int plusLocation = -1;
 		int caretLocation = -1;
 		int n = description.length();
@@ -56,10 +67,10 @@ public class EntryTag {
 		if (plusLocation > -1) {
 	 		String tag = description.substring(0, plusLocation);
 	 		String offset = description.substring(plusLocation, caretLocation);
-	 		return new EntryTag(routine, tag, Integer.parseInt(offset));
+	 		return new MCodeLocation(routine, tag, Integer.parseInt(offset));
 		} else {
 	 		String tag = description.substring(0, caretLocation);
-	 		return new EntryTag(routine, tag, 0);			
+	 		return new MCodeLocation(routine, tag, 0);			
 		}
 	}
 		

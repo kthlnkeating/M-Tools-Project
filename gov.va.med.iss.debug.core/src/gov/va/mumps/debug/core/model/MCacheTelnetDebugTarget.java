@@ -70,7 +70,7 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	private IProject project;
 	
 	private Map<String, Map<String, Integer>> routineTagLocations = new HashMap<String, Map<String, Integer>>();
-	private List<EntryTag> initialBreakPoints = new ArrayList<EntryTag>();
+	private List<MCodeLocation> initialBreakPoints = new ArrayList<MCodeLocation>();
 	
 	public MCacheTelnetDebugTarget(IProject project, ILaunch launch, MCacheTelnetProcess rpcProcess) {
 		super(null);
@@ -416,7 +416,7 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		}
 		
 		String entryInfo = pieces[breakLineIndex].substring("<BREAK>".length());
-		EntryTag entryTag = EntryTag.getInstance(entryInfo);
+		MCodeLocation entryTag = MCodeLocation.getInstance(entryInfo);
 		int lineNumber = this.getLineNumber(entryTag);
 		this.stack = new MStackFrame[1];
 		this.stack[0] = new MStackFrame(this.debugThread, entryInfo, entryTag.getTag(), entryTag.getRoutine(), lineNumber);
@@ -447,7 +447,7 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		throw new RuntimeException(throwable);
 	}
 
-	private int getLineNumber(EntryTag entryTag) {
+	private int getLineNumber(MCodeLocation entryTag) {
 		String routineName = entryTag.getRoutine();
 		FileSearchVisitor fsv = new FileSearchVisitor(routineName + ".m");
 		try {
