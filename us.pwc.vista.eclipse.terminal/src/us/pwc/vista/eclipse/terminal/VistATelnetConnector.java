@@ -64,9 +64,27 @@ public class VistATelnetConnector extends TelnetConnector {
 	
 	public void resume() {
 		this.os.setState(VistAOutputStreamState.RESUMED);
-		this.sendCommandToStream("G\n");
+		this.sendCommandToStream("BREAK \"C\" G\n");
 	}
 	
+	public void stepInto() {
+		this.sendStepCommand("S+");
+	}
+	
+	public void stepOver() {
+		this.sendStepCommand("L");
+	}
+	
+	public void stepReturn() {
+		this.sendStepCommand("L-");
+	}
+	
+	private void sendStepCommand(String type) {
+		String cmd = "BREAK \"" + type + "\" ZBREAK $:\"B\":\"1\":\"W $C(0,0,0) ZWRITE\" G\n";
+		this.os.setState(VistAOutputStreamState.RESUMED);
+		this.sendCommandToStream(cmd);		
+	}
+		
 	private void sendCommandToStream(String command) {
 		byte[] bytes = command.getBytes();
 		try {

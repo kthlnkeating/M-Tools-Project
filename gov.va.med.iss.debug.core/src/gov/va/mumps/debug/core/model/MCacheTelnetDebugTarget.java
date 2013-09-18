@@ -280,6 +280,7 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_OVER);
 		rpcDebugProcess.stepOver();
+		this.interpreter.stepOver();		
 	}
 
 	@Override
@@ -287,12 +288,14 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_INTO);
 		rpcDebugProcess.stepInto();
+		this.interpreter.stepInto();		
 	}
 
 	public void stepOut() {
 		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_RETURN);
 		rpcDebugProcess.stepOut();
+		this.interpreter.stepReturn();		
 	}
 	
 	@Override
@@ -469,7 +472,13 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 							command += ' ';
 						}
 						command += "ZBREAK " + codeLocation + ":\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"";
-					} else if (breakPoint instanceof MWatchpoint) {					
+					} else if (breakPoint instanceof MWatchpoint) {
+						MWatchpoint b = (MWatchpoint) breakPoint;
+						String variable = b.getWatchpointVariable();
+						if (! command.isEmpty()) {
+							command += ' ';
+						}
+						command += "ZBREAK *" + variable + ":\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"";						
 					}
 				}
 			} catch (CoreException coreExcepion) {			

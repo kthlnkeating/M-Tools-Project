@@ -86,6 +86,29 @@ public class VistATerminalView extends TerminalView implements IMInterpreter, IV
 	
 	@Override
 	public void resume() {
+		this.giveFocusToTerminal();		
+		this.connector.resume();		
+	}
+	
+	@Override
+	public void stepInto() {
+		this.giveFocusToTerminal();		
+		this.connector.stepInto();		
+	}
+	
+	@Override
+	public void stepOver() {
+		this.giveFocusToTerminal();		
+		this.connector.stepOver();		
+	}
+	
+	@Override
+	public void stepReturn() {
+		this.giveFocusToTerminal();		
+		this.connector.stepReturn();		
+	}
+	
+	private void giveFocusToTerminal() {
 		Display.getDefault().syncExec(new Runnable() {						
 			@Override
 			public void run() {
@@ -100,8 +123,6 @@ public class VistATerminalView extends TerminalView implements IMInterpreter, IV
 				} catch (Throwable t) {
 				}
 			}
-		});
-		this.connector.resume();
-		
+		});		
 	}
 }
