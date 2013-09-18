@@ -98,7 +98,7 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 	
 	private void launchCacheTelnet(IProject project, ILaunch launch, String mCode) {
 		MCacheTelnetProcess rpcProcess = new MCacheTelnetProcess(launch, null, mCode, null);
-		MCacheTelnetDebugTarget target = new MCacheTelnetDebugTarget(project, launch, rpcProcess);
+		MCacheTelnetDebugTarget target = new MCacheTelnetDebugTarget(project, mCode, launch, rpcProcess);
 		launch.addDebugTarget(target);		
 	}
 	

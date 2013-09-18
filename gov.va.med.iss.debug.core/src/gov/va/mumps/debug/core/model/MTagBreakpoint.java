@@ -40,5 +40,11 @@ public class MTagBreakpoint extends AbstractMBreakpoint {
 		
 		return null;
 	}
-
+	
+	@Override
+	public String getAsDollarTextInput() throws CoreException {
+		IMarker marker = this.getMarker();
+		String result = marker.getAttribute(TAG, null);
+		return result;
+	}
 }

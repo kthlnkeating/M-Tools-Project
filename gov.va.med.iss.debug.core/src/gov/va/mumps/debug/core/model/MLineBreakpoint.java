@@ -103,5 +103,16 @@ public class MLineBreakpoint extends AbstractMBreakpoint implements ILineBreakpo
 		
 		return breakpointAsTag;
 	}
-
+	
+	@Override
+	public String getAsDollarTextInput() throws CoreException {
+		int lineNumber = this.getLineNumber();
+		String fileName = this.getMarker().getResource().getName();
+		String routineName = fileName.substring(0, fileName.length()-2);
+		if (lineNumber > 0) {
+			return '+' + String.valueOf(lineNumber) + '^' + routineName;
+		} else {
+			return '^' + routineName;
+		}
+	}
 }

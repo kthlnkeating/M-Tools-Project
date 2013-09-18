@@ -142,7 +142,6 @@ public class MThread extends MDebugElement implements IThread { //in the future 
 		if (isSuspended()) {
 			return getDebugTarget().getStackFrames();
 		} else {
-			System.out.println("returning dummy stackframes");
 			return new IStackFrame[0];
 		}
 	}

@@ -6,10 +6,7 @@ import gov.va.mumps.debug.core.MDebugConstants;
 import gov.va.mumps.debug.xtdebug.vo.VariableVO;
 import gov.va.mumps.launching.InputReadyListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarkerDelta;
@@ -34,15 +31,15 @@ import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTarget, InputReadyListener, IMInterpreterConsumer {
 	private static String BREAK_IDENTIFIER = "<BREAK>";
 
-	private static enum TargetState {
-		NOT_CONNECTED,
-		INITIALIZING,
-		ENDING_BREAKPOINT,
-		DEBUGGING,
-		IN_BREAK,
-		IN_BREAK_STACK_VARS,
-		IN_BREAK_SUSPEND;
-	}
+	//private static enum TargetState {
+	//	NOT_CONNECTED,
+	//	INITIALIZING,
+	//	ENDING_BREAKPOINT,
+	//	DEBUGGING,
+	//	IN_BREAK,
+	//	IN_BREAK_STACK_VARS,
+	//	IN_BREAK_SUSPEND;
+	//}
 	
 	
 	private ILaunch launch;
@@ -64,21 +61,17 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	
 	private IMInterpreter interpreter;
 	
-	private TargetState state;
-	
-	
 	private IProject project;
+	private String mcode;
 	
-	private Map<String, Map<String, Integer>> routineTagLocations = new HashMap<String, Map<String, Integer>>();
-	private List<MCodeLocation> initialBreakPoints = new ArrayList<MCodeLocation>();
-	
-	public MCacheTelnetDebugTarget(IProject project, ILaunch launch, MCacheTelnetProcess rpcProcess) {
+	public MCacheTelnetDebugTarget(IProject project, String mcode, ILaunch launch, MCacheTelnetProcess rpcProcess) {
 		super(null);
+		this.project = project;
+		this.mcode = mcode;
 		setDebugTarget(this);
 		this.launch = launch;
 		this.debug = launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE);
 		this.rpcDebugProcess = rpcProcess;
-		this.project = project;
 		
 		debugThread = new MThread(this);		
 		suspended = true;		
@@ -382,29 +375,17 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	@Override
 	public void handleConnected(IMInterpreter interpreter) {
 		this.interpreter = interpreter;
-		try {
-			this.state = TargetState.INITIALIZING;
-			this.interpreter.sendInfoCommand("BREAK \"S+\"\n");
-		} catch (Throwable t) {
-			//this.abort("Aborted", t);
-		}
+		String command = this.getInitialBreakPointCommand();
+		this.interpreter.sendInfoCommand(command + "\n");
 	}
 	
 	@Override 
 	public void handleCommandExecuted(String info) {
-		if (this.state == TargetState.INITIALIZING) {
-			this.state = TargetState.ENDING_BREAKPOINT;
-			this.interpreter.sendInfoCommand("ZBREAK $:\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"\n");
-		} else {
-			this.state = TargetState.DEBUGGING;
-			this.interpreter.sendRunCommand("d MAIN^MTESTONE");
-		}
+		this.interpreter.sendRunCommand(this.mcode);
 	}
 	
 	@Override
 	public void handleBreak(String info) {
-		this.state = TargetState.IN_BREAK;
-		
 		String[] pieces = info.split("\r\n");		
 		int breakLineIndex = 0;
 		for (String piece : pieces) {
@@ -475,37 +456,25 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		return -1;
 	}
 	
-	private String setupBreakPoints() {
+	private String getInitialBreakPointCommand() {
 		String command = "";
-		try {
-			IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(MDebugConstants.M_DEBUG_MODEL);
-			for (IBreakpoint breakPoint : breakpoints) {
+		IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(MDebugConstants.M_DEBUG_MODEL);
+		for (IBreakpoint breakPoint : breakpoints) {
+			try {
 				if (breakPoint.isEnabled()) {
 					if (breakPoint instanceof AbstractMBreakpoint) {
 						AbstractMBreakpoint b = (AbstractMBreakpoint) breakPoint;
-						String tag = b.getBreakpointAsTag();
-						
-					} else if (breakPoint instanceof MWatchpoint) {
-					
+						String codeLocation = b.getAsDollarTextInput();						
+						if (! command.isEmpty()) {
+							command += ' ';
+						}
+						command += "ZBREAK " + codeLocation + ":\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"";
+					} else if (breakPoint instanceof MWatchpoint) {					
 					}
 				}
+			} catch (CoreException coreExcepion) {			
 			}
-		} catch (CoreException coreExcepion) {			
 		}
 		return command;
 	}
-
-	/**
-	 * Install breakpoints that are already registered with the breakpoint
-	 * manager.
-	 */
-	//private void installDeferredBreakpoints() {
-	//	IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(MDebugConstants.M_DEBUG_MODEL);
-	//	for (int i = 0; i < breakpoints.length; i++) {
-	//		breakpointAdded(breakpoints[i]);
-	//	}
-	//}
-	
-	
-	
 }

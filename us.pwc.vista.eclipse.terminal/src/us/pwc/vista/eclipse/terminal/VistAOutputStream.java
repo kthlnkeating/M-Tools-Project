@@ -14,12 +14,12 @@ public class VistAOutputStream extends OutputStream {
 	private byte[] buffer = new byte[PATTERN.length];
 	private int count;
 	
-	private byte[] debugInfo = new byte[200];
+	private byte[] debugInfo = new byte[2000];
 	private int debugCount;
 	
 	private IVistAStreamListener listener;
 	
-	private final static boolean OUTDEBUG = true;
+	private final static boolean OUTDEBUG = false;
 	
 	public VistAOutputStream(OutputStream actual, IVistAStreamListener listener) {
 		this.actual = actual;
@@ -121,7 +121,7 @@ public class VistAOutputStream extends OutputStream {
 				}  else if (currentState == VistAOutputStreamState.COMMAND_EXECUTE) {
 					String str = new String(this.debugInfo, 0, currentCount);					
 					this.listener.handleCommandExecuteEnded(str);						
-				} else if (currentState == VistAOutputStreamState.BREAK_FOUND) {						
+				} else if (currentState == VistAOutputStreamState.BREAK_FOUND) {					
 					String str = new String(this.debugInfo, 0, currentCount);					
 					if (str.startsWith("!!")) {
 						this.listener.handleEnd();
