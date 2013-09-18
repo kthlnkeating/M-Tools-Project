@@ -16,6 +16,7 @@
 
 package gov.va.mumps.debug.ui;
 
+import gov.va.mumps.debug.core.MDebugSettings;
 import gov.va.mumps.debug.core.model.MCacheTelnetDebugTarget;
 
 import org.eclipse.debug.core.ILaunch;
@@ -41,6 +42,7 @@ class CacheTelnetUIManager implements ILaunchListener {
 	public void launchChanged(ILaunch launch) {
 		if (launch.getDebugTarget() != null) {
 			final MCacheTelnetDebugTarget target = (MCacheTelnetDebugTarget) launch.getDebugTarget();
+			final String namespace = MDebugSettings.getNamespace();
 		
 			synchronized (target) {
 				final CacheTelnetUIManager thiz = this;
@@ -60,7 +62,8 @@ class CacheTelnetUIManager implements ILaunchListener {
 								}
 							}							
 							thiz.view = vp;
-							((VistATerminalView) vp).connect(target); 
+							
+							((VistATerminalView) vp).connect(target, namespace); 
 						} catch (Throwable t) {
 						}
 					}

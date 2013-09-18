@@ -17,22 +17,8 @@ public class VistATerminalView extends TerminalView implements IMInterpreter, IV
 	private VistATelnetConnector connector;
 	
 	@Override
-	public void onTerminalConnect() {
-		ITerminalConnector connector = new VistATerminalConnector(this); 
-		if (connector != null) {
-			this.fCtlTerminal.setConnector(connector);
-			this.fCtlTerminal.connectTerminal();
-		}
-	}
-
-	@Override
-	public void onTerminalDisconnect() {
-		this.fCtlTerminal.disconnectTerminal();	
-	}
-	
-	@Override
-	public void connect(IMInterpreterConsumer consumer) {
-		ITerminalConnector connector = new VistATerminalConnector(this); 
+	public void connect(IMInterpreterConsumer consumer, String namespace) {
+		ITerminalConnector connector = new VistATerminalConnector(namespace, this); 
 		if (connector != null) {
 			this.fCtlTerminal.setConnector(connector);
 			this.fCtlTerminal.connectTerminal();

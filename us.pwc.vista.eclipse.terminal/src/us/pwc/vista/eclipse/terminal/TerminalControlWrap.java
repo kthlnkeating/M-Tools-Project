@@ -12,9 +12,9 @@ public class TerminalControlWrap implements ITerminalControl {
 	private ITerminalControl actual;
 	private VistAOutputStream os;
 	
-	public TerminalControlWrap(ITerminalControl actual, IVistAStreamListener listener) {
+	public TerminalControlWrap(String namespace, ITerminalControl actual, IVistAStreamListener listener) {
 		this.actual = actual;
-		this.os = new VistAOutputStream(actual.getRemoteToTerminalOutputStream(), listener);
+		this.os = new VistAOutputStream(namespace, actual.getRemoteToTerminalOutputStream(), listener);
 	}
 	
 	public VistAOutputStream getVistAStream() {

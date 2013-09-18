@@ -23,6 +23,7 @@ import gov.va.mumps.debug.core.model.MDebugPreference;
 
 public class MDebugSettings {
 	private static final String DEBUG_PREFERENCE = "debugPreference";
+	private static final String VISTA_NAMESPACE = "vistaNamespace";
 
 	public static MDebugPreference getDebugPreference() {
 		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(MDebugCorePlugin.PLUGIN_ID);
@@ -38,6 +39,25 @@ public class MDebugSettings {
 		IEclipsePreferences preferences =  InstanceScope.INSTANCE.getNode(MDebugCorePlugin.PLUGIN_ID);
 		String valueToBeStored = preference.toString();
 		preferences.put(DEBUG_PREFERENCE, valueToBeStored);
+		try {
+			preferences.flush();
+		}  catch (Throwable t) {			
+		}
+	}
+	
+	public static String getNamespace() {
+		IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(MDebugCorePlugin.PLUGIN_ID);
+		String namespace = preferences.get(VISTA_NAMESPACE, null);
+		if (namespace == null) {
+			return "VISTA";
+		} else {			
+			return namespace;
+		}
+	}
+	
+	public static void setNamespace(String namespace) {
+		IEclipsePreferences preferences =  InstanceScope.INSTANCE.getNode(MDebugCorePlugin.PLUGIN_ID);
+		preferences.put(VISTA_NAMESPACE, namespace);
 		try {
 			preferences.flush();
 		}  catch (Throwable t) {			

@@ -15,5 +15,6 @@ public interface MDebugConstants {
 	public static final String ATTR_M_FILE_PATH = M_DEBUG_MODEL + ".ATTR_M_FILE_PATH";
 	public static final String ATTR_M_ENTRY_TAG = M_DEBUG_MODEL + ".ATTR_M_ENTRY_TAG";
 	public static final String ATTR_M_IS_EXTRINSIC = M_DEBUG_MODEL + ".ATTR_M_IS_EXTRINSIC";
+	public static final String ATTR_M_SETUP_CODE = M_DEBUG_MODEL + ".ATTR_M_SETUP_CODE";
 	public static final String ATTR_M_PARAMS = M_DEBUG_MODEL + ".ATTR_M_PARAMS";
 }

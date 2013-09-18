@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PropertyPage;
@@ -32,6 +33,7 @@ import us.pwc.vista.eclipse.core.helper.SWTHelper;
 public class MDebugPreferencePage extends PropertyPage implements IWorkbenchPreferencePage {
 	private Button genericBtn;
 	private Button cacheTelnetBtn;
+	private Text nameSpaceCtl;
 	
 	@Override
 	public void init(IWorkbench workbench) {
@@ -40,18 +42,19 @@ public class MDebugPreferencePage extends PropertyPage implements IWorkbenchPref
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite contents = new Composite(parent, SWT.NONE);
-		GridLayout gl = new GridLayout(1, false);
+		GridLayout gl = new GridLayout(2, false);
 		contents.setLayout(gl);
 
-		this.genericBtn = SWTHelper.createRadioBox(contents, "Generic", 1);
-		this.cacheTelnetBtn = SWTHelper.createRadioBox(contents, "Cache Telnet", 1);
-		
+		this.genericBtn = SWTHelper.createRadioBox(contents, "Generic", 2);
+		this.cacheTelnetBtn = SWTHelper.createRadioBox(contents, "Cache Telnet", 2);
+		this.nameSpaceCtl = SWTHelper.createLabelTextPair(contents, "Namespace:");
+				
 		this.initialize();
 		return contents;
 	}
 	
 	private void initialize() {
-		MDebugPreference preference = MDebugSettings.getDebugPreference();
+		MDebugPreference preference = MDebugSettings.getDebugPreference();		
 		switch (preference) {
 		case CACHE_TELNET:
 			this.cacheTelnetBtn.setSelection(true);
@@ -60,6 +63,9 @@ public class MDebugPreferencePage extends PropertyPage implements IWorkbenchPref
 			this.genericBtn.setSelection(true);
 			break;
 		}
+		
+		String namespace = MDebugSettings.getNamespace();
+		this.nameSpaceCtl.setText(namespace);
 	}
 	
 	@Override
@@ -69,6 +75,7 @@ public class MDebugPreferencePage extends PropertyPage implements IWorkbenchPref
 		} else {
 			MDebugSettings.setDebugPreference(MDebugPreference.GENERIC);
 		}
+		MDebugSettings.setNamespace(this.nameSpaceCtl.getText());
 		return super.performOk();
 	}
 }

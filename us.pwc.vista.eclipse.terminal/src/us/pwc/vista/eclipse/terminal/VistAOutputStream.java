@@ -5,7 +5,6 @@ import java.io.OutputStream;
 
 public class VistAOutputStream extends OutputStream {
 	private static byte[] PATTERN = {0, 0, 0};
-	private static byte[] END_PATTERN = "VISTA".getBytes();
 
 	private OutputStream actual;
 	
@@ -14,14 +13,17 @@ public class VistAOutputStream extends OutputStream {
 	private byte[] buffer = new byte[PATTERN.length];
 	private int count;
 	
-	private byte[] debugInfo = new byte[2000];
+	private byte[] debugInfo = new byte[10000];
 	private int debugCount;
 	
 	private IVistAStreamListener listener;
 	
+	private byte[] namespace;
+	
 	private final static boolean OUTDEBUG = false;
 	
-	public VistAOutputStream(OutputStream actual, IVistAStreamListener listener) {
+	public VistAOutputStream(String namespace, OutputStream actual, IVistAStreamListener listener) {
+		this.namespace = namespace.getBytes();
 		this.actual = actual;
 		this.listener = listener;
 	}
@@ -78,7 +80,7 @@ public class VistAOutputStream extends OutputStream {
 		} else {
 			this.debugInfo[this.debugCount] = b;
 			++this.debugCount;			
-			if (b == '>') this.auxWriteBreak(b, END_PATTERN);
+			if (b == '>') this.auxWriteBreak(b, this.namespace);
 		}
 	}
 	
@@ -92,14 +94,13 @@ public class VistAOutputStream extends OutputStream {
 			++count;
 			if (PATTERN.length == count) {								
 				this.state = VistAOutputStreamState.BREAK_FOUND;
-				//this.writeInternalStreams(this.buffer, this.count);
 				count = 0;
 			}			
 		}
 	}
 
 	private void auxWriteBreak(byte b, byte[] pattern) throws IOException {
-		int endIndex = this.debugCount-6;
+		int endIndex = this.debugCount-9;
 		if (endIndex < 0) endIndex = 0;
 		int n = pattern.length;
 		byte epb = pattern[n-1];

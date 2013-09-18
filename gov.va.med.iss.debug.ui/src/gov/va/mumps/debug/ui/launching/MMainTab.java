@@ -80,6 +80,7 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 	private Button browseEntryTagBtn;
 	
 	private Button extrinsicBtn;
+	private Text setupCodeCtl;
 	
 	private TableViewer viewer;
 	private Button editBtn;
@@ -104,6 +105,9 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 		SWTHelper.addEmptyLabel(container, 1);
 		this.extrinsicBtn = SWTHelper.createCheckButton(container, "Extrinsic function", 2);
 
+		this.setupCodeCtl = SWTHelper.createLabelTextPair(container, "Setup code:");
+		SWTHelper.addEmptyLabel(container, 1);
+		
 		Label label = new Label(container, SWT.WRAP | SWT.LEFT);
 		label.setText("Parameters:");		
 		GridData gd = SWTHelper.setGridData(label, SWT.LEFT, false, SWT.BEGINNING, false);
@@ -230,6 +234,17 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
+		this.setupCodeCtl.addKeyListener(new KeyListener() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				MMainTab.this.setupCodeChanged();			
+			}
+		});		
+
 		this.viewer.getTable().addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -299,7 +314,8 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 	private void setEntryTagCtrlsEnabled(boolean enabled) {
 		this.entryTagCtrl.setEnabled(enabled);
 		this.browseEntryTagBtn.setEnabled(enabled);
-		this.extrinsicBtn.setEnabled(enabled);		
+		this.extrinsicBtn.setEnabled(enabled);
+		this.setupCodeCtl.setEnabled(enabled);
 	}
 	
 	private void handleBrowseProject() {
@@ -425,6 +441,10 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 		this.updateLaunchConfigurationDialog();		
 	}
 	
+	private void setupCodeChanged() {
+		this.updateLaunchConfigurationDialog();		
+	}
+	
 	private void handleTableSelectionChanged() {
 		boolean enabled = this.viewer.getTable().getSelectionCount() == 1;
 		this.editBtn.setEnabled(enabled);
@@ -534,6 +554,9 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 			boolean isExtrinsic = configuration.getAttribute(MDebugConstants.ATTR_M_IS_EXTRINSIC, false);
 			this.extrinsicBtn.setSelection(isExtrinsic);
 
+			String setupCode = configuration.getAttribute(MDebugConstants.ATTR_M_SETUP_CODE, "");
+			this.setupCodeCtl.setText(setupCode);
+			
 			@SuppressWarnings({ "rawtypes", "unchecked"})
 			List<String> params = configuration.getAttribute(MDebugConstants.ATTR_M_PARAMS, (List) null);
 			if (params != null) {
@@ -567,6 +590,7 @@ public class MMainTab extends AbstractLaunchConfigurationTab {
 			configuration.setAttribute(MDebugConstants.ATTR_M_PARAMS, toBeStored);
 		}
 		configuration.setAttribute(MDebugConstants.ATTR_M_IS_EXTRINSIC, this.extrinsicBtn.getSelection());
+		configuration.setAttribute(MDebugConstants.ATTR_M_SETUP_CODE, this.setupCodeCtl.getText());
 	}
 	
 	private void updateForApply(ILaunchConfigurationWorkingCopy configuration, Text textCtrl, String attrName) {

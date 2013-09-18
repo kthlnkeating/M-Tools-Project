@@ -1,7 +1,7 @@
 package gov.va.mumps.debug.core;
 
 public interface IMInterpreter {
-	void connect(IMInterpreterConsumer consumer);
+	void connect(IMInterpreterConsumer consumer, String namespace);
 	void disconnect();
 	void terminate();
 	

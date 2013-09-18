@@ -13,15 +13,17 @@ public class VistATelnetConnector extends TelnetConnector {
 	private VistATelnetSettings settings = new VistATelnetSettings();
 	private IVistAStreamListener listener;
 	private VistAOutputStream os;
+	private String namespace;
 	
-	public VistATelnetConnector(IVistAStreamListener listener) {
+	public VistATelnetConnector(String namespace, IVistAStreamListener listener) {
 		super(null);
+		this.namespace = namespace;
 		this.listener = listener;
 	}
 	
 	@Override
 	public void connect(ITerminalControl control) {
-		TerminalControlWrap wrapTC = new TerminalControlWrap(control, this.listener);
+		TerminalControlWrap wrapTC = new TerminalControlWrap(this.namespace, control, this.listener);
 		this.os = wrapTC.getVistAStream();
 		super.connect(wrapTC);
 	}

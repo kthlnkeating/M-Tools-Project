@@ -60,6 +60,11 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 		String fileName = path.lastSegment();
 		String routineName = fileName.substring(0, fileName.length()-2);
 		StringBuilder sb = new StringBuilder();
+		String setupCode = configuration.getAttribute(MDebugConstants.ATTR_M_SETUP_CODE, (String) null);
+		if ((setupCode != null) && (! setupCode.isEmpty())) {
+			sb.append(setupCode);
+			sb.append(' ');
+		}		
 		if (extrinsic) {
 			sb.append("N % S %=$$");
 		} else {
