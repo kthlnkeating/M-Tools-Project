@@ -3,6 +3,8 @@ package us.pwc.vista.eclipse.terminal;
 import gov.va.mumps.debug.core.IMInterpreter;
 import gov.va.mumps.debug.core.IMInterpreterConsumer;
 
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.tm.internal.terminal.provisional.api.ITerminalConnector;
 import org.eclipse.tm.internal.terminal.view.TerminalView;
@@ -110,5 +112,35 @@ public class VistATerminalView extends TerminalView implements IMInterpreter, IV
 				}
 			}
 		});		
+	}
+
+	// Remove interactive components of Eclipse terminal
+	
+	@Override
+	protected void setupActions() {
+	}
+
+	@Override
+	protected void setupLocalToolBars() {
+	}
+
+	@Override
+	protected void setupContextMenus(Control ctlText) {
+	}
+
+	@Override
+	protected void loadContextMenus(IMenuManager menuMgr) {
+	}
+	
+	@Override
+	public void updateStatus() {
+	}
+		
+	@Override
+	public void updateTerminalConnect() {
+	}
+
+	@Override
+	public void updateTerminalDisconnect() {		
 	}
 }
