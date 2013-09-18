@@ -9,4 +9,6 @@ public interface IMInterpreterConsumer {
 	void handleEnd();
 	
 	void handleError(Throwable throwable);
+	
+	String getLaunchId();
 }

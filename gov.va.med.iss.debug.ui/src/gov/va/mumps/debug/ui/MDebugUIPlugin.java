@@ -10,6 +10,8 @@ public class MDebugUIPlugin extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "gov.va.mumps.debug.ui"; //$NON-NLS-1$
 
+	public static final String TERMINAL_VIEW_ID = "us.pwc.vista.eclipse.terminal.VistATerminalView";
+	
 	// The shared instance
 	private static MDebugUIPlugin plugin;
 	

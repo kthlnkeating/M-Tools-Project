@@ -440,6 +440,12 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	public void handleError(Throwable throwable) {	
 		throw new RuntimeException(throwable);
 	}
+	
+	@Override
+	public String getLaunchId() {
+		int id = System.identityHashCode(this.launch);
+		return String.valueOf(id);
+	}
 
 	private int getLineNumber(MCodeLocation entryTag) {
 		String routineName = entryTag.getRoutine();

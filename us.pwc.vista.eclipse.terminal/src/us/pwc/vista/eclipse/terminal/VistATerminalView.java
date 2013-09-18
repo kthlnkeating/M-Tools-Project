@@ -97,6 +97,7 @@ public class VistATerminalView extends TerminalView implements IMInterpreter, IV
 	}
 	
 	private void giveFocusToTerminal() {
+		final String secondaryId = this.consumer.getLaunchId();
 		Display.getDefault().syncExec(new Runnable() {						
 			@Override
 			public void run() {
@@ -104,10 +105,8 @@ public class VistATerminalView extends TerminalView implements IMInterpreter, IV
 					IWorkbench wb = PlatformUI.getWorkbench();
 					IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
 					IWorkbenchPage wbp = window.getActivePage();
-					try {
-						wbp.showView("us.pwc.vista.eclipse.terminal.VistATerminalView");
-					} catch (Throwable t) {
-					}
+					
+					wbp.showView("us.pwc.vista.eclipse.terminal.VistATerminalView", secondaryId, IWorkbenchPage.VIEW_ACTIVATE);
 				} catch (Throwable t) {
 				}
 			}

@@ -16,6 +16,9 @@
 
 package gov.va.mumps.debug.ui;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import gov.va.mumps.debug.core.MDebugSettings;
 import gov.va.mumps.debug.core.model.MCacheTelnetDebugTarget;
 
@@ -31,15 +34,15 @@ import org.eclipse.ui.PlatformUI;
 import us.pwc.vista.eclipse.terminal.VistATerminalView;
 
 class CacheTelnetUIManager implements ILaunchListener {
-	private IViewPart view;
+	private Map<String, IViewPart> views = new HashMap<String, IViewPart>();
 	
 	@Override
 	public void launchAdded(final ILaunch launch) {
-		this.view = null;
 	}
 
 	@Override
 	public void launchChanged(ILaunch launch) {
+		final String launchId = String.valueOf(System.identityHashCode(launch));		
 		if (launch.getDebugTarget() != null) {
 			final MCacheTelnetDebugTarget target = (MCacheTelnetDebugTarget) launch.getDebugTarget();
 			final String namespace = MDebugSettings.getNamespace();
@@ -53,15 +56,8 @@ class CacheTelnetUIManager implements ILaunchListener {
 							IWorkbench wb = PlatformUI.getWorkbench();
 							IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
 							IWorkbenchPage wbp = window.getActivePage();
-							IViewPart vp = wbp.findView("us.pwc.vista.eclipse.terminal.VistATerminalView");
-							if (vp == null) {
-								try {
-									vp = wbp.showView("us.pwc.vista.eclipse.terminal.VistATerminalView");
-								} catch (Throwable t) {
-									vp = null;
-								}
-							}							
-							thiz.view = vp;
+							IViewPart vp = wbp.showView(MDebugUIPlugin.TERMINAL_VIEW_ID, launchId, IWorkbenchPage.VIEW_ACTIVATE);
+							thiz.views.put(launchId, vp);
 							
 							((VistATerminalView) vp).connect(target, namespace); 
 						} catch (Throwable t) {
@@ -74,8 +70,15 @@ class CacheTelnetUIManager implements ILaunchListener {
 
 	@Override
 	public void launchRemoved(ILaunch launch) {
-		if (this.view != null) {
-			this.view.getSite().getWorkbenchWindow().getActivePage().hideView(this.view);
+		String launchId = String.valueOf(System.identityHashCode(launch));		
+		final IViewPart vp = this.views.get(launchId);
+		if (vp != null) {		
+			Display.getDefault().syncExec(new Runnable() {						
+				@Override
+				public void run() {
+					vp.getSite().getWorkbenchWindow().getActivePage().hideView(vp);				
+				}
+			});
 		}
 	}
 }

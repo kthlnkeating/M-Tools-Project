@@ -28,6 +28,10 @@ import us.pwc.vista.eclipse.core.VistACorePrefs;
 import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 
 public class MLaunchDelegate extends LaunchConfigurationDelegate {
+	public MLaunchDelegate() {
+		super();
+	}
+	
 	private String getAttribute(ILaunchConfiguration configuration, String attrKey, String attrName) throws CoreException {
 		String value = configuration.getAttribute(attrKey, (String) null);
 		if (value == null) {
