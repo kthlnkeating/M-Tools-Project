@@ -28,9 +28,13 @@ public interface IMDebugTarget extends IDebugTarget {
 	
 	void stepOver();
 	void stepInto();
+	void stepReturn();
 	
 	IVariable[] getVariables();
 	public List<VariableVO> getAllVariables();
 	
 	MDebugPreference getPreferenceImplemented();
+	
+	boolean canStepOver();
+	boolean canStepReturn();
 }

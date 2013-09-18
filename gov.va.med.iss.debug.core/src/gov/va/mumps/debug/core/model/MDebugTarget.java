@@ -325,7 +325,7 @@ public class MDebugTarget extends MDebugElement implements IMDebugTarget, InputR
 		handleResponse(rpcDebugProcess.getResponseResults());
 	}
 
-	public void stepOut() {
+	public void stepReturn() {
 		stepMode = StepMode.STEP_OUT;
 		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_RETURN);
@@ -352,6 +352,16 @@ public class MDebugTarget extends MDebugElement implements IMDebugTarget, InputR
 		return MDebugPreference.GENERIC;
 	}
 	
+	@Override
+	public boolean canStepOver() {
+		return false;
+	}
+	
+	@Override
+	public boolean canStepReturn() {
+		return false;
+	}
+		
 	private synchronized void handleResponse(StepResultsVO vo) {
 		
 		debugThread.setBreakpoints(null);

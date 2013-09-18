@@ -48,17 +48,31 @@ public class MThread extends MDebugElement implements IThread { //in the future 
 
 	@Override
 	public boolean canStepInto() {
-		return !isTerminated() && !isStepping() && this.debug;
+		return this.canStep();
 	}
 
 	@Override
 	public boolean canStepOver() {
-		return false; ////disabling until the KIDs package actually implements this
+		boolean b = this.getDebugTarget().canStepOver();
+		if (b) {
+			return this.canStep();
+		} else {
+			return false;
+		}
 	}
 
 	@Override
 	public boolean canStepReturn() {
-		return false; //disabling until the KIDs package actually implements this
+		boolean b = this.getDebugTarget().canStepReturn();
+		if (b) {
+			return this.canStep();
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean canStep() {
+		return this.debug && (! this.isTerminated()) && (! this.isStepping());
 	}
 
 	@Override
@@ -70,19 +84,19 @@ public class MThread extends MDebugElement implements IThread { //in the future 
 	@Override
 	public void stepInto() throws DebugException {
 		fireResumeEvent(DebugEvent.STEP_INTO);
-		getDebugTarget().stepInto();
+		this.getDebugTarget().stepInto();
 	}
 
 	@Override
 	public void stepOver() throws DebugException {
 		fireResumeEvent(DebugEvent.STEP_OVER);
-		getDebugTarget().stepOver();
+		this.getDebugTarget().stepOver();
 	}
 
 	@Override
 	public void stepReturn() throws DebugException {
-//		fireResumeEvent(DebugEvent.STEP_RETURN);
-//		((MDebugTarget)getDebugTarget()).stepOut();
+		fireResumeEvent(DebugEvent.STEP_RETURN);
+		this.getDebugTarget().stepReturn();
 	}
 
 	@Override

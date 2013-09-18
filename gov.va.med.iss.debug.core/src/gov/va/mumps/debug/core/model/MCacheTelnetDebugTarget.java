@@ -291,7 +291,7 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		this.interpreter.stepInto();		
 	}
 
-	public void stepOut() {
+	public void stepReturn() {
 		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_RETURN);
 		rpcDebugProcess.stepOut();
@@ -317,6 +317,16 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		return MDebugPreference.CACHE_TELNET;
 	}
 	
+	@Override
+	public boolean canStepOver() {
+		return true;
+	}
+	
+	@Override
+	public boolean canStepReturn() {
+		return true;
+	}
+		
 	/**
 	 * Notification a breakpoint was encountered. Determine which breakpoint was
 	 * hit and fire a suspend event.
