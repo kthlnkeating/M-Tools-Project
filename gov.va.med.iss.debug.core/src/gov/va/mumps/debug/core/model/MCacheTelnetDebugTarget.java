@@ -388,7 +388,7 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	@Override
 	public void handleConnected(IMInterpreter interpreter) {
 		this.interpreter = interpreter;
-		String command = this.getInitialBreakPointCommand();
+		String command = (this.debug) ? this.getInitialBreakPointCommand() : "ZBREAK /CLEAR";
 		this.interpreter.sendInfoCommand(command + "\n");
 	}
 	
