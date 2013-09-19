@@ -1,4 +1,5 @@
-package us.pwc.vista.eclipse.terminal;
+package gov.va.mumps.debug.ui.terminal;
+
 
 import org.eclipse.tm.internal.terminal.connector.TerminalConnector;
 import org.eclipse.tm.internal.terminal.provisional.api.provider.TerminalConnectorImpl;

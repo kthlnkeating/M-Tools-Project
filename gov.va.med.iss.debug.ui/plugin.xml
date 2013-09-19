@@ -45,6 +45,19 @@
             class="gov.va.mumps.debug.ui.custom.variables.VariablesView"
             id="gov.va.mumps.debug.ui.AllVariablesView">
       </view>
+      <category
+            id="us.pwc.vista.eclipse.terminal.VistA"
+            name="VistA">
+      </category>
+      <view
+            allowMultiple="true"
+            category="us.pwc.vista.eclipse.terminal.VistA"
+            class="gov.va.mumps.debug.ui.terminal.VistATerminalView"
+            icon="platform:/plugin/us.pwc.vista.eclipse.core/icons/m.gif"
+            id="us.pwc.vista.eclipse.terminal.VistATerminalView"
+            name="VistA Terminal"
+            restorable="true">
+      </view>
    </extension>
    
    

@@ -21,6 +21,7 @@ import java.util.Map;
 
 import gov.va.mumps.debug.core.MDebugSettings;
 import gov.va.mumps.debug.core.model.MCacheTelnetDebugTarget;
+import gov.va.mumps.debug.ui.terminal.VistATerminalView;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchListener;
@@ -31,7 +32,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import us.pwc.vista.eclipse.terminal.VistATerminalView;
 
 class CacheTelnetUIManager implements ILaunchListener {
 	private Map<String, IViewPart> views = new HashMap<String, IViewPart>();

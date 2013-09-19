@@ -1,4 +1,5 @@
-package us.pwc.vista.eclipse.terminal;
+package gov.va.mumps.debug.ui.terminal;
+
 
 public interface IVistAStreamListener {
 	void handleConnected();

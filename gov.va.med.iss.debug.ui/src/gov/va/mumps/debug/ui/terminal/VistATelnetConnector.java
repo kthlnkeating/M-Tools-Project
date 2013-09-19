@@ -1,4 +1,5 @@
-package us.pwc.vista.eclipse.terminal;
+package gov.va.mumps.debug.ui.terminal;
+
 
 import java.io.IOException;
 
@@ -7,6 +8,7 @@ import org.eclipse.tm.internal.terminal.provisional.api.ISettingsStore;
 import org.eclipse.tm.internal.terminal.provisional.api.ITerminalControl;
 import org.eclipse.tm.internal.terminal.telnet.ITelnetSettings;
 import org.eclipse.tm.internal.terminal.telnet.TelnetConnector;
+
 
 @SuppressWarnings("restriction")
 public class VistATelnetConnector extends TelnetConnector {

@@ -1,4 +1,4 @@
-package us.pwc.vista.eclipse.terminal;
+package gov.va.mumps.debug.ui.terminal;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;

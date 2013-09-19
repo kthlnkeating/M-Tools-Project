@@ -1,4 +1,4 @@
-package us.pwc.vista.eclipse.terminal;
+package gov.va.mumps.debug.ui.terminal;
 
 public enum VistAOutputStreamState {
 	NOT_CONNECTED,

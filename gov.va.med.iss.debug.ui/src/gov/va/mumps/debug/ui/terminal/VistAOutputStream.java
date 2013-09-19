@@ -1,7 +1,9 @@
-package us.pwc.vista.eclipse.terminal;
+package gov.va.mumps.debug.ui.terminal;
+
 
 import java.io.IOException;
 import java.io.OutputStream;
+
 
 public class VistAOutputStream extends OutputStream {
 	private static byte[] PATTERN = {0, 0, 0};

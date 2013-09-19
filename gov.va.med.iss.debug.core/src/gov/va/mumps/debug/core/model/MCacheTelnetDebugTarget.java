@@ -4,7 +4,6 @@ import gov.va.mumps.debug.core.IMInterpreter;
 import gov.va.mumps.debug.core.IMInterpreterConsumer;
 import gov.va.mumps.debug.core.MDebugConstants;
 import gov.va.mumps.debug.xtdebug.vo.VariableVO;
-import gov.va.mumps.launching.InputReadyListener;
 
 import java.util.List;
 
@@ -28,20 +27,9 @@ import org.eclipse.jface.text.IRegion;
 import us.pwc.vista.eclipse.core.resource.FileSearchVisitor;
 import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 
-public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTarget, InputReadyListener, IMInterpreterConsumer {
+public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTarget, IMInterpreterConsumer {
 	private static String BREAK_IDENTIFIER = "<BREAK>";
 
-	//private static enum TargetState {
-	//	NOT_CONNECTED,
-	//	INITIALIZING,
-	//	ENDING_BREAKPOINT,
-	//	DEBUGGING,
-	//	IN_BREAK,
-	//	IN_BREAK_STACK_VARS,
-	//	IN_BREAK_SUSPEND;
-	//}
-	
-	
 	private ILaunch launch;
 	private MCacheTelnetProcess rpcDebugProcess;
 	private boolean suspended;
@@ -76,9 +64,7 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		debugThread = new MThread(this);		
 		suspended = true;		
 		stack = new MStackFrame[0];
-		
-		//this.setupBreakPoints();
-		
+
 		fireCreationEvent();
 	}
 	
@@ -375,16 +361,6 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		fireTerminateEvent(); //this fires the event to indicate that the debugtarget has terminated.
 	}
 
-	@Override
-	public void handleInput(final String input) {
-		if (isTerminated())
-			return;
-		
-		//input must be handled because it causes the program to continue (resume) running, and it completes the read command which may update variable values
-		rpcDebugProcess.sendReadInput(input);
-
-	}
-	
 	@Override
 	public void handleConnected(IMInterpreter interpreter) {
 		this.interpreter = interpreter;
