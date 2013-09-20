@@ -16,7 +16,7 @@
 
 package gov.va.mumps.debug.ui;
 
-import gov.va.mumps.debug.core.model.MDebugTarget;
+import gov.va.mumps.debug.core.model.MGenericDebugTarget;
 import gov.va.mumps.debug.ui.console.MDevConsole;
 
 import java.util.HashMap;
@@ -28,7 +28,7 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 
 class GenericUIManager implements IMUIManager {
-	Map<MDebugTarget, MDevConsole> consoles = new HashMap<MDebugTarget, MDevConsole>(5);
+	Map<MGenericDebugTarget, MDevConsole> consoles = new HashMap<MGenericDebugTarget, MDevConsole>(5);
 	
 	@Override
 	public void launchAdded(final ILaunch launch) {
@@ -37,7 +37,7 @@ class GenericUIManager implements IMUIManager {
 	@Override
 	public void launchChanged(ILaunch launch) {	
 		if (launch.getDebugTarget() != null) {
-			MDebugTarget mDebugTarget = (MDebugTarget) launch.getDebugTarget();
+			MGenericDebugTarget mDebugTarget = (MGenericDebugTarget) launch.getDebugTarget();
 		
 			synchronized (mDebugTarget) {
 				if (! mDebugTarget.isLinkedToConsole()) {
@@ -58,7 +58,7 @@ class GenericUIManager implements IMUIManager {
 	@Override
 	public void launchRemoved(ILaunch launch) {	
 		if (launch.getDebugTarget() != null) {
-			MDebugTarget mDebugTarget = (MDebugTarget) launch.getDebugTarget();
+			MGenericDebugTarget mDebugTarget = (MGenericDebugTarget) launch.getDebugTarget();
 			MDevConsole mDevConsole = consoles.get(mDebugTarget);
 		
 			ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] { mDevConsole});

@@ -8,4 +8,7 @@ public interface IMInterpreter {
 	void stepOver();
 	void stepInto();
 	void stepReturn();
+	
+	String getLocationBreakCommand(String codeLocation);
+	String getVariableBreakCommand(String variable);
 }

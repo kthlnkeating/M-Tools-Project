@@ -21,18 +21,18 @@ import java.util.Map;
 
 import gov.va.mumps.debug.core.model.IMTerminal;
 import gov.va.mumps.debug.core.model.IMTerminalManager;
-import gov.va.mumps.debug.core.model.MCacheTelnetDebugTarget;
+import gov.va.mumps.debug.core.model.MNativeDebugTarget;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 
 
-class CacheTelnetUIManager implements IMUIManager {
+class NativeUIManager implements IMUIManager {
 	private Map<String, IMTerminal> views = new HashMap<String, IMTerminal>();
 	private IMTerminalManager terminalManager;
 	
-	public CacheTelnetUIManager(IMTerminalManager terminalManager) {
+	public NativeUIManager(IMTerminalManager terminalManager) {
 		this.terminalManager = terminalManager;
 	}
 	
@@ -44,7 +44,7 @@ class CacheTelnetUIManager implements IMUIManager {
 	public void launchChanged(ILaunch launch) {
 		final String launchId = String.valueOf(System.identityHashCode(launch));		
 		if (launch.getDebugTarget() != null) {
-			final MCacheTelnetDebugTarget target = (MCacheTelnetDebugTarget) launch.getDebugTarget();
+			final MNativeDebugTarget target = (MNativeDebugTarget) launch.getDebugTarget();
 			IMTerminal terminal = this.terminalManager.create(launchId, target);
 			if (terminal != null) {
 				this.views.put(launchId, terminal);
@@ -64,8 +64,8 @@ class CacheTelnetUIManager implements IMUIManager {
 		Display.getDefault().syncExec(new Runnable() {						
 			@Override
 			public void run() {
-				for (IMTerminal t : CacheTelnetUIManager.this.views.values()) {
-					CacheTelnetUIManager.this.terminalManager.close(t);
+				for (IMTerminal t : NativeUIManager.this.views.values()) {
+					NativeUIManager.this.terminalManager.close(t);
 				}
 			}
 		});		

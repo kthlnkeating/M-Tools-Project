@@ -6,6 +6,7 @@ import gov.va.mumps.debug.core.MDebugConstants;
 import gov.va.mumps.debug.core.MDebugSettings;
 import gov.va.mumps.debug.xtdebug.vo.VariableVO;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -28,9 +29,7 @@ import org.eclipse.jface.text.IRegion;
 import us.pwc.vista.eclipse.core.resource.FileSearchVisitor;
 import us.pwc.vista.eclipse.core.resource.ResourceUtilExtension;
 
-public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTarget, IMInterpreterConsumer {
-	private static String BREAK_IDENTIFIER = "<BREAK>";
-
+public class MNativeDebugTarget extends MDebugElement implements IMDebugTarget, IMInterpreterConsumer {
 	private ILaunch launch;
 
 	private boolean suspended;
@@ -39,9 +38,6 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	private MThread debugThread;
 	private String name;
 	
-	//All the currently defined variables
-	private List<VariableVO> allVariables;
-
 	private MVariable[] variables;
 	private MStackFrame[] stack;
 	private boolean debug;
@@ -51,7 +47,7 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	private IProject project;
 	private String mcode;
 	
-	public MCacheTelnetDebugTarget(IProject project, String mcode, ILaunch launch) {
+	public MNativeDebugTarget(IProject project, String mcode, ILaunch launch) {
 		super(null);
 		this.project = project;
 		this.mcode = mcode;
@@ -291,7 +287,7 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	}
 	
 	public List<VariableVO> getAllVariables() {
-		return allVariables;
+		return Collections.emptyList();
 	}
 	
 	@Override
@@ -371,39 +367,29 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	}
 	
 	@Override
-	public void handleBreak(String info) {
-		String[] pieces = info.split("\r\n");		
-		int breakLineIndex = 0;
-		for (String piece : pieces) {
-			if (piece.startsWith(BREAK_IDENTIFIER)) break;
-			++breakLineIndex;
+	public void handleBreak(MStackInfo[] stackInfos) {		
+		this.stack = new MStackFrame[stackInfos.length];
+		int index = 0;
+		for (MStackInfo stackInfo : stackInfos) {
+			MCodeLocation codeLocation = stackInfo.getCodeLocation();
+			int lineNumber = this.getLineNumber(codeLocation);
+			this.stack[index] = new MStackFrame(this.debugThread, codeLocation.getAsDollarTextInput(), codeLocation.getTag(), codeLocation.getRoutine(), lineNumber);
+			MVariableInfo[] variableInfos = stackInfo.getVariableInfos();
+			int indexVariable = 0;
+			this.variables = new MVariable[variableInfos.length];
+			for (MVariableInfo variableInfo : variableInfos) {
+				String name = variableInfo.getName();
+				String value = variableInfo.getValue();
+				this.variables[indexVariable] = new MVariable(this.stack[index], name); 
+				MValue mValue = new MValue(this.variables[indexVariable], value);
+				this.variables[indexVariable].setValue(mValue);
+				++indexVariable;
+			}
+			++index;
 		}
-		if (breakLineIndex >= pieces.length) {
-			throw new RuntimeException("Internal Error");
-		}
-		
-		String entryInfo = pieces[breakLineIndex].substring("<BREAK>".length());
-		MCodeLocation entryTag = MCodeLocation.getInstance(entryInfo);
-		int lineNumber = this.getLineNumber(entryTag);
-		this.stack = new MStackFrame[1];
-		this.stack[0] = new MStackFrame(this.debugThread, entryInfo, entryTag.getTag(), entryTag.getRoutine(), lineNumber);
-		
-		this.variables = new MVariable[breakLineIndex-3];
-		for (int i=1; i<breakLineIndex-2; ++i) {
-			String nv = pieces[i];
-			int equalLocation = nv.indexOf('=');
-			if (equalLocation >= 0) {
-				String name = nv.substring(0, equalLocation);
-				String value = nv.substring(equalLocation+1);
-				this.variables[i-1] = new MVariable(this.stack[0], name); 
-				MValue mValue = new MValue(this.variables[i-1], value);
-				this.variables[i-1].setValue(mValue);
-			}				
-		}
-
-		suspended(DebugEvent.BREAKPOINT);			
+		suspended(DebugEvent.BREAKPOINT);					
 	}
-
+	
 	@Override
 	public void handleEnd() {		
 		this.terminated();
@@ -465,14 +451,14 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 						if (! command.isEmpty()) {
 							command += ' ';
 						}
-						command += "ZBREAK " + codeLocation + ":\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"";
+						command += this.interpreter.getLocationBreakCommand(codeLocation);
 					} else if (breakPoint instanceof MWatchpoint) {
 						MWatchpoint b = (MWatchpoint) breakPoint;
 						String variable = b.getWatchpointVariable();
 						if (! command.isEmpty()) {
 							command += ' ';
 						}
-						command += "ZBREAK *" + variable + ":\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"";						
+						command += this.interpreter.getVariableBreakCommand(variable);
 					}
 				}
 			} catch (CoreException coreExcepion) {			

@@ -37,7 +37,7 @@ class OverallUIManager implements IMUIManager {
 		case GENERIC:
 			return new GenericUIManager();
 		case CACHE_TELNET:
-			return new CacheTelnetUIManager(this.terminalManager);			
+			return new NativeUIManager(this.terminalManager);			
 		default:
 			return null;
 		}		

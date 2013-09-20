@@ -32,7 +32,7 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 
-public class MDebugTarget extends MDebugElement implements IMDebugTarget, InputReadyListener {
+public class MGenericDebugTarget extends MDebugElement implements IMDebugTarget, InputReadyListener {
 
 	private ILaunch launch;
 	private MDebugRpcProcess rpcDebugProcess;
@@ -62,7 +62,7 @@ public class MDebugTarget extends MDebugElement implements IMDebugTarget, InputR
 	//mode
 	private boolean debug;
 	
-	public MDebugTarget(ILaunch launch, MDebugRpcProcess rpcProcess) {
+	public MGenericDebugTarget(ILaunch launch, MDebugRpcProcess rpcProcess) {
 		super(null);
 		setDebugTarget(this);
 		this.launch = launch;

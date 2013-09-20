@@ -2,11 +2,15 @@ package gov.va.mumps.debug.ui.terminal;
 
 import gov.va.mumps.debug.core.IMInterpreter;
 import gov.va.mumps.debug.core.IMInterpreterConsumer;
+import gov.va.mumps.debug.core.model.MCodeLocation;
+import gov.va.mumps.debug.core.model.MStackInfo;
+import gov.va.mumps.debug.core.model.MVariableInfo;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
 public class VistAOutputStream extends OutputStream {
+	private static String BREAK_IDENTIFIER = "<BREAK>";
 	private static byte[] PATTERN = {0, 0, 0};
 
 	private OutputStream actual;
@@ -134,8 +138,9 @@ public class VistAOutputStream extends OutputStream {
 					String str = new String(this.debugInfo, 0, currentCount);					
 					if (str.startsWith("!!")) {
 						this.listener.handleEnd();
-					} else {					
-						this.listener.handleBreak(str);
+					} else {
+						MStackInfo[] stackInfos = this.infoToStacksInfo(str); 
+						this.listener.handleBreak(stackInfos);
 					}
 				}
 			}			
@@ -146,5 +151,36 @@ public class VistAOutputStream extends OutputStream {
 		if (OUTDEBUG) {
 			this.actual.write(stream, 0, count);			
 		}
+	}
+
+	private MStackInfo[] infoToStacksInfo(String info) {
+		String[] pieces = info.split("\r\n");		
+		int breakLineIndex = 0;
+		for (String piece : pieces) {
+			if (piece.startsWith(BREAK_IDENTIFIER)) break;
+			++breakLineIndex;
+		}
+		if (breakLineIndex >= pieces.length) {
+			throw new RuntimeException("Internal Error");
+		}
+		
+		String entryInfo = pieces[breakLineIndex].substring("<BREAK>".length());
+		MCodeLocation codeLocation = MCodeLocation.getInstance(entryInfo);
+
+		MVariableInfo[] variableInfos = new MVariableInfo[breakLineIndex-3];
+		int index = 0;
+		for (int i=1; i<breakLineIndex-2; ++i) {
+			String nv = pieces[i];
+			int equalLocation = nv.indexOf('=');
+			if (equalLocation >= 0) {
+				String name = nv.substring(0, equalLocation);
+				String value = nv.substring(equalLocation+1);
+				variableInfos[index] = new MVariableInfo(name, value);
+				++index;
+			}				
+		}
+		MStackInfo[] stacks = new MStackInfo[1];
+		stacks[0] = new MStackInfo(codeLocation, variableInfos);
+		return stacks;
 	}
 }

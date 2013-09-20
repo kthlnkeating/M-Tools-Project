@@ -6,10 +6,10 @@ import gov.va.med.iss.connection.VistAConnection;
 import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.mumps.debug.core.MDebugConstants;
 import gov.va.mumps.debug.core.MDebugSettings;
-import gov.va.mumps.debug.core.model.MCacheTelnetDebugTarget;
+import gov.va.mumps.debug.core.model.MNativeDebugTarget;
 import gov.va.mumps.debug.core.model.MDebugPreference;
 import gov.va.mumps.debug.core.model.MDebugRpcProcess;
-import gov.va.mumps.debug.core.model.MDebugTarget;
+import gov.va.mumps.debug.core.model.MGenericDebugTarget;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -99,13 +99,13 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 				throw new CoreException(status);						
 			}			
 			MDebugRpcProcess rpcProcess = new MDebugRpcProcess(launch, vc, mCode, null);
-			IDebugTarget target = new MDebugTarget(launch, rpcProcess);	
+			IDebugTarget target = new MGenericDebugTarget(launch, rpcProcess);	
 			launch.addDebugTarget(target);			
 		}
 	}
 	
 	private void launchCacheTelnet(IProject project, ILaunch launch, String mCode) {
-		MCacheTelnetDebugTarget target = new MCacheTelnetDebugTarget(project, mCode, launch);
+		MNativeDebugTarget target = new MNativeDebugTarget(project, mCode, launch);
 		launch.addDebugTarget(target);		
 	}
 	

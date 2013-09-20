@@ -59,38 +59,52 @@ public class VistATelnetConnector extends TelnetConnector implements IMInterpret
 		settings.save(store);
 	}
 	
+	@Override
 	public void sendInfoCommand(String command) {
 		this.os.setState(VistAOutputStreamState.COMMAND_EXECUTE);
 		this.sendCommandToStream(command);
 	}
 	
+	@Override
 	public void sendRunCommand(String command) {
 		command = command + " W $C(0,0,0),\"!!\"\n"; 
 		this.os.setState(VistAOutputStreamState.RESUMED);
 		this.sendCommandToStream(command);
 	}
 	
+	@Override
 	public void resume() {
 		this.terminalManager.giveFocus(this.consumer.getLaunchId());
 		this.os.setState(VistAOutputStreamState.RESUMED);
 		this.sendCommandToStream("BREAK \"C\" G\n");
 	}
 	
+	@Override
 	public void stepInto() {
 		this.terminalManager.giveFocus(this.consumer.getLaunchId());
 		this.sendStepCommand("S+");
 	}
 	
+	@Override
 	public void stepOver() {
 		this.terminalManager.giveFocus(this.consumer.getLaunchId());
 		this.sendStepCommand("L");
 	}
 	
+	@Override
 	public void stepReturn() {
 		this.terminalManager.giveFocus(this.consumer.getLaunchId());
 		this.sendStepCommand("L-");
 	}
 	
+	public String getLocationBreakCommand(String codeLocation) {
+		return "ZBREAK " + codeLocation + ":\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"";
+	}
+
+	public String getVariableBreakCommand(String variable) {
+		return "ZBREAK *" + variable + ":\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"";
+	}
+
 	private void sendStepCommand(String type) {
 		String cmd = "BREAK \"" + type + "\" ZBREAK $:\"B\":\"1\":\"W $C(0,0,0) ZWRITE\" G\n";
 		this.os.setState(VistAOutputStreamState.RESUMED);
