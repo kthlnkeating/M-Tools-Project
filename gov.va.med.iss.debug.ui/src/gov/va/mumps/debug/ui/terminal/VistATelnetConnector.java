@@ -1,5 +1,6 @@
 package gov.va.mumps.debug.ui.terminal;
 
+import gov.va.mumps.debug.core.IMInterpreter;
 import gov.va.mumps.debug.core.IMInterpreterConsumer;
 import gov.va.mumps.debug.core.model.IMTerminalManager;
 
@@ -12,25 +13,24 @@ import org.eclipse.tm.internal.terminal.telnet.ITelnetSettings;
 import org.eclipse.tm.internal.terminal.telnet.TelnetConnector;
 
 @SuppressWarnings("restriction")
-public class VistATelnetConnector extends TelnetConnector {
+public class VistATelnetConnector extends TelnetConnector implements IMInterpreter {
 	private VistATelnetSettings settings = new VistATelnetSettings();
-	private IVistAStreamListener listener;
 	private VistAOutputStream os;
 	private IMTerminalManager terminalManager;
 	private IMInterpreterConsumer consumer;
 	
-	public VistATelnetConnector(IMInterpreterConsumer consumer, IMTerminalManager terminalManager, IVistAStreamListener listener) {
+	public VistATelnetConnector(IMInterpreterConsumer consumer, IMTerminalManager terminalManager) {
 		super(null);
 		this.consumer = consumer;
-		this.listener = listener;
 		this.terminalManager = terminalManager;
 	}
 	
 	@Override
 	public void connect(ITerminalControl control) {
 		String namespace = this.consumer.getPrompt();
-		TerminalControlWrap wrapTC = new TerminalControlWrap(namespace, control, this.listener);
+		TerminalControlWrap wrapTC = new TerminalControlWrap(namespace, control, this.consumer);
 		this.os = wrapTC.getVistAStream();
+		this.os.setMInterpreter(this);
 		super.connect(wrapTC);
 	}
 

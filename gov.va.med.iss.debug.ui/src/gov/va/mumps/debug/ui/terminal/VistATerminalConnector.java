@@ -10,25 +10,22 @@ import org.eclipse.tm.internal.terminal.provisional.api.provider.TerminalConnect
 @SuppressWarnings("restriction")
 public class VistATerminalConnector extends TerminalConnector {
 	private static class VistATerminalConnectorFactory implements TerminalConnector.Factory {		
-		private IVistAStreamListener listener;
 		private IMInterpreterConsumer consumer;
 		private IMTerminalManager terminalManager;
 		
-		public VistATerminalConnectorFactory(IMInterpreterConsumer consumer, IMTerminalManager terminalManager, IVistAStreamListener listener) {
-			this.listener = listener;
+		public VistATerminalConnectorFactory(IMInterpreterConsumer consumer, IMTerminalManager terminalManager) {
 			this.consumer = consumer;
 			this.terminalManager = terminalManager;
 		}
 		
 		@Override
 		public TerminalConnectorImpl makeConnector() throws Exception {
-			VistATelnetConnector connector = new VistATelnetConnector(this.consumer, this.terminalManager, this.listener);
-			this.listener.handleConnectorCreated(connector);
+			VistATelnetConnector connector = new VistATelnetConnector(this.consumer, this.terminalManager);
 			return connector;
 		}
 	};
 	
-	public VistATerminalConnector(IMInterpreterConsumer consumer, IMTerminalManager terminalManager, IVistAStreamListener listener) {
-		super(new VistATerminalConnectorFactory(consumer, terminalManager, listener), "us.pwc.vista.eclipse.terminal.VistATerminalConnector", "VistA Telnet", false);
+	public VistATerminalConnector(IMInterpreterConsumer consumer, IMTerminalManager terminalManager) {
+		super(new VistATerminalConnectorFactory(consumer, terminalManager), "us.pwc.vista.eclipse.terminal.VistATerminalConnector", "VistA Telnet", false);
 	}	
 }

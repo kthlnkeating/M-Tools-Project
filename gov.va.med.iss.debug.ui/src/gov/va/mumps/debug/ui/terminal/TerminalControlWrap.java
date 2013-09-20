@@ -1,5 +1,7 @@
 package gov.va.mumps.debug.ui.terminal;
 
+import gov.va.mumps.debug.core.IMInterpreterConsumer;
+
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
@@ -12,7 +14,7 @@ public class TerminalControlWrap implements ITerminalControl {
 	private ITerminalControl actual;
 	private VistAOutputStream os;
 	
-	public TerminalControlWrap(String namespace, ITerminalControl actual, IVistAStreamListener listener) {
+	public TerminalControlWrap(String namespace, ITerminalControl actual, IMInterpreterConsumer listener) {
 		this.actual = actual;
 		this.os = new VistAOutputStream(namespace, actual.getRemoteToTerminalOutputStream(), listener);
 	}

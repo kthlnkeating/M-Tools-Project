@@ -1,5 +1,8 @@
 package gov.va.mumps.debug.ui.terminal;
 
+import gov.va.mumps.debug.core.IMInterpreter;
+import gov.va.mumps.debug.core.IMInterpreterConsumer;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -16,18 +19,23 @@ public class VistAOutputStream extends OutputStream {
 	private byte[] debugInfo = new byte[10000];
 	private int debugCount;
 	
-	private IVistAStreamListener listener;
+	private IMInterpreterConsumer listener;
 	
 	private byte[] namespace;
+	private IMInterpreter interpreter;
 	
 	private final static boolean OUTDEBUG = false;
 	
-	public VistAOutputStream(String namespace, OutputStream actual, IVistAStreamListener listener) {
+	public VistAOutputStream(String namespace, OutputStream actual, IMInterpreterConsumer listener) {
 		this.namespace = namespace.getBytes();
 		this.actual = actual;
 		this.listener = listener;
 	}
 	
+	public void setMInterpreter(IMInterpreter interpreter) {
+		this.interpreter = interpreter;
+	}
+ 	
 	@Override
 	public void close() throws IOException {
 		if (count > 0) {
@@ -118,10 +126,10 @@ public class VistAOutputStream extends OutputStream {
 				this.debugCount = 0;
 				this.state = VistAOutputStreamState.BREAK_SEARCH;
 				if (currentState == VistAOutputStreamState.NOT_CONNECTED) {
-					this.listener.handleConnected();
+					this.listener.handleConnected(this.interpreter);
 				}  else if (currentState == VistAOutputStreamState.COMMAND_EXECUTE) {
 					String str = new String(this.debugInfo, 0, currentCount);					
-					this.listener.handleCommandExecuteEnded(str);						
+					this.listener.handleCommandExecuted(str);						
 				} else if (currentState == VistAOutputStreamState.BREAK_FOUND) {					
 					String str = new String(this.debugInfo, 0, currentCount);					
 					if (str.startsWith("!!")) {
