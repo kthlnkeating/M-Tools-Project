@@ -7,7 +7,6 @@ import gov.va.med.iss.connection.VLConnectionPlugin;
 import gov.va.mumps.debug.core.MDebugConstants;
 import gov.va.mumps.debug.core.MDebugSettings;
 import gov.va.mumps.debug.core.model.MCacheTelnetDebugTarget;
-import gov.va.mumps.debug.core.model.MCacheTelnetProcess;
 import gov.va.mumps.debug.core.model.MDebugPreference;
 import gov.va.mumps.debug.core.model.MDebugRpcProcess;
 import gov.va.mumps.debug.core.model.MDebugTarget;
@@ -106,8 +105,7 @@ public class MLaunchDelegate extends LaunchConfigurationDelegate {
 	}
 	
 	private void launchCacheTelnet(IProject project, ILaunch launch, String mCode) {
-		MCacheTelnetProcess rpcProcess = new MCacheTelnetProcess(launch, null, mCode, null);
-		MCacheTelnetDebugTarget target = new MCacheTelnetDebugTarget(project, mCode, launch, rpcProcess);
+		MCacheTelnetDebugTarget target = new MCacheTelnetDebugTarget(project, mCode, launch);
 		launch.addDebugTarget(target);		
 	}
 	

@@ -31,20 +31,18 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	private static String BREAK_IDENTIFIER = "<BREAK>";
 
 	private ILaunch launch;
-	private MCacheTelnetProcess rpcDebugProcess;
+
 	private boolean suspended;
+	private boolean terminated;
+	
 	private MThread debugThread;
 	private String name;
 	
 	//All the currently defined variables
 	private List<VariableVO> allVariables;
-	//Only variables created during the debug process
+
 	private MVariable[] variables;
-	
-	//process stack
 	private MStackFrame[] stack;
-	
-	//mode
 	private boolean debug;
 	
 	private IMInterpreter interpreter;
@@ -52,14 +50,13 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	private IProject project;
 	private String mcode;
 	
-	public MCacheTelnetDebugTarget(IProject project, String mcode, ILaunch launch, MCacheTelnetProcess rpcProcess) {
+	public MCacheTelnetDebugTarget(IProject project, String mcode, ILaunch launch) {
 		super(null);
 		this.project = project;
 		this.mcode = mcode;
 		setDebugTarget(this);
 		this.launch = launch;
 		this.debug = launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE);
-		this.rpcDebugProcess = rpcProcess;
 		
 		debugThread = new MThread(this);		
 		suspended = true;		
@@ -91,12 +88,14 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 
 	@Override
 	public boolean canTerminate() {
-		return rpcDebugProcess.canTerminate();
+		return ! this.terminated;		
+		//return rpcDebugProcess.canTerminate();
 	}
 
 	@Override
 	public boolean isTerminated() {
-		return rpcDebugProcess.isTerminated();
+		return this.terminated;
+		//return rpcDebugProcess.isTerminated();
 	}
 
 	@Override
@@ -223,7 +222,7 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 
 	@Override
 	public IProcess getProcess() {
-		return rpcDebugProcess;
+		return null;
 	}
 
 	@Override
@@ -352,7 +351,8 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 			uninstallActiveBreakpoints();
 			DebugPlugin.getDefault().getBreakpointManager().removeBreakpointListener(this);
 		}
-		rpcDebugProcess.terminate();
+		this.terminated = true;
+		//rpcDebugProcess.terminate();
 		suspended = false;
 		fireTerminateEvent(); //this fires the event to indicate that the debugtarget has terminated.
 	}
