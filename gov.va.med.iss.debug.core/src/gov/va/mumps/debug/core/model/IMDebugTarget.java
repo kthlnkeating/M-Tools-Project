@@ -33,7 +33,7 @@ public interface IMDebugTarget extends IDebugTarget {
 	IVariable[] getVariables();
 	public List<VariableVO> getAllVariables();
 	
-	MDebugPreference getPreferenceImplemented();
+	boolean isNative();
 	
 	boolean canStepOver();
 	boolean canStepReturn();

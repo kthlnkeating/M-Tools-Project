@@ -33,6 +33,7 @@ import us.pwc.vista.eclipse.core.helper.SWTHelper;
 public class MDebugPreferencePage extends PropertyPage implements IWorkbenchPreferencePage {
 	private Button genericBtn;
 	private Button cacheTelnetBtn;
+	private Button gtmSSHBtn;
 	private Text nameSpaceCtl;
 	
 	@Override
@@ -47,6 +48,7 @@ public class MDebugPreferencePage extends PropertyPage implements IWorkbenchPref
 
 		this.genericBtn = SWTHelper.createRadioBox(contents, "Generic", 2);
 		this.cacheTelnetBtn = SWTHelper.createRadioBox(contents, "Cache Telnet", 2);
+		this.gtmSSHBtn = SWTHelper.createRadioBox(contents, "GT.M SSH", 2);
 		this.nameSpaceCtl = SWTHelper.createLabelTextPair(contents, "Namespace:");
 				
 		this.initialize();
@@ -58,6 +60,9 @@ public class MDebugPreferencePage extends PropertyPage implements IWorkbenchPref
 		switch (preference) {
 		case CACHE_TELNET:
 			this.cacheTelnetBtn.setSelection(true);
+			break;
+		case GTM_SSH:
+			this.gtmSSHBtn.setSelection(true);
 			break;
 		default:
 			this.genericBtn.setSelection(true);
@@ -72,6 +77,8 @@ public class MDebugPreferencePage extends PropertyPage implements IWorkbenchPref
 	public boolean performOk() {
 		if (this.cacheTelnetBtn.getSelection()) {
 			MDebugSettings.setDebugPreference(MDebugPreference.CACHE_TELNET);
+		} else if (this.gtmSSHBtn.getSelection()) {
+			MDebugSettings.setDebugPreference(MDebugPreference.GTM_SSH);
 		} else {
 			MDebugSettings.setDebugPreference(MDebugPreference.GENERIC);
 		}

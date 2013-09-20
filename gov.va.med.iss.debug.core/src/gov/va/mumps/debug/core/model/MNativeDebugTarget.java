@@ -291,8 +291,8 @@ public class MNativeDebugTarget extends MDebugElement implements IMDebugTarget, 
 	}
 	
 	@Override
-	public MDebugPreference getPreferenceImplemented() {
-		return MDebugPreference.CACHE_TELNET;
+	public boolean isNative() {
+		return true;
 	}
 	
 	@Override

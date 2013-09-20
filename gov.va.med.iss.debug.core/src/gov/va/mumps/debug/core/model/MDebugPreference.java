@@ -18,5 +18,6 @@ package gov.va.mumps.debug.core.model;
 
 public enum MDebugPreference {
 	GENERIC,
-	CACHE_TELNET;
+	CACHE_TELNET,
+	GTM_SSH;
 }

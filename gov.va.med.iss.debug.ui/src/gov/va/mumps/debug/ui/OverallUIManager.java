@@ -18,10 +18,7 @@ package gov.va.mumps.debug.ui;
 
 import gov.va.mumps.debug.core.model.IMDebugTarget;
 import gov.va.mumps.debug.core.model.IMTerminalManager;
-import gov.va.mumps.debug.core.model.MDebugPreference;
 import gov.va.mumps.debug.ui.terminal.MTerminalManager;
-
-import java.util.EnumMap;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchListener;
@@ -29,42 +26,26 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.ui.IWorkbench;
 
 class OverallUIManager implements IMUIManager {
-	private EnumMap<MDebugPreference, IMUIManager> listeners;
+	private IMUIManager nativeListener;
+	private IMUIManager genericListener;
 	private IMTerminalManager terminalManager = new MTerminalManager();
-	
-	private IMUIManager createListener(MDebugPreference debugPeference) {
-		switch (debugPeference) {
-		case GENERIC:
-			return new GenericUIManager();
-		case CACHE_TELNET:
-			return new NativeUIManager(this.terminalManager);			
-		default:
-			return null;
-		}		
-	}
-	
-	private ILaunchListener createAndAddListener(EnumMap<MDebugPreference, IMUIManager> listeners, MDebugPreference debugPeference) {
-		IMUIManager result = this.createListener(debugPeference);
-		if (result != null) {
-			listeners.put(debugPeference, result);
-		}
-		return result;
-	}
 	
 	private ILaunchListener getListener(ILaunch launch) {
 		IDebugTarget target = launch.getDebugTarget();
 		if (target instanceof IMDebugTarget) {
 			IMDebugTarget mtarget = (IMDebugTarget) target;
-			MDebugPreference preference = mtarget.getPreferenceImplemented();
-			if (this.listeners == null) {
-				this.listeners = new EnumMap<MDebugPreference, IMUIManager>(MDebugPreference.class);
-				return createAndAddListener(this.listeners, preference);
-			}			
-			ILaunchListener result = this.listeners.get(preference);
-			if (result != null) {
-				return result;
+			boolean isNative = mtarget.isNative();
+			if (isNative) {
+				if (this.nativeListener == null) {
+					this.nativeListener = new NativeUIManager(this.terminalManager);					
+				}
+				return this.nativeListener;
+			} else {
+				if (this.genericListener == null) {
+					this.genericListener = new GenericUIManager();					
+				}
+				return this.genericListener;
 			}
-			return this.createAndAddListener(this.listeners, preference);
 		}
 		return null;		
 	}
@@ -95,20 +76,22 @@ class OverallUIManager implements IMUIManager {
 
 	@Override
     public boolean preShutdown(IWorkbench workbench, boolean forced) {
-		if (this.listeners != null) {
-			for (IMUIManager mgr : this.listeners.values()) {
-				mgr.preShutdown(workbench, forced);
-			}
+		if (this.nativeListener != null) {
+			this.nativeListener.preShutdown(workbench, forced);
+		}
+		if (this.genericListener != null) {
+			this.genericListener.preShutdown(workbench, forced);
 		}
 		return true;
     }
  
 	@Override
     public void postShutdown(IWorkbench workbench) { 
-		if (this.listeners != null) {
-			for (IMUIManager mgr : this.listeners.values()) {
-				mgr.postShutdown(workbench);
-			}
+		if (this.nativeListener != null) {
+			this.nativeListener.postShutdown(workbench);
+		}
+		if (this.genericListener != null) {
+			this.genericListener.postShutdown(workbench);
 		}
      }
 }

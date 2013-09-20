@@ -348,8 +348,8 @@ public class MGenericDebugTarget extends MDebugElement implements IMDebugTarget,
 	}
 	
 	@Override
-	public MDebugPreference getPreferenceImplemented() {
-		return MDebugPreference.GENERIC;
+	public boolean isNative() {
+		return false;
 	}
 	
 	@Override
