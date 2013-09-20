@@ -24,7 +24,6 @@ import gov.va.mumps.debug.core.model.MCacheTelnetDebugTarget;
 import gov.va.mumps.debug.ui.terminal.VistATerminalView;
 
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
@@ -33,7 +32,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 
-class CacheTelnetUIManager implements ILaunchListener {
+class CacheTelnetUIManager implements IMUIManager {
 	private Map<String, IViewPart> views = new HashMap<String, IViewPart>();
 	
 	@Override
@@ -81,4 +80,21 @@ class CacheTelnetUIManager implements ILaunchListener {
 			});
 		}
 	}
+	
+	@Override
+    public boolean preShutdown(IWorkbench workbench, boolean forced) {                            
+		Display.getDefault().syncExec(new Runnable() {						
+			@Override
+			public void run() {
+				for (IViewPart vp : CacheTelnetUIManager.this.views.values()) {
+					vp.getSite().getWorkbenchWindow().getActivePage().hideView(vp);				
+				}
+			}
+		});		
+		return true;
+    }
+ 
+	@Override
+    public void postShutdown(IWorkbench workbench) { 
+    }
 }

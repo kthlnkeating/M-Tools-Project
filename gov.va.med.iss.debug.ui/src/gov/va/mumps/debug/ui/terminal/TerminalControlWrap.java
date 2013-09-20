@@ -1,13 +1,11 @@
 package gov.va.mumps.debug.ui.terminal;
 
-
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.tm.internal.terminal.provisional.api.ITerminalControl;
 import org.eclipse.tm.internal.terminal.provisional.api.TerminalState;
-
 
 @SuppressWarnings("restriction")
 public class TerminalControlWrap implements ITerminalControl {

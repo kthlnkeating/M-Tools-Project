@@ -1,6 +1,8 @@
 package gov.va.mumps.debug.ui;
 
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -28,7 +30,9 @@ public class MDebugUIPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		this.uiManager = new OverallUIManager();		
+		IWorkbench wb = PlatformUI.getWorkbench();
+		this.uiManager = new OverallUIManager();
+		wb.addWorkbenchListener(this.uiManager);
 		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this.uiManager);
 	}
 

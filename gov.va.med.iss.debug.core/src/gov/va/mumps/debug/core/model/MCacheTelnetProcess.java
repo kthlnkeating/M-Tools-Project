@@ -1,7 +1,6 @@
 package gov.va.mumps.debug.core.model;
 
 import gov.va.med.iss.connection.VistAConnection;
-import gov.va.mumps.debug.xtdebug.vo.StepResultsVO;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,15 +35,10 @@ public class MCacheTelnetProcess extends PlatformObject implements IProcess {
 	private String name;
 	private boolean terminated;
 	private Map<String,String> attributes;
-	private StepResultsVO responseResults;
-	//*private XtdebugHandler xtdebugHandler;
 	
 	public MCacheTelnetProcess(ILaunch launch, VistAConnection vistaConnection, String debugEntryTag, Map<String, String> attributes) {
 		initializeAttributes(attributes);
-		
-		//*xtdebugHandler = new XtdebugHandler(vistaConnection);
-		//*responseResults = xtdebugHandler.startDebug(debugEntryTag);	
-		
+
 		name = "VistA Connection: ";// + vistaConnection.getServerData().toUIString();
 		this.launch = launch;
 		launch.addProcess(this);
@@ -166,42 +160,4 @@ public class MCacheTelnetProcess extends PlatformObject implements IProcess {
 	private void fireTerminateEvent() {
 		fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
 	}
-
-	public void resume() {
-		//*responseResults = xtdebugHandler.resume();
-	}
-
-	public void stepOver() {
-	}
-
-	public void stepInto() {
-		//*responseResults = xtdebugHandler.stepInto();
-	}
-
-	public void stepOut() {
-	}
-	
-	public void addBreakPoint(String breakPoint) {
-		//*xtdebugHandler.addBreakpoint(breakPoint);
-	}
-	
-	public void removeBreakPoint(String breakPoint) {
-		//*xtdebugHandler.removeBreakpoint(breakPoint);
-	}
-	
-	public void addWatchPoint(String watchPoint) {
-		//*xtdebugHandler.addWatchpoint(watchPoint);
-	}
-	
-	public void removeWatchPoint(String watchPoint) {
-		//*xtdebugHandler.removeWatchpoint(watchPoint);
-	}
-
-	public StepResultsVO getResponseResults() {
-		return responseResults;
-	}
-
-	public void sendReadInput(String input) {
-		//*responseResults = xtdebugHandler.sendReadInput(input);
-	}	
 }

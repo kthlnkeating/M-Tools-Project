@@ -23,11 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchListener;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 
-class GenericUIManager implements ILaunchListener {
+class GenericUIManager implements IMUIManager {
 	Map<MDebugTarget, MDevConsole> consoles = new HashMap<MDebugTarget, MDevConsole>(5);
 	
 	@Override
@@ -65,4 +65,13 @@ class GenericUIManager implements ILaunchListener {
 			this.consoles.remove(mDevConsole);
 		}
 	}
+
+	@Override
+    public boolean preShutdown(IWorkbench workbench, boolean forced) {                            
+        return true;
+    }
+ 
+	@Override
+    public void postShutdown(IWorkbench workbench) { 
+    }
 }

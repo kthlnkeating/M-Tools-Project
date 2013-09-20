@@ -24,11 +24,12 @@ import java.util.EnumMap;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchListener;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.ui.IWorkbench;
 
-class OverallUIManager implements ILaunchListener {
-	private EnumMap<MDebugPreference, ILaunchListener> listeners;
+class OverallUIManager implements IMUIManager {
+	private EnumMap<MDebugPreference, IMUIManager> listeners;
 	
-	private static ILaunchListener createListener(MDebugPreference debugPeference) {
+	private static IMUIManager createListener(MDebugPreference debugPeference) {
 		switch (debugPeference) {
 		case GENERIC:
 			return new GenericUIManager();
@@ -39,8 +40,8 @@ class OverallUIManager implements ILaunchListener {
 		}		
 	}
 	
-	private static ILaunchListener createAndAddListener(EnumMap<MDebugPreference, ILaunchListener> listeners, MDebugPreference debugPeference) {
-		ILaunchListener result = createListener(debugPeference);
+	private static ILaunchListener createAndAddListener(EnumMap<MDebugPreference, IMUIManager> listeners, MDebugPreference debugPeference) {
+		IMUIManager result = createListener(debugPeference);
 		if (result != null) {
 			listeners.put(debugPeference, result);
 		}
@@ -53,7 +54,7 @@ class OverallUIManager implements ILaunchListener {
 			IMDebugTarget mtarget = (IMDebugTarget) target;
 			MDebugPreference preference = mtarget.getPreferenceImplemented();
 			if (this.listeners == null) {
-				this.listeners = new EnumMap<MDebugPreference, ILaunchListener>(MDebugPreference.class);
+				this.listeners = new EnumMap<MDebugPreference, IMUIManager>(MDebugPreference.class);
 				return createAndAddListener(this.listeners, preference);
 			}			
 			ILaunchListener result = this.listeners.get(preference);
@@ -88,4 +89,23 @@ class OverallUIManager implements ILaunchListener {
 			listener.launchRemoved(launch);
 		}
 	}
+
+	@Override
+    public boolean preShutdown(IWorkbench workbench, boolean forced) {
+		if (this.listeners != null) {
+			for (IMUIManager mgr : this.listeners.values()) {
+				mgr.preShutdown(workbench, forced);
+			}
+		}
+		return true;
+    }
+ 
+	@Override
+    public void postShutdown(IWorkbench workbench) { 
+		if (this.listeners != null) {
+			for (IMUIManager mgr : this.listeners.values()) {
+				mgr.postShutdown(workbench);
+			}
+		}
+     }
 }

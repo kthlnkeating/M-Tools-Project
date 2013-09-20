@@ -122,7 +122,6 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	@Override
 	public void resume() {
 		debugThread.fireResumeEvent(DebugEvent.CLIENT_REQUEST);
-		rpcDebugProcess.resume();
 		suspended = false;
 		this.interpreter.resume();
 	}
@@ -140,13 +139,13 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 			if (!breakpoint.isEnabled())
 				return;
 
-			if (breakpoint instanceof AbstractMBreakpoint)
-				rpcDebugProcess
-						.addBreakPoint(((AbstractMBreakpoint) breakpoint)
-								.getBreakpointAsTag());
-			else if (breakpoint instanceof MWatchpoint)
-				rpcDebugProcess.addWatchPoint(((MWatchpoint) breakpoint)
-						.getWatchpointVariable());
+			//if (breakpoint instanceof AbstractMBreakpoint)
+			//	rpcDebugProcess
+			//			.addBreakPoint(((AbstractMBreakpoint) breakpoint)
+			//					.getBreakpointAsTag());
+			//else if (breakpoint instanceof MWatchpoint)
+			//	rpcDebugProcess.addWatchPoint(((MWatchpoint) breakpoint)
+			//			.getWatchpointVariable());
 		} catch (CoreException e) {
 		}
 	}
@@ -179,10 +178,10 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		if (!supportsBreakpoint(breakpoint) || isTerminated())
 			return;
 		
-		if (breakpoint instanceof AbstractMBreakpoint)
-			rpcDebugProcess.removeBreakPoint(((AbstractMBreakpoint)breakpoint).getBreakpointAsTag());
-		else if (breakpoint instanceof MWatchpoint)
-			rpcDebugProcess.removeWatchPoint(((MWatchpoint)breakpoint).getWatchpointVariable());
+		//if (breakpoint instanceof AbstractMBreakpoint)
+		//	rpcDebugProcess.removeBreakPoint(((AbstractMBreakpoint)breakpoint).getBreakpointAsTag());
+		//else if (breakpoint instanceof MWatchpoint)
+		//	rpcDebugProcess.removeWatchPoint(((MWatchpoint)breakpoint).getWatchpointVariable());
 	}
 
 	@Override
@@ -265,7 +264,6 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	public void stepOver() {
 		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_OVER);
-		rpcDebugProcess.stepOver();
 		this.interpreter.stepOver();		
 	}
 
@@ -273,14 +271,12 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 	public void stepInto() {
 		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_INTO);
-		rpcDebugProcess.stepInto();
 		this.interpreter.stepInto();		
 	}
 
 	public void stepReturn() {
 		suspended = false;
 		fireResumeEvent(DebugEvent.STEP_RETURN);
-		rpcDebugProcess.stepOut();
 		this.interpreter.stepReturn();		
 	}
 	
