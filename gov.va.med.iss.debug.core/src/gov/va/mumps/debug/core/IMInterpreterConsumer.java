@@ -11,4 +11,6 @@ public interface IMInterpreterConsumer {
 	void handleError(Throwable throwable);
 	
 	String getLaunchId();
+	
+	String getPrompt();
 }

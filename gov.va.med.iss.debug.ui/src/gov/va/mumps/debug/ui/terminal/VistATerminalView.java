@@ -2,25 +2,22 @@ package gov.va.mumps.debug.ui.terminal;
 
 import gov.va.mumps.debug.core.IMInterpreter;
 import gov.va.mumps.debug.core.IMInterpreterConsumer;
+import gov.va.mumps.debug.core.model.IMTerminal;
+import gov.va.mumps.debug.core.model.IMTerminalManager;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.tm.internal.terminal.provisional.api.ITerminalConnector;
 import org.eclipse.tm.internal.terminal.view.TerminalView;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 
 @SuppressWarnings("restriction")
-public class VistATerminalView extends TerminalView implements IMInterpreter, IVistAStreamListener {
+public class VistATerminalView extends TerminalView implements IMInterpreter, IVistAStreamListener, IMTerminal {
 	private IMInterpreterConsumer consumer;
 	private VistATelnetConnector connector;
 	
 	@Override
-	public void connect(IMInterpreterConsumer consumer, String namespace) {
-		ITerminalConnector connector = new VistATerminalConnector(namespace, this); 
+	public void connect(IMTerminalManager terminalManager, IMInterpreterConsumer consumer) {
+		ITerminalConnector connector = new VistATerminalConnector(consumer, terminalManager, this); 
 		if (connector != null) {
 			this.fCtlTerminal.setConnector(connector);
 			this.fCtlTerminal.connectTerminal();
@@ -31,6 +28,11 @@ public class VistATerminalView extends TerminalView implements IMInterpreter, IV
 	@Override
 	public void disconnect() {
 		this.fCtlTerminal.disconnectTerminal();			
+	}
+	
+	@Override
+	public String getId() {
+		return this.getViewSite().getSecondaryId();
 	}
 	
 	@Override
@@ -74,43 +76,22 @@ public class VistATerminalView extends TerminalView implements IMInterpreter, IV
 	
 	@Override
 	public void resume() {
-		this.giveFocusToTerminal();		
 		this.connector.resume();		
 	}
 	
 	@Override
 	public void stepInto() {
-		this.giveFocusToTerminal();		
 		this.connector.stepInto();		
 	}
 	
 	@Override
 	public void stepOver() {
-		this.giveFocusToTerminal();		
 		this.connector.stepOver();		
 	}
 	
 	@Override
 	public void stepReturn() {
-		this.giveFocusToTerminal();		
 		this.connector.stepReturn();		
-	}
-	
-	private void giveFocusToTerminal() {
-		final String secondaryId = this.consumer.getLaunchId();
-		Display.getDefault().syncExec(new Runnable() {						
-			@Override
-			public void run() {
-				try {
-					IWorkbench wb = PlatformUI.getWorkbench();
-					IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
-					IWorkbenchPage wbp = window.getActivePage();
-					
-					wbp.showView("us.pwc.vista.eclipse.terminal.VistATerminalView", secondaryId, IWorkbenchPage.VIEW_ACTIVATE);
-				} catch (Throwable t) {
-				}
-			}
-		});		
 	}
 
 	// Remove interactive components of Eclipse terminal

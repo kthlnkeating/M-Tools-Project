@@ -1,5 +1,7 @@
 package gov.va.mumps.debug.ui.terminal;
 
+import gov.va.mumps.debug.core.IMInterpreterConsumer;
+import gov.va.mumps.debug.core.model.IMTerminalManager;
 
 import java.io.IOException;
 
@@ -9,23 +11,25 @@ import org.eclipse.tm.internal.terminal.provisional.api.ITerminalControl;
 import org.eclipse.tm.internal.terminal.telnet.ITelnetSettings;
 import org.eclipse.tm.internal.terminal.telnet.TelnetConnector;
 
-
 @SuppressWarnings("restriction")
 public class VistATelnetConnector extends TelnetConnector {
 	private VistATelnetSettings settings = new VistATelnetSettings();
 	private IVistAStreamListener listener;
 	private VistAOutputStream os;
-	private String namespace;
+	private IMTerminalManager terminalManager;
+	private IMInterpreterConsumer consumer;
 	
-	public VistATelnetConnector(String namespace, IVistAStreamListener listener) {
+	public VistATelnetConnector(IMInterpreterConsumer consumer, IMTerminalManager terminalManager, IVistAStreamListener listener) {
 		super(null);
-		this.namespace = namespace;
+		this.consumer = consumer;
 		this.listener = listener;
+		this.terminalManager = terminalManager;
 	}
 	
 	@Override
 	public void connect(ITerminalControl control) {
-		TerminalControlWrap wrapTC = new TerminalControlWrap(this.namespace, control, this.listener);
+		String namespace = this.consumer.getPrompt();
+		TerminalControlWrap wrapTC = new TerminalControlWrap(namespace, control, this.listener);
 		this.os = wrapTC.getVistAStream();
 		super.connect(wrapTC);
 	}
@@ -67,19 +71,23 @@ public class VistATelnetConnector extends TelnetConnector {
 	}
 	
 	public void resume() {
+		this.terminalManager.giveFocus(this.consumer.getLaunchId());
 		this.os.setState(VistAOutputStreamState.RESUMED);
 		this.sendCommandToStream("BREAK \"C\" G\n");
 	}
 	
 	public void stepInto() {
+		this.terminalManager.giveFocus(this.consumer.getLaunchId());
 		this.sendStepCommand("S+");
 	}
 	
 	public void stepOver() {
+		this.terminalManager.giveFocus(this.consumer.getLaunchId());
 		this.sendStepCommand("L");
 	}
 	
 	public void stepReturn() {
+		this.terminalManager.giveFocus(this.consumer.getLaunchId());
 		this.sendStepCommand("L-");
 	}
 	

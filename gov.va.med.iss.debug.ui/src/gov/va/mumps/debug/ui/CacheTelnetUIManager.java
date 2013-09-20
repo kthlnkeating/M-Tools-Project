@@ -19,21 +19,22 @@ package gov.va.mumps.debug.ui;
 import java.util.HashMap;
 import java.util.Map;
 
-import gov.va.mumps.debug.core.MDebugSettings;
+import gov.va.mumps.debug.core.model.IMTerminal;
+import gov.va.mumps.debug.core.model.IMTerminalManager;
 import gov.va.mumps.debug.core.model.MCacheTelnetDebugTarget;
-import gov.va.mumps.debug.ui.terminal.VistATerminalView;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 
 
 class CacheTelnetUIManager implements IMUIManager {
-	private Map<String, IViewPart> views = new HashMap<String, IViewPart>();
+	private Map<String, IMTerminal> views = new HashMap<String, IMTerminal>();
+	private IMTerminalManager terminalManager;
+	
+	public CacheTelnetUIManager(IMTerminalManager terminalManager) {
+		this.terminalManager = terminalManager;
+	}
 	
 	@Override
 	public void launchAdded(final ILaunch launch) {
@@ -44,50 +45,27 @@ class CacheTelnetUIManager implements IMUIManager {
 		final String launchId = String.valueOf(System.identityHashCode(launch));		
 		if (launch.getDebugTarget() != null) {
 			final MCacheTelnetDebugTarget target = (MCacheTelnetDebugTarget) launch.getDebugTarget();
-			final String namespace = MDebugSettings.getNamespace();
-		
-			synchronized (target) {
-				final CacheTelnetUIManager thiz = this;
-				Display.getDefault().syncExec(new Runnable() {						
-					@Override
-					public void run() {
-						try {
-							IWorkbench wb = PlatformUI.getWorkbench();
-							IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
-							IWorkbenchPage wbp = window.getActivePage();
-							IViewPart vp = wbp.showView(MDebugUIPlugin.TERMINAL_VIEW_ID, launchId, IWorkbenchPage.VIEW_ACTIVATE);
-							thiz.views.put(launchId, vp);
-							
-							((VistATerminalView) vp).connect(target, namespace); 
-						} catch (Throwable t) {
-						}
-					}
-				});
+			IMTerminal terminal = this.terminalManager.create(launchId, target);
+			if (terminal != null) {
+				this.views.put(launchId, terminal);
 			}
 		}
 	}
 
 	@Override
 	public void launchRemoved(ILaunch launch) {
-		String launchId = String.valueOf(System.identityHashCode(launch));		
-		final IViewPart vp = this.views.get(launchId);
-		if (vp != null) {		
-			Display.getDefault().syncExec(new Runnable() {						
-				@Override
-				public void run() {
-					vp.getSite().getWorkbenchWindow().getActivePage().hideView(vp);				
-				}
-			});
-		}
+		String launchId = String.valueOf(System.identityHashCode(launch));
+		IMTerminal t = this.views.get(launchId);
+		this.terminalManager.close(t);
 	}
 	
 	@Override
-    public boolean preShutdown(IWorkbench workbench, boolean forced) {                            
+    public boolean preShutdown(IWorkbench workbench, boolean forced) {
 		Display.getDefault().syncExec(new Runnable() {						
 			@Override
 			public void run() {
-				for (IViewPart vp : CacheTelnetUIManager.this.views.values()) {
-					vp.getSite().getWorkbenchWindow().getActivePage().hideView(vp);				
+				for (IMTerminal t : CacheTelnetUIManager.this.views.values()) {
+					CacheTelnetUIManager.this.terminalManager.close(t);
 				}
 			}
 		});		

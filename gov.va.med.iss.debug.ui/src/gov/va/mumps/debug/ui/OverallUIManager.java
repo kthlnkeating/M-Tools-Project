@@ -17,7 +17,9 @@
 package gov.va.mumps.debug.ui;
 
 import gov.va.mumps.debug.core.model.IMDebugTarget;
+import gov.va.mumps.debug.core.model.IMTerminalManager;
 import gov.va.mumps.debug.core.model.MDebugPreference;
+import gov.va.mumps.debug.ui.terminal.MTerminalManager;
 
 import java.util.EnumMap;
 
@@ -28,20 +30,21 @@ import org.eclipse.ui.IWorkbench;
 
 class OverallUIManager implements IMUIManager {
 	private EnumMap<MDebugPreference, IMUIManager> listeners;
+	private IMTerminalManager terminalManager = new MTerminalManager();
 	
-	private static IMUIManager createListener(MDebugPreference debugPeference) {
+	private IMUIManager createListener(MDebugPreference debugPeference) {
 		switch (debugPeference) {
 		case GENERIC:
 			return new GenericUIManager();
 		case CACHE_TELNET:
-			return new CacheTelnetUIManager();			
+			return new CacheTelnetUIManager(this.terminalManager);			
 		default:
 			return null;
 		}		
 	}
 	
-	private static ILaunchListener createAndAddListener(EnumMap<MDebugPreference, IMUIManager> listeners, MDebugPreference debugPeference) {
-		IMUIManager result = createListener(debugPeference);
+	private ILaunchListener createAndAddListener(EnumMap<MDebugPreference, IMUIManager> listeners, MDebugPreference debugPeference) {
+		IMUIManager result = this.createListener(debugPeference);
 		if (result != null) {
 			listeners.put(debugPeference, result);
 		}
@@ -61,7 +64,7 @@ class OverallUIManager implements IMUIManager {
 			if (result != null) {
 				return result;
 			}
-			return createAndAddListener(this.listeners, preference);
+			return this.createAndAddListener(this.listeners, preference);
 		}
 		return null;		
 	}

@@ -3,6 +3,7 @@ package gov.va.mumps.debug.core.model;
 import gov.va.mumps.debug.core.IMInterpreter;
 import gov.va.mumps.debug.core.IMInterpreterConsumer;
 import gov.va.mumps.debug.core.MDebugConstants;
+import gov.va.mumps.debug.core.MDebugSettings;
 import gov.va.mumps.debug.xtdebug.vo.VariableVO;
 
 import java.util.List;
@@ -418,7 +419,12 @@ public class MCacheTelnetDebugTarget extends MDebugElement implements IMDebugTar
 		int id = System.identityHashCode(this.launch);
 		return String.valueOf(id);
 	}
-
+	
+	@Override
+	public String getPrompt() {
+		return MDebugSettings.getNamespace();		
+	}
+	
 	private int getLineNumber(MCodeLocation entryTag) {
 		String routineName = entryTag.getRoutine();
 		FileSearchVisitor fsv = new FileSearchVisitor(routineName + ".m");
