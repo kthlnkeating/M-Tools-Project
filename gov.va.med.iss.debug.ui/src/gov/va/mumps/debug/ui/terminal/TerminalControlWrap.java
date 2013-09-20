@@ -1,6 +1,8 @@
 package gov.va.mumps.debug.ui.terminal;
 
 import gov.va.mumps.debug.core.IMInterpreterConsumer;
+import gov.va.mumps.debug.core.MDebugSettings;
+import gov.va.mumps.debug.core.model.MDebugPreference;
 
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -12,14 +14,22 @@ import org.eclipse.tm.internal.terminal.provisional.api.TerminalState;
 @SuppressWarnings("restriction")
 public class TerminalControlWrap implements ITerminalControl {
 	private ITerminalControl actual;
-	private VistAOutputStream os;
+	private OutputStream os;
 	
 	public TerminalControlWrap(String namespace, ITerminalControl actual, IMInterpreterConsumer listener) {
 		this.actual = actual;
-		this.os = new VistAOutputStream(namespace, actual.getRemoteToTerminalOutputStream(), listener);
+		MDebugPreference preference = MDebugSettings.getDebugPreference();
+		switch (preference) {
+		case CACHE_TELNET:
+			this.os = new CacheTelnetOutputStream(namespace, actual.getRemoteToTerminalOutputStream(), listener);			
+			break;
+
+		default:
+			break;
+		}		
 	}
 	
-	public VistAOutputStream getVistAStream() {
+	public OutputStream getVistAStream() {
 		return this.os;
 	}
 	

@@ -81,8 +81,9 @@
       <operations public="true" package="false" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="9" language="java" name="gov.va.mumps.debug.core.model.MDebugTarget" project="gov.va.med.iss.debug.core" 
-    file="/gov.va.med.iss.debug.core/src/gov/va/mumps/debug/core/model/MDebugTarget.java" binary="false" 
+  <class id="9" language="java" name="gov.va.mumps.debug.core.model.MGenericDebugTarget" 
+    project="gov.va.med.iss.debug.core" 
+    file="/gov.va.med.iss.debug.core/src/gov/va/mumps/debug/core/model/MGenericDebugTarget.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="437" y="369"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 

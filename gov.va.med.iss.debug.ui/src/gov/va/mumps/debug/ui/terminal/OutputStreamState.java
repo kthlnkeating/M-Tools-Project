@@ -1,6 +1,6 @@
 package gov.va.mumps.debug.ui.terminal;
 
-public enum VistAOutputStreamState {
+public enum OutputStreamState {
 	NOT_CONNECTED,
 	COMMAND_EXECUTE,
 	RESUMED,

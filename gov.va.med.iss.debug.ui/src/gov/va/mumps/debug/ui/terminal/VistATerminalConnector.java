@@ -2,7 +2,9 @@ package gov.va.mumps.debug.ui.terminal;
 
 
 import gov.va.mumps.debug.core.IMInterpreterConsumer;
+import gov.va.mumps.debug.core.MDebugSettings;
 import gov.va.mumps.debug.core.model.IMTerminalManager;
+import gov.va.mumps.debug.core.model.MDebugPreference;
 
 import org.eclipse.tm.internal.terminal.connector.TerminalConnector;
 import org.eclipse.tm.internal.terminal.provisional.api.provider.TerminalConnectorImpl;
@@ -20,8 +22,13 @@ public class VistATerminalConnector extends TerminalConnector {
 		
 		@Override
 		public TerminalConnectorImpl makeConnector() throws Exception {
-			VistATelnetConnector connector = new VistATelnetConnector(this.consumer, this.terminalManager);
-			return connector;
+			MDebugPreference preference = MDebugSettings.getDebugPreference();			
+			switch (preference) {
+			case CACHE_TELNET:
+				return new CacheTelnetConnector(this.consumer, this.terminalManager);			
+			default:
+				return null;
+			}		
 		}
 	};
 	

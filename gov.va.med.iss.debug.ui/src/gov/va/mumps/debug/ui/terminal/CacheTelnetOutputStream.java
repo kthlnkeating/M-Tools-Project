@@ -9,13 +9,13 @@ import gov.va.mumps.debug.core.model.MVariableInfo;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class VistAOutputStream extends OutputStream {
+public class CacheTelnetOutputStream extends OutputStream {
 	private static String BREAK_IDENTIFIER = "<BREAK>";
 	private static byte[] PATTERN = {0, 0, 0};
 
 	private OutputStream actual;
 	
-	private VistAOutputStreamState state = VistAOutputStreamState.NOT_CONNECTED;
+	private OutputStreamState state = OutputStreamState.NOT_CONNECTED;
 	
 	private byte[] buffer = new byte[PATTERN.length];
 	private int count;
@@ -30,7 +30,7 @@ public class VistAOutputStream extends OutputStream {
 	
 	private final static boolean OUTDEBUG = false;
 	
-	public VistAOutputStream(String namespace, OutputStream actual, IMInterpreterConsumer listener) {
+	public CacheTelnetOutputStream(String namespace, OutputStream actual, IMInterpreterConsumer listener) {
 		this.namespace = namespace.getBytes();
 		this.actual = actual;
 		this.listener = listener;
@@ -73,21 +73,21 @@ public class VistAOutputStream extends OutputStream {
 		this.auxWrite((byte) b);
 	}
 	
-	public void setState(VistAOutputStreamState state) {
+	public void setState(OutputStreamState state) {
 		this.state = state;
 	}
 	
 	private void auxWrite(byte b) throws IOException {
-		if (this.state == VistAOutputStreamState.BREAK_SEARCH) {
+		if (this.state == OutputStreamState.BREAK_SEARCH) {
 			this.auxWriteSearch(b);
-		} else if (this.state == VistAOutputStreamState.RESUMED) {
+		} else if (this.state == OutputStreamState.RESUMED) {
 			int n = this.debugCount;
 			this.debugInfo[n] = b;
 			++this.debugCount;
 			if ((b == 10) && (this.debugInfo[n-1] == 13)) {
 				this.writeInternalStreams(this.debugInfo, this.debugCount);
 				this.debugCount = 0;
-				this.state = VistAOutputStreamState.BREAK_SEARCH;
+				this.state = OutputStreamState.BREAK_SEARCH;
 			}
 		} else {
 			this.debugInfo[this.debugCount] = b;
@@ -105,7 +105,7 @@ public class VistAOutputStream extends OutputStream {
 			this.buffer[count] = b;
 			++count;
 			if (PATTERN.length == count) {								
-				this.state = VistAOutputStreamState.BREAK_FOUND;
+				this.state = OutputStreamState.BREAK_FOUND;
 				count = 0;
 			}			
 		}
@@ -124,17 +124,17 @@ public class VistAOutputStream extends OutputStream {
 						return;
 					}
 				}
-				VistAOutputStreamState currentState = this.state;
+				OutputStreamState currentState = this.state;
 				this.writeInternalStreams(this.debugInfo, this.debugCount);
 				int currentCount = this.debugCount;
 				this.debugCount = 0;
-				this.state = VistAOutputStreamState.BREAK_SEARCH;
-				if (currentState == VistAOutputStreamState.NOT_CONNECTED) {
+				this.state = OutputStreamState.BREAK_SEARCH;
+				if (currentState == OutputStreamState.NOT_CONNECTED) {
 					this.listener.handleConnected(this.interpreter);
-				}  else if (currentState == VistAOutputStreamState.COMMAND_EXECUTE) {
+				}  else if (currentState == OutputStreamState.COMMAND_EXECUTE) {
 					String str = new String(this.debugInfo, 0, currentCount);					
 					this.listener.handleCommandExecuted(str);						
-				} else if (currentState == VistAOutputStreamState.BREAK_FOUND) {					
+				} else if (currentState == OutputStreamState.BREAK_FOUND) {					
 					String str = new String(this.debugInfo, 0, currentCount);					
 					if (str.startsWith("!!")) {
 						this.listener.handleEnd();

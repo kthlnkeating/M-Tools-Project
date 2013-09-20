@@ -13,13 +13,13 @@ import org.eclipse.tm.internal.terminal.telnet.ITelnetSettings;
 import org.eclipse.tm.internal.terminal.telnet.TelnetConnector;
 
 @SuppressWarnings("restriction")
-public class VistATelnetConnector extends TelnetConnector implements IMInterpreter {
+public class CacheTelnetConnector extends TelnetConnector implements IMInterpreter {
 	private VistATelnetSettings settings = new VistATelnetSettings();
-	private VistAOutputStream os;
+	private CacheTelnetOutputStream os;
 	private IMTerminalManager terminalManager;
 	private IMInterpreterConsumer consumer;
 	
-	public VistATelnetConnector(IMInterpreterConsumer consumer, IMTerminalManager terminalManager) {
+	public CacheTelnetConnector(IMInterpreterConsumer consumer, IMTerminalManager terminalManager) {
 		super(null);
 		this.consumer = consumer;
 		this.terminalManager = terminalManager;
@@ -29,7 +29,7 @@ public class VistATelnetConnector extends TelnetConnector implements IMInterpret
 	public void connect(ITerminalControl control) {
 		String namespace = this.consumer.getPrompt();
 		TerminalControlWrap wrapTC = new TerminalControlWrap(namespace, control, this.consumer);
-		this.os = wrapTC.getVistAStream();
+		this.os = (CacheTelnetOutputStream) wrapTC.getVistAStream();
 		this.os.setMInterpreter(this);
 		super.connect(wrapTC);
 	}
@@ -61,21 +61,21 @@ public class VistATelnetConnector extends TelnetConnector implements IMInterpret
 	
 	@Override
 	public void sendInfoCommand(String command) {
-		this.os.setState(VistAOutputStreamState.COMMAND_EXECUTE);
+		this.os.setState(OutputStreamState.COMMAND_EXECUTE);
 		this.sendCommandToStream(command);
 	}
 	
 	@Override
 	public void sendRunCommand(String command) {
 		command = command + " W $C(0,0,0),\"!!\"\n"; 
-		this.os.setState(VistAOutputStreamState.RESUMED);
+		this.os.setState(OutputStreamState.RESUMED);
 		this.sendCommandToStream(command);
 	}
 	
 	@Override
 	public void resume() {
 		this.terminalManager.giveFocus(this.consumer.getLaunchId());
-		this.os.setState(VistAOutputStreamState.RESUMED);
+		this.os.setState(OutputStreamState.RESUMED);
 		this.sendCommandToStream("BREAK \"C\" G\n");
 	}
 	
@@ -107,7 +107,7 @@ public class VistATelnetConnector extends TelnetConnector implements IMInterpret
 
 	private void sendStepCommand(String type) {
 		String cmd = "BREAK \"" + type + "\" ZBREAK $:\"B\":\"1\":\"W $C(0,0,0) ZWRITE\" G\n";
-		this.os.setState(VistAOutputStreamState.RESUMED);
+		this.os.setState(OutputStreamState.RESUMED);
 		this.sendCommandToStream(cmd);		
 	}
 		
