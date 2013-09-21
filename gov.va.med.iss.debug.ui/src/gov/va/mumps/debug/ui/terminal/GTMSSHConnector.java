@@ -9,18 +9,17 @@ import java.io.IOException;
 import org.eclipse.tm.internal.terminal.provisional.api.ISettingsPage;
 import org.eclipse.tm.internal.terminal.provisional.api.ISettingsStore;
 import org.eclipse.tm.internal.terminal.provisional.api.ITerminalControl;
-import org.eclipse.tm.internal.terminal.telnet.ITelnetSettings;
-import org.eclipse.tm.internal.terminal.telnet.TelnetConnector;
+import org.eclipse.tm.internal.terminal.ssh.SshConnector;
 
 @SuppressWarnings("restriction")
-public class CacheTelnetConnector extends TelnetConnector implements IMInterpreter {
-	private VistATelnetSettings settings = new VistATelnetSettings();
-	private CacheTelnetOutputStream os;
+public class GTMSSHConnector extends SshConnector implements IMInterpreter {
+	private VistASSHSettings settings = new VistASSHSettings();
+	private GTMSSHOutputStream os;
 	private IMTerminalManager terminalManager;
 	private IMInterpreterConsumer consumer;
 	
-	public CacheTelnetConnector(IMInterpreterConsumer consumer, IMTerminalManager terminalManager) {
-		super(null);
+	public GTMSSHConnector(IMInterpreterConsumer consumer, IMTerminalManager terminalManager) {
+		super(new VistASSHSettings());
 		this.consumer = consumer;
 		this.terminalManager = terminalManager;
 	}
@@ -29,16 +28,11 @@ public class CacheTelnetConnector extends TelnetConnector implements IMInterpret
 	public void connect(ITerminalControl control) {
 		String namespace = this.consumer.getPrompt();
 		TerminalControlWrap wrapTC = new TerminalControlWrap(namespace, control, this.consumer);
-		this.os = (CacheTelnetOutputStream) wrapTC.getVistAStream();
+		this.os = (GTMSSHOutputStream) wrapTC.getVistAStream();
 		this.os.setMInterpreter(this);
 		super.connect(wrapTC);
 	}
 
-	@Override
-	public ITelnetSettings getTelnetSettings() {
-		return settings;
-	}
-	
 	@Override
 	public ISettingsPage makeSettingsPage() {
 		return null;
@@ -76,37 +70,37 @@ public class CacheTelnetConnector extends TelnetConnector implements IMInterpret
 	public void resume() {
 		this.terminalManager.giveFocus(this.consumer.getLaunchId());
 		this.os.setState(OutputStreamState.RESUMED);
-		this.sendCommandToStream("BREAK \"C\" G\n");
+		this.sendCommandToStream("ZCONTINUE\n");
 	}
 	
 	@Override
 	public void stepInto() {
-		this.terminalManager.giveFocus(this.consumer.getLaunchId());
-		this.sendStepCommand("S+");
+		String cmd = "ZSTEP INTO:\"W $C(0,0,0) ZWRITE  BREAK\"\n";
+		this.sendStepCommand(cmd);
 	}
 	
 	@Override
 	public void stepOver() {
-		this.terminalManager.giveFocus(this.consumer.getLaunchId());
-		this.sendStepCommand("L");
+		String cmd = "ZSTEP OV:\"W $C(0,0,0) ZWRITE  BREAK\"\n";
+		this.sendStepCommand(cmd);
 	}
 	
 	@Override
 	public void stepReturn() {
-		this.terminalManager.giveFocus(this.consumer.getLaunchId());
-		this.sendStepCommand("L-");
+		String cmd = "ZSTEP OU:\"W $C(0,0,0) ZWRITE  BREAK\"\n";
+		this.sendStepCommand(cmd);
 	}
 	
 	public String getLocationBreakCommand(String codeLocation) {
-		return "ZBREAK " + codeLocation + ":\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"";
+		return "ZBREAK " + codeLocation + ":\"W $C(0,0,0) ZWRITE  BREAK\"";
 	}
 
 	public String getVariableBreakCommand(String variable) {
-		return "ZBREAK *" + variable + ":\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"";
+		return "";
 	}
 
-	private void sendStepCommand(String type) {
-		String cmd = "BREAK \"" + type + "\" ZBREAK $:\"B\":\"1\":\"W $C(0,0,0) ZWRITE\" G\n";
+	private void sendStepCommand(String cmd) {
+		this.terminalManager.giveFocus(this.consumer.getLaunchId());
 		this.os.setState(OutputStreamState.RESUMED);
 		this.sendCommandToStream(cmd);		
 	}
@@ -116,9 +110,9 @@ public class CacheTelnetConnector extends TelnetConnector implements IMInterpret
 		byte[] bytes = command.getBytes();
 		try {
 			this.getTerminalToRemoteStream().write(bytes);
+			this.getTerminalToRemoteStream().flush();
 		} catch (IOException e) {
 			throw new RuntimeException("Error", e);
 		}		
 	}
 }
- 

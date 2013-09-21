@@ -26,6 +26,8 @@ public class VistATerminalConnector extends TerminalConnector {
 			switch (preference) {
 			case CACHE_TELNET:
 				return new CacheTelnetConnector(this.consumer, this.terminalManager);			
+			case GTM_SSH:
+				return new GTMSSHConnector(this.consumer, this.terminalManager);			
 			default:
 				return null;
 			}		

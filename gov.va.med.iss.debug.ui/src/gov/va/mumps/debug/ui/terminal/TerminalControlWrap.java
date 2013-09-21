@@ -23,7 +23,9 @@ public class TerminalControlWrap implements ITerminalControl {
 		case CACHE_TELNET:
 			this.os = new CacheTelnetOutputStream(namespace, actual.getRemoteToTerminalOutputStream(), listener);			
 			break;
-
+		case GTM_SSH:
+			this.os = new GTMSSHOutputStream(namespace, actual.getRemoteToTerminalOutputStream(), listener);			
+			break;
 		default:
 			break;
 		}		
