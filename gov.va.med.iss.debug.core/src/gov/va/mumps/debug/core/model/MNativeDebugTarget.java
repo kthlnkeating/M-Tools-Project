@@ -378,12 +378,14 @@ public class MNativeDebugTarget extends MDebugElement implements IMDebugTarget, 
 			int indexVariable = 0;
 			this.variables = new MVariable[variableInfos.length];
 			for (MVariableInfo variableInfo : variableInfos) {
-				String name = variableInfo.getName();
-				String value = variableInfo.getValue();
-				this.variables[indexVariable] = new MVariable(this.stack[index], name); 
-				MValue mValue = new MValue(this.variables[indexVariable], value);
-				this.variables[indexVariable].setValue(mValue);
-				++indexVariable;
+				if (variableInfo != null) {
+					String name = variableInfo.getName();
+					String value = variableInfo.getValue();
+					this.variables[indexVariable] = new MVariable(this.stack[index], name); 
+					MValue mValue = new MValue(this.variables[indexVariable], value);
+					this.variables[indexVariable].setValue(mValue);
+					++indexVariable;
+				}
 			}
 			++index;
 		}
