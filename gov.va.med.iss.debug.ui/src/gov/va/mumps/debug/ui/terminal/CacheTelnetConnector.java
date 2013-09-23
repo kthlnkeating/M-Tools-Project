@@ -79,10 +79,20 @@ public class CacheTelnetConnector extends TelnetConnector implements IMInterpret
 	}
 	
 	@Override
+	public void focus() {
+		this.terminalManager.giveFocus(this.consumer.getLaunchId());
+	}
+		
+	@Override
 	public void resume() {
 		this.terminalManager.giveFocus(this.consumer.getLaunchId());
 		this.os.setState(OutputStreamState.RESUMED);
 		this.sendCommandToStream("BREAK \"C\" G\n");
+	}
+	
+	@Override
+	public void terminate() {
+		this.terminalManager.disconnect(this.consumer.getLaunchId());
 	}
 	
 	@Override
@@ -103,10 +113,17 @@ public class CacheTelnetConnector extends TelnetConnector implements IMInterpret
 		this.sendStepCommand("L-");
 	}
 	
+	@Override
+	public String getClearBreakCommand() {
+		return "ZBREAK /CLEAR";		
+	}
+	
+	@Override
 	public String getLocationBreakCommand(String codeLocation) {
 		return "ZBREAK " + codeLocation + ":\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"";
 	}
 
+	@Override
 	public String getVariableBreakCommand(String variable) {
 		return "ZBREAK *" + variable + ":\"B\":\"1\":\"W $C(0,0,0) ZWRITE\"";
 	}

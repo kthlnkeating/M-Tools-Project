@@ -5,11 +5,14 @@ public interface IMInterpreter {
 	void sendRunCommand(String command);	
 	void sendCommandToStream(String command);
 	
+	void focus();
 	void resume();
+	void terminate();
 	void stepOver();
 	void stepInto();
 	void stepReturn();
 	
+	String getClearBreakCommand();
 	String getLocationBreakCommand(String codeLocation);
 	String getVariableBreakCommand(String variable);
 }

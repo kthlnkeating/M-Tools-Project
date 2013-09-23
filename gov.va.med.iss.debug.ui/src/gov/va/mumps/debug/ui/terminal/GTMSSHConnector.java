@@ -73,10 +73,25 @@ public class GTMSSHConnector extends SshConnector implements IMInterpreter {
 	}
 	
 	@Override
+	public void focus() {
+		this.terminalManager.giveFocus(this.consumer.getLaunchId());
+	}
+		
+	@Override
 	public void resume() {
 		this.terminalManager.giveFocus(this.consumer.getLaunchId());
 		this.os.setState(OutputStreamState.RESUMED);
 		this.sendCommandToStream("ZCONTINUE\n");
+	}
+	
+	@Override
+	public void terminate() {
+		this.terminalManager.disconnect(this.consumer.getLaunchId());
+	}
+	
+	@Override
+	public String getClearBreakCommand() {
+		return "ZBREAK -*";		
 	}
 	
 	@Override

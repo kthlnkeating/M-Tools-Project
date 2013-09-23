@@ -51,11 +51,11 @@ class NativeUIManager implements IMUIManager {
 			MNativeDebugTarget target = (MNativeDebugTarget) launch.getDebugTarget();
 			IConsoleManager consoleManager = MessageConsoleHelper.getConsoleManager();
 			MessageConsole messageConsole = MessageConsoleHelper.findConsole(consoleManager, "M Debug");
+			consoleManager.showConsoleView(messageConsole);
 			IMTerminal terminal = this.terminalManager.create(launchId, target);
 			if (terminal != null) {
 				this.views.put(launchId, terminal);
 			}			
-			consoleManager.showConsoleView(messageConsole);
 		}
 	}
 

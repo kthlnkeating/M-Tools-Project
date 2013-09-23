@@ -46,14 +46,34 @@ public class MTerminalManager implements IMTerminalManager {
 		return this.showResult;
 	}
 	
+	@Override
 	public IMTerminal create(String id, IMInterpreterConsumer consumer) {
 		return this.show(id, consumer);
 	}
 		
+	@Override
 	public void giveFocus(String id) {
 		this.show(id, null);
 	}
 
+	@Override
+	public void disconnect(final String id) {
+//		Display display = Display.getDefault();
+//		if (! display.isDisposed()) {
+//			display.syncExec(new Runnable() {						
+//				@Override
+//				public void run() {
+//					IWorkbench wb = PlatformUI.getWorkbench();
+//					IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
+//					IWorkbenchPage wbp = window.getActivePage();
+//					IViewPart vp = wbp.findViewReference(MDebugUIPlugin.TERMINAL_VIEW_ID, id).getView(false);
+//					((VistATerminalView) vp).disconnect(); 
+//				}
+//			});
+//		}
+	}
+
+	@Override
 	public void close(IMTerminal terminal) {
 		if (terminal instanceof IViewPart) {
 			final IViewPart vp = (IViewPart) terminal;

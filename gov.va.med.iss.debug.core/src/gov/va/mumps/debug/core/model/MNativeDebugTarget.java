@@ -349,7 +349,7 @@ public class MNativeDebugTarget extends MDebugElement implements IMDebugTarget, 
 			DebugPlugin.getDefault().getBreakpointManager().removeBreakpointListener(this);
 		}
 		this.terminated = true;
-		//rpcDebugProcess.terminate();
+		this.interpreter.terminate();
 		suspended = false;
 		fireTerminateEvent(); //this fires the event to indicate that the debugtarget has terminated.
 	}
@@ -357,7 +357,8 @@ public class MNativeDebugTarget extends MDebugElement implements IMDebugTarget, 
 	@Override
 	public void handleConnected(IMInterpreter interpreter) {
 		this.interpreter = interpreter;
-		String command = (this.debug) ? this.getInitialBreakPointCommand() : "ZBREAK /CLEAR";
+		String command = (this.debug) ? this.getInitialBreakPointCommand() : this.interpreter.getClearBreakCommand();
+		this.interpreter.focus();
 		this.interpreter.sendInfoCommand(command + "\n");
 	}
 	
