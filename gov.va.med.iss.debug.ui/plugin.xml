@@ -212,6 +212,18 @@
           id="gov.va.med.iss.debug.ui.preference"
           name="Debug">
     </page>
+    <page
+          category="gov.va.med.iss.debug.ui.preference"
+          class="gov.va.mumps.debug.ui.settings.MTelnetSettingsPage"
+          id="gov.va.med.iss.debug.ui.preference.Telnet"
+          name="Telnet">
+    </page>
+    <page
+          category="gov.va.med.iss.debug.ui.preference"
+          class="gov.va.mumps.debug.ui.settings.MSSHSettingsPage"
+          id="gov.va.med.iss.debug.ui.preference.SSH"
+          name="SSH">
+    </page>
  </extension>
 	
    <!-- copied from JDT's debug.ui plugin: -->

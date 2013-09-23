@@ -49,7 +49,7 @@ public class MDebugPreferencePage extends PropertyPage implements IWorkbenchPref
 		this.genericBtn = SWTHelper.createRadioBox(contents, "Generic", 2);
 		this.cacheTelnetBtn = SWTHelper.createRadioBox(contents, "Cache Telnet", 2);
 		this.gtmSSHBtn = SWTHelper.createRadioBox(contents, "GT.M SSH", 2);
-		this.nameSpaceCtl = SWTHelper.createLabelTextPair(contents, "Namespace:");
+		this.nameSpaceCtl = SWTHelper.createLabelTextPair(contents, "Prompt:");
 				
 		this.initialize();
 		return contents;

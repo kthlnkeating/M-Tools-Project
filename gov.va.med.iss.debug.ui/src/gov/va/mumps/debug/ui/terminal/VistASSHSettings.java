@@ -1,32 +1,34 @@
 package gov.va.mumps.debug.ui.terminal;
 
+import gov.va.mumps.debug.core.MDebugSettings;
+
 import org.eclipse.tm.internal.terminal.provisional.api.ISettingsStore;
 import org.eclipse.tm.internal.terminal.ssh.SshSettings;
 
 @SuppressWarnings("restriction")
 public class VistASSHSettings extends SshSettings {
 	public String getHost() {
-		return "127.0.0.1";
+		return MDebugSettings.getSSHHost();
 	}
 
 	public String getUser() {
-		return "softhat";
+		return MDebugSettings.getSSHUser();
 	}
 
 	public String getPassword() {
-		return "softhat";
+		return MDebugSettings.getSSHPassword();
 	}
 	
 	public int getTimeout() {
-		return 0;
+		return Integer.parseInt(MDebugSettings.getSSHTimeout());
 	}
 
 	public int getKeepalive() {
-		return 300;
+		return Integer.parseInt(MDebugSettings.getSSHKeepAlive());
 	}
 
 	public int getPort() {
-		return 3022;
+		return Integer.parseInt(MDebugSettings.getSSHPort());
 	}
 
 	public String getSummary() {
