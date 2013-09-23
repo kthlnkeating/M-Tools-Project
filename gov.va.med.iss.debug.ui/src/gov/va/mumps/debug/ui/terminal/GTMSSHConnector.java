@@ -5,6 +5,7 @@ import gov.va.mumps.debug.core.IMInterpreterConsumer;
 import gov.va.mumps.debug.core.model.IMTerminalManager;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.eclipse.tm.internal.terminal.provisional.api.ISettingsPage;
 import org.eclipse.tm.internal.terminal.provisional.api.ISettingsStore;
@@ -17,11 +18,15 @@ public class GTMSSHConnector extends SshConnector implements IMInterpreter {
 	private GTMSSHOutputStream os;
 	private IMTerminalManager terminalManager;
 	private IMInterpreterConsumer consumer;
+	private OutputStream messageStream;
+	private String encoding;
 	
-	public GTMSSHConnector(IMInterpreterConsumer consumer, IMTerminalManager terminalManager) {
+	public GTMSSHConnector(IMInterpreterConsumer consumer, IMTerminalManager terminalManager, OutputStream messageStream, String encoding) {
 		super(new VistASSHSettings());
 		this.consumer = consumer;
 		this.terminalManager = terminalManager;
+		this.messageStream = messageStream;
+		this.encoding = encoding;
 	}
 	
 	@Override
@@ -30,6 +35,7 @@ public class GTMSSHConnector extends SshConnector implements IMInterpreter {
 		TerminalControlWrap wrapTC = new TerminalControlWrap(namespace, control, this.consumer);
 		this.os = (GTMSSHOutputStream) wrapTC.getVistAStream();
 		this.os.setMInterpreter(this);
+		this.os.setMessageStream(this.messageStream);
 		super.connect(wrapTC);
 	}
 
@@ -107,8 +113,8 @@ public class GTMSSHConnector extends SshConnector implements IMInterpreter {
 		
 	@Override
 	public void sendCommandToStream(String command) {
-		byte[] bytes = command.getBytes();
 		try {
+			byte[] bytes = command.getBytes(this.encoding);
 			this.getTerminalToRemoteStream().write(bytes);
 			this.getTerminalToRemoteStream().flush();
 		} catch (IOException e) {

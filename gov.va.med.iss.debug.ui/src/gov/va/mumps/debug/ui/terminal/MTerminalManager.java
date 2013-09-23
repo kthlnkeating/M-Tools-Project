@@ -1,11 +1,17 @@
 package gov.va.mumps.debug.ui.terminal;
 
+import java.io.OutputStream;
+
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
+
+import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
 
 import gov.va.mumps.debug.core.IMInterpreterConsumer;
 import gov.va.mumps.debug.core.model.IMTerminal;
@@ -26,7 +32,11 @@ public class MTerminalManager implements IMTerminalManager {
 					IViewPart vp = wbp.showView(MDebugUIPlugin.TERMINAL_VIEW_ID, id, IWorkbenchPage.VIEW_ACTIVATE);
 					MTerminalManager.this.showResult = (IMTerminal) vp;
 					if (consumer != null) {
-						((VistATerminalView) vp).connect(MTerminalManager.this, consumer); 
+						IConsoleManager consoleManager = MessageConsoleHelper.getConsoleManager();
+						MessageConsole messageConsole = MessageConsoleHelper.findConsole(consoleManager, "M Debug");
+						consoleManager.showConsoleView(messageConsole);
+						OutputStream messageStream = messageConsole.newMessageStream();
+						((VistATerminalView) vp).connect(MTerminalManager.this, consumer, messageStream); 
 					}
 				} catch (Throwable t) {
 					MTerminalManager.this.showResult = (IMTerminal) null;

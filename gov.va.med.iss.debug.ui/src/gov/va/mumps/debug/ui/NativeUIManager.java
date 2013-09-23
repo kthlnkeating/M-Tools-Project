@@ -26,6 +26,10 @@ import gov.va.mumps.debug.core.model.MNativeDebugTarget;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
+
+import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
 
 
 class NativeUIManager implements IMUIManager {
@@ -44,11 +48,14 @@ class NativeUIManager implements IMUIManager {
 	public void launchChanged(ILaunch launch) {
 		final String launchId = String.valueOf(System.identityHashCode(launch));		
 		if (launch.getDebugTarget() != null) {
-			final MNativeDebugTarget target = (MNativeDebugTarget) launch.getDebugTarget();
+			MNativeDebugTarget target = (MNativeDebugTarget) launch.getDebugTarget();
+			IConsoleManager consoleManager = MessageConsoleHelper.getConsoleManager();
+			MessageConsole messageConsole = MessageConsoleHelper.findConsole(consoleManager, "M Debug");
 			IMTerminal terminal = this.terminalManager.create(launchId, target);
 			if (terminal != null) {
 				this.views.put(launchId, terminal);
-			}
+			}			
+			consoleManager.showConsoleView(messageConsole);
 		}
 	}
 

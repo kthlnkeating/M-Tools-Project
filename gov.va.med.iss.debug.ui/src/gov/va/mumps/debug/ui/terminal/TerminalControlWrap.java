@@ -18,13 +18,14 @@ public class TerminalControlWrap implements ITerminalControl {
 	
 	public TerminalControlWrap(String namespace, ITerminalControl actual, IMInterpreterConsumer listener) {
 		this.actual = actual;
+		String encoding = actual.getEncoding();
 		MDebugPreference preference = MDebugSettings.getDebugPreference();
 		switch (preference) {
 		case CACHE_TELNET:
-			this.os = new CacheTelnetOutputStream(namespace, actual.getRemoteToTerminalOutputStream(), listener);			
+			this.os = new CacheTelnetOutputStream(namespace, actual.getRemoteToTerminalOutputStream(), listener, encoding);			
 			break;
 		case GTM_SSH:
-			this.os = new GTMSSHOutputStream(namespace, actual.getRemoteToTerminalOutputStream(), listener);			
+			this.os = new GTMSSHOutputStream(namespace, actual.getRemoteToTerminalOutputStream(), listener, encoding);			
 			break;
 		default:
 			break;

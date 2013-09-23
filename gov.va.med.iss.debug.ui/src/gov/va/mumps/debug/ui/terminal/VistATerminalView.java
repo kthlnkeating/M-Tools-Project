@@ -1,5 +1,7 @@
 package gov.va.mumps.debug.ui.terminal;
 
+import java.io.OutputStream;
+
 import gov.va.mumps.debug.core.IMInterpreterConsumer;
 import gov.va.mumps.debug.core.model.IMTerminal;
 import gov.va.mumps.debug.core.model.IMTerminalManager;
@@ -12,8 +14,9 @@ import org.eclipse.tm.internal.terminal.view.TerminalView;
 @SuppressWarnings("restriction")
 public class VistATerminalView extends TerminalView implements IMTerminal {
 	@Override
-	public void connect(IMTerminalManager terminalManager, IMInterpreterConsumer consumer) {
-		ITerminalConnector connector = new VistATerminalConnector(consumer, terminalManager); 
+	public void connect(IMTerminalManager terminalManager, IMInterpreterConsumer consumer, OutputStream messageStream) {
+		String encoding = this.fCtlTerminal.getEncoding();
+		ITerminalConnector connector = new VistATerminalConnector(consumer, terminalManager, messageStream, encoding); 
 		if (connector != null) {
 			this.fCtlTerminal.setConnector(connector);
 			this.fCtlTerminal.connectTerminal();

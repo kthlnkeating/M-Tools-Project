@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class GTMSSHOutputStream extends MOutputStreamWrap {
-	public GTMSSHOutputStream(String namespace, OutputStream actual, IMInterpreterConsumer listener) {
-		super(actual, OutputStreamState.NOT_CONNECTED, listener, "GTM".getBytes());
+	public GTMSSHOutputStream(String namespace, OutputStream actual, IMInterpreterConsumer listener, String encoding) {
+		super(actual, OutputStreamState.NOT_CONNECTED, listener, "GTM", encoding);
 	}
 
 	@Override

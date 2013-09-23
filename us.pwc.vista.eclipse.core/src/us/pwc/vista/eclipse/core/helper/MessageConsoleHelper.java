@@ -30,7 +30,7 @@ import us.pwc.vista.eclipse.core.Messages;
 import us.pwc.vista.eclipse.core.VistACorePlugin;
 
 public class MessageConsoleHelper {
-	private static MessageConsole findConsole(IConsoleManager consoleManager, String name) {
+	public static MessageConsole findConsole(IConsoleManager consoleManager, String name) {
 		IConsole[] consoles = consoleManager.getConsoles();
 		for (IConsole console : consoles) {
 			if (name.equals(console.getName())) {
@@ -43,7 +43,14 @@ public class MessageConsoleHelper {
 		return newConsole;
 	}
 
-	public static void writeToConsole(String name, String text, boolean clear) {
+	
+	public static IConsoleManager getConsoleManager() {
+		ConsolePlugin plugin = ConsolePlugin.getDefault();
+		IConsoleManager consoleManager = plugin.getConsoleManager();
+		return consoleManager;
+	}
+
+	public static void writeToConsole(String name, String text, boolean clear, boolean show) {
 		try {
 			ConsolePlugin plugin = ConsolePlugin.getDefault();
 			IConsoleManager consoleManager = plugin.getConsoleManager();
@@ -57,7 +64,7 @@ public class MessageConsoleHelper {
 			out.print(text);
 			out.flush();
 			out.close();
-			consoleManager.showConsoleView(console);
+			if (show) consoleManager.showConsoleView(console);
 		} catch (Throwable t) {
 			String message = Messages.bind(Messages.MCH_WRITE_ERROR, t.getMessage());
 			IStatus status = new Status(IStatus.ERROR, VistACorePlugin.PLUGIN_ID, message, t);
@@ -65,6 +72,10 @@ public class MessageConsoleHelper {
 		}		
 	}
 	
+	public static void writeToConsole(String name, String text, boolean clear) {
+		writeToConsole(name, text, clear, true);
+	}
+		
 	public static MessageConsole getMessageConsole(String consoleName) {
 		IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		MessageConsole console = findConsole(consoleManager, consoleName);

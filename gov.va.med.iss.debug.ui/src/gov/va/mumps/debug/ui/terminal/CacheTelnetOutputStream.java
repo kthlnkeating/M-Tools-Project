@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class CacheTelnetOutputStream extends MOutputStreamWrap {
-	public CacheTelnetOutputStream(String namespace, OutputStream actual, IMInterpreterConsumer listener) {
-		super(actual, OutputStreamState.WAITING_PROMPT, listener, namespace.getBytes());
+	public CacheTelnetOutputStream(String namespace, OutputStream actual, IMInterpreterConsumer listener, String encoding) {
+		super(actual, OutputStreamState.WAITING_PROMPT, listener, namespace, encoding);
 	}
 	
 	@Override

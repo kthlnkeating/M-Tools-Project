@@ -9,6 +9,8 @@ import gov.va.mumps.debug.core.model.MVariableInfo;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import us.pwc.vista.eclipse.core.helper.MessageConsoleHelper;
+
 public abstract class MOutputStreamWrap extends OutputStream {
 	private OutputStream actualStream;
 
@@ -24,16 +26,20 @@ public abstract class MOutputStreamWrap extends OutputStream {
 	
 	private byte[] namespace;
 
-	private final static boolean OUTDEBUG = false;
-	
 	protected IMInterpreterConsumer listener;
 	protected IMInterpreter interpreter;
+	protected OutputStream messageStream;
+	private String encoding;
 	
-	protected MOutputStreamWrap(OutputStream actualStream, OutputStreamState initialState, IMInterpreterConsumer listener, byte[] namespace) {
+	protected MOutputStreamWrap(OutputStream actualStream, OutputStreamState initialState, IMInterpreterConsumer listener, String namespace, String encoding) {
 		this.actualStream = actualStream;
 		this.state = initialState;
 		this.listener = listener;
-		this.namespace = namespace;
+		try {
+			this.namespace = namespace.getBytes(encoding);
+		} catch (IOException e) {			
+		}
+		this.encoding = encoding;
 	}
 	
 	public void setState(OutputStreamState state) {
@@ -42,6 +48,10 @@ public abstract class MOutputStreamWrap extends OutputStream {
 	
 	public void setMInterpreter(IMInterpreter interpreter) {
 		this.interpreter = interpreter;
+	}
+ 	
+	public void setMessageStream(OutputStream messageStream) {
+		this.messageStream = messageStream;
 	}
  	
 	@Override
@@ -74,7 +84,7 @@ public abstract class MOutputStreamWrap extends OutputStream {
 		this.filteredWrite((byte) b);
 	}
 	
-	protected void filteredWrite(byte b) throws IOException {
+	protected synchronized void filteredWrite(byte b) throws IOException {
 		switch (this.state) {
 		case NOT_CONNECTED: 
 			this.writeDuringConnection(b);
@@ -182,13 +192,13 @@ public abstract class MOutputStreamWrap extends OutputStream {
 	}
 	
 	private void handleDebugCommandExecuted() throws IOException {
-		String str = new String(this.debugInfo, 0, this.debugCount);					
+		String str = new String(this.debugInfo, 0, this.debugCount, this.encoding);					
 		this.resetBreakInfoStream();
 		this.listener.handleCommandExecuted(str);								
 	}
 	
 	private void handleBreakFound() throws IOException {
-		String str = new String(this.debugInfo, 0, this.debugCount);					
+		String str = new String(this.debugInfo, 0, this.debugCount, this.encoding);					
 		this.resetBreakInfoStream();
 		if (str.startsWith("!!")) {
 			this.listener.handleEnd();
@@ -227,9 +237,10 @@ public abstract class MOutputStreamWrap extends OutputStream {
 	}
 	
 	protected void writeInternalStreams(byte[] stream, int count) throws IOException {
-		if (OUTDEBUG) {
-			this.actualWrite(stream, 0, count);			
-		}
+		String text = new String(stream, 0, count, this.encoding);
+		Emulator emulator = new Emulator();
+		String controlFreeText = emulator.processText(text);		
+		MessageConsoleHelper.writeToConsole("M Debug", controlFreeText, false, false);
 	}
 	
 	protected MStackInfo[] getStackInfo(MCodeLocation codeLocation, String[] pieces, int start, int end) {
