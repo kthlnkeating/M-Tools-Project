@@ -7,6 +7,7 @@ import gov.va.mumps.debug.core.model.MDebugPreference;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.tm.internal.terminal.provisional.api.ITerminalControl;
 import org.eclipse.tm.internal.terminal.provisional.api.TerminalState;
@@ -79,5 +80,50 @@ public class TerminalControlWrap implements ITerminalControl {
 	@Override
 	public void setMsg(String msg) {
 		this.actual.setMsg(msg);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.tm.internal.terminal.provisional.api.ITerminalControl#isConnectOnEnterIfClosed()
+	 */
+	@Override
+	public boolean isConnectOnEnterIfClosed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.tm.internal.terminal.provisional.api.ITerminalControl#isVT100LineWrapping()
+	 */
+	@Override
+	public boolean isVT100LineWrapping() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.tm.internal.terminal.provisional.api.ITerminalControl#setConnectOnEnterIfClosed(boolean)
+	 */
+	@Override
+	public void setConnectOnEnterIfClosed(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.tm.internal.terminal.provisional.api.ITerminalControl#setVT100LineWrapping(boolean)
+	 */
+	@Override
+	public void setVT100LineWrapping(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.tm.internal.terminal.provisional.api.ITerminalControl#setupTerminal(org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
+	public void setupTerminal(Composite arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

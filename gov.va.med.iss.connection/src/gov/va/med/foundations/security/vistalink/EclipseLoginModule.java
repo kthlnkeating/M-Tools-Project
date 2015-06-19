@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import javax.resource.ResourceException;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -32,6 +33,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 
 @SuppressWarnings("rawtypes")
@@ -137,6 +142,12 @@ public class EclipseLoginModule {
 		this.options = options;
 		this.sharedState = sharedState;
 		this.callbackHandler = callbackHandler;
+	}
+	
+	// ven/smh -- let's see if that fixes the undef bug.
+	public void initialize(Subject subject)
+	{
+		this.subject = subject;
 	}
 	
 	public String getServer() {
@@ -520,10 +531,127 @@ public class EclipseLoginModule {
 
 		return returnVal;
 	}
+	/*
+	 * @author Sam Habiel
+	 * Silent log-in, generally useful; but also good to support Mac OS as AWT in Eclipse
+	 * doesn't work as of Java 7.
+	 */
+	public boolean loginSilent(String serverAddress, int serverPort, String ac, String vc)
+			throws
+				VistaLoginModuleException,
+				VistaLoginModuleLoginsDisabledException,
+				VistaLoginModuleNoJobSlotsAvailableException,
+				VistaLoginModuleNoPathToListenerException
+	{
+			
+		if(logger.isDebugEnabled()) 
+		{
+			logger.debug("Entered Silent Login");
+		}
+
+		VistaLinkConnection myConnection = null;
+		SecurityResponseFactory securityResponseFactory = null;
+		String exceptionMessage = "VistaLoginModule login method failed.";
+		loginSucceeded = false;
+
+		try {
+			myVCF = VistaLinkConnectionFactory.getVistaLinkConnectionFactory(serverAddress, serverPort);
+			myConnection = (VistaLinkConnection) myVCF.getConnection();
+		} catch (ResourceException e) {
+			throw new VistaLoginModuleException(exceptionMessage, e);
+		}
+		securityResponseFactory = new SecurityResponseFactory();
+		
+		try 
+		{
+			// Create message
+			SecurityRequest requestVO = SecurityRequestFactory.getAVSetupAndIntroTextRequest();
+
+			if (logger.isDebugEnabled()) 
+			{
+				logger.debug("-> sending " + SecurityRequestFactory.MSG_ACTION_SETUP_AND_INTRO_TEXT);
+			}
+
+			// Send to XUS SETUP and XUS INTRO TEXT
+			Object responseDataObj = myConnection.executeInteraction(requestVO, securityResponseFactory);
+
+			// If we didn't crash (vi exceptions), this must be true. 
+			assert(responseDataObj instanceof SecurityDataSetupAndIntroTextResponse);
+
+			// log for my entertainment
+			if (logger.isDebugEnabled()) 
+			{
+			SecurityDataSetupAndIntroTextResponse responseData =
+					(SecurityDataSetupAndIntroTextResponse) responseDataObj;
+				{
+					logger.debug("Result SecurityDataSetupAndIntroTextResponse responseData: " + responseData.getResultType());
+				}
+			}
+			
+			// Create log-in message for XUS AV CODE
+			requestVO = SecurityRequestFactory.getAVLogonRequest(ac, vc, false);
+
+			if (logger.isDebugEnabled()) {
+				logger.debug("-> sending " + SecurityRequestFactory.MSG_ACTION_LOGON);
+			}
+
+			// and call XUS AV CODE
+			SecurityDataLogonResponse logonResponseData =
+					(SecurityDataLogonResponse) myConnection.executeInteraction(requestVO, securityResponseFactory);
+
+			if (logger.isDebugEnabled()) {
+				logger.debug("Result from logonResposeData: " + logonResponseData.getResultType());
+			}
+			
+			// XUS AV CODE says we can't log-in or we need to change our verify code.
+			if (logonResponseData.getResultType() == SecurityResponse.RESULT_PARTIAL ||
+					logonResponseData.getResultType() == SecurityResponse.RESULT_FAILURE)
+			{
+				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				Shell shell = window.getShell();
+				MessageDialog.openError(shell, "Log-in Failed", logonResponseData.getResultMessage());
+			}
+
+			else
+			{
+				// Call XUS GET USER INFO
+				assert(logonResponseData.getResultType() == SecurityResponse.RESULT_SUCCESS);
+				getUserDemographicsAndBuildPrincipal(myConnection, securityResponseFactory);
+				userPrincipal.setAuthenticatedConnection(myConnection);
+				loginSucceeded = true;
+			}
+		}
+		
+		
+		
+		catch (ParserConfigurationException e) {
+			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
+			if (logger.isEnabledFor(Level.ERROR)) {
+				logger.error(exceptionMessage, e);
+			}
+			throw new VistaLoginModuleException(exceptionMessage, e);
+		} catch (SecurityFaultException e) {
+			// logged lower down
+			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
+			String errMsg = "Security fault occured on the M system.";
+			throw new VistaLoginModuleException(errMsg, e);
+		} catch (VistaLinkFaultException e) {
+			// logged lower down
+			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
+			throw new VistaLoginModuleException(exceptionMessage, e);
+		} catch (FoundationsException e) {
+			// connector code already logged
+			logoutConnectionBeforeLoginComplete(myConnection, securityResponseFactory);
+			throw new VistaLoginModuleException(exceptionMessage, e);
+		}
+		
+		return loginSucceeded;
+	}
 
 	/**
 	 * Called by both the "auto-logon" and regular logon code to process a partially successful login
 	 * (i.e., either the v/c needs to be changed or a division needs to be selected.)
+	 * (nb: not called by silent log-on... b/c it's silent)
 	 * @param myConnection connection to use
 	 * @param responseData the logon response returned from the logon attempt that was partially successful
 	 * @param retryLogonCount # of times to retry the login
@@ -1041,6 +1169,18 @@ public class EclipseLoginModule {
 		return true;
 	}
 
+	/* VEN/SMH I overloaded the previous method so that I can
+	 * get a new signature for just doing a commit with no UI work
+	 */
+	
+	@SuppressWarnings("unchecked")
+	public boolean commit(boolean silent) throws LoginException {
+		if (!subject.getPrincipals().contains(userPrincipal)) {
+			subject.getPrincipals().add(userPrincipal);
+		}
+		return true;
+	}
+	
 	/**
 	 * Should never be called by an application directly. Instead, this method is invoked behind the scenes by the proxy
 	 * of the JAAS LoginContext.<p> Part of the JAAS interface for a login module. This loginmodule's implementation of

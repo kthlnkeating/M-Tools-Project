@@ -56,7 +56,20 @@ public class ConnectionManager {
 	private VistAConnection createConnection(ServerData serverData) {
 		try {
 			EclipseConnection eclipseConnection = new EclipseConnection();
-			VistaKernelPrincipalImpl principal = eclipseConnection.getConnection(serverData.getAddress(), serverData.getPort());
+			VistaKernelPrincipalImpl principal;
+			
+			/* VEN/SMH - new to support silent log-in */
+			if (serverData.getAC() != "" && serverData.getVC() != "")
+			{
+				 principal = eclipseConnection.getConnection(
+						serverData.getAddress(), serverData.getPort(), serverData.getAC(), serverData.getVC());
+			}
+			
+			else
+			{
+				 principal = eclipseConnection.getConnection(serverData.getAddress(), serverData.getPort());
+			}
+			
 			if (principal != null) {
 				VistaLinkConnection connection = principal.getAuthenticatedConnection();
 				VistAConnection result = new VistAConnection(serverData, connection, eclipseConnection);
